@@ -77,8 +77,11 @@ async function runLangTool(tagName, lang) {
                     );;
 
                     // add error to eDict
-                    eDict[error] = 1;
-
+                    if (error in eDict) {
+                        eDict[error] = eDict[error] + 1;
+                    } else {
+                        eDict[error] = 1;
+                    }
                 }
             });
 
