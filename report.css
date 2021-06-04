@@ -1,14 +1,15 @@
 .sidebar {
     height: 100%;
-    width: 0;
+    width: 85px;
     position: fixed;
     z-index: 1;
     top: 0;
     left: 0;
     background-color: #111;
-    overflow-x: hidden;
     transition: 0.5s;
+    overflow-x: hidden;
     padding-top: 60px;
+    white-space: nowrap;
 }
 
 .sidebar a {
@@ -17,14 +18,13 @@
     font-size: 25px;
     color: #818181;
     display: block;
-    transition: 0.3s;
 }
 
 .sidebar a:hover {
     color: #f1f1f1;
 }
 
-.sidebar .closebtn {
+main .sidebar {
     position: absolute;
     top: 0;
     right: 25px;
@@ -32,20 +32,20 @@
     margin-left: 50px;
 }
 
-.openbtn {
-    font-size: 20px;
-    cursor: pointer;
-    background-color: #111;
-    color: white;
-    padding: 10px 15px;
-    border: none;
+.material-icons, .icon-text {
+    vertical-align: middle;
 }
 
-.openbtn:hover {
-    background-color: #444;
+.material-icons {
+    padding-bottom: 3px;
+    margin-right: 30px;
 }
 
-/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+#main {
+    padding: 16px;
+    margin-left: 85px;
+    transition: margin-left 0.5s;
+}
 
 @media screen and (max-height: 450px) {
     .sidebar {

@@ -3,18 +3,113 @@
 
 <head>
     <title>Bookmarklet</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <style>
+        body {
+            font-family: "Lato", sans-serif;
+        }
+
+        .sidebar {
+            height: 100%;
+            width: 85px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            transition: 0.5s;
+            overflow-x: hidden;
+            padding-top: 60px;
+            white-space: nowrap;
+        }
+
+        .sidebar a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+        }
+
+        .sidebar a:hover {
+            color: #f1f1f1;
+        }
+
+        main .sidebar {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+
+        .material-icons,
+        .icon-text {
+            vertical-align: middle;
+        }
+
+        .material-icons {
+            padding-bottom: 3px;
+            margin-right: 30px;
+        }
+
+        #main {
+            padding: 16px;
+            margin-left: 85px;
+            transition: margin-left 0.5s;
+        }
+
+        @media screen and (max-height: 450px) {
+            .sidebar {
+                padding-top: 15px;
+            }
+
+            .sidebar a {
+                font-size: 18px;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <h1>xhico was here!</h1>
+    <div id="mySidebar" class="sidebar" onmouseover="toggleSidebar()" onmouseout="toggleSidebar()">
+        <a href="#"><span><i class="material-icons">info</i><span class="icon-text">about</span></a><br>
+        <a href="#"><i class="material-icons">spa</i><span class="icon-text"></span>services</a></span>
+        </a><br>
+        <a href="#"><i class="material-icons">monetization_on</i><span class="icon-text"></span>clients</span></a><br>
+        <a href="#"><i class="material-icons">email</i><span class="icon-text"></span>contact<span></a>
+    </div>
 
-    <p>The Little Forest index (LFi) gives you the tools to achieve digital success.</p>
-    <p>Our LFi platform provides high level customised Web Governance reports which allow for lightning speed
-        comparisons across all your multi-national websites.</p>
-    <p>These reports help support you on both site improvements and maximising positive trends.</p>
-    <p>LFi’s Digital Reporting Dashboards allow you to spot trends in seconds. Customised by your business needs,
-        you choose what’s important and how our Web Governance platform works for you.</p>
+    <div id="main">
+        <h1>xhico was here!</h1>
 
+        <p>The Little Forest index (LFi) gives you the tools to achieve digital success.</p>
+        <p>Our LFi platform provides high level customised Web Governance reports which allow for lightning speed
+            comparisons across all your multi-national websites.</p>
+        <p>These reports help support you on both site improvements and maximising positive trends.</p>
+        <p>LFi’s Digital Reporting Dashboards allow you to spot trends in seconds. Customised by your business needs,
+            you choose what’s important and how our Web Governance platform works for you.</p>
+    </div>
+
+    <script>
+        var mini = true;
+
+        function toggleSidebar() {
+            if (mini) {
+                console.log("opening sidebar");
+                document.getElementById("mySidebar").style.width = "250px";
+                document.getElementById("main").style.marginLeft = "250px";
+                this.mini = false;
+            } else {
+                console.log("closing sidebar");
+                document.getElementById("mySidebar").style.width = "85px";
+                document.getElementById("main").style.marginLeft = "85px";
+                this.mini = true;
+            }
+        }
+
+    </script>
 </body>
 
 </html>
