@@ -18,8 +18,7 @@ async function getRequest(url) {
 
 async function addSidebar() {
     // set github repo URL
-    var url = "https://raw.githubusercontent.com/xhico/LanguageTool-Bookmarklet/main/";
-    // var url = "https://bookmarklet.xhico:8443/";
+    var url = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
 
     // Add Sidebar <html>
     const mySidebarHTML = await getRequest(url + "mySidebar.html");
@@ -78,9 +77,6 @@ async function runLangTool(tagName, lang) {
 
                     // add error to eDict
                     eDict[error] = 1;
-
-                    var div = document.getElementById('mySidebar');
-                    div.innerHTML += "<a style='color:" + color + ";' href='#''>" + error + "</a>";
 
                 }
             });
