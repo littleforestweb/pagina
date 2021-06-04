@@ -41,8 +41,8 @@ async function runLangTool(tagName, lang) {
     // get all tags
     var tags = document.getElementsByTagName(tagName);
 
-    // set errorsDict where key => error and value => count
-    var eDict = {};
+    // set errorsDict and colorDict where key => error and value => count or color
+    var eDict = {}; var cDict = {};
 
     // iterate on every tag
     for (var i = 0; i < tags.length; i++) {
@@ -76,12 +76,9 @@ async function runLangTool(tagName, lang) {
                         "<span title='" + message + "' style='color:" + color + ";font-weight:bold;'>" + error + "</span>"
                     );;
 
-                    // add error to eDict
-                    if (error in eDict) {
-                        eDict[error] = eDict[error] + 1;
-                    } else {
-                        eDict[error] = 1;
-                    }
+                    // add/update key error on eDict
+                    if (error in eDict) { eDict[error] = eDict[error] + 1; } else { eDict[error] = 1; }
+                    if (!(error in cDict)) { eDict[error] = color }
                 }
             });
 
@@ -91,17 +88,17 @@ async function runLangTool(tagName, lang) {
     }
 
     // Add errors to sidebar
-    console.log(eDict);
-    // toLowerCase 
-    // get unique 
-    // get counter
-    // var div = document.getElementById('mySidebar');
-    // div.innerHTML += "<a style='color:" + color + ";' href='#''>" + error + "</a>";
+    Object.entries(eDict).forEach(([key, value]) => {
+        var div = document.getElementById('mySidebar');
+        div.innerHTML += "<a style='color:" + cDict[key] + ";' href='#''>" + error + "</a>";
+        console.log(key, value, cDict[key]);
+    });
+
 }
 
 async function main() {
     // Add Sidebar
-    // await addSidebar();
+    await addSidebar();
 
     // Run languageTool on tagName using lang
     const content = await runLangTool("p", "en-GB");
@@ -120,7 +117,7 @@ async function main() {
     }
 
     // Open sidebar
-    // document.getElementById("btn").click();
+    document.getElementById("btn").click();
 
     // END
     console.log('Bookmarklet ended');
