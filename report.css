@@ -41,8 +41,7 @@ main .sidebar {
     margin-right: 30px;
 }
 
-#LFiwrap {
-    /* padding: 16px; */
+#mywrap {
     margin-left: 85px;
     transition: margin-left 0.5s;
 }
