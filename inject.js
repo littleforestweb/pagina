@@ -41,8 +41,8 @@ async function runLangTool(tagName, lang) {
     // get all tags
     var tags = document.getElementsByTagName(tagName);
 
-    // set errorsDict and colorDict where key => error and value => count or color
-    var eDict = {}; var cDict = {};
+    // set errorsDict where key => error and value => [count, color]
+    var eDict = {};
 
     // iterate on every tag
     for (var i = 0; i < tags.length; i++) {
@@ -77,8 +77,7 @@ async function runLangTool(tagName, lang) {
                     );;
 
                     // add/update key error on eDict
-                    if (error in eDict) { eDict[error] = eDict[error] + 1; } else { eDict[error] = 1; }
-                    if (!(error in cDict)) { eDict[error] = color }
+                    if (error in eDict) { eDict[error][0] = eDict[error][0] + 1; } else { eDict[error] = [1, color]; }
                 }
             });
 
@@ -89,9 +88,8 @@ async function runLangTool(tagName, lang) {
 
     // Add errors to sidebar
     Object.entries(eDict).forEach(([key, value]) => {
-        var div = document.getElementById('mySidebar');
-        div.innerHTML += "<a style='color:" + cDict[key] + ";' href='#''>" + error + "</a>";
-        console.log(key, value, cDict[key]);
+        var count = value[0]; var color = value[1];
+        // div.innerHTML += "<a style='color:" + color + ";' href='#''>" + error + "(" + count + ")" + "</a>";
     });
 
 }
