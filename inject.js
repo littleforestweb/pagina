@@ -46,7 +46,8 @@ async function addLFisidebar() {
 
     // Add LFisidebar Dependencies
     const reportDependencies = await getRequest("https://fonts.googleapis.com/icon?family=Material+Icons");
-    document.report.innerHTML += reportDependencies;
+    var report = document.createElement("style");
+    document.head.appendChild(report).innerHTML = reportDependencies;
 }
 
 async function runLangTool(tagName, lang) {
