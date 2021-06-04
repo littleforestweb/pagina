@@ -20,7 +20,7 @@ async function addLFisidebar() {
     // Move the body's children into this wrapper
     // Append the wrapper to the body
     var div = document.createElement("div");
-    div.id = "LFiwrap";
+    div.id = "mywrap";
     while (document.body.firstChild) {
         div.appendChild(document.body.firstChild);
     }
@@ -122,7 +122,7 @@ async function main() {
     console.log('CRX started');
 
     // Check if already ran previously
-    if (!document.getElementById("LFiwrap")) {
+    if (!document.getElementById("mywrap")) {
         await main();
     } else {
         console.log("Already checked.. nothing to do!");

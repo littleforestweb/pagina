@@ -1,15 +1,15 @@
 var mini = true;
 
-function toggleLFisidebar() {
+function toggleSidebar() {
     if (mini) {
-        console.log("opening LFisidebar");
-        document.getElementById("LFisidebar").style.width = "250px";
-        document.getElementById("LFiwrap").style.marginLeft = "250px";
+        console.log("opening sidebar");
+        document.getElementById("mySidebar").style.width = "250px";
+        document.getElementById("mywrap").style.marginLeft = "250px";
         this.mini = false;
     } else {
-        console.log("closing LFisidebar");
-        document.getElementById("LFisidebar").style.width = "85px";
-        document.getElementById("LFiwrap").style.marginLeft = "85px";
+        console.log("closing sidebar");
+        document.getElementById("mySidebar").style.width = "85px";
+        document.getElementById("mywrap").style.marginLeft = "85px";
         this.mini = true;
     }
 }
