@@ -23,6 +23,15 @@
     color: #f1f1f1;
 }
 
+.sidebar-logo img {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    max-width: 200px;
+    padding-right: 5px;
+    vertical-align: middle;
+    border-style: none;
+}
+
 main .sidebar {
     position: absolute;
     top: 0;
@@ -52,13 +61,4 @@ main .sidebar {
     .sidebar a {
         font-size: 18px;
     }
-}
-
-.sidebar-logo img {
-    padding-top: 10px;
-    padding-bottom: 10px;
-    max-width: 200px;
-    padding-right: 5px;
-    vertical-align: middle;
-    border-style: none;
 }
