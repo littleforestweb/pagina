@@ -117,7 +117,7 @@ async function main() {
     }
 
     // Open sidebar
-    document.getElementById("btn").click();
+    // document.getElementById("btn").click();
 
     // END
     console.log('CRX ended');
