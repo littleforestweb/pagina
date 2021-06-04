@@ -54,3 +54,10 @@ main .sidebar {
         font-size: 18px;
     }
 }
+
+.sidebar-logo img {
+    max-width: 200px;
+    padding-right: 5px;
+    vertical-align: middle;
+    border-style: none;
+}
