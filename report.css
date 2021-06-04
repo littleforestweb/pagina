@@ -32,6 +32,12 @@
     border-style: none;
 }
 
+@media screen and (max-width: 768px) {
+    img {
+        content: url("https://raw.githubusercontent.com/littleforestweb/pagina/main/forest.png");
+    }
+}
+
 main .sidebar {
     position: absolute;
     top: 0;
