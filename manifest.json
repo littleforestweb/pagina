@@ -15,8 +15,6 @@
         "default_popup": "popup.html"
     },
     "permissions": [
-        "https://*/*",
-        "http://*/*",
         "<all_urls>",
         "tabs"
     ]
