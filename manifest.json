@@ -1,0 +1,23 @@
+{
+    "name": "LanguageTool Analyzer",
+    "version": "0.0.1",
+    "manifest_version": 2,
+    "description": "LanguageTool Analyzer",
+    "background": {
+        "scripts": [
+            "background.js"
+        ],
+        "persistent": true
+    },
+    "browser_action": {
+        "default_title": "LanguageTool Analyzer",
+        "default_icon": "icon.png",
+        "default_popup": "popup.html"
+    },
+    "permissions": [
+        "https://*/*",
+        "http://*/*",
+        "<all_urls>",
+        "tabs"
+    ]
+}
