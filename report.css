@@ -27,15 +27,8 @@
     padding-top: 10px;
     padding-bottom: 10px;
     max-width: 200px;
-    padding-right: 5px;
-    vertical-align: middle;
-    border-style: none;
-}
-
-@media screen and (max-width: 768px) {
-    img {
-        content: url("https://raw.githubusercontent.com/littleforestweb/pagina/main/forest.png");
-    }
+    display: block;
+    width: 50%;
 }
 
 main .sidebar {
@@ -56,7 +49,7 @@ main .sidebar {
 }
 
 #mywrap {
-    margin-left: 85px;
+    margin-left: 150px;
     transition: margin-left 0.5s;
 }
 
