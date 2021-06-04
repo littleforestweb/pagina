@@ -46,8 +46,8 @@ async function addSidebar() {
     // document.head.appendChild(report).innerHTML = reportCSS;
 
     // Add Sidebar Dependencies
-    const reportCSS = await getRequest(url + "dependencies.css");
-    document.head.appendChild(reportCSS);
+    const reportCSS = await getRequest(url + "dependencies.html");
+    document.head.innerHTML += reportCSS;
 
 }
 
