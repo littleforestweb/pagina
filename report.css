@@ -1,4 +1,4 @@
-.sidebar {
+.LFisidebar {
     height: 100%;
     width: 85px;
     position: fixed;
@@ -12,7 +12,7 @@
     white-space: nowrap;
 }
 
-.sidebar a {
+.LFisidebar a {
     padding: 8px 8px 8px 32px;
     text-decoration: none;
     font-size: 25px;
@@ -20,11 +20,11 @@
     display: block;
 }
 
-.sidebar a:hover {
+.LFisidebar a:hover {
     color: #f1f1f1;
 }
 
-main .sidebar {
+main .LFisidebar {
     position: absolute;
     top: 0;
     right: 25px;
@@ -41,17 +41,17 @@ main .sidebar {
     margin-right: 30px;
 }
 
-#mywrap {
+#LFiWrap {
     padding: 16px;
     margin-left: 85px;
     transition: margin-left 0.5s;
 }
 
 @media screen and (max-height: 450px) {
-    .sidebar {
+    .LFisidebar {
         padding-top: 15px;
     }
-    .sidebar a {
+    .LFisidebar a {
         font-size: 18px;
     }
 }

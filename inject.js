@@ -16,11 +16,11 @@ async function getRequest(url) {
     }
 }
 
-async function addSidebar() {
+async function addLFisidebar() {
     // Move the body's children into this wrapper
     // Append the wrapper to the body
     var div = document.createElement("div");
-    div.id = "mywrap";
+    div.id = "LFiwrap";
     while (document.body.firstChild) {
         div.appendChild(document.body.firstChild);
     }
@@ -30,21 +30,21 @@ async function addSidebar() {
     var url = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
     // var url = "https://pagina.xhico:8443/";
 
-    // Add Sidebar <html>
+    // Add LFisidebar <html>
     const reportHTML = await getRequest(url + "report.html");
     document.body.innerHTML += reportHTML;
 
-    // Add Sidebar <script>
+    // Add LFisidebar <script>
     const reportJS = await getRequest(url + "report.js");
     var report = document.createElement("script");
     document.body.appendChild(report).innerHTML = reportJS;
 
-    // Add Sidebar <style>
+    // Add LFisidebar <style>
     const reportCSS = await getRequest(url + "report.css");
     var report = document.createElement("style");
     document.head.appendChild(report).innerHTML = reportCSS;
 
-    // Add Sidebar Dependencies
+    // Add LFisidebar Dependencies
     const reportDependencies = await getRequest(url + "dependencies.html");
     document.head.innerHTML += reportDependencies;
 
@@ -99,7 +99,7 @@ async function runLangTool(tagName, lang) {
         }
     }
 
-    // Add errors to sidebar
+    // Add errors to LFisidebar
     Object.entries(eDict).forEach(([key, value]) => {
         var count = value[0]; var color = value[1];
         console.log(key, count, color);
@@ -109,8 +109,8 @@ async function runLangTool(tagName, lang) {
 }
 
 async function main() {
-    // Add Sidebar
-    await addSidebar();
+    // Add LFisidebar
+    await addLFisidebar();
 
     // Run languageTool on tagName using lang
     // const content = await runLangTool("p", "en-GB");
@@ -122,13 +122,13 @@ async function main() {
     console.log('CRX started');
 
     // Check if already ran previously
-    if (!document.getElementById("mywrap")) {
+    if (!document.getElementById("LFiwrap")) {
         await main();
     } else {
         console.log("Already checked.. nothing to do!");
     }
 
-    // Open sidebar
+    // Open LFisidebar
     // document.getElementById("openbtn").click();
 
     // END
