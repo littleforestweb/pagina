@@ -19,6 +19,7 @@ async function getRequest(url) {
 async function addSidebar() {
     // set github repo URL
     var url = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
+    // var url = "https://bookmarklet.xhico:8443/";
 
     // Add Sidebar <html>
     const mySidebarHTML = await getRequest(url + "mySidebar.html");
