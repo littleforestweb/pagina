@@ -8,7 +8,6 @@
     background-color: #111;
     transition: 0.5s;
     overflow-x: hidden;
-    padding-top: 20px;
     white-space: nowrap;
 }
 
@@ -56,6 +55,8 @@ main .sidebar {
 }
 
 .sidebar-logo img {
+    padding-top: 10px;
+    padding-bottom: 10px;
     max-width: 200px;
     padding-right: 5px;
     vertical-align: middle;
