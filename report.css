@@ -41,7 +41,7 @@ main .sidebar {
     margin-right: 30px;
 }
 
-#main {
+#mywrap {
     padding: 16px;
     margin-left: 85px;
     transition: margin-left 0.5s;

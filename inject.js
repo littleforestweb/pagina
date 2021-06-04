@@ -17,9 +17,18 @@ async function getRequest(url) {
 }
 
 async function addSidebar() {
-    // // set github repo URL
-    // var url = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
-    // // var url = "https://pagina.xhico:8443/";
+    // Move the body's children into this wrapper
+    // Append the wrapper to the body
+    var div = document.createElement("div");
+    div.id = "mywrap";
+    while (document.body.firstChild) {
+        div.appendChild(document.body.firstChild);
+    }
+    document.body.appendChild(div);
+
+    // set github repo URL
+    var url = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
+    // var url = "https://pagina.xhico:8443/";
 
     // // Add Sidebar <html>
     // const reportHTML = await getRequest(url + "report.html");
@@ -36,17 +45,9 @@ async function addSidebar() {
     // var report = document.createElement("style");
     // document.head.appendChild(report).innerHTML = reportCSS;
 
-    var div = document.createElement("div");
-    div.id = "wrap";
-
-    // Move the body's children into this wrapper
-    while (document.body.firstChild) {
-        div.appendChild(document.body.firstChild);
-    }
-
-    // Append the wrapper to the body
-    document.body.appendChild(div);
-
+    // Add Sidebar Dependencies
+    const reportCSS = await getRequest(url + "dependencies.css");
+    document.head[0].appendChild(reportCSS);
 }
 
 async function runLangTool(tagName, lang) {
@@ -121,7 +122,7 @@ async function main() {
     console.log('CRX started');
 
     // Check if already ran previously
-    if (!document.getElementById("mySidebar")) {
+    if (!document.getElementById("mywrap")) {
         await main();
     } else {
         console.log("Already checked.. nothing to do!");
