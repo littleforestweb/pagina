@@ -20,7 +20,7 @@ async function addLFisidebar() {
     // Move the body's children into this wrapper
     // Append the wrapper to the body
     var div = document.createElement("div");
-    div.id = "LFiwrap";
+    div.id = "mywrap";
     while (document.body.firstChild) {
         div.appendChild(document.body.firstChild);
     }
