@@ -1,24 +1,110 @@
-#console {
-    width: 150px;
-    height: 150px;
-    padding: 10px;
+aside.sidebar-left#resizable {
+    height: 100vh;
+    min-width: 200px;
 }
 
-/* body {
-    background-color: #212121;
-} */
-
-span.windowTitle {
-    /*font-family: "Segoe UI";*/
-    font-size: 50;
-    width: 100px;
-    height: 100px;
-    position: relative;
-    font-family: "Roboto";
-    font-weight: bold
+@media (min-width: 768px) {
+    .wrapper .sidebar-left {
+        top: 0;
+    }
 }
 
-#refreshbtn {
+@media (min-width: 1200px) {
+    aside.sidebar-left {
+        width: 200px;
+    }
+}
+
+aside.sidebar-left {
+    width: 175px;
+    top: 0;
+    float: left;
+    box-shadow: -5px 0 0 #f7f7f7 inset;
+    z-index: 1000;
+}
+
+aside.sidebar-left .draghandle {
     position: absolute;
-    motion-rotation: 200px
+    z-index: 100;
+    width: 8px;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    cursor: col-resize;
+    float: right;
+}
+
+aside.sidebar-left .sidebar-logo img {
+    max-width: 200px;
+    padding-right: 5px;
+    vertical-align: middle;
+    border-style: none;
+}
+
+.wrapper {
+    min-height: 100vh;
+    width: 100%;
+    height: 100%;
+    table-layout: fixed;
+    overflow: hidden;
+    padding-top: 0;
+}
+
+.wrapper #mainArea.content {
+    margin-left: 25%;
+}
+
+@media (min-width: 992px) {
+    .wrapper #mainArea.content {
+        margin-left: 250px;
+    }
+}
+
+.mt-wrapper {
+    position: relative;
+    z-index: 1;
+}
+
+ul {
+    list-style-type: none;
+}
+
+.nav {
+    position: relative;
+    top: 0;
+    height: calc(100vh - 48px);
+    padding-top: .5rem;
+    overflow-x: hidden;
+}
+
+.nav a {
+    font-weight: 500;
+    color: #939089;
+}
+
+.nav h5 {
+    margin-right: 4px;
+    color: #999;
+    font-size: 1rem;
+    text-transform: uppercase;
+}
+
+h1 {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    color: #f1f1f1;
+}
+
+body {
+    background: #14161D;
+    color: #939089;
+}
+
+hr {
+    border-top: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+@media (max-width: 768px) {
+    aside.sidebar-left {
+        display: none;
+    }
 }
