@@ -43,7 +43,7 @@ main .sidebar {
 
 #mywrap {
     /* padding: 16px; */
-    /* margin-left: 85px; */
+    margin-left: 85px;
     transition: margin-left 0.5s;
 }
 
