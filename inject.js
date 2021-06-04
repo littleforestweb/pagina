@@ -98,7 +98,7 @@ async function runLangTool(tagName, lang) {
 
 async function main() {
     // Add Sidebar
-    await addSidebar();
+    // await addSidebar();
 
     // Run languageTool on tagName using lang
     const content = await runLangTool("p", "en-GB");
@@ -117,7 +117,7 @@ async function main() {
     }
 
     // Open sidebar
-    document.getElementById("btn").click();
+    // document.getElementById("btn").click();
 
     // END
     console.log('Bookmarklet ended');
