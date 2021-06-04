@@ -47,7 +47,8 @@ async function addSidebar() {
 
     // Add Sidebar Dependencies
     const reportCSS = await getRequest(url + "dependencies.css");
-    document.head[0].appendChild(reportCSS);
+    document.head.appendChild(reportCSS);
+
 }
 
 async function runLangTool(tagName, lang) {
