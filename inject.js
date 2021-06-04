@@ -21,6 +21,21 @@ async function addSidebar() {
     var url = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
     // var url = "https://pagina.xhico:8443/";
 
+    // Add Sidebar <html>
+    const reportHTML = await getRequest(url + "report.html");
+    var report = document.createElement("div");
+    document.body.appendChild(report).innerHTML = reportHTML;
+
+    // Add Sidebar <script>
+    const reportJS = await getRequest(url + "report.js");
+    var report = document.createElement("script");
+    document.body.appendChild(report).innerHTML = reportJS;
+
+    // Add Sidebar <style>
+    const reportCSS = await getRequest(url + "report.css");
+    var report = document.createElement("style");
+    document.head.appendChild(report).innerHTML = reportCSS;
+
 }
 
 async function runLangTool(tagName, lang) {
@@ -75,6 +90,7 @@ async function runLangTool(tagName, lang) {
     // Add errors to sidebar
     Object.entries(eDict).forEach(([key, value]) => {
         var count = value[0]; var color = value[1];
+        console.log(key, count, color);
         // div.innerHTML += "<a style='color:" + color + ";' href='#''>" + error + "(" + count + ")" + "</a>";
     });
 
@@ -82,16 +98,16 @@ async function runLangTool(tagName, lang) {
 
 async function main() {
     // Add Sidebar
-    // await addSidebar();
+    await addSidebar();
 
     // Run languageTool on tagName using lang
-    const content = await runLangTool("p", "en-GB");
+    // const content = await runLangTool("p", "en-GB");
 }
 
 (async function () {
     // START
     console.clear()
-    console.log('Bookmarklet started');
+    console.log('CRX started');
 
     // Check if already ran previously
     if (!document.getElementById("mySidebar")) {
@@ -101,8 +117,8 @@ async function main() {
     }
 
     // Open sidebar
-    // document.getElementById("btn").click();
+    document.getElementById("btn").click();
 
     // END
-    console.log('Bookmarklet ended');
+    console.log('CRX ended');
 })();
