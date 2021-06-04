@@ -6,7 +6,7 @@
 
 async function getRequest(url) {
     try {
-        const res = await fetch(url, { cache: "no-store" });
+        const res = await fetch(url, { cache: "no-cache", referrerPolicy: "no-referrer", });
         if (url.includes("languagetoolplus")) {
             return await res.json();
         }
