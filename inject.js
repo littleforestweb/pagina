@@ -20,7 +20,7 @@ async function addLFisidebar() {
     // Move the body's children into this wrapper
     // Append the wrapper to the body
     var div = document.createElement("div");
-    div.id = "mywrap";
+    div.id = "LFiwrap";
     while (document.body.firstChild) {
         div.appendChild(document.body.firstChild);
     }
@@ -44,9 +44,9 @@ async function addLFisidebar() {
     var report = document.createElement("style");
     document.head.appendChild(report).innerHTML = reportCSS;
 
-    // Add LFisidebar Dependencies
-    const reportDependencies = await getRequest(url + "dependencies.html");
-    document.head.innerHTML += reportDependencies;
+    // // Add LFisidebar Dependencies
+    // const reportDependencies = await getRequest(url + "dependencies.html");
+    // document.head.innerHTML += reportDependencies;
 }
 
 async function runLangTool(tagName, lang) {
