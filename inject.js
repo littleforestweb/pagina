@@ -32,7 +32,7 @@ async function addSidebar() {
 
     // Add Sidebar <html>
     const reportHTML = await getRequest(url + "report.html");
-    document.body.innerHTML = reportHTML;
+    document.body.innerHTML += reportHTML;
 
     // Add Sidebar <script>
     const reportJS = await getRequest(url + "report.js");
@@ -45,8 +45,8 @@ async function addSidebar() {
     document.head.appendChild(report).innerHTML = reportCSS;
 
     // Add Sidebar Dependencies
-    const reportCSS = await getRequest(url + "dependencies.html");
-    document.head.innerHTML += reportCSS;
+    const reportDependencies = await getRequest(url + "dependencies.html");
+    document.head.innerHTML += reportDependencies;
 
 }
 
