@@ -26,10 +26,10 @@ async function addSidebar() {
     var mySidebar = document.createElement("div");
     document.body.appendChild(mySidebar).innerHTML = mySidebarHTML;
 
-    // Add Sidebar <script>
-    const mySidebarJS = await getRequest(url + "script.js");
-    var script = document.createElement("script");
-    document.body.appendChild(script).innerHTML = mySidebarJS;
+    // // Add Sidebar <script>
+    // const mySidebarJS = await getRequest(url + "script.js");
+    // var script = document.createElement("script");
+    // document.body.appendChild(script).innerHTML = mySidebarJS;
 
     // Add Sidebar <style>
     const mySidebarCSS = await getRequest(url + "style.css");
