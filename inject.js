@@ -47,7 +47,6 @@ async function addLFisidebar() {
     // Add LFisidebar Dependencies
     const reportDependencies = await getRequest(url + "dependencies.html");
     document.head.innerHTML += reportDependencies;
-
 }
 
 async function runLangTool(tagName, lang) {
