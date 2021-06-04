@@ -1,73 +1,9 @@
-<aside id="resizable" class="sidebar-left movable-div position-fixed bottom-0 left-0 animated">
-    <div class="sidebar-logo position-relative pt-3">
-        <a href="#" class="logo">
-            <img src="https://github.com/solodev/resizable-left-navigation/blob/master/images/logo.png?raw=true"
-                alt="Logo" class="img-fluid p-4">
-        </a>
-    </div>
-    <hr />
-    <div class="nano has-scrollbar">
-        <nav class="nano-content" tabindex="0" style="right: -17px;">
-            <ul class="nav nav-main">
-                <li id="dashboard-nav" class="p-0 w-100">
-                    <div class="sidebar-sticky">
-                        <h5
-                            class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                            <span>Locations</span>
-                        </h5>
-                        <ul class="flex-column">
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <i class="fa fa-file-text-o" aria-hidden="true"></i>
-                                    XP-1
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <i class="fa fa-file-text-o" aria-hidden="true"></i>
-                                    HAB-1
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <i class="fa fa-file-text-o" aria-hidden="true"></i>
-                                    Orbiter-1
-                                </a>
-                            </li>
+<div id="mySidebar" class="sidebar">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+    <a href="#">About</a>
+    <a href="#">Services</a>
+    <a href="#">Clients</a>
+    <a href="#">Contact</a>
+</div>
 
-                        </ul>
-
-                        <h5
-                            class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                            <span>Products</span>
-                        </h5>
-                        <ul class="flex-column">
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <i class="fa fa-file-text-o" aria-hidden="true"></i>
-                                    VALKYRIE-1
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <i class="fa fa-file-text-o" aria-hidden="true"></i>
-                                    TALON-2
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <i class="fa fa-file-text-o" aria-hidden="true"></i>
-                                    LUNAR XPLORER
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-            </ul>
-        </nav>
-        <div class="nano-pane" style="display: none;">
-            <div class="nano-slider" style="height: 1246px; transform: translate(0px, 0px);"></div>
-        </div>
-    </div>
-    <div class="draghandle" style="width: 6px; height: 100vh;"></div>
-</aside>
+<button class="openbtn" onclick="openNav()">Open Sidebar</button>

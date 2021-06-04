@@ -1,110 +1,57 @@
-aside.sidebar-left#resizable {
-    height: 100vh;
-    min-width: 200px;
-}
-
-@media (min-width: 768px) {
-    .wrapper .sidebar-left {
-        top: 0;
-    }
-}
-
-@media (min-width: 1200px) {
-    aside.sidebar-left {
-        width: 200px;
-    }
-}
-
-aside.sidebar-left {
-    width: 175px;
-    top: 0;
-    float: left;
-    box-shadow: -5px 0 0 #f7f7f7 inset;
-    z-index: 1000;
-}
-
-aside.sidebar-left .draghandle {
-    position: absolute;
-    z-index: 100;
-    width: 8px;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    cursor: col-resize;
-    float: right;
-}
-
-aside.sidebar-left .sidebar-logo img {
-    max-width: 200px;
-    padding-right: 5px;
-    vertical-align: middle;
-    border-style: none;
-}
-
-.wrapper {
-    min-height: 100vh;
-    width: 100%;
+.sidebar {
     height: 100%;
-    table-layout: fixed;
-    overflow: hidden;
-    padding-top: 0;
-}
-
-.wrapper #mainArea.content {
-    margin-left: 25%;
-}
-
-@media (min-width: 992px) {
-    .wrapper #mainArea.content {
-        margin-left: 250px;
-    }
-}
-
-.mt-wrapper {
-    position: relative;
+    width: 0;
+    position: fixed;
     z-index: 1;
-}
-
-ul {
-    list-style-type: none;
-}
-
-.nav {
-    position: relative;
     top: 0;
-    height: calc(100vh - 48px);
-    padding-top: .5rem;
+    left: 0;
+    background-color: #111;
     overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
 }
 
-.nav a {
-    font-weight: 500;
-    color: #939089;
+.sidebar a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
 }
 
-.nav h5 {
-    margin-right: 4px;
-    color: #999;
-    font-size: 1rem;
-    text-transform: uppercase;
-}
-
-h1 {
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+.sidebar a:hover {
     color: #f1f1f1;
 }
 
-body {
-    background: #14161D;
-    color: #939089;
+.sidebar .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
 }
 
-hr {
-    border-top: 1px solid rgba(255, 255, 255, 0.4);
+.openbtn {
+    font-size: 20px;
+    cursor: pointer;
+    background-color: #111;
+    color: white;
+    padding: 10px 15px;
+    border: none;
 }
 
-@media (max-width: 768px) {
-    aside.sidebar-left {
-        display: none;
+.openbtn:hover {
+    background-color: #444;
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+
+@media screen and (max-height: 450px) {
+    .sidebar {
+        padding-top: 15px;
+    }
+    .sidebar a {
+        font-size: 18px;
     }
 }
