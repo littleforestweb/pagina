@@ -5,5 +5,5 @@ function openNav() {
 
 function closeNav() {
   document.getElementById("mySidebar").style.width = "0";
-  document.body.style.marginLeft = "10px";
+  document.body.style.marginLeft = "0";
 }
