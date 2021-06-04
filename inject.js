@@ -44,9 +44,9 @@ async function addLFisidebar() {
     var report = document.createElement("style");
     document.head.appendChild(report).innerHTML = reportCSS;
 
-    // // Add LFisidebar Dependencies
-    // const reportDependencies = await getRequest(url + "dependencies.html");
-    // document.head.innerHTML += reportDependencies;
+    // Add LFisidebar Dependencies
+    const reportDependencies = await getRequest("https://fonts.googleapis.com/icon?family=Material+Icons");
+    document.report.innerHTML += reportDependencies;
 }
 
 async function runLangTool(tagName, lang) {
