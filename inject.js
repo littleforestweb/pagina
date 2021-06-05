@@ -16,7 +16,7 @@ async function getRequest(url) {
     }
 }
 
-async function addLFisidebar() {
+async function addSidebar() {
     // Move the body's children into this wrapper
     // Append the wrapper to the body
     var div = document.createElement("div");
@@ -40,14 +40,9 @@ async function addLFisidebar() {
     document.body.appendChild(report).innerHTML = reportJS;
 
     // Add LFisidebar <style>
-    const reportCSS = await getRequest(url + "sidebar.css");
+    var depCSS = await getRequest(url + "sidebar.css");
     var report = document.createElement("style");
-    document.head.appendChild(report).innerHTML = reportCSS;
-
-    // Add LFisidebar Dependencies
-    const reportDependencies = await getRequest("https://fonts.googleapis.com/icon?family=Material+Icons");
-    var report = document.createElement("style");
-    document.head.appendChild(report).innerHTML = reportDependencies;
+    document.head.appendChild(report).innerHTML = depCSS;
 }
 
 async function runLangTool(tagName, lang) {
@@ -109,17 +104,17 @@ async function runLangTool(tagName, lang) {
 }
 
 async function main() {
-    // Add LFisidebar
-    await addLFisidebar();
+    // Add sidebar
+    // await addSidebar();
 
     // Run languageTool on tagName using lang
-    // const content = await runLangTool("p", "en-GB");
+    await runLangTool("p", "en-GB");
 }
 
 (async function () {
     // START
     console.clear()
-    console.log('CRX started');
+    console.log('inject started');
 
     // Check if already ran previously
     if (!document.getElementById("mywrap")) {
@@ -128,9 +123,6 @@ async function main() {
         console.log("Already checked.. nothing to do!");
     }
 
-    // Open LFisidebar
-    // document.getElementById("openbtn").click();
-
     // END
-    console.log('CRX ended');
+    console.log('inject ended');
 })();
