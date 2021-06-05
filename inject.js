@@ -27,8 +27,8 @@ async function addLFisidebar() {
     document.body.appendChild(div);
 
     // set github repo URL
-    // var url = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
-    var url = "https://pagina.xhico:8443/";
+    var url = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
+    // var url = "https://pagina.xhico:8443/";
 
     // Add LFisidebar <html>
     const reportHTML = await getRequest(url + "sidebar.html");
@@ -44,10 +44,8 @@ async function addLFisidebar() {
     var report = document.createElement("style");
     document.head.appendChild(report).innerHTML = reportCSS;
 
-    // Add LFisidebar Dependencies
-    const reportDependencies = await getRequest(url + "boxicons.min.css");
-    var report = document.createElement("style");
-    document.head.appendChild(report).innerHTML = reportDependencies;
+    document.head.innerHTML += '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" />';
+
 }
 
 async function runLangTool(tagName, lang) {
