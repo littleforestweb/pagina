@@ -44,8 +44,10 @@ async function addLFisidebar() {
     var report = document.createElement("style");
     document.head.appendChild(report).innerHTML = reportCSS;
 
-    document.head.innerHTML += '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" />';
-
+    // Add LFisidebar <style>
+    const reportCSS = await getRequest("https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css");
+    var report = document.createElement("style");
+    document.head.appendChild(report).innerHTML = reportCSS;
 }
 
 async function runLangTool(tagName, lang) {
