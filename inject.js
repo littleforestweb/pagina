@@ -31,7 +31,7 @@ async function addLFisidebar() {
     // var url = "https://pagina.xhico:8443/";
 
     // Add LFisidebar <html>
-    const reportHTML = await getRequest(url + "sidebar.html");
+    var reportHTML = await getRequest(url + "sidebar.html");
     document.body.innerHTML += reportHTML;
 
     // Add LFisidebar <script>
@@ -44,10 +44,6 @@ async function addLFisidebar() {
     var report = document.createElement("style");
     document.head.appendChild(report).innerHTML = reportCSS;
 
-    // Add LFisidebar <style>
-    const reportCSS = await getRequest("https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css");
-    var report = document.createElement("style");
-    document.head.appendChild(report).innerHTML = reportCSS;
 }
 
 async function runLangTool(tagName, lang) {
