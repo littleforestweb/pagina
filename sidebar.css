@@ -23,6 +23,10 @@
   color: #f1f1f1;
 }
 
+.sidebar-logo {
+  border-bottom: 1px solid rgba(255, 255, 255, .4);
+}
+
 .sidebar-logo img {
   padding-top: 10px;
   padding-bottom: 10px;
