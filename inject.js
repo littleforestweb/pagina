@@ -27,25 +27,25 @@ async function addLFisidebar() {
     document.body.appendChild(div);
 
     // set github repo URL
-    var url = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
-    // var url = "https://pagina.xhico:8443/";
+    // var url = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
+    var url = "https://pagina.xhico:8443/";
 
     // Add LFisidebar <html>
-    const reportHTML = await getRequest(url + "report.html");
+    const reportHTML = await getRequest(url + "sidebar.html");
     document.body.innerHTML += reportHTML;
 
     // Add LFisidebar <script>
-    const reportJS = await getRequest(url + "report.js");
+    const reportJS = await getRequest(url + "sidebar.js");
     var report = document.createElement("script");
     document.body.appendChild(report).innerHTML = reportJS;
 
     // Add LFisidebar <style>
-    const reportCSS = await getRequest(url + "report.css");
+    const reportCSS = await getRequest(url + "sidebar.css");
     var report = document.createElement("style");
     document.head.appendChild(report).innerHTML = reportCSS;
 
     // Add LFisidebar Dependencies
-    const reportDependencies = await getRequest("https://fonts.googleapis.com/icon?family=Material+Icons");
+    const reportDependencies = await getRequest(url + "boxicons.min.css");
     var report = document.createElement("style");
     document.head.appendChild(report).innerHTML = reportDependencies;
 }
