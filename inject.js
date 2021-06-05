@@ -27,8 +27,8 @@ async function addLFisidebar() {
     document.body.appendChild(div);
 
     // set github repo URL
-    // var url = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
-    var url = "https://pagina.xhico:8443/";
+    var url = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
+    // var url = "https://pagina.xhico:8443/";
 
     // Add LFisidebar <html>
     const reportHTML = await getRequest(url + "report.html");

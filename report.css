@@ -5,7 +5,7 @@
     z-index: 1;
     top: 0;
     left: 0;
-    background-color: #111;
+    background-color: black;
     transition: 0.5s;
     overflow-x: hidden;
     white-space: nowrap;
