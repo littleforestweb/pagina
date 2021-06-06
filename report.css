@@ -49,6 +49,8 @@
 }
 
 .netflix-nav-white {
+    overflow: scroll;
+    overflow-x: hidden;
     background-color: #fff;
     padding: 40px;
     position: relative;
