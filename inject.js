@@ -20,7 +20,7 @@ async function addSidebar() {
     // Move the body's children into this wrapper
     // Append the wrapper to the body
     var div = document.createElement("div");
-    div.id = "main-content";
+    div.id = "maincontent";
     while (document.body.firstChild) {
         div.appendChild(document.body.firstChild);
     }
