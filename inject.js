@@ -95,10 +95,11 @@ async function runLangTool(tagName, lang) {
     }
 
     // Add errors to LFisidebar
+    var sidebar = document.getElementById("spellErrors")
     Object.entries(eDict).forEach(([key, value]) => {
-        var count = value[0]; var color = value[1];
+        var error = key; var count = value[0]; var color = value[1];
         console.log(key, count, color);
-        // div.innerHTML += "<a style='color:" + color + ";' href='#''>" + error + "(" + count + ")" + "</a>";
+        sidebar.innerHTML += "<li><a href='#'>" + error + " (" + count + ")" + "</a></li>";
     });
 
 }
@@ -108,7 +109,7 @@ async function main() {
     await addSidebar();
 
     // Run languageTool on tagName using lang
-    // await runLangTool("p", "en-GB");
+    await runLangTool("p", "en-GB");
 }
 
 (async function () {
