@@ -5,7 +5,7 @@ const maincontent = document.getElementById('maincontent');
 
 netflix_open_btn.addEventListener('click', () => {
     netflix_nav.forEach(nav_el => { nav_el.classList.add('visible'); });
-    maincontent.style.marginLeft = "480px";
+    maincontent.style.marginLeft = "300px";
 });
 
 netflix_close_btn.addEventListener('click', () => {

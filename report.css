@@ -29,8 +29,8 @@
 .netflix-nav-black {
     background-color: rgb(34, 31, 31);
     width: 60%;
-    max-width: 480px;
-    min-width: 320px;
+    max-width: 300px;
+    min-width: 250px;
     transition-delay: .4s;
 }
 

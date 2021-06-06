@@ -81,7 +81,7 @@ async function runLangTool(tagName, lang) {
 
                     // update error color on html
                     tag.innerHTML = tag.innerHTML.replace(error,
-                        "<span title='" + message + "' style='color:" + color + ";font-weight:bold;'>" + error + "</span>"
+                        "<span id='" + error + "' " + "title='" + message + "' style='color:" + color + ";font-weight:bold;'>" + error + "</span>"
                     );;
 
                     // add/update key error on eDict
@@ -99,7 +99,7 @@ async function runLangTool(tagName, lang) {
     Object.entries(eDict).forEach(([key, value]) => {
         var error = key; var count = value[0]; var color = value[1];
         console.log(key, count, color);
-        sidebar.innerHTML += "<li><a href='#'>" + error + " (" + count + ")" + "</a></li>";
+        sidebar.innerHTML += "<li><a href='#" + error + "'>" + error + " (" + count + ")" + "</a></li>";
     });
 
 }
@@ -118,7 +118,7 @@ async function main() {
     console.log('inject started');
 
     // Check if already ran previously
-    if (!document.getElementById("mywrap")) {
+    if (!document.getElementById("maincontent")) {
         await main();
     } else {
         console.log("Already checked.. nothing to do!");
