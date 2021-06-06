@@ -10,6 +10,7 @@ netflix_open_btn.addEventListener('click', () => {
 
 netflix_close_btn.addEventListener('click', () => {
     netflix_nav.forEach(nav_el => { nav_el.classList.remove('visible'); });
+    maincontent.style.marginLeft = "0px";
 });
 
 // GET IN TOUCH COMPONENT
