@@ -107,7 +107,6 @@
 }
 
 .social-panel {
-    position: absolute;
     background-color: white;
     border-radius: 16px;
     box-shadow: 0 16px 31px -17px rgba(0, 31, 97, 0.6);
@@ -116,7 +115,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    /* position: relative; */
+    position: relative;
     height: 169px;
     width: 370px;
     max-width: calc(100% - 10px);
