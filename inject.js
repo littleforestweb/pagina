@@ -81,7 +81,7 @@ async function runLangTool(tagName, lang) {
 
                     // update error color on html
                     tag.innerHTML = tag.innerHTML.replace(error,
-                        "<span id='" + error + "' " + "title='" + message + "' style='color:" + color + ";font-weight:bold;'>" + error + "</span>"
+                        "<span id='lfi_" + error + "' " + "title='" + message + "' style='color:" + color + ";font-weight:bold;'>" + error + "</span>"
                     );;
 
                     // add/update key error on eDict
@@ -99,7 +99,7 @@ async function runLangTool(tagName, lang) {
     Object.entries(eDict).forEach(([key, value]) => {
         var error = key; var count = value[0]; var color = value[1];
         console.log(key, count, color);
-        sidebar.innerHTML += "<li><a href='#" + error + "'>" + error + " (" + count + ")" + "</a></li>";
+        sidebar.innerHTML += "<li><a href='#lfi_" + error + "'>" + error + " (" + count + ")" + "</a></li>";
     });
 
 }
