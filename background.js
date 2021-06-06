@@ -1,7 +1,4 @@
 // this is the background code...
-console.clear()
-console.log("CRX Started");
-
 document.addEventListener('DOMContentLoaded', function () {
     var checkPageButton = document.getElementById('checkPage');
     if (checkPageButton) {
@@ -12,5 +9,3 @@ document.addEventListener('DOMContentLoaded', function () {
         }, false);
     }
 }, false);
-
-console.log("CRX Ended");

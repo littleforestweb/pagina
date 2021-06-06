@@ -20,27 +20,27 @@ async function addSidebar() {
     // Move the body's children into this wrapper
     // Append the wrapper to the body
     var div = document.createElement("div");
-    div.id = "mywrap";
+    div.id = "main-content";
     while (document.body.firstChild) {
         div.appendChild(document.body.firstChild);
     }
     document.body.appendChild(div);
 
     // set github repo URL
-    // var url = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
-    var url = "https://pagina.xhico:8443/";
+    var url = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
+    // var url = "https://pagina.xhico:8443/";
 
     // Add LFisidebar <html>
-    var reportHTML = await getRequest(url + "sidebar.html");
+    var reportHTML = await getRequest(url + "report.html");
     document.body.innerHTML += reportHTML;
 
     // Add LFisidebar <script>
-    const reportJS = await getRequest(url + "sidebar.js");
+    const reportJS = await getRequest(url + "report.js");
     var report = document.createElement("script");
     document.body.appendChild(report).innerHTML = reportJS;
 
     // Add LFisidebar <style>
-    var depCSS = await getRequest(url + "sidebar.css");
+    var depCSS = await getRequest(url + "report.css");
     var report = document.createElement("style");
     document.head.appendChild(report).innerHTML = depCSS;
 }
@@ -105,10 +105,10 @@ async function runLangTool(tagName, lang) {
 
 async function main() {
     // Add sidebar
-    // await addSidebar();
+    await addSidebar();
 
     // Run languageTool on tagName using lang
-    await runLangTool("p", "en-GB");
+    // await runLangTool("p", "en-GB");
 }
 
 (async function () {

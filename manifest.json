@@ -3,12 +3,6 @@
     "version": "0.0.1",
     "manifest_version": 2,
     "description": "LanguageTool Analyzer",
-    "background": {
-        "scripts": [
-            "background.js"
-        ],
-        "persistent": true
-    },
     "browser_action": {
         "default_title": "LanguageTool Analyzer",
         "default_icon": "icon.png",
@@ -17,5 +11,11 @@
     "permissions": [
         "<all_urls>",
         "tabs"
-    ]
+    ],
+    "background": {
+        "scripts": [
+            "background.js"
+        ],
+        "persistent": true
+    }
 }
