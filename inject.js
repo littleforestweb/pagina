@@ -69,10 +69,18 @@ async function runLangTool(lang) {
     const iframeContent = document.getElementById('maincontent').contentDocument;
 
     //  Add totalLinks to GENERALINFO
-    var totalLinks = [], l = iframeContent.links;
-    for (var i = 0; i < l.length; i++) { totalLinks.push(l[i].href); }
-    document.getElementById("totalLinks").innerText = l.length;
+    const totalLinks = []; const extLinks = []; const intLinks = []; const allLinks = iframeContent.links;
+    for (var i = 0; i < allLinks.length; i++) {
+        var linkHref = allLinks[i].href;
+        totalLinks.push(linkHref);
+        if (linkHref != window.location.href) { extLinks.push(linkHref); } else { intLinks.push(linkHref); }
+    }
+    document.getElementById("totalLinks").innerText = totalLinks.length;
+    // document.getElementById("extLinks").innerText = extLinks.length;
+    document.getElementById("intLinks").innerText = intLinks.length;
     console.log(totalLinks);
+    console.log(extLinks);
+    console.log(intLinks);
 
     // get all tags
     const tags = iframeContent.getElementsByTagName("p");
