@@ -23,6 +23,8 @@ async function getRequest(url) {
 }
 
 async function addSidebar() {
+    console.log("start sidebar");
+
     // set github repo URL
     var url = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
     // var url = "https://pagina.xhico:8443/";
@@ -54,13 +56,15 @@ async function addSidebar() {
     document.head.appendChild(report).innerHTML = depCSS;
 
     // insert overlay
-    document.getElementById("overlay").style.display = "block";
+    document.getElementById("overlay").classList.add("loading").add("style-2");
 
     // finish
     isSidebarFinish = true;
 }
 
 async function runLangTool(lang) {
+    console.log("start run");
+
     const iframe = document.getElementById('maincontent');
     const iframeContent = iframe.contentDocument;
 
@@ -147,7 +151,7 @@ async function main() {
     console.log("LangTool Finished")
 
     // remove overlay
-    document.getElementById("overlay").style.display = "none";
+    document.getElementById("overlay").classList.remove("loading").remove("style-2");
 }
 
 var isRunFinished = false; var isSidebarFinish = false;
