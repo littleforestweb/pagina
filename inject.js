@@ -135,7 +135,7 @@ async function runLangTool(lang) {
     var spellErrors = document.getElementById("spellErrors")
     Object.entries(eDict).forEach(([key, value]) => {
         var error = key; var count = value[0]; var color = value[1]; var message = value[2];
-        spellErrors.innerHTML += "<li><a href='#' title='" + message + "'>" + error + " (" + count + " times)" + "</a></li>";
+        spellErrors.innerHTML += "<li><a href='#' title='" + message + "'>" + error + " (" + count + "x)" + "</a></li>";
     });
 
 
