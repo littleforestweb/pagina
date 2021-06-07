@@ -1,8 +1,14 @@
-// LanguageTool Bookmarklet
+// LanguageTool Chrome Extension
 // Little Forest 2021
 // Author: Francisco 'xhico' Filipe
 // Created: 2021/06/02
-// Updated: 2021/06/04
+// Updated: 2021/06/07
+
+
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 async function getRequest(url) {
     try {
@@ -46,6 +52,8 @@ async function addSidebar() {
     var depCSS = await getRequest(url + "report.css");
     var report = document.createElement("style");
     document.head.appendChild(report).innerHTML = depCSS;
+
+    isSidebarFinish = true;
 }
 
 async function runLangTool(lang) {
@@ -87,7 +95,7 @@ async function runLangTool(lang) {
 
                     // update error color on html
                     tag.innerHTML = tag.innerHTML.replace(error,
-                        "<span id='lfi_" + error + "' " + "title='" + message + "' style='color:" + color + ";font-weight:bold;'>" + error + "</span>"
+                        "<span title='" + message + "' style='color:" + color + ";font-weight:bold;'>" + error + "</span>"
                     );;
 
                     // add/update key error on eDict
@@ -108,37 +116,45 @@ async function runLangTool(lang) {
     var sidebar = document.getElementById("spellErrors")
     Object.entries(eDict).forEach(([key, value]) => {
         var error = key; var count = value[0]; var color = value[1]; var message = value[2];
-        console.log(key, count, color);
-        sidebar.innerHTML += "<li><a title='" + message + "' href='#lfi_" + error + "'>" + error + " (" + count + ")" + "</a></li>";
+        sidebar.innerHTML += "<li><a title='" + message + "'>" + error + " (" + count + ")" + "</a></li>";
     });
 
+    isRunFinished = true;
+
 }
-
-
-async function getLinks() {
-    var arr = [], l = document.links;
-    for (var i = 0; i < l.length; i++) {
-        arr.push(l[i].href);
-    }
-}
-
 
 async function main() {
+    // insert overlay
+    document.getElementById("overlay").style.display = "block";
+
     // Add sidebar
     await addSidebar();
 
+    // wait for addSidebar() to finish
+    while (!(isSidebarFinish)) { await sleep(1000); }
+    console.log("Side Finished")
+
     // Run languageTool once iframe has loaded
-    document.getElementById('maincontent').addEventListener("load", async function () {
-        // // Run languageTool on tagName using lang
-        await runLangTool("en-GB");
+    document.getElementById('maincontent').addEventListener("load", function () {
+        // Run languageTool on tagName using lang
+        runLangTool("en-GB");
     });
+
+    // wait for runLangTool() to finish
+    while (!(isRunFinished)) { await sleep(1000); }
+    console.log("LangTool Finished")
+
+    // remove overlay
+    document.getElementById("overlay").style.display = "none";
 
 }
 
+var isRunFinished = false; var isSidebarFinish = false;
 (async function () {
     // START
     console.clear()
     console.log('inject started');
+
 
     // Check if already ran previously
     if (!document.getElementById("maincontent")) {
@@ -146,9 +162,6 @@ async function main() {
     } else {
         console.log("Already checked.. nothing to do!");
     }
-
-    // Open Sidebar
-    // document.getElementById("openSidebar").click();
 
     // END
     console.log('inject ended');

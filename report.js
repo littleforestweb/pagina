@@ -16,3 +16,12 @@ netflix_close_btn.addEventListener('click', () => {
     maincontent.classList.remove("iframe-width-300");
     maincontent.classList.add("iframe-width-100");
 });
+
+
+function on() {
+    document.getElementById("overlay").style.display = "block";
+}
+
+function off() {
+    document.getElementById("overlay").style.display = "none";
+}
