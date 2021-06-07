@@ -56,7 +56,7 @@ async function addSidebar() {
     document.head.appendChild(report).innerHTML = depCSS;
 
     // insert overlay
-    document.getElementById("overlay").classList.add("loading").add("style-2");
+    document.getElementById("overlay").style.display = "block";
 
     // finish
     isSidebarFinish = true;
@@ -151,7 +151,7 @@ async function main() {
     console.log("LangTool Finished")
 
     // remove overlay
-    document.getElementById("overlay").classList.remove("loading").remove("style-2");
+    document.getElementById("overlay").style.display = "none";
 }
 
 var isRunFinished = false; var isSidebarFinish = false;
