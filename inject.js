@@ -23,6 +23,16 @@ async function addSidebar() {
     newHTML.write(blankPage);
     newHTML.close();
 
+    // add iframe with current url
+    var iframe = document.createElement('iframe');
+    iframe.id = "maincontent"; iframe.classList.add("iframe-width-300"); iframe.classList.add("iframe");
+    iframe.src = "https://pagina.xhico:8443/basic.html";
+    // iframe.src = "https://www.gov.uk/";
+    // iframe.src = "https://www.campsites.co.uk/";
+    // iframe.src = "https://littleforest.co.uk/";
+    // iframe.src = fullURL = window.location.href;
+    document.body.appendChild(iframe);
+
     // set github repo URL
     var url = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
     // var url = "https://pagina.xhico:8443/";
@@ -40,16 +50,6 @@ async function addSidebar() {
     var depCSS = await getRequest(url + "report.css");
     var report = document.createElement("style");
     document.head.appendChild(report).innerHTML = depCSS;
-
-    // // add iframe with current url
-    // var iframe = document.createElement('iframe');
-    // iframe.id = "maincontent"; iframe.classList.add("iframe-width-300"); iframe.classList.add("iframe");
-    // // iframe.src = "https://pagina.xhico:8443/basic.html";
-    // // iframe.src = "https://www.gov.uk/";
-    // // iframe.src = "https://www.campsites.co.uk/";
-    // // iframe.src = "https://littleforest.co.uk/";
-    // iframe.src = fullURL = window.location.href;
-    // document.body.appendChild(iframe);
 }
 
 async function runLangTool(tagName, lang) {
