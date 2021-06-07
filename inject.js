@@ -73,10 +73,10 @@ async function runLangTool(lang) {
     for (var i = 0; i < allLinks.length; i++) {
         var linkHref = allLinks[i].href;
         totalLinks.push(linkHref);
-        if (linkHref != window.location.href) { extLinks.push(linkHref); } else { intLinks.push(linkHref); }
+        if (linkHref.includes(window.location.href)) { intLinks.push(linkHref); } else { extLinks.push(linkHref); }
     }
     document.getElementById("totalLinks").innerText = totalLinks.length;
-    // document.getElementById("extLinks").innerText = extLinks.length;
+    document.getElementById("extLinks").innerText = extLinks.length;
     document.getElementById("intLinks").innerText = intLinks.length;
     console.log(totalLinks);
     console.log(extLinks);
