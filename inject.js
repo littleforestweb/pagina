@@ -6,7 +6,7 @@
 
 async function getRequest(url) {
     try {
-        const res = await fetch(url, { mode: 'no-cors' });
+        const res = await fetch(url);
         if (url.includes("languagetoolplus")) {
             return await res.json();
         }
@@ -134,7 +134,7 @@ async function main() {
     }
 
     // Open Sidebar
-    // document.getElementById("openSidebar").click();
+    document.getElementById("openSidebar").click();
 
     // END
     console.log('inject ended');
