@@ -17,34 +17,37 @@ async function getRequest(url) {
 }
 
 async function addSidebar() {
+    // set github repo URL
+    var url = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
+
     // clear current html code
     var blankPage = '<html><head><body style="margin:0;"></body></html>';
     var newHTML = document.open("text/html", "replace");
     newHTML.write(blankPage);
     newHTML.close();
 
-    // add iframe with current url
-    var iframe = document.createElement('iframe');
-    iframe.id = "maincontent"; iframe.classList.add("iframe-width-300"); iframe.classList.add("iframe");
-    iframe.src = fullURL = window.location.href;
-    document.body.appendChild(iframe);
+    var reportHTML = await getRequest(url + "head.txt");
+    document.head.innerHTML += reportHTML;
 
-    // set github repo URL
-    var url = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
+    // // add iframe with current url
+    // var iframe = document.createElement('iframe');
+    // iframe.id = "maincontent"; iframe.classList.add("iframe-width-300"); iframe.classList.add("iframe");
+    // iframe.src = fullURL = window.location.href;
+    // document.body.appendChild(iframe);
 
-    // Add LFisidebar <html>
-    var reportHTML = await getRequest(url + "report.html");
-    document.body.innerHTML += reportHTML;
+    // // Add LFisidebar <html>
+    // var reportHTML = await getRequest(url + "report.html");
+    // document.body.innerHTML += reportHTML;
 
-    // Add LFisidebar <script>
-    const reportJS = await getRequest(url + "report.js");
-    var report = document.createElement("script");
-    document.body.appendChild(report).innerHTML = reportJS;
+    // // Add LFisidebar <script>
+    // const reportJS = await getRequest(url + "report.js");
+    // var report = document.createElement("script");
+    // document.body.appendChild(report).innerHTML = reportJS;
 
     // Add LFisidebar <style>
-    var depCSS = await getRequest(url + "report.css");
-    var report = document.createElement("style");
-    document.head.appendChild(report).innerHTML = depCSS;
+    // var depCSS = await getRequest(url + "report.css");
+    // var report = document.createElement("style");
+    // document.head.appendChild(report).innerHTML = depCSS;
 }
 
 async function runLangTool(lang) {
@@ -117,12 +120,12 @@ async function main() {
     // Add sidebar
     await addSidebar();
 
-    // Run languageTool once iframe has loaded
-    document.getElementById('maincontent').addEventListener("load", async function () {
-        // // Run languageTool on tagName using lang
-        await runLangTool("en-GB");
+    // // Run languageTool once iframe has loaded
+    // document.getElementById('maincontent').addEventListener("load", async function () {
+    //     // // Run languageTool on tagName using lang
+    //     await runLangTool("en-GB");
 
-    });
+    // });
 
 }
 
@@ -139,7 +142,7 @@ async function main() {
     }
 
     // Open Sidebar
-    document.getElementById("openSidebar").click();
+    // document.getElementById("openSidebar").click();
 
     // END
     console.log('inject ended');
