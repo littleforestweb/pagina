@@ -17,15 +17,15 @@ async function getRequest(url) {
 }
 
 async function addSidebar() {
-    document.getElementsByTagName("head")[0].innerHTML = "";
-    document.getElementsByTagName("body")[0].innerHTML = "";
-    document.getElementsByTagName("head")[0].classList = "";
-    document.getElementsByTagName("body")[0].classList = "";
+    var blankPage = '<html><head><body style="margin:0;"></body></html>';
+    var newHTML = document.open("text/html", "replace");
+    newHTML.write(blankPage);
+    newHTML.close();
 
     var iframe = document.createElement('iframe');
-    iframe.id = "maincontent";
-    iframe.src = "https://www.gov.uk/";
-    // iframe.src = fullURL = window.location.href;
+    iframe.id = "maincontent"; iframe.classList.add("iframe-width-300"); iframe.classList.add("iframe");
+    // iframe.src = "https://www.gov.uk/";
+    iframe.src = fullURL = window.location.href;
     document.body.appendChild(iframe);
 
     // set github repo URL
