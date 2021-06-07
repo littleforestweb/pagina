@@ -24,39 +24,39 @@ async function main() {
     // Add sidebar
     console.log("Start Sidebar");
 
-    // set github repo URL
-    var assetsURL = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
-    // var assetsURL = "https://pagina.xhico:8443/";
+    // set base URLs
+    const assetsURL = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
+    // const assetsURL = "https://pagina.xhico:8443/";
+    const langToolURL = "https://api.languagetoolplus.com/v2/check";
 
     // clear current html code
-    var blankPage = '<html><head><body style="margin:0;"></body></html>';
-    var newHTML = document.open("text/html", "replace");
-    newHTML.write(blankPage); newHTML.close();
+    const newHTML = document.open("text/html", "replace");
+    newHTML.write('<html><head><body style="margin:0;"></body></html>'); newHTML.close();
 
     // add iframe with current url
-    var iframe = document.createElement('iframe');
-    iframe.id = "maincontent"; iframe.classList.add("iframe-width-300"); iframe.classList.add("iframe");
-    iframe.src = fullURL = window.location.href;
-    document.body.appendChild(iframe);
+    var iframeElement = document.createElement('iframe');
+    iframeElement.id = "maincontent"; iframeElement.classList.add("iframe-width-300"); iframeElement.classList.add("iframe");
+    iframeElement.src = fullURL = window.location.href;
+    document.body.appendChild(iframeElement);
 
-    // Add LFisidebar <html>
+    // Add Sidebar <html>
     var reportHTML = await getRequest(assetsURL + "report.html");
     document.body.innerHTML += reportHTML;
 
-    // Add LFisidebar <script>
+    // Add Sidebar <script>
     const reportJS = await getRequest(assetsURL + "report.js");
     var report = document.createElement("script");
     document.body.appendChild(report).innerHTML = reportJS;
 
-    // Add LFisidebar <style>
-    var depCSS = await getRequest(assetsURL + "report.css");
+    // Add Sidebar <style>
+    var reportCSS = await getRequest(assetsURL + "report.css");
     var report = document.createElement("style");
-    document.head.appendChild(report).innerHTML = depCSS;
+    document.head.appendChild(report).innerHTML = reportCSS;
 
     // insert overlay
     document.getElementById("overlay").style.display = "block";
 
-    // finish
+    // finish Sidebar
     isSidebarFinish = true;
 
     // wait for addSidebar() to finish
@@ -64,7 +64,8 @@ async function main() {
     console.log("End Sidebar")
 
     var isIframeLoad = false;
-    document.getElementById('maincontent').addEventListener("load", function () {
+    document.getElementById('maincontent').addEventListener("load", async function () {
+        await sleep(2000);
         isIframeLoad = true;
     });
 
@@ -76,10 +77,10 @@ async function main() {
     console.log("Start LanguageTool");
 
     // get iframe element
-    const iframeContent = document.getElementById('maincontent').contentDocument;
+    var iframeElement = document.getElementById('maincontent').contentDocument;
 
     //  Add totalLinks to GENERALINFO
-    const totalLinks = []; const extLinks = []; const intLinks = []; const allLinks = iframeContent.links;
+    const totalLinks = []; const extLinks = []; const intLinks = []; const allLinks = iframeElement.links;
     for (var i = 0; i < allLinks.length; i++) {
         var linkHref = allLinks[i].href;
         totalLinks.push(linkHref);
@@ -90,26 +91,23 @@ async function main() {
     document.getElementById("intLinks").innerText = intLinks.length;
 
     //  Add totalImages to GENERALINFO
-    const totalImages = iframeContent.getElementsByTagName("img").length;
+    const totalImages = iframeElement.getElementsByTagName("img").length;
     document.getElementById("totalImages").innerText = totalImages;
 
-    // get all tags
-    const tags = iframeContent.getElementsByTagName("p");
+    // get all tagsText
+    const tagsText = iframeElement.getElementsByTagName("p");
 
     // set errorsDict where key => error and value => [count, color]
-    var eDict = {};
+    var errorsDict = {};
 
     // iterate on every tag
-    for (var i = 0; i < tags.length; i++) {
+    for (var i = 0; i < tagsText.length; i++) {
 
         // set phrase from content array index
-        var tag = tags[i]
-
-        //  LanguageTool URL
-        const url = "https://api.languagetoolplus.com/v2/check?text=" + tag.innerHTML.replace(/<\/?[^>]+(>|$)/g, "") + "&language=" + "en-gb";
+        var tagText = tagsText[i]
 
         // get LangTool API Response
-        const data = await getRequest(url);
+        const data = await getRequest(langToolURL + "?text=" + tagText.innerHTML.replace(/<\/?[^>]+(>|$)/g, "") + "&language=" + "en-gb");
 
         try {
 
@@ -132,12 +130,12 @@ async function main() {
                     if (message == "Possible spelling mistake found.") { color = "red"; } else { color = "orange"; }
 
                     // update error color on html
-                    tag.innerHTML = tag.innerHTML.replace(error,
+                    tagText.innerHTML = tagText.innerHTML.replace(error,
                         "<a style='text-decoration: none;' href='#'><span title='" + message + "' style='color:" + color + ";font-weight:bold;'>" + error + "</span></a>"
                     );;
 
-                    // add/update key error on eDict
-                    if (error in eDict) { eDict[error][0] = eDict[error][0] + 1; } else { eDict[error] = [1, color, message]; }
+                    // add/update key error on errorsDict
+                    if (error in errorsDict) { eDict[error][0] = errorsDict[error][0] + 1; } else { errorsDict[error] = [1, color, message]; }
                 }
             });
 
@@ -146,29 +144,29 @@ async function main() {
         }
     }
 
-    // Add errors to sidebar
+    // Add errors to Sidebar
     var spellErrors = document.getElementById("spellErrors")
-    Object.entries(eDict).forEach(([key, value]) => {
+    Object.entries(errorsDict).forEach(([key, value]) => {
         var error = key; var count = value[0]; var color = value[1]; var message = value[2];
         spellErrors.innerHTML += "<li><a href='#' title='" + message + "'>" + error + " (" + count + "x)" + "</a></li>";
     });
 
 
     //  Add totalErrors to GENERALINFO
-    document.getElementById("totalErrors").innerText = Object.keys(eDict).length;
+    document.getElementById("totalErrors").innerText = Object.keys(errorsDict).length;
 
-    // finish
-    isRunFinished = true;
+    // finish LanguageTool
+    isLangToolFinished = true;
 
     // wait for runLangTool() to finish
-    while (!(isRunFinished)) { await sleep(1000); }
+    while (!(isLangToolFinished)) { await sleep(1000); }
     console.log("End LanguageTool")
 
     // remove overlay
     document.getElementById("overlay").style.display = "none";
 }
 
-var isRunFinished = false; var isSidebarFinish = false;
+var isSidebarFinish = false; var isLangToolFinished = false;
 (async function () {
     // START
     console.clear()
