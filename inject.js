@@ -135,7 +135,7 @@ async function main() {
                     );;
 
                     // add/update key error on errorsDict
-                    if (error in errorsDict) { eDict[error][0] = errorsDict[error][0] + 1; } else { errorsDict[error] = [1, color, message]; }
+                    if (error in errorsDict) { errorsDict[error][0] = errorsDict[error][0] + 1; } else { errorsDict[error] = [1, color, message]; }
                 }
             });
 

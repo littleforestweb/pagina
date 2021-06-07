@@ -163,7 +163,7 @@ iframe {
 
 .netflix-list li a {
     color: rgb(34, 31, 31);
-    font-size: 14px;
+    /* font-size: 14px; */
     text-decoration: none;
 }
 
