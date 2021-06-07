@@ -65,8 +65,8 @@ async function addSidebar() {
 async function runLangTool(lang) {
     console.log("start run");
 
-    const iframe = document.getElementById('maincontent');
-    const iframeContent = iframe.contentDocument;
+    // get iframe element
+    const iframeContent = document.getElementById('maincontent').contentDocument;
 
     // get all tags
     const tags = iframeContent.getElementsByTagName("p");
@@ -103,15 +103,11 @@ async function runLangTool(lang) {
 
                     // update error color on html
                     tag.innerHTML = tag.innerHTML.replace(error,
-                        "<span title='" + message + "' style='color:" + color + ";font-weight:bold;'>" + error + "</span>"
+                        "<a style='text-decoration: none;' href='#'><span title='" + message + "' style='color:" + color + ";font-weight:bold;'>" + error + "</span></a>"
                     );;
 
                     // add/update key error on eDict
-                    if (error in eDict) {
-                        eDict[error][0] = eDict[error][0] + 1;
-                    } else {
-                        eDict[error] = [1, color, message];
-                    }
+                    if (error in eDict) { eDict[error][0] = eDict[error][0] + 1; } else { eDict[error] = [1, color, message]; }
                 }
             });
 
@@ -124,7 +120,7 @@ async function runLangTool(lang) {
     var sidebar = document.getElementById("spellErrors")
     Object.entries(eDict).forEach(([key, value]) => {
         var error = key; var count = value[0]; var color = value[1]; var message = value[2];
-        sidebar.innerHTML += "<li><a title='" + message + "'>" + error + " (" + count + ")" + "</a></li>";
+        sidebar.innerHTML += "<li><a href='#' title='" + message + "'>" + error + " (" + count + ")" + "</a></li>";
     });
 
     // finish
