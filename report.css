@@ -5,6 +5,8 @@ iframe {
     overflow: hidden;
     margin: 0;
     padding: 0;
+    margin-left: 300px;
+    width: calc(100% - 300px);
 }
 
 .iframe-width-300 {
@@ -37,6 +39,7 @@ iframe {
     height: 100vh;
     transform: translateX(-100%);
     transition: transform .3s ease-in-out;
+    width: calc(100% - 300px);
 }
 
 .netflix-nav.visible {
@@ -91,19 +94,19 @@ iframe {
 }
 
 .netflix-list {
+    border-top: 1px solid grey;
     list-style-type: none;
     padding: 0;
 }
 
 .netflix-list li {
-    margin: 20px 0;
+    margin: 10px 0;
 }
 
 .netflix-list li a {
     color: rgb(34, 31, 31);
     font-size: 14px;
     text-decoration: none;
-    text-transform: uppercase;
 }
 
 .netflix-list ul {
