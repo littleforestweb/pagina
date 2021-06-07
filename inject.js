@@ -22,7 +22,7 @@ async function getRequest(url) {
 
 async function main() {
     // Add sidebar
-    console.log("start sidebar");
+    console.log("Start Sidebar");
 
     // set github repo URL
     var assetsURL = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
@@ -31,8 +31,7 @@ async function main() {
     // clear current html code
     var blankPage = '<html><head><body style="margin:0;"></body></html>';
     var newHTML = document.open("text/html", "replace");
-    newHTML.write(blankPage);
-    newHTML.close();
+    newHTML.write(blankPage); newHTML.close();
 
     // add iframe with current url
     var iframe = document.createElement('iframe');
@@ -62,12 +61,19 @@ async function main() {
 
     // wait for addSidebar() to finish
     while (!(isSidebarFinish)) { await sleep(1000); }
-    console.log("Side Finished")
+    console.log("End Sidebar")
 
-    // await sleep(5000);
+    var isIframeLoad = false;
+    document.getElementById('maincontent').addEventListener("load", function () {
+        isIframeLoad = true;
+    });
+
+    // wait for addSidebar() to finish
+    while (!(isIframeLoad)) { await sleep(1000); }
+    console.log("Iframe Loaded")
 
     // Run languageTool once iframe has loaded
-    console.log("start run");
+    console.log("Start LanguageTool");
 
     // get iframe element
     const iframeContent = document.getElementById('maincontent').contentDocument;
@@ -106,6 +112,11 @@ async function main() {
         const data = await getRequest(url);
 
         try {
+
+            var detectedLanguage = data.language.detectedLanguage.name;
+            var detectConfidence = data.language.detectedLanguage.confidence * 100;
+            document.getElementById("detectedLanguage").innerHTML = detectedLanguage;
+            document.getElementById("detectConfidence").innerHTML = detectConfidence;
 
             // iterate on every error
             data.matches.forEach(function (entry) {
@@ -151,7 +162,7 @@ async function main() {
 
     // wait for runLangTool() to finish
     while (!(isRunFinished)) { await sleep(1000); }
-    console.log("LangTool Finished")
+    console.log("End LanguageTool")
 
     // remove overlay
     document.getElementById("overlay").style.display = "none";
@@ -161,7 +172,7 @@ var isRunFinished = false; var isSidebarFinish = false;
 (async function () {
     // START
     console.clear()
-    console.log('inject started');
+    console.log('Start Inject');
 
 
     // Check if already ran previously
@@ -172,5 +183,5 @@ var isRunFinished = false; var isSidebarFinish = false;
     }
 
     // END
-    console.log('inject ended');
+    console.log('End Inject');
 })();
