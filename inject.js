@@ -21,11 +21,13 @@ async function addSidebar() {
     // Append the wrapper to the body
     // document.documentElement.remove();
     document.getElementsByTagName("head")[0].innerHTML = "";
+    document.getElementsByTagName("head")[0].className = "";
     document.getElementsByTagName("body")[0].innerHTML = "";
-    const fullURL = window.location.href;
+    document.getElementsByTagName("body")[0].className = "";
     var iframe = document.createElement('iframe')
     iframe.id = "maincontent";
-    iframe.src = "https://pagina.xhico:8443/basic.html";
+    // iframe.src = "https://pagina.xhico:8443/basic.html";
+    iframe.src = fullURL = window.location.href;
     document.body.appendChild(iframe);
 
     // set github repo URL
