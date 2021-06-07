@@ -19,12 +19,14 @@ async function getRequest(url) {
 async function addSidebar() {
     // Move the body's children into this wrapper
     // Append the wrapper to the body
-    var div = document.createElement("div");
-    div.id = "maincontent";
-    while (document.body.firstChild) {
-        div.appendChild(document.body.firstChild);
-    }
-    document.body.appendChild(div);
+    // document.documentElement.remove();
+    document.getElementsByTagName("head")[0].innerHTML = "";
+    document.getElementsByTagName("body")[0].innerHTML = "";
+    const fullURL = window.location.href;
+    var iframe = document.createElement('iframe')
+    iframe.id = "maincontent";
+    iframe.src = "https://pagina.xhico:8443/basic.html";
+    document.body.appendChild(iframe);
 
     // set github repo URL
     var url = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
@@ -109,7 +111,7 @@ async function main() {
     await addSidebar();
 
     // Run languageTool on tagName using lang
-    await runLangTool("p", "en-GB");
+    // await runLangTool("p", "en-GB");
 }
 
 (async function () {
