@@ -53,6 +53,9 @@ async function addSidebar() {
     var report = document.createElement("style");
     document.head.appendChild(report).innerHTML = depCSS;
 
+    // insert overlay
+    document.getElementById("overlay").style.display = "block";
+
     isSidebarFinish = true;
 }
 
@@ -124,8 +127,7 @@ async function runLangTool(lang) {
 }
 
 async function main() {
-    // insert overlay
-    document.getElementById("overlay").style.display = "block";
+
 
     // Add sidebar
     await addSidebar();
