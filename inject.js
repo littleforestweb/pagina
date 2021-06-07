@@ -17,13 +17,17 @@ async function getRequest(url) {
 }
 
 async function addSidebar() {
-    // Move the body's children into this wrapper
-    // Append the wrapper to the body
-    // document.documentElement.remove();
     document.getElementsByTagName("head")[0].innerHTML = "";
     document.getElementsByTagName("body")[0].innerHTML = "";
-    document.getElementsByTagName("body")[0].classList.remove(...element.classList);
-    document.getElementsByTagName("head")[0].classList.remove(...element.classList);
+
+
+    var classList = document.getElementsByTagName("body")[0].classList;
+    while (classList.length > 0) {
+        classList.remove(classList.item(0));
+    }
+
+
+
     var iframe = document.createElement('iframe');
     iframe.id = "maincontent";
     // iframe.src = "https://pagina.xhico:8443/basic.html";
