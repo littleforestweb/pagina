@@ -26,10 +26,10 @@ async function addSidebar() {
     // add iframe with current url
     var iframe = document.createElement('iframe');
     iframe.id = "maincontent"; iframe.classList.add("iframe-width-300"); iframe.classList.add("iframe");
-    iframe.src = "https://pagina.xhico:8443/basic.html";
+    // iframe.src = "https://pagina.xhico:8443/basic.html";
     // iframe.src = "https://www.gov.uk/";
     // iframe.src = "https://www.campsites.co.uk/";
-    // iframe.src = "https://littleforest.co.uk/";
+    iframe.src = "https://littleforest.co.uk/";
     // iframe.src = fullURL = window.location.href;
     document.body.appendChild(iframe);
 
@@ -54,8 +54,8 @@ async function addSidebar() {
 
 async function runLangTool(tagName, lang) {
     // get all tags
-    var iframe = document.getElementById("maincontent");
-    var tags = iframe.contentWindow.document.getElementsByTagName(tagName);
+    var innerDoc = iframe.innerHTML;
+    console.log(innerDoc);
 
     // set errorsDict where key => error and value => [count, color]
     var eDict = {};
@@ -67,55 +67,60 @@ async function runLangTool(tagName, lang) {
         var tag = tags[i]
         console.log(tag.innerHTML);
 
-        // //  LanguageTool URL
-        // const url = "https://api.languagetoolplus.com/v2/check?text=" + tag.innerHTML.replace(/<\/?[^>]+(>|$)/g, "") + "&language=" + lang;
+        //  LanguageTool URL
+        const url = "https://api.languagetoolplus.com/v2/check?text=" + tag.innerHTML.replace(/<\/?[^>]+(>|$)/g, "") + "&language=" + lang;
 
-        // // get LangTool API Response
-        // const data = await getRequest(url);
+        // get LangTool API Response
+        const data = await getRequest(url);
 
-        // try {
+        try {
 
-        //     // iterate on every error
-        //     data.matches.forEach(function (entry) {
+            // iterate on every error
+            data.matches.forEach(function (entry) {
 
-        //         // get error, message;
-        //         var text = entry.context.text; var message = entry.message; let color;
-        //         var error = text.substring(entry.context.offset, entry.context.offset + entry.context.length);
+                // get error, message;
+                var text = entry.context.text; var message = entry.message; let color;
+                var error = text.substring(entry.context.offset, entry.context.offset + entry.context.length);
 
-        //         // remove false-positive errors (one char and whitespaces)
-        //         if (error.length >= 3 && !(/\s/g.test(error))) {
+                // remove false-positive errors (one char and whitespaces)
+                if (error.length >= 3 && !(/\s/g.test(error))) {
 
-        //             // set color of error => red for mistake and yellow for others
-        //             if (message == "Possible spelling mistake found.") { color = "red"; } else { color = "orange"; }
+                    // set color of error => red for mistake and yellow for others
+                    if (message == "Possible spelling mistake found.") { color = "red"; } else { color = "orange"; }
 
-        //             // update error color on html
-        //             tag.innerHTML = tag.innerHTML.replace(error,
-        //                 "<span id='lfi_" + error + "' " + "title='" + message + "' style='color:" + color + ";font-weight:bold;'>" + error + "</span>"
-        //             );;
+                    // update error color on html
+                    tag.innerHTML = tag.innerHTML.replace(error,
+                        "<span id='lfi_" + error + "' " + "title='" + message + "' style='color:" + color + ";font-weight:bold;'>" + error + "</span>"
+                    );;
 
-        //             // add/update key error on eDict
-        //             if (error in eDict) { eDict[error][0] = eDict[error][0] + 1; } else { eDict[error] = [1, color]; }
-        //         }
-        //     });
+                    // add/update key error on eDict
+                    if (error in eDict) { eDict[error][0] = eDict[error][0] + 1; } else { eDict[error] = [1, color]; }
+                }
+            });
 
-        // } catch (error) {
-        //     continue;
-        // }
+        } catch (error) {
+            continue;
+        }
     }
 
-    // // Add errors to LFisidebar
-    // var sidebar = document.getElementById("spellErrors")
-    // Object.entries(eDict).forEach(([key, value]) => {
-    //     var error = key; var count = value[0]; var color = value[1];
-    //     console.log(key, count, color);
-    //     sidebar.innerHTML += "<li><a href='#lfi_" + error + "'>" + error + " (" + count + ")" + "</a></li>";
-    // });
+    // Add errors to LFisidebar
+    var sidebar = document.getElementById("spellErrors")
+    Object.entries(eDict).forEach(([key, value]) => {
+        var error = key; var count = value[0]; var color = value[1];
+        console.log(key, count, color);
+        sidebar.innerHTML += "<li><a href='#lfi_" + error + "'>" + error + " (" + count + ")" + "</a></li>";
+    });
 
 }
 
 async function main() {
     // Add sidebar
     await addSidebar();
+
+    // Here's how you'd do this with plain old Javascript
+    const iframe = document.getElementById('iframe');
+    var y = iframe.contentDocument;
+    console.log(y.innerHTML);
 
     // // Run languageTool on tagName using lang
     // await runLangTool("p", "en-GB");
@@ -134,7 +139,7 @@ async function main() {
     }
 
     // Open Sidebar
-    document.getElementById("openSidebar").click();
+    // document.getElementById("openSidebar").click();
 
     // END
     console.log('inject ended');
