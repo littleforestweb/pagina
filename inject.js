@@ -78,9 +78,10 @@ async function runLangTool(lang) {
     document.getElementById("totalLinks").innerText = totalLinks.length;
     document.getElementById("extLinks").innerText = extLinks.length;
     document.getElementById("intLinks").innerText = intLinks.length;
-    console.log(totalLinks);
-    console.log(extLinks);
-    console.log(intLinks);
+
+    //  Add totalImages to GENERALINFO
+    const totalImages = iframeContent.getElementsByTagName("img").length;
+    document.getElementById("totalImages").innerText = totalImages;
 
     // get all tags
     const tags = iframeContent.getElementsByTagName("p");
