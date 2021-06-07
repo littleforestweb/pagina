@@ -56,6 +56,7 @@ async function addSidebar() {
     // insert overlay
     document.getElementById("overlay").style.display = "block";
 
+    // finish
     isSidebarFinish = true;
 }
 
@@ -122,8 +123,8 @@ async function runLangTool(lang) {
         sidebar.innerHTML += "<li><a title='" + message + "'>" + error + " (" + count + ")" + "</a></li>";
     });
 
+    // finish
     isRunFinished = true;
-
 }
 
 async function main() {
