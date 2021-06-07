@@ -19,12 +19,8 @@ async function getRequest(url) {
 async function addSidebar() {
     document.getElementsByTagName("head")[0].innerHTML = "";
     document.getElementsByTagName("body")[0].innerHTML = "";
-
-
-    var classList = document.getElementsByTagName("body")[0].classList;
-    while (classList.length > 0) {
-        classList.remove(classList.item(0));
-    }
+    document.getElementsByTagName("head")[0].classList = "";
+    document.getElementsByTagName("body")[0].classList = "";
 
 
 
