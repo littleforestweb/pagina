@@ -68,6 +68,12 @@ async function runLangTool(lang) {
     // get iframe element
     const iframeContent = document.getElementById('maincontent').contentDocument;
 
+    //  Add totalLinks to GENERALINFO
+    var totalLinks = [], l = iframeContent.links;
+    for (var i = 0; i < l.length; i++) { totalLinks.push(l[i].href); }
+    document.getElementById("totalLinks").innerText = l.length;
+    console.log(totalLinks);
+
     // get all tags
     const tags = iframeContent.getElementsByTagName("p");
 
@@ -116,16 +122,19 @@ async function runLangTool(lang) {
         }
     }
 
-    // Add errors to LFisidebar
-    var sidebar = document.getElementById("spellErrors")
+    // Add errors to sidebar
+    var spellErrors = document.getElementById("spellErrors")
     Object.entries(eDict).forEach(([key, value]) => {
         var error = key; var count = value[0]; var color = value[1]; var message = value[2];
-        sidebar.innerHTML += "<li><a href='#' title='" + message + "'>" + error + " (" + count + ")" + "</a></li>";
+        spellErrors.innerHTML += "<li><a href='#' title='" + message + "'>" + error + " (" + count + " times)" + "</a></li>";
     });
+
+
+    //  Add totalErrors to GENERALINFO
+    document.getElementById("totalErrors").innerText = Object.keys(eDict).length;
 
     // finish
     isRunFinished = true;
-
 }
 
 async function main() {
@@ -138,7 +147,6 @@ async function main() {
 
     // Run languageTool once iframe has loaded
     document.getElementById('maincontent').addEventListener("load", async function () {
-        // Run languageTool on tagName using lang
         await runLangTool("en-GB");
     });
 
