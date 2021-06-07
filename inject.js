@@ -19,16 +19,13 @@ async function getRequest(url) {
 async function addSidebar() {
     document.getElementsByTagName("head")[0].innerHTML = "";
     document.getElementsByTagName("body")[0].innerHTML = "";
-    document.getElementsByTagName("html")[0].classList = "";
     document.getElementsByTagName("head")[0].classList = "";
     document.getElementsByTagName("body")[0].classList = "";
 
-
-
     var iframe = document.createElement('iframe');
     iframe.id = "maincontent";
-    // iframe.src = "https://pagina.xhico:8443/basic.html";
-    iframe.src = fullURL = window.location.href;
+    iframe.src = "https://www.gov.uk/";
+    // iframe.src = fullURL = window.location.href;
     document.body.appendChild(iframe);
 
     // set github repo URL
