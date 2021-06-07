@@ -125,11 +125,10 @@ async function runLangTool(lang) {
 
     // finish
     isRunFinished = true;
+
 }
 
 async function main() {
-
-
     // Add sidebar
     await addSidebar();
 
@@ -138,9 +137,9 @@ async function main() {
     console.log("Side Finished")
 
     // Run languageTool once iframe has loaded
-    document.getElementById('maincontent').addEventListener("load", function () {
+    document.getElementById('maincontent').addEventListener("load", async function () {
         // Run languageTool on tagName using lang
-        runLangTool("en-GB");
+        await runLangTool("en-GB");
     });
 
     // wait for runLangTool() to finish
@@ -149,7 +148,6 @@ async function main() {
 
     // remove overlay
     document.getElementById("overlay").style.display = "none";
-
 }
 
 var isRunFinished = false; var isSidebarFinish = false;
