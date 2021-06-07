@@ -26,8 +26,8 @@ async function addSidebar() {
     console.log("start sidebar");
 
     // set github repo URL
-    var url = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
-    // var url = "https://pagina.xhico:8443/";
+    // var url = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
+    var url = "https://pagina.xhico:8443/";
 
     // clear current html code
     var blankPage = '<html><head><body style="margin:0;"></body></html>';
@@ -45,10 +45,10 @@ async function addSidebar() {
     var reportHTML = await getRequest(url + "report.html");
     document.body.innerHTML += reportHTML;
 
-    // // Add LFisidebar <script>
-    // const reportJS = await getRequest(url + "report.js");
-    // var report = document.createElement("script");
-    // document.body.appendChild(report).innerHTML = reportJS;
+    // Add LFisidebar <script>
+    const reportJS = await getRequest(url + "report.js");
+    var report = document.createElement("script");
+    document.body.appendChild(report).innerHTML = reportJS;
 
     // Add LFisidebar <style>
     var depCSS = await getRequest(url + "report.css");

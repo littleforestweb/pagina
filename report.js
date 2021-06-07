@@ -2,6 +2,7 @@ const netflix_open_btn = document.querySelector('.floating-btn');
 const netflix_close_btn = document.querySelector('.netflix-close-btn');
 const netflix_nav = document.querySelectorAll('.netflix-nav');
 const maincontent = document.getElementById('maincontent');
+const spellErrors = document.getElementById('spell-ul');
 
 netflix_open_btn.addEventListener('click', () => {
     netflix_nav.forEach(nav_el => { nav_el.classList.add('visible'); });
@@ -15,4 +16,8 @@ netflix_close_btn.addEventListener('click', () => {
     maincontent.style.marginLeft = "0px";
     maincontent.classList.remove("iframe-width-300");
     maincontent.classList.add("iframe-width-100");
+});
+
+spellErrors.addEventListener('click', () => {
+    document.getElementById("spell-li").style.display = "None";
 });
