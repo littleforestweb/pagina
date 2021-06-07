@@ -24,8 +24,8 @@ async function getRequest(url) {
 
 async function addSidebar() {
     // set github repo URL
-    var url = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
-    // var url = "https://pagina.xhico:8443/";
+    // var url = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
+    var url = "https://pagina.xhico:8443/";
 
     // clear current html code
     var blankPage = '<html><head><body style="margin:0;"></body></html>';
