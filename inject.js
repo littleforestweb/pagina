@@ -4,8 +4,6 @@
 // Created: 2021/06/02
 // Updated: 2021/06/07
 
-
-
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -22,12 +20,13 @@ async function getRequest(url) {
     }
 }
 
-async function addSidebar() {
+async function main() {
+    // Add sidebar
     console.log("start sidebar");
 
     // set github repo URL
-    // var url = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
-    var url = "https://pagina.xhico:8443/";
+    var assetsURL = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
+    // var assetsURL = "https://pagina.xhico:8443/";
 
     // clear current html code
     var blankPage = '<html><head><body style="margin:0;"></body></html>';
@@ -42,16 +41,16 @@ async function addSidebar() {
     document.body.appendChild(iframe);
 
     // Add LFisidebar <html>
-    var reportHTML = await getRequest(url + "report.html");
+    var reportHTML = await getRequest(assetsURL + "report.html");
     document.body.innerHTML += reportHTML;
 
     // Add LFisidebar <script>
-    const reportJS = await getRequest(url + "report.js");
+    const reportJS = await getRequest(assetsURL + "report.js");
     var report = document.createElement("script");
     document.body.appendChild(report).innerHTML = reportJS;
 
     // Add LFisidebar <style>
-    var depCSS = await getRequest(url + "report.css");
+    var depCSS = await getRequest(assetsURL + "report.css");
     var report = document.createElement("style");
     document.head.appendChild(report).innerHTML = depCSS;
 
@@ -60,9 +59,14 @@ async function addSidebar() {
 
     // finish
     isSidebarFinish = true;
-}
 
-async function runLangTool(lang) {
+    // wait for addSidebar() to finish
+    while (!(isSidebarFinish)) { await sleep(1000); }
+    console.log("Side Finished")
+
+    // await sleep(5000);
+
+    // Run languageTool once iframe has loaded
     console.log("start run");
 
     // get iframe element
@@ -96,7 +100,7 @@ async function runLangTool(lang) {
         var tag = tags[i]
 
         //  LanguageTool URL
-        const url = "https://api.languagetoolplus.com/v2/check?text=" + tag.innerHTML.replace(/<\/?[^>]+(>|$)/g, "") + "&language=" + lang;
+        const url = "https://api.languagetoolplus.com/v2/check?text=" + tag.innerHTML.replace(/<\/?[^>]+(>|$)/g, "") + "&language=" + "en-gb";
 
         // get LangTool API Response
         const data = await getRequest(url);
@@ -144,20 +148,6 @@ async function runLangTool(lang) {
 
     // finish
     isRunFinished = true;
-}
-
-async function main() {
-    // Add sidebar
-    await addSidebar();
-
-    // wait for addSidebar() to finish
-    while (!(isSidebarFinish)) { await sleep(1000); }
-    console.log("Side Finished")
-
-    // Run languageTool once iframe has loaded
-    document.getElementById('maincontent').addEventListener("load", async function () {
-        await runLangTool("en-GB");
-    });
 
     // wait for runLangTool() to finish
     while (!(isRunFinished)) { await sleep(1000); }
