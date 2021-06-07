@@ -23,16 +23,6 @@ async function addSidebar() {
     newHTML.write(blankPage);
     newHTML.close();
 
-    // add iframe with current url
-    var iframe = document.createElement('iframe');
-    iframe.id = "maincontent"; iframe.classList.add("iframe-width-300"); iframe.classList.add("iframe");
-    // iframe.src = "https://pagina.xhico:8443/basic.html";
-    // iframe.src = "https://www.gov.uk/";
-    // iframe.src = "https://www.campsites.co.uk/";
-    // iframe.src = "https://littleforest.co.uk/";
-    iframe.src = fullURL = window.location.href;
-    document.body.appendChild(iframe);
-
     // set github repo URL
     var url = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
     // var url = "https://pagina.xhico:8443/";
@@ -50,6 +40,16 @@ async function addSidebar() {
     var depCSS = await getRequest(url + "report.css");
     var report = document.createElement("style");
     document.head.appendChild(report).innerHTML = depCSS;
+
+    // // add iframe with current url
+    // var iframe = document.createElement('iframe');
+    // iframe.id = "maincontent"; iframe.classList.add("iframe-width-300"); iframe.classList.add("iframe");
+    // // iframe.src = "https://pagina.xhico:8443/basic.html";
+    // // iframe.src = "https://www.gov.uk/";
+    // // iframe.src = "https://www.campsites.co.uk/";
+    // // iframe.src = "https://littleforest.co.uk/";
+    // iframe.src = fullURL = window.location.href;
+    // document.body.appendChild(iframe);
 }
 
 async function runLangTool(tagName, lang) {
@@ -114,15 +114,11 @@ async function runLangTool(tagName, lang) {
 }
 
 async function main() {
-    try {
-        // Add sidebar
-        await addSidebar();
-    } catch (error) {
-        console.log(error);
-    }
+    // Add sidebar
+    await addSidebar();
 
     // // Run languageTool on tagName using lang
-    await runLangTool("p", "en-GB");
+    // await runLangTool("p", "en-GB");
 }
 
 (async function () {
@@ -138,7 +134,7 @@ async function main() {
     }
 
     // Open Sidebar
-    document.getElementById("openSidebar").click();
+    // document.getElementById("openSidebar").click();
 
     // END
     console.log('inject ended');
