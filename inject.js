@@ -26,11 +26,7 @@ async function addSidebar() {
     // add iframe with current url
     var iframe = document.createElement('iframe');
     iframe.id = "maincontent"; iframe.classList.add("iframe-width-300"); iframe.classList.add("iframe");
-    // iframe.src = "https://pagina.xhico:8443/basic.html";
-    // iframe.src = "https://www.gov.uk/";
-    // iframe.src = "https://www.campsites.co.uk/";
-    iframe.src = "https://littleforest.co.uk/";
-    // iframe.src = fullURL = window.location.href;
+    iframe.src = fullURL = window.location.href;
     document.body.appendChild(iframe);
 
     // set github repo URL
@@ -118,9 +114,11 @@ async function main() {
     await addSidebar();
 
     // Here's how you'd do this with plain old Javascript
-    const iframe = document.getElementById('iframe');
-    var y = iframe.contentDocument;
-    console.log(y.innerHTML);
+    const iframe = document.getElementById('maincontent');
+    myIframe.addEventListener("load", function () {
+        const y = iframe.contentDocument;
+        console.log(y);
+    });
 
     // // Run languageTool on tagName using lang
     // await runLangTool("p", "en-GB");
@@ -132,14 +130,14 @@ async function main() {
     console.log('inject started');
 
     // Check if already ran previously
-    if (!document.getElementById("maincontent")) {
-        await main();
-    } else {
-        console.log("Already checked.. nothing to do!");
-    }
+    // if (!document.getElementById("maincontent")) {
+    await main();
+    // } else {
+    //     console.log("Already checked.. nothing to do!");
+    // }
 
     // Open Sidebar
-    // document.getElementById("openSidebar").click();
+    document.getElementById("openSidebar").click();
 
     // END
     console.log('inject ended');
