@@ -50,62 +50,67 @@ async function addSidebar() {
 
 async function runLangTool(tagName, lang) {
     // get all tags
-    var innerDoc = iframe.innerHTML;
-    console.log(innerDoc);
-
-    // set errorsDict where key => error and value => [count, color]
-    var eDict = {};
-
-    // iterate on every tag
-    for (var i = 0; i < tags.length; i++) {
-
-        // set phrase from content array index
-        var tag = tags[i]
-        console.log(tag.innerHTML);
-
-        //  LanguageTool URL
-        const url = "https://api.languagetoolplus.com/v2/check?text=" + tag.innerHTML.replace(/<\/?[^>]+(>|$)/g, "") + "&language=" + lang;
-
-        // get LangTool API Response
-        const data = await getRequest(url);
-
-        try {
-
-            // iterate on every error
-            data.matches.forEach(function (entry) {
-
-                // get error, message;
-                var text = entry.context.text; var message = entry.message; let color;
-                var error = text.substring(entry.context.offset, entry.context.offset + entry.context.length);
-
-                // remove false-positive errors (one char and whitespaces)
-                if (error.length >= 3 && !(/\s/g.test(error))) {
-
-                    // set color of error => red for mistake and yellow for others
-                    if (message == "Possible spelling mistake found.") { color = "red"; } else { color = "orange"; }
-
-                    // update error color on html
-                    tag.innerHTML = tag.innerHTML.replace(error,
-                        "<span id='lfi_" + error + "' " + "title='" + message + "' style='color:" + color + ";font-weight:bold;'>" + error + "</span>"
-                    );;
-
-                    // add/update key error on eDict
-                    if (error in eDict) { eDict[error][0] = eDict[error][0] + 1; } else { eDict[error] = [1, color]; }
-                }
-            });
-
-        } catch (error) {
-            continue;
-        }
-    }
-
-    // Add errors to LFisidebar
-    var sidebar = document.getElementById("spellErrors")
-    Object.entries(eDict).forEach(([key, value]) => {
-        var error = key; var count = value[0]; var color = value[1];
-        console.log(key, count, color);
-        sidebar.innerHTML += "<li><a href='#lfi_" + error + "'>" + error + " (" + count + ")" + "</a></li>";
+    const iframe = document.getElementById('maincontent');
+    iframe.addEventListener("load", function () {
+        const iframeContent = iframe.contentDocument;
     });
+
+    const tags = iframeContent.getElementsByTagName(tagName);
+    console.log(tags)
+
+    // // set errorsDict where key => error and value => [count, color]
+    // var eDict = {};
+
+    // // iterate on every tag
+    // for (var i = 0; i < tags.length; i++) {
+
+    //     // set phrase from content array index
+    //     var tag = tags[i]
+    //     console.log(tag.innerHTML);
+
+    //     //  LanguageTool URL
+    //     const url = "https://api.languagetoolplus.com/v2/check?text=" + tag.innerHTML.replace(/<\/?[^>]+(>|$)/g, "") + "&language=" + lang;
+
+    //     // get LangTool API Response
+    //     const data = await getRequest(url);
+
+    //     try {
+
+    //         // iterate on every error
+    //         data.matches.forEach(function (entry) {
+
+    //             // get error, message;
+    //             var text = entry.context.text; var message = entry.message; let color;
+    //             var error = text.substring(entry.context.offset, entry.context.offset + entry.context.length);
+
+    //             // remove false-positive errors (one char and whitespaces)
+    //             if (error.length >= 3 && !(/\s/g.test(error))) {
+
+    //                 // set color of error => red for mistake and yellow for others
+    //                 if (message == "Possible spelling mistake found.") { color = "red"; } else { color = "orange"; }
+
+    //                 // update error color on html
+    //                 tag.innerHTML = tag.innerHTML.replace(error,
+    //                     "<span id='lfi_" + error + "' " + "title='" + message + "' style='color:" + color + ";font-weight:bold;'>" + error + "</span>"
+    //                 );;
+
+    //                 // add/update key error on eDict
+    //                 if (error in eDict) { eDict[error][0] = eDict[error][0] + 1; } else { eDict[error] = [1, color]; }
+    //             }
+    //         });
+
+    //     } catch (error) {
+    //         continue;
+    //     }
+    // }
+
+    // // Add errors to LFisidebar
+    // var sidebar = document.getElementById("spellErrors")
+    // Object.entries(eDict).forEach(([key, value]) => {
+    //     var error = key; var count = value[0]; var color = value[1];
+    //     console.log(key, count, color);
+    //     sidebar.innerHTML += "<li><a href='#lfi_" + error + "'>" + error + " (" + count + ")" + "</a></li>";
+    // });
 
 }
 
@@ -113,12 +118,7 @@ async function main() {
     // Add sidebar
     await addSidebar();
 
-    // Here's how you'd do this with plain old Javascript
-    const iframe = document.getElementById('maincontent');
-    myIframe.addEventListener("load", function () {
-        const y = iframe.contentDocument;
-        console.log(y);
-    });
+
 
     // // Run languageTool on tagName using lang
     // await runLangTool("p", "en-GB");
