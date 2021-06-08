@@ -25,8 +25,8 @@ async function main() {
     console.log("Start Sidebar");
 
     // set base URLs
-    // const assetsURL = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
-    const assetsURL = "https://pagina.xhico:8443/";
+    const assetsURL = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
+    // const assetsURL = "https://pagina.xhico:8443/";
     const langToolURL = "https://api.languagetoolplus.com/v2/check";
 
     // clear current html code
@@ -64,8 +64,7 @@ async function main() {
     console.log("End Sidebar")
 
     var isIframeLoad = false;
-    document.getElementById('maincontent').addEventListener("load", async function () {
-        await sleep(2000);
+    document.getElementById('maincontent').addEventListener("load", function () {
         isIframeLoad = true;
     });
 
@@ -111,6 +110,7 @@ async function main() {
 
         try {
 
+            // get detected language and confidence
             var detectedLanguage = data.language.detectedLanguage.name;
             var detectConfidence = data.language.detectedLanguage.confidence * 100;
             document.getElementById("detectedLanguage").innerHTML = detectedLanguage;
