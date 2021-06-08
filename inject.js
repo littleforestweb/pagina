@@ -25,8 +25,8 @@ async function main() {
     console.log("Start Sidebar");
 
     // set base URLs
-    const assetsURL = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
-    // const assetsURL = "https://pagina.xhico:8443/";
+    // const assetsURL = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
+    const assetsURL = "https://pagina.xhico:8443/";
     const langToolURL = "https://api.languagetoolplus.com/v2/check";
 
     // clear current html code
