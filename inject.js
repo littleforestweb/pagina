@@ -25,8 +25,8 @@ async function main() {
     console.log("Start Sidebar");
 
     // set base URLs
-    // const assetsURL = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
-    const assetsURL = "https://pagina.xhico:8443/";
+    const assetsURL = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
+    // const assetsURL = "https://pagina.xhico:8443/";
     const langToolURL = "https://api.languagetoolplus.com/v2/check";
 
     // clear current html code
@@ -131,7 +131,7 @@ async function main() {
 
                     // update error color on html
                     tagText.innerHTML = tagText.innerHTML.replace(error,
-                        "<a style='text-decoration: none;' href='#'><span title='" + message + "' style='color:" + color + ";font-weight:bold;'>" + error + "</span></a>"
+                        "<a style='text-decoration: none;' href='#'><span title='" + message + "' style='background-color:green;color:" + color + ";font-weight:bold;'>" + error + "</span></a>"
                     );;
 
                     // add/update key error on errorsDict
