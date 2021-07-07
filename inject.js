@@ -2,7 +2,7 @@
 // Little Forest 2021
 // Author: Francisco 'xhico' Filipe
 // Created: 2021/06/02
-// Updated: 2021/06/08
+// Updated: 2021/07/02
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -10,14 +10,20 @@ function sleep(ms) {
 
 async function getRequest(url) {
     try {
-        const res = await fetch(url);
-        if (url.includes("languagetoolplus")) {
-            return await res.json();
+        const res = await fetch(url, { mode: 'no-cors' });
+        if (url.includes("languagetoolplus") || (url.includes("lighthouseServlet"))) {
+            return await res.text();
         }
         return await res.text();
     } catch (error) {
         return error;
     }
+}
+
+async function lighthouse() {
+    const lighthouseAPI = "https://192.168.1.21:8443/LighthouseWS/lighthouseServlet?url=https://littleforest.co.uk";
+    var lighthouseJson = await getRequest(lighthouseAPI);
+    console.log(lighthouseJson)
 }
 
 async function main() {
@@ -26,8 +32,8 @@ async function main() {
 
     // Set base URLs
     const assetsURL = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
-    // const assetsURL = "https://pagina.xhico:8443/";
-    const langToolURL = "https://api.languagetoolplus.com/v2/check";
+    const langToolAPI = "https://api.languagetoolplus.com/v2/check";
+    const lighthouseAPI = "http://192.168.1.21:8080/LighthouseWS/lighthouseServlet?url=";
 
     // Clear current html code
     const newHTML = document.open("text/html", "replace");
@@ -106,7 +112,7 @@ async function main() {
         var tagText = tagsText[i]
 
         // Get LangTool API Response
-        const data = await getRequest(langToolURL + "?text=" + tagText.innerHTML.replace(/<\/?[^>]+(>|$)/g, "") + "&language=" + "en-gb");
+        const data = await getRequest(langToolAPI + "?text=" + tagText.innerHTML.replace(/<\/?[^>]+(>|$)/g, "") + "&language=" + "en-gb");
 
         try {
 
@@ -166,7 +172,9 @@ async function main() {
     document.getElementById("overlay").style.display = "none";
 }
 
-var isSidebarFinish = false; var isLangToolFinished = false;
+var isSidebarFinish = false;
+var isLangToolFinished = false;
+
 (async function () {
     // START
     console.clear()
@@ -174,7 +182,8 @@ var isSidebarFinish = false; var isLangToolFinished = false;
 
     // Check if already ran previously
     if (!document.getElementById("maincontent")) {
-        await main();
+        // await main();
+        await lighthouse();
     } else {
         console.log("Already checked.. nothing to do!");
     }
