@@ -12,7 +12,7 @@ async function getRequest(url) {
     try {
         const res = await fetch(url, { mode: 'no-cors' });
         if (url.includes("languagetoolplus") || (url.includes("lighthouseServlet"))) {
-            return await res.text();
+            return await res.json();
         }
         return await res.text();
     } catch (error) {
@@ -22,8 +22,16 @@ async function getRequest(url) {
 
 async function lighthouse() {
     const lighthouseAPI = "https://192.168.1.21:8443/LighthouseWS/lighthouseServlet?url=https://littleforest.co.uk";
-    var lighthouseJson = await getRequest(lighthouseAPI);
-    console.log(lighthouseJson)
+    const lighthouseJson = await getRequest(lighthouseAPI);
+    console.log(lighthouseJson.categories);
+    const accessibilityScore = lighthouseJson["categories"]["accessibility"]["score"];
+    const performanceScore = lighthouseJson["categories"]["performance"]["score"];
+    const pwaScore = lighthouseJson["categories"]["best-practices"]["score"];
+    const seoScore = lighthouseJson["categories"]["seo"]["score"];
+    console.log("accessibilityScore = " + accessibilityScore);
+    console.log("performanceScore = " + performanceScore);
+    console.log("pwaScore = " + pwaScore);
+    console.log("seoScore = " + seoScore);
 }
 
 async function main() {
@@ -33,7 +41,7 @@ async function main() {
     // Set base URLs
     const assetsURL = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
     const langToolAPI = "https://api.languagetoolplus.com/v2/check";
-    const lighthouseAPI = "http://192.168.1.21:8080/LighthouseWS/lighthouseServlet?url=";
+    const lighthouseAPI = "https://192.168.1.21:8443/LighthouseWS/lighthouseServlet?url=";
 
     // Clear current html code
     const newHTML = document.open("text/html", "replace");
@@ -117,8 +125,8 @@ async function main() {
         try {
 
             // Get detected language and confidence
-            var detectedLanguage = data.language.detectedLanguage.name;
-            var detectConfidence = data.language.detectedLanguage.confidence * 100;
+            var detectedLanguage = data["language"]["detectedLanguage"]["name"];
+            var detectConfidence = data["language"]["detectedLanguage"]["confidence"] * 100;
             document.getElementById("detectedLanguage").innerHTML = detectedLanguage;
             document.getElementById("detectConfidence").innerHTML = detectConfidence;
 
