@@ -2,11 +2,7 @@
 // Little Forest 2021
 // Author: Francisco 'xhico' Filipe
 // Created: 2021/06/02
-<<<<<<< HEAD
 // Updated: 2021/07/02
-=======
-// Updated: 2021/06/07
->>>>>>> parent of 89b2e00 (Update inject.js)
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -28,15 +24,15 @@ async function main() {
     // Add sidebar
     console.log("Start Sidebar");
 
-    // set base URLs
+    // Set base URLs
     const assetsURL = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
     const langToolAPI = "https://api.languagetoolplus.com/v2/check";
 
-    // clear current html code
+    // Clear current html code
     const newHTML = document.open("text/html", "replace");
     newHTML.write('<html><head><body style="margin:0;"></body></html>'); newHTML.close();
 
-    // add iframe with current url
+    // Add iframe with current url
     var iframeElement = document.createElement('iframe');
     iframeElement.id = "maincontent"; iframeElement.classList.add("iframe-width-300"); iframeElement.classList.add("iframe");
     iframeElement.src = fullURL = window.location.href;
@@ -56,13 +52,13 @@ async function main() {
     var report = document.createElement("style");
     document.head.appendChild(report).innerHTML = reportCSS;
 
-    // insert overlay
+    // Insert overlay
     document.getElementById("overlay").style.display = "block";
 
-    // finish Sidebar
+    // Finish Sidebar
     isSidebarFinish = true;
 
-    // wait for addSidebar() to finish
+    // Wait for addSidebar() to finish
     while (!(isSidebarFinish)) { await sleep(1000); }
     console.log("End Sidebar")
 
@@ -72,13 +68,13 @@ async function main() {
     });
 
     // wait for addSidebar() to finish
-    while (!(isIframeLoad)) { await sleep(1000); }
+    while (!(isIframeLoad)) { await sleep(2000); }
     console.log("Iframe Loaded")
 
     // Run languageTool once iframe has loaded
     console.log("Start LanguageTool");
 
-    // get iframe element
+    // Get iframe element
     var iframeElement = document.getElementById('maincontent').contentDocument;
 
     //  Add totalLinks to GENERALINFO
@@ -96,19 +92,18 @@ async function main() {
     const totalImages = iframeElement.getElementsByTagName("img").length;
     document.getElementById("totalImages").innerText = totalImages;
 
-    // get all tagsText
+    // Get all tagsText
     const tagsText = iframeElement.getElementsByTagName("p");
 
-    // set errorsDict where key => error and value => [count, color]
+    // Set errorsDict where key => error and value => [count, color]
     var errorsDict = {};
 
-    // iterate on every tag
+    // Iterate on every tag
     for (var i = 0; i < tagsText.length; i++) {
 
-        // set phrase from content array index
+        // Set phrase from content array index
         var tagText = tagsText[i]
 
-<<<<<<< HEAD
         // Get LangTool API Response
         const data = await getRequest(langToolAPI + "?text=" + tagText.innerHTML.replace(/<\/?[^>]+(>|$)/g, "") + "&language=" + "en-gb");
 
@@ -117,38 +112,28 @@ async function main() {
             // Get detected language and confidence
             var detectedLanguage = data["language"]["detectedLanguage"]["name"];
             var detectConfidence = data["language"]["detectedLanguage"]["confidence"] * 100;
-=======
-        // get LangTool API Response
-        const data = await getRequest(langToolURL + "?text=" + tagText.innerHTML.replace(/<\/?[^>]+(>|$)/g, "") + "&language=" + "en-gb");
-
-        try {
-
-            // get detected language and confidence
-            var detectedLanguage = data.language.detectedLanguage.name;
-            var detectConfidence = data.language.detectedLanguage.confidence * 100;
->>>>>>> parent of 89b2e00 (Update inject.js)
             document.getElementById("detectedLanguage").innerHTML = detectedLanguage;
             document.getElementById("detectConfidence").innerHTML = detectConfidence;
 
-            // iterate on every error
+            // Iterate on every error
             data.matches.forEach(function (entry) {
 
-                // get error, message;
+                // Get error, message;
                 var text = entry.context.text; var message = entry.message; let color;
                 var error = text.substring(entry.context.offset, entry.context.offset + entry.context.length);
 
-                // remove false-positive errors (one char and whitespaces)
+                // Remove false-positive errors (one char and whitespaces)
                 if (error.length >= 3 && !(/\s/g.test(error))) {
 
-                    // set color of error => red for mistake and yellow for others
+                    // Set color of error => red for mistake and yellow for others
                     if (message == "Possible spelling mistake found.") { color = "red"; } else { color = "orange"; }
 
-                    // update error color on html
+                    // Update error color on html
                     tagText.innerHTML = tagText.innerHTML.replace(error,
-                        "<a style='text-decoration: none;' href='#'><span title='" + message + "' style='background-color:green;color:" + color + ";font-weight:bold;'>" + error + "</span></a>"
+                        "<a style='text-decoration: none;' href='#'><span title='" + message + "' style='color: black; background-color:" + color + ";font-weight:bold;'>" + error + "</span></a>"
                     );;
 
-                    // add/update key error on errorsDict
+                    // Add/update key error on errorsDict
                     if (error in errorsDict) { errorsDict[error][0] = errorsDict[error][0] + 1; } else { errorsDict[error] = [1, color, message]; }
                 }
             });
@@ -165,23 +150,17 @@ async function main() {
         spellErrors.innerHTML += "<li><a href='#' title='" + message + "'>" + error + " (" + count + "x)" + "</a></li>";
     });
 
-    //  Add totalErrors to GENERALINFO
+    // Add totalErrors to GENERALINFO
     document.getElementById("totalErrors").innerText = Object.keys(errorsDict).length;
 
-<<<<<<< HEAD
-
-
     // Finish LanguageTool
-=======
-    // finish LanguageTool
->>>>>>> parent of 89b2e00 (Update inject.js)
     isLangToolFinished = true;
 
-    // wait for runLangTool() to finish
+    // Wait for runLangTool() to finish
     while (!(isLangToolFinished)) { await sleep(1000); }
     console.log("End LanguageTool")
 
-    // remove overlay
+    // Remove overlay
     document.getElementById("overlay").style.display = "none";
 }
 
