@@ -184,7 +184,7 @@ async function main() {
     const jsonFileName = lighthouseJson["jsonFileName"];
     console.log(jsonFileName);
     var lighthouseReadMore = document.getElementById("lighthouseReadMore");
-    lighthouseReadMore.href = "https://192.168.1.21:8443/LighthouseWS/lighthouseServlet?" + "url=" + "null" + "&json=" + jsonFileName;
+    lighthouseReadMore.href = "https://googlechrome.github.io/lighthouse/viewer/?jsonurl=" + "https://192.168.1.21:8443/LighthouseWS/lighthouseServlet?" + "url=" + "null" + "&json=" + jsonFileName;
 
     // Finish Lighthouse
     isLighthouseFinished = true;
