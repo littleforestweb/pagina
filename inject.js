@@ -165,7 +165,8 @@ async function main() {
 
     // Add Lighthouse
     console.log("Start Lighthouse")
-    const lighthouseAPI = "https://192.168.1.21:8443/LighthouseWS/lighthouseServlet?url=" + window.location.href;
+    // const lighthouseAPI = "https://192.168.1.21:8443/LighthouseWS/lighthouseServlet?url=" + window.location.href;
+    const lighthouseAPI = "https://192.168.1.21:8443/LighthouseWS/lighthouseServlet?url=" + "https://littleforest.co.uk/";
     const lighthouseJson = await getRequest(lighthouseAPI);
     const performanceScore = lighthouseJson["categories"]["performance"]["score"] * 100;
     const accessibilityScore = lighthouseJson["categories"]["accessibility"]["score"] * 100;
