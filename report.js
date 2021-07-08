@@ -27,8 +27,8 @@ spellErrors.addEventListener('click', () => {
     }
 });
 
-const spellErrors = document.getElementById('lighthouse-ul');
-spellErrors.addEventListener('click', () => {
+const lighthouse = document.getElementById('lighthouse-ul');
+lighthouse.addEventListener('click', () => {
     if (document.getElementById("lighthouse-li").style.display == "none") {
         document.getElementById("lighthouse-li").style.display = "block";
     } else {
