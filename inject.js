@@ -153,21 +153,7 @@ async function main() {
     //  Add totalErrors to GENERALINFO
     document.getElementById("totalErrors").innerText = Object.keys(errorsDict).length;
 
-    // Add Lighthouse
-    const lighthouseAPI = "https://192.168.1.21:8443/LighthouseWS/lighthouseServlet?url=https://littleforest.co.uk";
-    const lighthouseJson = await getRequest(lighthouseAPI);
-    console.log(lighthouseJson.categories);
-    const accessibilityScore = lighthouseJson["categories"]["accessibility"]["score"];
-    const BPScore = lighthouseJson["categories"]["best-practices"]["score"];
-    const performanceScore = lighthouseJson["categories"]["performance"]["score"];
-    const pwaScore = lighthouseJson["categories"]["best-practices"]["score"];
-    const seoScore = lighthouseJson["categories"]["seo"]["score"];
-    var lighthouseInfo = document.getElementById("lighthouseInfo")
-    lighthouseInfo.innerHTML += "<li><a>" + accessibilityScore + "</a>Accessibility Score</li>";
-    lighthouseInfo.innerHTML += "<li><a>" + BPScore + "</a>Best Practices Score</li>";
-    lighthouseInfo.innerHTML += "<li><a>" + performanceScore + "</a>Performance Score</li>";
-    lighthouseInfo.innerHTML += "<li><a>" + pwaScore + "</a>Progressive Web App Score</li>";
-    lighthouseInfo.innerHTML += "<li><a>" + seoScore + "</a>SEO Score</li>";
+
 
     // Finish LanguageTool
     isLangToolFinished = true;
