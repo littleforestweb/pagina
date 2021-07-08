@@ -20,20 +20,6 @@ async function getRequest(url) {
     }
 }
 
-async function lighthouse() {
-    const lighthouseAPI = "https://192.168.1.21:8443/LighthouseWS/lighthouseServlet?url=https://littleforest.co.uk";
-    const lighthouseJson = await getRequest(lighthouseAPI);
-    console.log(lighthouseJson.categories);
-    const accessibilityScore = lighthouseJson["categories"]["accessibility"]["score"];
-    const performanceScore = lighthouseJson["categories"]["performance"]["score"];
-    const pwaScore = lighthouseJson["categories"]["best-practices"]["score"];
-    const seoScore = lighthouseJson["categories"]["seo"]["score"];
-    console.log("accessibilityScore = " + accessibilityScore);
-    console.log("performanceScore = " + performanceScore);
-    console.log("pwaScore = " + pwaScore);
-    console.log("seoScore = " + seoScore);
-}
-
 async function main() {
     // Add sidebar
     console.log("Start Sidebar");
@@ -41,7 +27,6 @@ async function main() {
     // Set base URLs
     const assetsURL = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
     const langToolAPI = "https://api.languagetoolplus.com/v2/check";
-    const lighthouseAPI = "https://192.168.1.21:8443/LighthouseWS/lighthouseServlet?url=";
 
     // Clear current html code
     const newHTML = document.open("text/html", "replace");
@@ -165,9 +150,24 @@ async function main() {
         spellErrors.innerHTML += "<li><a href='#' title='" + message + "'>" + error + " (" + count + "x)" + "</a></li>";
     });
 
-
     //  Add totalErrors to GENERALINFO
     document.getElementById("totalErrors").innerText = Object.keys(errorsDict).length;
+
+    // Add Lighthouse
+    const lighthouseAPI = "https://192.168.1.21:8443/LighthouseWS/lighthouseServlet?url=https://littleforest.co.uk";
+    const lighthouseJson = await getRequest(lighthouseAPI);
+    console.log(lighthouseJson.categories);
+    const accessibilityScore = lighthouseJson["categories"]["accessibility"]["score"];
+    const BPScore = lighthouseJson["categories"]["best-practices"]["score"];
+    const performanceScore = lighthouseJson["categories"]["performance"]["score"];
+    const pwaScore = lighthouseJson["categories"]["best-practices"]["score"];
+    const seoScore = lighthouseJson["categories"]["seo"]["score"];
+    var lighthouseInfo = document.getElementById("lighthouseInfo")
+    lighthouseInfo.innerHTML += "<li><a>" + accessibilityScore + "</a>Accessibility Score</li>";
+    lighthouseInfo.innerHTML += "<li><a>" + BPScore + "</a>Best Practices Score</li>";
+    lighthouseInfo.innerHTML += "<li><a>" + performanceScore + "</a>Performance Score</li>";
+    lighthouseInfo.innerHTML += "<li><a>" + pwaScore + "</a>Progressive Web App Score</li>";
+    lighthouseInfo.innerHTML += "<li><a>" + seoScore + "</a>SEO Score</li>";
 
     // Finish LanguageTool
     isLangToolFinished = true;
@@ -190,8 +190,7 @@ var isLangToolFinished = false;
 
     // Check if already ran previously
     if (!document.getElementById("maincontent")) {
-        // await main();
-        await lighthouse();
+        await main();
     } else {
         console.log("Already checked.. nothing to do!");
     }
