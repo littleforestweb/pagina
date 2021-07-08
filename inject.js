@@ -165,26 +165,35 @@ async function main() {
 
     // Add Lighthouse
     console.log("Start Lighthouse")
-    // const lighthouseAPI = "https://192.168.1.21:8443/LighthouseWS/lighthouseServlet?url=" + window.location.href  + "&json=" + "null";;
-    const lighthouseAPI = "https://192.168.1.21:8443/LighthouseWS/lighthouseServlet?" + "url=" + "https://littleforest.co.uk/" + "&json=" + "null";
+    const lighthouseAPI = "https://192.168.1.21:8443/LighthouseWS/lighthouseServlet?url=" + window.location.href + "&json=" + "null";;
+    // const lighthouseAPI = "https://192.168.1.21:8443/LighthouseWS/lighthouseServlet?" + "url=" + "https://littleforest.co.uk/" + "&json=" + "null";
     const lighthouseJson = await getRequest(lighthouseAPI);
-    const performanceScore = lighthouseJson["categories"]["performance"]["score"] * 100;
-    const accessibilityScore = lighthouseJson["categories"]["accessibility"]["score"] * 100;
-    const BPScore = lighthouseJson["categories"]["best-practices"]["score"] * 100;
-    const seoScore = lighthouseJson["categories"]["seo"]["score"] * 100;
-    const pwaScore = lighthouseJson["categories"]["pwa"]["score"] * 100;
-    var lighthouseInfo = document.getElementById("lighthouseInfo");
-    lighthouseInfo.innerHTML += "<li><a></a>Performance - " + performanceScore + "% </li>";
-    lighthouseInfo.innerHTML += "<li><a></a>Accessibility - " + accessibilityScore + "% </li>";
-    lighthouseInfo.innerHTML += "<li><a></a>Best Practices - " + BPScore + "% </li>";
-    lighthouseInfo.innerHTML += "<li><a></a>SEO - " + seoScore + "% </li>";
-    lighthouseInfo.innerHTML += "<li><a></a>Progressive Web App - " + pwaScore + "% </li>";
 
-    // Get jsonPath
-    const jsonFileName = lighthouseJson["jsonFileName"];
-    console.log(jsonFileName);
-    var lighthouseReadMore = document.getElementById("lighthouseReadMore");
-    lighthouseReadMore.href = "https://googlechrome.github.io/lighthouse/viewer/?jsonurl=" + "https://192.168.1.21:8443/LighthouseWS/lighthouseServlet?" + "url=" + "null" + "&json=" + jsonFileName;
+    // Check if Lighthouse ran successfully
+    const checkLighthouse = lighthouseJson["runtimeError"]["code"];
+    var lighthouseInfo = document.getElementById("lighthouseInfo");
+    if (checkLighthouse === "FAILED_DOCUMENT_REQUEST") {
+        lighthouseInfo.innerHTML = "<ul><a id=" + lighthouseReadMore + " href='#' target='_blank'>Lighthouse was unable to reliably load the page you requested.</a></ul>";
+    } else {
+        const performanceScore = lighthouseJson["categories"]["performance"]["score"] * 100;
+        const accessibilityScore = lighthouseJson["categories"]["accessibility"]["score"] * 100;
+        const BPScore = lighthouseJson["categories"]["best-practices"]["score"] * 100;
+        const seoScore = lighthouseJson["categories"]["seo"]["score"] * 100;
+        const pwaScore = lighthouseJson["categories"]["pwa"]["score"] * 100;
+
+        lighthouseInfo.innerHTML += "<li><a></a>Performance - " + performanceScore + "% </li>";
+        lighthouseInfo.innerHTML += "<li><a></a>Accessibility - " + accessibilityScore + "% </li>";
+        lighthouseInfo.innerHTML += "<li><a></a>Best Practices - " + BPScore + "% </li>";
+        lighthouseInfo.innerHTML += "<li><a></a>SEO - " + seoScore + "% </li>";
+        lighthouseInfo.innerHTML += "<li><a></a>Progressive Web App - " + pwaScore + "% </li>";
+        lighthouseInfo.innerHTML += "<li><a id='lighthouseReadMore' href='#'>" + "Read More" + "</a></li>";
+
+        // Get jsonPath
+        const jsonFileName = lighthouseJson["jsonFileName"];
+        var lighthouseReadMore = document.getElementById("lighthouseReadMore");
+        lighthouseReadMore.href = "https://googlechrome.github.io/lighthouse/viewer/?jsonurl=" + "https://192.168.1.21:8443/LighthouseWS/lighthouseServlet?" + "url=" + "null" + "&json=" + jsonFileName;
+    }
+
 
     // Finish Lighthouse
     isLighthouseFinished = true;
