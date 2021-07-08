@@ -160,27 +160,31 @@ async function main() {
     while (!(isLangToolFinished)) { await sleep(1000); }
     console.log("End LanguageTool")
 
+    // Remove overlay
+    document.getElementById("overlay").style.display = "none";
+
     // Add Lighthouse
     console.log("Start Lighthouse")
     const lighthouseAPI = "https://192.168.1.21:8443/LighthouseWS/lighthouseServlet?url=" + window.location.href;
     const lighthouseJson = await getRequest(lighthouseAPI);
-    const performanceScore = lighthouseJson["categories"]["performance"]["score"];
-    const accessibilityScore = lighthouseJson["categories"]["accessibility"]["score"];
-    const BPScore = lighthouseJson["categories"]["best-practices"]["score"];
-    const seoScore = lighthouseJson["categories"]["seo"]["score"];
-    const pwaScore = lighthouseJson["categories"]["pwa"]["score"];
-    console.log("performanceScore - " + performanceScore);
-    console.log("accessibilityScore - " + accessibilityScore);
-    console.log("BPScore - " + BPScore);
-    console.log("seoScore - " + seoScore);
-    console.log("pwaScore - " + pwaScore);
+    const performanceScore = lighthouseJson["categories"]["performance"]["score"] * 100;
+    const accessibilityScore = lighthouseJson["categories"]["accessibility"]["score"] * 100;
+    const BPScore = lighthouseJson["categories"]["best-practices"]["score"] * 100;
+    const seoScore = lighthouseJson["categories"]["seo"]["score"] * 100;
+    const pwaScore = lighthouseJson["categories"]["pwa"]["score"] * 100;
+    var lighthouseInfo = document.getElementById("lighthouseInfo");
+    lighthouseInfo.innerHTML += "<li><a></a>Performance - " + performanceScore + "% </li>";
+    lighthouseInfo.innerHTML += "<li><a></a>Accessibility - " + accessibilityScore + "% </li>";
+    lighthouseInfo.innerHTML += "<li><a></a>Best Practices - " + BPScore + "% </li>";
+    lighthouseInfo.innerHTML += "<li><a></a>SEO - " + seoScore + "% </li>";
+    lighthouseInfo.innerHTML += "<li><a></a>Progressive Web App - " + pwaScore + "% </li>";
 
     // Finish Lighthouse
-    isLighthouseFinished = false;
-    console.log("End Lighthouse")
+    isLighthouseFinished = true;
 
-    // Remove overlay
-    document.getElementById("overlay").style.display = "none";
+    // Wait for runLangTool() to finish
+    while (!(isLighthouseFinished)) { await sleep(1000); }
+    console.log("End Lighthouse")
 }
 
 var isSidebarFinish = false; var isLangToolFinished = false; var isLighthouseFinished = false;

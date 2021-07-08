@@ -27,6 +27,15 @@ spellErrors.addEventListener('click', () => {
     }
 });
 
+const spellErrors = document.getElementById('lighthouse-ul');
+spellErrors.addEventListener('click', () => {
+    if (document.getElementById("lighthouse-li").style.display == "none") {
+        document.getElementById("lighthouse-li").style.display = "block";
+    } else {
+        document.getElementById("lighthouse-li").style.display = "none";
+    }
+});
+
 const generalInfo = document.getElementById('general-ul');
 generalInfo.addEventListener('click', () => {
     if (document.getElementById("general-li").style.display == "none") {
