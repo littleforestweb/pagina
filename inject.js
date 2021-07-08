@@ -166,7 +166,7 @@ async function main() {
     // Add Lighthouse
     console.log("Start Lighthouse")
     // const lighthouseAPI = "https://192.168.1.21:8443/LighthouseWS/lighthouseServlet?url=" + window.location.href;
-    const lighthouseAPI = "https://192.168.1.21:8443/LighthouseWS/lighthouseServlet?url=" + "https://littleforest.co.uk/";
+    const lighthouseAPI = "https://192.168.1.21:8443/LighthouseWS/lighthouseServlet?url=" + "https://littleforest.co.uk/" + "&json=null";
     const lighthouseJson = await getRequest(lighthouseAPI);
     const performanceScore = lighthouseJson["categories"]["performance"]["score"] * 100;
     const accessibilityScore = lighthouseJson["categories"]["accessibility"]["score"] * 100;
@@ -179,6 +179,11 @@ async function main() {
     lighthouseInfo.innerHTML += "<li><a></a>Best Practices - " + BPScore + "% </li>";
     lighthouseInfo.innerHTML += "<li><a></a>SEO - " + seoScore + "% </li>";
     lighthouseInfo.innerHTML += "<li><a></a>Progressive Web App - " + pwaScore + "% </li>";
+
+    // Get jsonPath
+    const jsonFileName = lighthouseJson["jsonFileName"];
+    var lighthouseReadMore = document.getElementById("lighthouseReadMore");
+    lighthouseReadMore.href = "https://192.168.1.21:8443/LighthouseWS/lighthouseServlet?url=" + "null" + "&json=" + jsonFileName;
 
     // Finish Lighthouse
     isLighthouseFinished = true;
