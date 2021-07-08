@@ -2,7 +2,7 @@
 // Little Forest 2021
 // Author: Francisco 'xhico' Filipe
 // Created: 2021/06/02
-// Updated: 2021/07/02
+// Updated: 2021/06/08
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -10,8 +10,8 @@ function sleep(ms) {
 
 async function getRequest(url) {
     try {
-        const res = await fetch(url, { mode: 'no-cors' });
-        if (url.includes("languagetoolplus") || (url.includes("lighthouseServlet"))) {
+        const res = await fetch(url);
+        if (url.includes("languagetoolplus") || url.includes("lighthouseServlet")) {
             return await res.json();
         }
         return await res.text();
@@ -26,7 +26,7 @@ async function main() {
 
     // Set base URLs
     const assetsURL = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
-    const langToolAPI = "https://api.languagetoolplus.com/v2/check";
+    const langToolURL = "https://api.languagetoolplus.com/v2/check";
 
     // Clear current html code
     const newHTML = document.open("text/html", "replace");
@@ -68,7 +68,7 @@ async function main() {
     });
 
     // wait for addSidebar() to finish
-    while (!(isIframeLoad)) { await sleep(2000); }
+    // while (!(isIframeLoad)) { await sleep(1000); }
     console.log("Iframe Loaded")
 
     // Run languageTool once iframe has loaded
@@ -105,13 +105,13 @@ async function main() {
         var tagText = tagsText[i]
 
         // Get LangTool API Response
-        const data = await getRequest(langToolAPI + "?text=" + tagText.innerHTML.replace(/<\/?[^>]+(>|$)/g, "") + "&language=" + "en-gb");
+        const data = await getRequest(langToolURL + "?text=" + tagText.innerHTML.replace(/<\/?[^>]+(>|$)/g, "") + "&language=" + "en-gb");
 
         try {
 
             // Get detected language and confidence
-            var detectedLanguage = data["language"]["detectedLanguage"]["name"];
-            var detectConfidence = data["language"]["detectedLanguage"]["confidence"] * 100;
+            var detectedLanguage = data.language.detectedLanguage.name;
+            var detectConfidence = data.language.detectedLanguage.confidence * 100;
             document.getElementById("detectedLanguage").innerHTML = detectedLanguage;
             document.getElementById("detectConfidence").innerHTML = detectConfidence;
 
@@ -150,7 +150,7 @@ async function main() {
         spellErrors.innerHTML += "<li><a href='#' title='" + message + "'>" + error + " (" + count + "x)" + "</a></li>";
     });
 
-    // Add totalErrors to GENERALINFO
+    //  Add totalErrors to GENERALINFO
     document.getElementById("totalErrors").innerText = Object.keys(errorsDict).length;
 
     // Finish LanguageTool
@@ -160,13 +160,30 @@ async function main() {
     while (!(isLangToolFinished)) { await sleep(1000); }
     console.log("End LanguageTool")
 
+    // Add Lighthouse
+    console.log("Start Lighthouse")
+    const lighthouseAPI = "https://192.168.1.21:8443/LighthouseWS/lighthouseServlet?url=" + window.location.href;
+    const lighthouseJson = await getRequest(lighthouseAPI);
+    const performanceScore = lighthouseJson["categories"]["performance"]["score"];
+    const accessibilityScore = lighthouseJson["categories"]["accessibility"]["score"];
+    const BPScore = lighthouseJson["categories"]["best-practices"]["score"];
+    const seoScore = lighthouseJson["categories"]["seo"]["score"];
+    const pwaScore = lighthouseJson["categories"]["pwa"]["score"];
+    console.log("performanceScore - " + performanceScore);
+    console.log("accessibilityScore - " + accessibilityScore);
+    console.log("BPScore - " + BPScore);
+    console.log("seoScore - " + seoScore);
+    console.log("pwaScore - " + pwaScore);
+
+    // Finish Lighthouse
+    isLighthouseFinished = false;
+    console.log("End Lighthouse")
+
     // Remove overlay
     document.getElementById("overlay").style.display = "none";
 }
 
-var isSidebarFinish = false;
-var isLangToolFinished = false;
-
+var isSidebarFinish = false; var isLangToolFinished = false; var isLighthouseFinished = false;
 (async function () {
     // START
     console.clear()
