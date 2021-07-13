@@ -152,7 +152,7 @@ async function runLanguageTool(language) {
 
                     // Update error color on html
                     tagText.innerHTML = tagText.innerHTML.replace(error,
-                        "<a style='text-decoration: none;' href='#'><span title='" + message + "' style='color: black; background-color:" + color + ";font-weight:bold;'>" + error + "</span></a>"
+                        "<a style='text-decoration: none;' href='#'><span class='tooltip' title='" + message + "' style='color: black; background-color:" + color + ";font-weight:bold;'>" + error + "</span></a>"
                     );;
 
                     // Add/update key error on errorsDict
@@ -225,11 +225,16 @@ let port = chrome.runtime.connect({ name: "knockknock" });
 
 port.onMessage.addListener(async function (response) {
     if (response.text == "startInject") {
-        // Clear current html code
-        await clearHTML();
-        // Add iframe with current url
-        await addIframe();
-        port.postMessage({ question: "sidebarHTML" });
+        // Check if already ran previously
+        if (!document.getElementById("maincontent")) {
+            // Clear current html code
+            await clearHTML();
+            // Add iframe with current url
+            await addIframe();
+            port.postMessage({ question: "sidebarHTML" });
+        } else {
+            console.log("Already checked.. nothing to do!");
+        }
     } else if (response.text == "addSidebarHTML") {
         // Add Sidebar <html>
         await addSidebarHTML(response.content);
