@@ -103,7 +103,7 @@ async function main() {
     for (var i = 0; i < tagsText.length; i++) {
 
         // Set phrase from content array index
-        var tagText = tagsText[i]
+        var tagText = tagsText[i];
 
         // Get LangTool API Response
         const data = await getRequest(langToolURL + "?text=" + tagText.innerHTML.replace(/<\/?[^>]+(>|$)/g, "") + "&language=" + "en-gb");

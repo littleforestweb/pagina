@@ -19,6 +19,7 @@ console.clear()
 console.log('Connect');
 
 let assetsURL = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
+let lighthouseURL = "https://inspector.littleforest.co.uk/LighthouseWS/lighthouseServlet?"
 
 chrome.runtime.onConnect.addListener(function (port) {
 
@@ -54,7 +55,6 @@ chrome.runtime.onConnect.addListener(function (port) {
             port.postMessage({ text: "removeOverlay" });
         } else if (action.question == "lighthouse") {
             console.log("lighthouse");
-            let lighthouseURL = "https://inspector.littleforest.co.uk/LighthouseWS/lighthouseServlet?"
             let lighthouseAPI = lighthouseURL + "url=" + action.content + "&json=" + "null";;
             let lighthouseJson = await getRequest(lighthouseAPI);
             port.postMessage({ text: "runLighthouse", content: lighthouseJson });
