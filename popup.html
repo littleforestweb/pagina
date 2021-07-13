@@ -17,18 +17,31 @@
             margin-top: 5%;
             margin-bottom: 5%;
         }
+
+        ul {
+            list-style-type: none;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        .show {
+            display: block;
+        }
     </style>
 
 </head>
 
 <body>
-    <div class="col text-center margin-tb-5">
+    <div class="margin-tb-5">
         <a href="https://littleforest.co.uk" target="_blank"><img class="netflix-logo"
                 src="https://littleforest.co.uk/wp-content/uploads/2017/06/littleforest_logo.png"
                 alt="Netflix Logo"></a>
 
         <div class="margin-tb-5 margin-lr-5">
-            <select id="languagesList" class="form-select" aria-label="Default select example">
+            <h3>Select Language</h3>
+            <select id="languagesList" class="form-select center" aria-label="Default select example">
                 <option selected value="auto">Auto-Detect</option>
                 <option value="ar">Arabic</option>
                 <option value="ast-ES">Asturian</option>
@@ -82,21 +95,32 @@
             </select>
         </div>
 
-        <h3 class="options__title">Device</h2>
-            <ul class="options__list options__device">
-                <li>
-                    <label>
-                        <input type="radio" name="device" value="mobile"></input><span>Mobile</span>
-                    </label>
+        <div class="margin-tb-5 margin-lr-5">
+            <h3>Categories</h3>
+            <ul>
+                <li><label><input type="checkbox" value="performance" checked="checked"><span>Performance</span></label>
                 </li>
-                <li>
-                    <label>
-                        <input type="radio" name="device" value="desktop"></input><span>Desktop</span>
-                    </label>
+                <li><label><input type="checkbox" value="accessibility"
+                            checked="checked"><span>Accessibility</span></label></li>
+                <li><label><input type="checkbox" value="best-practices"
+                            checked="checked"><span>BestPractices</span></label></li>
+                <li><label><input type="checkbox" value="seo" checked="checked"><span>SEO</span></label></li>
+                <li><label><input type="checkbox" value="pwa" checked="checked"><span>Progressive Web App</span></label>
                 </li>
             </ul>
 
-            <button id="checkPage" type="button" class="center btn btn-outline-success margin-tb-5">Check Page</button>
+            <h3>Device</h3>
+            <ul>
+                <li><label><input type="radio" name="device" value="mobile"><span>Mobile</span></label></li>
+                <li><label><input checked="checked" type="radio" name="device"
+                            value="desktop"><span>Desktop</span></label></li>
+            </ul>
+        </div>
+
+        <div class="text-center">
+            <button id="checkPage" type="button" class="btn btn-outline-success margin-tb-5">Check
+                Page</button>
+        </div>
     </div>
 
     <footer class="text-center">Copyright 2021 Little Forest</footer>
