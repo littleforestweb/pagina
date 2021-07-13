@@ -36,7 +36,7 @@ async function main() {
     // Add iframe with current url
     var iframeElement = document.createElement('iframe');
     iframeElement.id = "maincontent"; iframeElement.classList.add("iframe-width-300"); iframeElement.classList.add("iframe");
-    iframeElement.src = fullURL = window.location.href;
+    iframeElement.src = window.location.href;
     document.body.appendChild(iframeElement);
 
     // Add Sidebar <html>
