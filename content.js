@@ -67,11 +67,16 @@ async function addSidebarCSS(cssContent) {
     document.head.appendChild(report).innerHTML = cssContent;
 }
 
-async function addOverlay() {
-    console.log("addOverlay");
-
-    // Insert overlay
-    document.getElementById("overlay").style.display = "block";
+async function overlay(action) {
+    if (action == "addOverlay") {
+        // Insert overlay
+        console.log("addOverlay")
+        document.getElementById("overlay").style.display = "block";
+    } else if (action == "removeOverlay") {
+        // Remove overlay
+        console.log("removeOverlay")
+        document.getElementById("overlay").style.display = "none";
+    }
 }
 
 async function addGeneralInfo() {
@@ -231,10 +236,10 @@ port.onMessage.addListener(async function (response) {
     } else if (response.text == "addSidebarCSS") {
         // Add Sidebar <style>
         await addSidebarCSS(response.content);
-        port.postMessage({ question: "overlay" });
+        port.postMessage({ question: "addOverlay" });
     } else if (response.text == "addOverlay") {
         // Insert overlay
-        await addOverlay();
+        await overlay(response.text);
         port.postMessage({ question: "generealInfo" });
     } else if (response.text == "addGeneralInfo") {
         // Insert General Information
@@ -244,9 +249,9 @@ port.onMessage.addListener(async function (response) {
         // Run LanguageTool
         await runLanguageTool("en-gb");
         port.postMessage({ question: "removeOverlay" });
-    } else if (response.text == "delOverlay") {
+    } else if (response.text == "removeOverlay") {
         // Remove overlay
-        document.getElementById("overlay").style.display = "none";
+        await overlay(response.text);
         port.postMessage({ question: "lighthouse", content: window.location.href });
     } else if (response.text == "runLighthouse") {
         // Add Lighthouse

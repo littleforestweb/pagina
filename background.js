@@ -40,8 +40,8 @@ chrome.runtime.onConnect.addListener(function (port) {
             console.log("sidebarCSS");
             let cssContent = await getRequest(assetsURL + "report.css");
             port.postMessage({ text: "addSidebarCSS", content: cssContent });
-        } else if (action.question == "overlay") {
-            console.log("overlay");
+        } else if (action.question == "addOverlay") {
+            console.log("addOverlay");
             port.postMessage({ text: "addOverlay" });
         } else if (action.question == "generealInfo") {
             console.log("generealInfo");
@@ -51,7 +51,7 @@ chrome.runtime.onConnect.addListener(function (port) {
             port.postMessage({ text: "runLanguageTool" });
         } else if (action.question == "removeOverlay") {
             console.log("removeOverlay");
-            port.postMessage({ text: "delOverlay" });
+            port.postMessage({ text: "removeOverlay" });
         } else if (action.question == "lighthouse") {
             console.log("lighthouse");
             let lighthouseURL = "https://inspector.littleforest.co.uk/LighthouseWS/lighthouseServlet?"
