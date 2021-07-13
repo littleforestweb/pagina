@@ -223,3 +223,9 @@ iframe {
         right: 10px;
     }
 }
+
+.options__title {
+    font-size: var(--font-size);
+    font-weight: 500;
+    margin-bottom: 5px;
+}
