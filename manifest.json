@@ -1,10 +1,10 @@
 {
-    "name": "LanguageTool Analyzer",
-    "version": "0.0.1",
+    "name": "Page Inspector - LittleForest UK",
+    "version": "0.1",
     "manifest_version": 2,
-    "description": "LanguageTool Analyzer",
+    "description": "Page Inspector - LittleForest UK",
     "browser_action": {
-        "default_title": "LanguageTool Analyzer",
+        "default_title": "Page Inspector - LittleForest UK",
         "default_icon": "icon.png"
     },
     "permissions": [
