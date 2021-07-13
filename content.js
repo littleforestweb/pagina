@@ -5,8 +5,6 @@
 // Created: 2021/06/02
 // Updated: 2021/07/08
 
-console.log("go content.js")
-
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -231,33 +229,33 @@ port.onMessage.addListener(async function (response) {
             await clearHTML();
             // Add iframe with current url
             await addIframe();
-            port.postMessage({ question: "sidebarHTML" });
+            port.postMessage({ lang: response.lang, question: "sidebarHTML" });
         } else {
             console.log("Already checked.. nothing to do!");
         }
     } else if (response.text == "addSidebarHTML") {
         // Add Sidebar <html>
         await addSidebarHTML(response.content);
-        port.postMessage({ question: "sidebarJS" });
+        port.postMessage({ lang: response.lang, question: "sidebarJS" });
     } else if (response.text == "addSidebarJS") {
         // Add Sidebar <script>
         await addSidebarJS(response.content);
-        port.postMessage({ question: "sidebarCSS" });
+        port.postMessage({ lang: response.lang, question: "sidebarCSS" });
     } else if (response.text == "addSidebarCSS") {
         // Add Sidebar <style>
         await addSidebarCSS(response.content);
-        port.postMessage({ question: "addOverlay" });
+        port.postMessage({ lang: response.lang, question: "addOverlay" });
     } else if (response.text == "addOverlay") {
         // Insert overlay
         await overlay(response.text);
-        port.postMessage({ question: "generealInfo" });
+        port.postMessage({ lang: response.lang, question: "generealInfo" });
     } else if (response.text == "addGeneralInfo") {
         // Insert General Information
         await addGeneralInfo();
-        port.postMessage({ question: "languageTool" });
+        port.postMessage({ lang: response.lang, question: "languageTool" });
     } else if (response.text == "runLanguageTool") {
         // Run LanguageTool
-        await runLanguageTool("en-gb");
+        await runLanguageTool(response.lang);
         port.postMessage({ question: "removeOverlay" });
     } else if (response.text == "removeOverlay") {
         // Remove overlay

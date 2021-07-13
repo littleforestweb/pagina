@@ -1,6 +1,3 @@
-console.log("go background.js")
-
-
 async function getRequest(url) {
     try {
         const res = await fetch(url);
@@ -13,7 +10,6 @@ async function getRequest(url) {
     }
 }
 
-
 // Connect
 console.clear()
 console.log('Connect');
@@ -23,33 +19,34 @@ let lighthouseURL = "https://inspector.littleforest.co.uk/LighthouseWS/lighthous
 
 chrome.runtime.onConnect.addListener(function (port) {
 
-    chrome.browserAction.onClicked.addListener(function () {
+    chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         console.assert(port.name == "knockknock");
-        port.postMessage({ text: "startInject" });
+        port.postMessage({ text: "startInject", lang: request.language });
+        sendResponse({});
     });
 
     port.onMessage.addListener(async function (action) {
         if (action.question == "sidebarHTML") {
             console.log("sidebarHTML");
             let htmlContent = await getRequest(assetsURL + "report.html");
-            port.postMessage({ text: "addSidebarHTML", content: htmlContent });
+            port.postMessage({ lang: action.lang, text: "addSidebarHTML", content: htmlContent });
         } else if (action.question == "sidebarJS") {
             console.log("sidebarJS");
             let jsContent = await getRequest(assetsURL + "report.js");
-            port.postMessage({ text: "addSidebarJS", content: jsContent });
+            port.postMessage({ lang: action.lang, text: "addSidebarJS", content: jsContent });
         } else if (action.question == "sidebarCSS") {
             console.log("sidebarCSS");
             let cssContent = await getRequest(assetsURL + "report.css");
-            port.postMessage({ text: "addSidebarCSS", content: cssContent });
+            port.postMessage({ lang: action.lang, text: "addSidebarCSS", content: cssContent });
         } else if (action.question == "addOverlay") {
             console.log("addOverlay");
-            port.postMessage({ text: "addOverlay" });
+            port.postMessage({ lang: action.lang, text: "addOverlay" });
         } else if (action.question == "generealInfo") {
             console.log("generealInfo");
-            port.postMessage({ text: "addGeneralInfo" });
+            port.postMessage({ lang: action.lang, text: "addGeneralInfo" });
         } else if (action.question == "languageTool") {
             console.log("runLanguageTool");
-            port.postMessage({ text: "runLanguageTool" });
+            port.postMessage({ lang: action.lang, text: "runLanguageTool" });
         } else if (action.question == "removeOverlay") {
             console.log("removeOverlay");
             port.postMessage({ text: "removeOverlay" });
@@ -61,8 +58,3 @@ chrome.runtime.onConnect.addListener(function (port) {
         }
     });
 });
-
-
-
-
-

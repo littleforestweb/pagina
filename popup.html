@@ -3,7 +3,7 @@
 
 <head>
     <title>Little Forest UK</title>
-    <script src="background.js"></script>
+    <script src="popup.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
 
@@ -28,9 +28,8 @@
                 alt="Netflix Logo"></a>
 
         <div class="margin-tb-5 margin-lr-5">
-            <select class="form-select" aria-label="Default select example">
-                <option selected>Select Language</option>
-                <option value="en-gb">British English</option>
+            <select id="languagesList" class="form-select" aria-label="Default select example">
+                <option selected value="en-gb">British English</option>
                 <option value="en-us">Amaerican English</option>
                 <option value="pt-pt">Portuguese</option>
             </select>
