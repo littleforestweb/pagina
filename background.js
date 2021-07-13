@@ -1,22 +1,9 @@
-// document.addEventListener('DOMContentLoaded', function () {
-//     var checkPageButton = document.getElementById('checkPage');
-//     if (checkPageButton) {
-//         checkPageButton.addEventListener('click', function () {
-//             chrome.tabs.getSelected(null, function (tab) {
-//                 chrome.tabs.executeScript(tab.ib, { file: 'inject.js' });
-//             });
-//         }, false);
-//     }
-// }, false);
+console.log("go background.js")
 
-chrome.browserAction.onClicked.addListener(initInspection);
-function initInspection(tab) {
-    chrome.tabs.sendMessage(tab.id, { msg: "startInspection" });
-}
 
 async function getRequest(url) {
     try {
-        let res = await fetch(url);
+        const res = await fetch(url);
         if (url.includes("languagetoolplus") || url.includes("lighthouseServlet")) {
             return await res.json();
         }
@@ -26,10 +13,56 @@ async function getRequest(url) {
     }
 }
 
-chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
-    let assetsURL = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
-    let url = assetsURL + request.asset
-    console.log(request.asset);
-    let htmlText = await getRequest(url)
-    sendResponse({ html: "htmlText" });
+
+// Connect
+console.clear()
+console.log('Connect');
+
+let assetsURL = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
+
+chrome.runtime.onConnect.addListener(function (port) {
+
+    chrome.browserAction.onClicked.addListener(function () {
+        console.assert(port.name == "knockknock");
+        port.postMessage({ text: "startInject" });
+    });
+
+    port.onMessage.addListener(async function (action) {
+        if (action.question == "sidebarHTML") {
+            console.log("sidebarHTML");
+            let htmlContent = await getRequest(assetsURL + "report.html");
+            port.postMessage({ text: "addSidebarHTML", content: htmlContent });
+        } else if (action.question == "sidebarJS") {
+            console.log("sidebarJS");
+            let jsContent = await getRequest(assetsURL + "report.js");
+            port.postMessage({ text: "addSidebarJS", content: jsContent });
+        } else if (action.question == "sidebarCSS") {
+            console.log("sidebarCSS");
+            let cssContent = await getRequest(assetsURL + "report.css");
+            port.postMessage({ text: "addSidebarCSS", content: cssContent });
+        } else if (action.question == "overlay") {
+            console.log("overlay");
+            port.postMessage({ text: "addOverlay" });
+        } else if (action.question == "generealInfo") {
+            console.log("generealInfo");
+            port.postMessage({ text: "addGeneralInfo" });
+        } else if (action.question == "languageTool") {
+            console.log("runLanguageTool");
+            port.postMessage({ text: "runLanguageTool" });
+        } else if (action.question == "removeOverlay") {
+            console.log("removeOverlay");
+            port.postMessage({ text: "delOverlay" });
+        } else if (action.question == "lighthouse") {
+            console.log("lighthouse");
+            let lighthouseURL = "https://inspector.littleforest.co.uk/LighthouseWS/lighthouseServlet?"
+            let lighthouseAPI = lighthouseURL + "url=" + action.content + "&json=" + "null";;
+            let lighthouseJson = await getRequest(lighthouseAPI);
+            port.postMessage({ text: "runLighthouse", content: lighthouseJson });
+        }
+    });
 });
+
+
+
+
+
