@@ -1,3 +1,11 @@
+// Page Inspector Chrome Extension
+// LanguageTool && Google Lighthouse
+// Little Forest 2021
+// Author: Francisco 'xhico' Filipe
+// Created: 2021/06/02
+// Updated: 2021/07/08
+
+
 async function getRequest(url) {
     try {
         const res = await fetch(url);

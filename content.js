@@ -5,6 +5,7 @@
 // Created: 2021/06/02
 // Updated: 2021/07/08
 
+
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -24,22 +25,26 @@ async function getRequest(url) {
 async function clearHTML() {
     console.log("clearHTML");
 
+    let allHTML = document.documentElement.outerHTML;
+    console.log(allHTML);
+
     // Clear current html code
     let newHTML = document.open("text/html", "replace");
     newHTML.write('<html><head><body style="margin:0;"></body></html>');
     newHTML.close();
-}
-
-async function addIframe() {
-    console.log("addIframe");
 
     // Add iframe with current url
     let iframeElement = document.createElement('iframe');
     iframeElement.id = "maincontent";
     iframeElement.classList.add("iframe-width-300");
     iframeElement.classList.add("iframe");
-    iframeElement.src = window.location.href;
+    iframeElement.innerText = allHTML;
     document.body.appendChild(iframeElement);
+
+    // let doc = document.getElementById('maincontent').contentWindow.document;
+    // doc.open();
+    // doc.write(allHTML);
+    // doc.close();
 }
 
 async function addSidebarHTML(htmlContent) {
@@ -80,11 +85,11 @@ async function overlay(action) {
 async function addGeneralInfo() {
     console.log("addGeneralInfo");
 
-    // wait for iframe to load
-    document.getElementById('maincontent').addEventListener("load", function () {
-        isIframeLoad = true;
-    });
-    while (!(isIframeLoad)) { await sleep(1000); }
+    // // wait for iframe to load
+    // document.getElementById('maincontent').addEventListener("load", function () {
+    //     isIframeLoad = true;
+    // });
+    // while (!(isIframeLoad)) { await sleep(1000); }
 
     // Get iframe element
     let iframeElement = document.getElementById('maincontent').contentDocument;
@@ -223,16 +228,9 @@ let port = chrome.runtime.connect({ name: "knockknock" });
 
 port.onMessage.addListener(async function (response) {
     if (response.text == "startInject") {
-        // Check if already ran previously
-        if (!document.getElementById("maincontent")) {
-            // Clear current html code
-            await clearHTML();
-            // Add iframe with current url
-            await addIframe();
-            port.postMessage({ lang: response.lang, question: "sidebarHTML" });
-        } else {
-            console.log("Already checked.. nothing to do!");
-        }
+        // Clear current html code
+        await clearHTML();
+        // port.postMessage({ lang: response.lang, question: "sidebarHTML" });
     } else if (response.text == "addSidebarHTML") {
         // Add Sidebar <html>
         await addSidebarHTML(response.content);
@@ -244,7 +242,7 @@ port.onMessage.addListener(async function (response) {
     } else if (response.text == "addSidebarCSS") {
         // Add Sidebar <style>
         await addSidebarCSS(response.content);
-        port.postMessage({ lang: response.lang, question: "addOverlay" });
+        // port.postMessage({ lang: response.lang, question: "addOverlay" });
     } else if (response.text == "addOverlay") {
         // Insert overlay
         await overlay(response.text);

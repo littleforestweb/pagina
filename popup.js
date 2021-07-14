@@ -4,5 +4,5 @@ document.addEventListener('DOMContentLoaded', function () {
         chrome.runtime.sendMessage({ language: selectedLanguage }, function (response) {
             this.close();
         });
-    });
-})
+    }, false);
+}, false);
