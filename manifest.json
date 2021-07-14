@@ -9,13 +9,12 @@
         "default_popup": "popup.html"
     },
     "permissions": [
-        "<all_urls>",
-        "tabs"
+        "activeTab"
     ],
     "content_scripts": [
         {
             "matches": [
-                "<all_urls>"
+                "https://*/*"
             ],
             "js": [
                 "content.js"
