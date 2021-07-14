@@ -9,7 +9,7 @@
         "default_popup": "popup.html"
     },
     "permissions": [
-        "activeTab"
+        "tabs"
     ],
     "content_scripts": [
         {
@@ -25,6 +25,6 @@
         "scripts": [
             "background.js"
         ],
-        "persistent": true
+        "persistent": false
     }
 }

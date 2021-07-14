@@ -27,11 +27,12 @@ let lighthouseURL = "https://inspector.littleforest.co.uk/LighthouseWS/lighthous
 
 chrome.runtime.onConnect.addListener(function (port) {
 
-    chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-        console.assert(port.name == "knockknock");
+    chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
+        console.assert(port.name == "one");
         port.postMessage({ text: "startInject", lang: request.language });
         sendResponse({});
     });
+
 
     port.onMessage.addListener(async function (action) {
         if (action.question == "sidebarHTML") {
@@ -65,4 +66,5 @@ chrome.runtime.onConnect.addListener(function (port) {
             port.postMessage({ text: "runLighthouse", content: lighthouseJson });
         }
     });
+
 });

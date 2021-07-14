@@ -25,33 +25,35 @@ async function getRequest(url) {
 async function clearHTML() {
     console.log("clearHTML");
 
+    // Get base page HTML
     let allHTML = document.documentElement.outerHTML;
-    console.log(allHTML);
 
     // Clear current html code
     let newHTML = document.open("text/html", "replace");
     newHTML.write('<html><head><body style="margin:0;"></body></html>');
     newHTML.close();
 
-    // Add iframe with current url
+    // Add iframe
     let iframeElement = document.createElement('iframe');
     iframeElement.id = "maincontent";
     iframeElement.classList.add("iframe-width-300");
     iframeElement.classList.add("iframe");
-    iframeElement.innerText = allHTML;
     document.body.appendChild(iframeElement);
 
-    // let doc = document.getElementById('maincontent').contentWindow.document;
-    // doc.open();
-    // doc.write(allHTML);
-    // doc.close();
+    // Add base page HTML to iframe content
+    let doc = document.getElementById('maincontent').contentWindow.document;
+    doc.open();
+    doc.write(allHTML);
+    doc.close();
 }
 
 async function addSidebarHTML(htmlContent) {
     console.log("addSidebarHTML");
 
     // Add Sidebar <html>
-    document.body.innerHTML += htmlContent;
+    let sidebar = document.createElement('div');
+    sidebar.innerHTML = htmlContent;
+    document.body.appendChild(sidebar);
 }
 
 async function addSidebarJS(jsContent) {
@@ -224,13 +226,13 @@ let isSidebarFinish = false;
 let isLangToolFinished = false;
 let isIframeLoad = false;
 let langToolURL = "https://api.languagetoolplus.com/v2/check"
-let port = chrome.runtime.connect({ name: "knockknock" });
+let port = chrome.runtime.connect({ name: "one" });
 
 port.onMessage.addListener(async function (response) {
     if (response.text == "startInject") {
         // Clear current html code
         await clearHTML();
-        // port.postMessage({ lang: response.lang, question: "sidebarHTML" });
+        port.postMessage({ lang: response.lang, question: "sidebarHTML" });
     } else if (response.text == "addSidebarHTML") {
         // Add Sidebar <html>
         await addSidebarHTML(response.content);
@@ -242,7 +244,7 @@ port.onMessage.addListener(async function (response) {
     } else if (response.text == "addSidebarCSS") {
         // Add Sidebar <style>
         await addSidebarCSS(response.content);
-        // port.postMessage({ lang: response.lang, question: "addOverlay" });
+        port.postMessage({ lang: response.lang, question: "addOverlay" });
     } else if (response.text == "addOverlay") {
         // Insert overlay
         await overlay(response.text);
