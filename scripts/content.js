@@ -250,7 +250,7 @@ chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) 
     } else if (msg.text == "removeOverlay") {
         // Remove overlay
         await overlay(msg.text);
-        chrome.runtime.sendMessage({ question: "lighthouse", content: window.location.href });
+        // chrome.runtime.sendMessage({ question: "lighthouse", content: window.location.href });
     } else if (msg.text == "runLighthouse") {
         // Add Lighthouse
         await runLighthouse(msg.content);

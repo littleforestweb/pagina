@@ -245,7 +245,7 @@ console.clear();
                         } else if (msg.question == "generealInfo") {
                             chrome.tabs.sendMessage(tabs[0].id, { text: "addGeneralInfo" });
                         } else if (msg.question == "languageTool") {
-                            chrome.tabs.sendMessage(tabs[0].id, { lang: settings.selectedLanguages[1], text: "runLanguageTool" });
+                            chrome.tabs.sendMessage(tabs[0].id, { lang: settings.selectedLanguages, text: "runLanguageTool" });
                         } else if (msg.question == "removeOverlay") {
                             chrome.tabs.sendMessage(tabs[0].id, { text: "removeOverlay" });
                         } else if (msg.question == "lighthouse") {
@@ -410,4 +410,3 @@ console.clear();
 
         }, {}]
     }, {}, [1]);
-
