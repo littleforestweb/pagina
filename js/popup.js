@@ -1,3 +1,20 @@
+// Page Inspector Chrome Extension
+// LanguageTool && Google Lighthouse
+// Little Forest 2021
+// Author: Francisco 'xhico' Filipe
+// Created: 2021/06/02
+// Updated: 2021/07/08
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('checkPage').addEventListener('click', function () {
+        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, { text: "startInject" });
+        });
+    }, false);
+}, false);
+
+
 async function getRequest(url) {
     try {
         const res = await fetch(url);
@@ -14,16 +31,6 @@ async function getRequest(url) {
 // Set Base URL
 let assetsURL = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
 let lighthouseURL = "https://inspector.littleforest.co.uk/LighthouseWS/lighthouseServlet?"
-
-
-document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('checkPage').addEventListener('click', function () {
-        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-            chrome.tabs.sendMessage(tabs[0].id, { text: "startInject" });
-        });
-    }, false);
-}, false);
-
 
 chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) {
