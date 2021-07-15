@@ -37,8 +37,11 @@ console.clear();
             'use strict';
 
             const SettingsController = require('./settings-controller.js');
-
             const optionsVisibleClass = 'main--options-visible';
+
+            // Set Base URL
+            const assetsURL = "https://raw.githubusercontent.com/littleforestweb/pagina/main/assets/";
+            const lighthouseURL = "https://inspector.littleforest.co.uk/LighthouseWS/lighthouseServlet?"
 
 
             async function getRequest(url) {
@@ -212,6 +215,7 @@ console.clear();
 
                 generateReportButton.addEventListener('click', () => {
                     // onGenerateReportButtonClick(siteUrl.href, settings);
+                    console.log("clicked");
                     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
                         chrome.tabs.sendMessage(tabs[0].id, { text: "startInject" });
                     });
@@ -223,6 +227,33 @@ console.clear();
 
                 optionsFormEl.addEventListener('change', () => {
                     settings = readSettingsFromDomAndPersist();
+                });
+
+                chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+                    chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) {
+                        if (msg.question == "sidebarHTML") {
+                            let htmlContent = await getRequest(assetsURL + "report.html");
+                            chrome.tabs.sendMessage(tabs[0].id, { text: "addSidebarHTML", content: htmlContent });
+                        } else if (msg.question == "sidebarJS") {
+                            let jsContent = await getRequest(assetsURL + "report.js");
+                            chrome.tabs.sendMessage(tabs[0].id, { text: "addSidebarJS", content: jsContent });
+                        } else if (msg.question == "sidebarCSS") {
+                            let cssContent = await getRequest(assetsURL + "report.css");
+                            chrome.tabs.sendMessage(tabs[0].id, { text: "addSidebarCSS", content: cssContent });
+                        } else if (msg.question == "addOverlay") {
+                            chrome.tabs.sendMessage(tabs[0].id, { text: "addOverlay" });
+                        } else if (msg.question == "generealInfo") {
+                            chrome.tabs.sendMessage(tabs[0].id, { text: "addGeneralInfo" });
+                        } else if (msg.question == "languageTool") {
+                            chrome.tabs.sendMessage(tabs[0].id, { lang: settings.selectedLanguages[1], text: "runLanguageTool" });
+                        } else if (msg.question == "removeOverlay") {
+                            chrome.tabs.sendMessage(tabs[0].id, { text: "removeOverlay" });
+                        } else if (msg.question == "lighthouse") {
+                            let lighthouseAPI = lighthouseURL + "url=" + msg.content + "&json=" + "null";;
+                            let lighthouseJson = await getRequest(lighthouseAPI);
+                            chrome.tabs.sendMessage(tabs[0].id, { text: "runLighthouse", content: lighthouseJson });
+                        }
+                    });
                 });
             }
 
@@ -248,7 +279,6 @@ console.clear();
                 { id: 'da-DK', title: 'Danish', },
                 { id: 'nl', title: 'Dutch', },
                 { id: 'nl-BE', title: 'Dutch (Belgium)', },
-                { id: 'en', title: 'English', },
                 { id: 'en-AU', title: 'English (Australian)', },
                 { id: 'en-CA', title: 'English (Canadian)', },
                 { id: 'en-GB', title: 'English (GB)', },
@@ -258,7 +288,6 @@ console.clear();
                 { id: 'eo', title: 'Esperanto', },
                 { id: 'fr', title: 'French', },
                 { id: 'gl-ES', title: 'Galician', },
-                { id: 'de', title: 'German', },
                 { id: 'de-AT', title: 'German (Austria)', },
                 { id: 'de-DE', title: 'German (Germany)', },
                 { id: 'de-CH', title: 'German (Swiss)', },
@@ -271,14 +300,12 @@ console.clear();
                 { id: 'no', title: 'Norwegian (Bokmål)', },
                 { id: 'fa', title: 'Persian', },
                 { id: 'pl-PL', title: 'Polish', },
-                { id: 'pt', title: 'Portuguese', },
                 { id: 'pt-AO', title: 'Portuguese (Angola preAO)', },
                 { id: 'pt-BR', title: 'Portuguese (Brazil)', },
                 { id: 'pt-MZ', title: 'Portuguese (Moçambique preAO)', },
                 { id: 'pt-PT', title: 'Portuguese (Portugal)', },
                 { id: 'ro-RO', title: 'Romanian', },
                 { id: 'ru-RU', title: 'Russian', },
-                { id: 'de-DE-x-simple-language', title: 'Simple German', },
                 { id: 'sk-SK', title: 'Slovak', },
                 { id: 'sl-SI', title: 'Slovenian', },
                 { id: 'es', title: 'Spanish', },
@@ -383,5 +410,4 @@ console.clear();
 
         }, {}]
     }, {}, [1]);
-
 

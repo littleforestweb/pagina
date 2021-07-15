@@ -114,7 +114,7 @@ async function addGeneralInfo() {
 }
 
 async function runLanguageTool(language) {
-    console.log("runLanguageTool");
+    console.log("runLanguageTool - " + language);
 
     // Get iframe element
     let iframeElement = document.getElementById('maincontent').contentDocument;
@@ -217,7 +217,7 @@ async function runLighthouse(lighthouseJson) {
     }
 }
 
-
+console.clear();
 chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) {
     if (msg.text == "startInject") {
         // Clear current html code
