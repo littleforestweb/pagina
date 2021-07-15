@@ -29,7 +29,7 @@ async function getRequest(url) {
 
 
 // Set Base URL
-let assetsURL = "https://raw.githubusercontent.com/littleforestweb/pagina/main/";
+let assetsURL = "https://raw.githubusercontent.com/littleforestweb/pagina/main/assets/";
 let lighthouseURL = "https://inspector.littleforest.co.uk/LighthouseWS/lighthouseServlet?"
 
 chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
