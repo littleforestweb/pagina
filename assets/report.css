@@ -117,7 +117,7 @@ iframe {
 }
 
 .netflix-nav-red {
-    background-color: #28b467;
+    background-color: #8dc63f;
     transition-delay: .2s;
     width: 95%;
 }
@@ -188,8 +188,8 @@ iframe {
 
 .floating-btn {
     border-radius: 26.5px;
-    background-color: #28b467;
-    border: 1px solid #28b467;
+    background-color: #8dc63f;
+    border: 1px solid #8dc63f;
     box-shadow: 0 16px 22px -17px #03153B;
     color: #fff;
     cursor: pointer;
@@ -204,7 +204,7 @@ iframe {
 
 .floating-btn:hover {
     background-color: #ffffff;
-    color: #28b467;
+    color: #8dc63f;
 }
 
 .floating-btn:focus {
