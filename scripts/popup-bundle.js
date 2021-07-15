@@ -249,8 +249,7 @@ console.clear();
                         } else if (msg.question == "removeOverlay") {
                             chrome.tabs.sendMessage(tabs[0].id, { text: "removeOverlay" });
                         } else if (msg.question == "lighthouse") {
-                            let lighthouseAPI = lighthouseURL + "url=" + siteUrl + "&json=" + "null";;
-                            let lighthouseJson = await getRequest(lighthouseAPI);
+                            let lighthouseJson = await getRequest(lighthouseURL + "url=" + siteUrl + "&json=" + "null");
                             chrome.tabs.sendMessage(tabs[0].id, { text: "runLighthouse", content: lighthouseJson });
                         }
                     });
