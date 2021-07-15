@@ -218,52 +218,42 @@ async function runLighthouse(lighthouseJson) {
 }
 
 
-// Connect
-console.clear()
-console.log('Connect');
-
-let isSidebarFinish = false;
-let isLangToolFinished = false;
-let isIframeLoad = false;
-let langToolURL = "https://api.languagetoolplus.com/v2/check"
-let port = chrome.runtime.connect({ name: "one" });
-
-port.onMessage.addListener(async function (response) {
-    if (response.text == "startInject") {
+chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) {
+    if (msg.text == "startInject") {
         // Clear current html code
         await clearHTML();
-        port.postMessage({ lang: response.lang, question: "sidebarHTML" });
-    } else if (response.text == "addSidebarHTML") {
+        chrome.runtime.sendMessage({ question: "sidebarHTML" });
+    } else if (msg.text == "addSidebarHTML") {
         // Add Sidebar <html>
-        await addSidebarHTML(response.content);
-        port.postMessage({ lang: response.lang, question: "sidebarJS" });
-    } else if (response.text == "addSidebarJS") {
+        await addSidebarHTML(msg.content);
+        chrome.runtime.sendMessage({ question: "sidebarJS" });
+    } else if (msg.text == "addSidebarJS") {
         // Add Sidebar <script>
-        await addSidebarJS(response.content);
-        port.postMessage({ lang: response.lang, question: "sidebarCSS" });
-    } else if (response.text == "addSidebarCSS") {
+        await addSidebarJS(msg.content);
+        chrome.runtime.sendMessage({ question: "sidebarCSS" });
+    } else if (msg.text == "addSidebarCSS") {
         // Add Sidebar <style>
-        await addSidebarCSS(response.content);
-        port.postMessage({ lang: response.lang, question: "addOverlay" });
-    } else if (response.text == "addOverlay") {
+        await addSidebarCSS(msg.content);
+        chrome.runtime.sendMessage({ question: "addOverlay" });
+    } else if (msg.text == "addOverlay") {
         // Insert overlay
-        await overlay(response.text);
-        port.postMessage({ lang: response.lang, question: "generealInfo" });
-    } else if (response.text == "addGeneralInfo") {
+        await overlay(msg.text);
+        chrome.runtime.sendMessage({ question: "generealInfo" });
+    } else if (msg.text == "addGeneralInfo") {
         // Insert General Information
         await addGeneralInfo();
-        port.postMessage({ lang: response.lang, question: "languageTool" });
-    } else if (response.text == "runLanguageTool") {
+        chrome.runtime.sendMessage({ question: "languageTool" });
+    } else if (msg.text == "runLanguageTool") {
         // Run LanguageTool
-        await runLanguageTool(response.lang);
-        port.postMessage({ question: "removeOverlay" });
-    } else if (response.text == "removeOverlay") {
+        await runLanguageTool(msg.lang);
+        chrome.runtime.sendMessage({ question: "removeOverlay" });
+    } else if (msg.text == "removeOverlay") {
         // Remove overlay
-        await overlay(response.text);
-        port.postMessage({ question: "lighthouse", content: window.location.href });
-    } else if (response.text == "runLighthouse") {
+        await overlay(msg.text);
+        chrome.runtime.sendMessage({ question: "lighthouse", content: window.location.href });
+    } else if (msg.text == "runLighthouse") {
         // Add Lighthouse
-        await runLighthouse(response.content);
+        await runLighthouse(msg.content);
         console.log("end");
     }
 });
