@@ -193,7 +193,6 @@ async function runLighthouse(lighthouseJson) {
         lighthouseInfo.innerHTML = "<li>Lighthouse was unable to reliably load the page you requested.</li>";
     } catch (Ex) {
         try {
-            console.log("begin");
             try {
                 let performanceScore = lighthouseJson["categories"]["performance"]["score"] * 100;
                 lighthouseInfo.innerHTML += "<li><a></a>Performance - " + performanceScore + "% </li>";
