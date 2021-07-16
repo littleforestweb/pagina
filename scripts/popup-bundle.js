@@ -259,7 +259,7 @@ console.clear();
                                 cats = "null";
                             }
                             let lighthouseJson = await getRequest(lighthouseURL + "url=" + siteUrl + "&json=" + "null" + "&cat=" + cats);
-                            chrome.tabs.sendMessage(tabs[0].id, { text: "runLighthouse", content: lighthouseJson });
+                            chrome.tabs.sendMessage(tabs[0].id, { text: "runLighthouse", content: lighthouseJson, categories: cats });
                         }
                     });
                 });

@@ -182,9 +182,8 @@ async function runLanguageTool(language) {
 
 }
 
-async function runLighthouse(lighthouseJson) {
+async function runLighthouse(lighthouseJson, categories) {
     console.log("runLighthouse")
-    console.log(lighthouseJson);
 
     // Check if Lighthouse ran successfully
     let lighthouseInfo = document.getElementById("lighthouseInfo");
@@ -193,27 +192,11 @@ async function runLighthouse(lighthouseJson) {
         lighthouseInfo.innerHTML = "<li>Lighthouse was unable to reliably load the page you requested.</li>";
     } catch (Ex) {
         try {
-            try {
-                let performanceScore = lighthouseJson["categories"]["performance"]["score"] * 100;
-                lighthouseInfo.innerHTML += "<li><a></a>Performance - " + performanceScore + "% </li>";
-            } catch (Ex) { }
 
-            try {
-                let accessibilityScore = lighthouseJson["categories"]["accessibility"]["score"] * 100;
-                lighthouseInfo.innerHTML += "<li><a></a>Accessibility - " + accessibilityScore + "% </li>";
-            } catch (Ex) { }
-            try {
-                let BPScore = lighthouseJson["categories"]["best-practices"]["score"] * 100;
-                lighthouseInfo.innerHTML += "<li><a></a>Best Practices - " + BPScore + "% </li>";
-            } catch (Ex) { }
-            try {
-                let seoScore = lighthouseJson["categories"]["seo"]["score"] * 100;
-                lighthouseInfo.innerHTML += "<li><a></a>SEO - " + seoScore + "% </li>";
-            } catch (Ex) { }
-            try {
-                let pwaScore = lighthouseJson["categories"]["pwa"]["score"] * 100;
-                lighthouseInfo.innerHTML += "<li><a></a>Progressive Web App - " + pwaScore + "% </li>";
-            } catch (Ex) { }
+            categories.split(",").forEach(cat => {
+                let catScore = lighthouseJson["categories"][cat]["score"] * 100;
+                lighthouseInfo.innerHTML += "<li><a></a>" + cat + " - " + catScore + " % </li > ";
+            })
 
             lighthouseInfo.innerHTML += "<li><a id='lighthouseReadMore' href='#'>" + "Read More" + "</a></li>";
 
@@ -266,7 +249,7 @@ chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) 
         chrome.runtime.sendMessage({ question: "lighthouse" });
     } else if (msg.text == "runLighthouse") {
         // Add Lighthouse
-        await runLighthouse(msg.content);
+        await runLighthouse(msg.content, msg.categories);
         console.log("end");
     }
 });
