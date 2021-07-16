@@ -213,20 +213,22 @@ console.clear();
                 const selectedDeviceEl = (find(`.options__device input[value="${settings.device}"]`));
                 selectedDeviceEl.checked = true;
 
-                generateReportButton.addEventListener('click', () => {
-                    // onGenerateReportButtonClick(siteUrl.href, settings);
-                    console.log("clicked");
-                    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-                        chrome.tabs.sendMessage(tabs[0].id, { text: "startInject" });
-                    });
-                });
-
                 optionsEl.addEventListener('click', () => {
                     mainEl.classList.toggle(optionsVisibleClass);
                 });
 
                 optionsFormEl.addEventListener('change', () => {
                     settings = readSettingsFromDomAndPersist();
+                });
+
+                // ----------------------------------------------------------------------------------------------------------- //
+                // ----------------------------------------------------------------------------------------------------------- //
+
+                generateReportButton.addEventListener('click', () => {
+                    console.log("clicked");
+                    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+                        chrome.tabs.sendMessage(tabs[0].id, { text: "startInject" });
+                    });
                 });
 
                 chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
@@ -249,7 +251,14 @@ console.clear();
                         } else if (msg.question == "removeOverlay") {
                             chrome.tabs.sendMessage(tabs[0].id, { text: "removeOverlay" });
                         } else if (msg.question == "lighthouse") {
-                            let lighthouseJson = await getRequest(lighthouseURL + "url=" + siteUrl + "&json=" + "null");
+                            let cats = "";
+                            if (settings.selectedCategories.length !== 0) {
+                                settings.selectedCategories.forEach(category => { cats += category + ","; });
+                                cats = cats.slice(0, -1);
+                            } else {
+                                cats = "null";
+                            }
+                            let lighthouseJson = await getRequest(lighthouseURL + "url=" + siteUrl + "&json=" + "null" + "&cat=" + cats);
                             chrome.tabs.sendMessage(tabs[0].id, { text: "runLighthouse", content: lighthouseJson });
                         }
                     });

@@ -184,6 +184,7 @@ async function runLanguageTool(language) {
 
 async function runLighthouse(lighthouseJson) {
     console.log("runLighthouse")
+    console.log(lighthouseJson);
 
     // Check if Lighthouse ran successfully
     let lighthouseInfo = document.getElementById("lighthouseInfo");
@@ -192,16 +193,29 @@ async function runLighthouse(lighthouseJson) {
         lighthouseInfo.innerHTML = "<li>Lighthouse was unable to reliably load the page you requested.</li>";
     } catch (Ex) {
         try {
-            let performanceScore = lighthouseJson["categories"]["performance"]["score"] * 100;
-            let accessibilityScore = lighthouseJson["categories"]["accessibility"]["score"] * 100;
-            let BPScore = lighthouseJson["categories"]["best-practices"]["score"] * 100;
-            let seoScore = lighthouseJson["categories"]["seo"]["score"] * 100;
-            let pwaScore = lighthouseJson["categories"]["pwa"]["score"] * 100;
-            lighthouseInfo.innerHTML += "<li><a></a>Performance - " + performanceScore + "% </li>";
-            lighthouseInfo.innerHTML += "<li><a></a>Accessibility - " + accessibilityScore + "% </li>";
-            lighthouseInfo.innerHTML += "<li><a></a>Best Practices - " + BPScore + "% </li>";
-            lighthouseInfo.innerHTML += "<li><a></a>SEO - " + seoScore + "% </li>";
-            lighthouseInfo.innerHTML += "<li><a></a>Progressive Web App - " + pwaScore + "% </li>";
+            console.log("begin");
+            try {
+                let performanceScore = lighthouseJson["categories"]["performance"]["score"] * 100;
+                lighthouseInfo.innerHTML += "<li><a></a>Performance - " + performanceScore + "% </li>";
+            } catch (Ex) { }
+
+            try {
+                let accessibilityScore = lighthouseJson["categories"]["accessibility"]["score"] * 100;
+                lighthouseInfo.innerHTML += "<li><a></a>Accessibility - " + accessibilityScore + "% </li>";
+            } catch (Ex) { }
+            try {
+                let BPScore = lighthouseJson["categories"]["best-practices"]["score"] * 100;
+                lighthouseInfo.innerHTML += "<li><a></a>Best Practices - " + BPScore + "% </li>";
+            } catch (Ex) { }
+            try {
+                let seoScore = lighthouseJson["categories"]["seo"]["score"] * 100;
+                lighthouseInfo.innerHTML += "<li><a></a>SEO - " + seoScore + "% </li>";
+            } catch (Ex) { }
+            try {
+                let pwaScore = lighthouseJson["categories"]["pwa"]["score"] * 100;
+                lighthouseInfo.innerHTML += "<li><a></a>Progressive Web App - " + pwaScore + "% </li>";
+            } catch (Ex) { }
+
             lighthouseInfo.innerHTML += "<li><a id='lighthouseReadMore' href='#'>" + "Read More" + "</a></li>";
 
             // Get jsonPath

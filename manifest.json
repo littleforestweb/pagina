@@ -27,5 +27,10 @@
       ]
     }
   ],
+  "web_accessible_resources": [
+    "assets/report.html",
+    "assets/report.css",
+    "assets/report.js"
+  ],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'none'"
 }
