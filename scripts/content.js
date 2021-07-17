@@ -6,10 +6,6 @@
 // Updated: 2021/07/08
 
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 async function getRequest(url) {
     try {
         const res = await fetch(url);
@@ -214,9 +210,13 @@ async function runLighthouse(lighthouseJson, categories) {
 console.clear();
 chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) {
     if (msg.text == "startInject") {
-        // Clear current html code
-        await clearHTML();
-        chrome.runtime.sendMessage({ question: "sidebarHTML" });
+        if (document.getElementById("maincontent")) {
+            chrome.runtime.sendMessage({ question: "allDone" });
+        } else {
+            // Clear current html code
+            await clearHTML();
+            chrome.runtime.sendMessage({ question: "sidebarHTML" });
+        }
     } else if (msg.text == "addSidebarHTML") {
         // Add Sidebar <html>
         await addSidebarHTML(msg.content);
