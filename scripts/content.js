@@ -116,7 +116,7 @@ async function runLanguageTool(language) {
     let iframeElement = document.getElementById('maincontent').contentDocument;
 
     // Get all tagsText
-    let tagsText = iframeElement.querySelectorAll('p, h1, h2, h3, h4, h5, h6, caption, footer, label, small, strong')
+    let tagsText = iframeElement.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span')
 
     // Set errorsDict where key => error and value => [count, color]
     let errorsDict = {};
@@ -132,11 +132,16 @@ async function runLanguageTool(language) {
 
         try {
 
-            // // Get detected language and confidence
-            // let detectedLanguage = data.language.detectedLanguage.name;
-            // let detectConfidence = data.language.detectedLanguage.confidence * 100;
-            // document.getElementById("detectedLanguage").innerHTML = detectedLanguage;
-            // document.getElementById("detectConfidence").innerHTML = detectConfidence;
+            if (language == "auto") {
+                // Get detected language and confidence
+                let detectedLanguage = data.language.detectedLanguage.name;
+                document.getElementById("detectedLanguage").innerText = detectedLanguage + " (auto-detect) ";
+            } else {
+                // Get detected language and confidence
+                let detectedLanguage = data.language.name;
+                document.getElementById("detectedLanguage").innerText = detectedLanguage;
+            }
+
 
             // Iterate on every error
             data.matches.forEach(function (entry) {

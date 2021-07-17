@@ -378,9 +378,6 @@ console.clear();
                 // Stash device setting.
                 storage[STORAGE_KEYS.Settings].device = settings.device;
 
-                // Stash CRX state.
-                storage[STORAGE_KEYS.Settings].device = settings.device;
-
                 // Save object to chrome local storage.
                 chrome.storage.local.set(storage);
             }
