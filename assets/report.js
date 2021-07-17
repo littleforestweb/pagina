@@ -18,7 +18,7 @@
 // });
 
 
-const spellErrors = document.getElementById('spell-ul');
+const spellErrors = document.getElementById('spell-title');
 spellErrors.addEventListener('click', () => {
     if (document.getElementById("spell-li").style.display == "none") {
         document.getElementById("spell-li").style.display = "block";
@@ -27,7 +27,7 @@ spellErrors.addEventListener('click', () => {
     }
 });
 
-const lighthouse = document.getElementById('lighthouse-ul');
+const lighthouse = document.getElementById('lighthouse-title');
 lighthouse.addEventListener('click', () => {
     if (document.getElementById("lighthouse-li").style.display == "none") {
         document.getElementById("lighthouse-li").style.display = "block";
@@ -36,7 +36,7 @@ lighthouse.addEventListener('click', () => {
     }
 });
 
-const generalInfo = document.getElementById('general-ul');
+const generalInfo = document.getElementById('general-title');
 generalInfo.addEventListener('click', () => {
     if (document.getElementById("general-li").style.display == "none") {
         document.getElementById("general-li").style.display = "block";
