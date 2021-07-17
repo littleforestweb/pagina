@@ -3,7 +3,7 @@
 // Little Forest 2021
 // Author: Francisco 'xhico' Filipe
 // Created: 2021/06/02
-// Updated: 2021/07/08
+// Updated: 2021/07/18
 
 
 async function getRequest(url) {
@@ -82,12 +82,6 @@ async function overlay(action) {
 
 async function addGeneralInfo() {
     console.log("addGeneralInfo");
-
-    // // wait for iframe to load
-    // document.getElementById('maincontent').addEventListener("load", function () {
-    //     isIframeLoad = true;
-    // });
-    // while (!(isIframeLoad)) { await sleep(1000); }
 
     // Get iframe element
     let iframeElement = document.getElementById('maincontent').contentDocument;
@@ -215,6 +209,7 @@ async function runLighthouse(lighthouseJson, categories) {
 console.clear();
 chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) {
     if (msg.text == "startInject") {
+        // Check if already ran
         if (document.getElementById("maincontent")) {
             chrome.runtime.sendMessage({ question: "allDone" });
         } else {

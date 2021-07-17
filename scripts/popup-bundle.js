@@ -1,3 +1,10 @@
+// Page Inspector Chrome Extension
+// LanguageTool && Google Lighthouse
+// Little Forest 2021
+// Author: Francisco 'xhico' Filipe
+// Created: 2021/06/02
+// Updated: 2021/07/18
+
 console.clear();
 
 (function () {
@@ -30,10 +37,8 @@ console.clear();
     ({
         1: [function (require, module, exports) {
             /**
-             * @license Copyright 2016 Google Inc. All Rights Reserved.
-             * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
-             * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
-             */
+             * @license Copyright 2021 Little Forest.
+            */
             'use strict';
 
             const SettingsController = require('./settings-controller.js');
@@ -42,11 +47,16 @@ console.clear();
             // Set Base URL
             const lighthouseURL = "https://inspector.littleforest.co.uk/LighthouseWS/lighthouseServlet?"
 
-
+            /**
+             * Guaranteed context.querySelector. Always returns an element or throws if
+             * @param {string} url
+             * @return {JSON}
+             * @return {HTMLElement}
+             */
             async function getRequest(url) {
                 try {
                     const res = await fetch(url);
-                    if (url.includes("languagetoolplus") || url.includes("lighthouseServlet")) {
+                    if (url.includes("lighthouseServlet")) {
                         return await res.json();
                     }
                     return await res.text();
@@ -277,9 +287,7 @@ console.clear();
 
         }, { "./settings-controller.js": 2 }], 2: [function (require, module, exports) {
             /**
-             * @license Copyright 2019 Google Inc. All Rights Reserved.
-             * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
-             * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+             * @license Copyright 2021 Little Forest.
              */
             'use strict';
 
