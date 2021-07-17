@@ -224,22 +224,19 @@ console.clear();
                 // ----------------------------------------------------------------------------------------------------------- //
 
                 generateReportButton.addEventListener('click', () => {
-                    generateReportButton.innerText = "Starting";
-                    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-                        chrome.tabs.sendMessage(tabs[0].id, { text: "startInject" });
-                    });
-                    // if (generateReportButton.innerText == "Generate Report") {
-                    //     generateReportButton.innerText = "Starting";
-                    //     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-                    //         chrome.tabs.sendMessage(tabs[0].id, { text: "startInject" });
-                    //     });
-                    // } else {
-                    //     if (generateReportButton.innerText != "Finished") {
-                    //         generateReportButton.innerText == "All Done!"
-                    //     } else {
-                    //         generateReportButton.innerText == "Running, please wait";
-                    //     }
-                    // }
+                    if (generateReportButton.innerText == "Generate Report") {
+                        generateReportButton.innerText = "Starting";
+                        document.getElementById("keepMeOpen").innerText = "Please keep me open until finish!"
+                        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+                            chrome.tabs.sendMessage(tabs[0].id, { text: "startInject" });
+                        });
+                    } else {
+                        if (generateReportButton.innerText == "Finished" || generateReportButton.innerText == "All Done!") {
+                            generateReportButton.innerText = "All Done!";
+                        } else {
+                            generateReportButton.innerText = "Running, please wait";
+                        }
+                    }
                 });
 
                 chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) {
@@ -275,6 +272,7 @@ console.clear();
                         chrome.tabs.sendMessage(sender.tab.id, { text: "runLighthouse", content: lighthouseJson, categories: cats });
                     } else if (msg.question == "end") {
                         generateReportButton.innerText = "Finished";
+                        document.getElementById("keepMeOpen").innerText = "You can close me now!"
                     }
                 });
             }
