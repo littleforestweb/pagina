@@ -248,7 +248,7 @@ chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) 
     } else if (msg.text == "runLighthouse") {
         // Add Lighthouse
         document.getElementById("lighthouse-section").hidden = false;
-        await runLighthouse(msg.content, msg.categories);
+        // await runLighthouse(msg.content, msg.categories);
         chrome.runtime.sendMessage({ question: "end" });
     }
 });
