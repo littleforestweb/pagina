@@ -193,20 +193,18 @@ async function runLighthouse(lighthouseJson, categories) {
     } catch (Ex) {
         try {
 
+            // Iterate over every Category and set the Tittle and Score
             categories.split(",").forEach(cat => {
                 let catScore = lighthouseJson["categories"][cat]["score"] * 100;
-                lighthouseInfo.innerHTML += "<li><a></a>" + cat + " - " + catScore + " % </li > ";
+                let catTitle = lighthouseJson["categories"][cat]["title"];
+                lighthouseInfo.innerHTML += "<li><a></a>" + catTitle + " - " + catScore + " % </li > ";
             })
 
+            // Add Read More -> Open the HTML File
             lighthouseInfo.innerHTML += "<li><a id='lighthouseReadMore' href='#'>" + "Read More" + "</a></li>";
-
-            // Get jsonPath
-            let jsonFileName = lighthouseJson["jsonFileName"];
             let lighthouseReadMore = document.getElementById("lighthouseReadMore");
             lighthouseReadMore.target = "_blank";
-            lighthouseReadMore.href = "https://inspector.littleforest.co.uk/LighthouseWS/lighthouseServlet?" + "url=" + "null" + "&json=" + jsonFileName;
-            // lighthouseReadMore.href = "https://googlechrome.github.io/lighthouse/viewer/?jsonurl=" + "https://inspector.littleforest.co.uk/LighthouseWS/lighthouseServlet?" + "url=" + "null" + "&json=" + jsonFileName;
-
+            lighthouseReadMore.href = "https://inspector.littleforest.co.uk/LighthouseWS/lighthouseServlet?url=null&cats=null&view=" + lighthouseJson["htmlReport"];
         } catch (Ex) {
             lighthouseInfo.innerHTML = "<li>Lighthouse was unable to reliably load the page you requested.</li>";
         }

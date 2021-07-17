@@ -258,7 +258,7 @@ console.clear();
                             } else {
                                 cats = "null";
                             }
-                            let lighthouseJson = await getRequest(lighthouseURL + "url=" + siteUrl + "&json=" + "null" + "&cat=" + cats);
+                            let lighthouseJson = await getRequest(lighthouseURL + "url=" + siteUrl + "&cats=" + cats);
                             chrome.tabs.sendMessage(tabs[0].id, { text: "runLighthouse", content: lighthouseJson, categories: cats });
                         }
                     });
