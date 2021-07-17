@@ -235,13 +235,13 @@ console.clear();
                 chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
                     chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) {
                         if (msg.question == "sidebarHTML") {
-                            let htmlContent = await getRequest(assetsURL + "report.html");
+                            let htmlContent = await getRequest(chrome.runtime.getURL("assets/report.html"));
                             chrome.tabs.sendMessage(tabs[0].id, { text: "addSidebarHTML", content: htmlContent });
                         } else if (msg.question == "sidebarJS") {
-                            let jsContent = await getRequest(assetsURL + "report.js");
+                            let jsContent = await getRequest(chrome.runtime.getURL("assets/report.js"));
                             chrome.tabs.sendMessage(tabs[0].id, { text: "addSidebarJS", content: jsContent });
                         } else if (msg.question == "sidebarCSS") {
-                            let cssContent = await getRequest(assetsURL + "report.css");
+                            let cssContent = await getRequest(chrome.runtime.getURL("assets/report.css"));
                             chrome.tabs.sendMessage(tabs[0].id, { text: "addSidebarCSS", content: cssContent });
                         } else if (msg.question == "addOverlay") {
                             chrome.tabs.sendMessage(tabs[0].id, { text: "addOverlay" });
