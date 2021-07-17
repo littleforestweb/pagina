@@ -117,9 +117,8 @@ iframe {
 }
 
 .netflix-nav-red {
-    background-color: #8dc63f;
     transition-delay: .2s;
-    width: 95%;
+    width: 100%;
 }
 
 .netflix-nav-red.visible {
