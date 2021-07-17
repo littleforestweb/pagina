@@ -226,6 +226,7 @@ console.clear();
 
                 generateReportButton.addEventListener('click', () => {
                     console.log("clicked");
+                    generateReportButton.innerText = "Starting";
                     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
                         chrome.tabs.sendMessage(tabs[0].id, { text: "startInject" });
                     });
@@ -245,12 +246,15 @@ console.clear();
                         } else if (msg.question == "addOverlay") {
                             chrome.tabs.sendMessage(tabs[0].id, { text: "addOverlay" });
                         } else if (msg.question == "generealInfo") {
+                            generateReportButton.innerText = "Getting General Information";
                             chrome.tabs.sendMessage(tabs[0].id, { text: "addGeneralInfo" });
                         } else if (msg.question == "languageTool") {
+                            generateReportButton.innerText = "Running Spell Check";
                             chrome.tabs.sendMessage(tabs[0].id, { lang: settings.selectedLanguages, text: "runLanguageTool" });
                         } else if (msg.question == "removeOverlay") {
                             chrome.tabs.sendMessage(tabs[0].id, { text: "removeOverlay" });
                         } else if (msg.question == "lighthouse") {
+                            generateReportButton.innerText = "Running Lighthouse";
                             let cats = "";
                             if (settings.selectedCategories.length !== 0) {
                                 settings.selectedCategories.forEach(category => { cats += category + ","; });
@@ -260,6 +264,8 @@ console.clear();
                             }
                             let lighthouseJson = await getRequest(lighthouseURL + "url=" + siteUrl + "&cats=" + cats);
                             chrome.tabs.sendMessage(tabs[0].id, { text: "runLighthouse", content: lighthouseJson, categories: cats });
+                        } else if (msg.question == "end") {
+                            generateReportButton.innerText = "Finished";
                         }
                     });
                 });
