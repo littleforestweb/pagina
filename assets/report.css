@@ -229,9 +229,27 @@ iframe {
 --------------------------------------------------------------------------------------------------------------------------------------
 */
 
+/* width */
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+
+::-webkit-scrollbar-track {
+    border-radius: 10px;
+}
+
+/* Handle */
+
 ::-webkit-scrollbar-thumb {
-    border: 5px solid transparent;
-    border-radius: 100px;
-    background-color: #8070d4;
-    background-clip: content-box;
+    background: #8dc63f;
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+
+::-webkit-scrollbar-thumb:hover {
+    background: #8dc63f;
 }
