@@ -247,7 +247,7 @@ chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) 
         chrome.runtime.sendMessage({ question: "lighthouse" });
     } else if (msg.text == "runLighthouse") {
         // Add Lighthouse
-        await runLighthouse(msg.content, msg.categories);
+        // await runLighthouse(msg.content, msg.categories);
         console.log("end");
     }
 });
