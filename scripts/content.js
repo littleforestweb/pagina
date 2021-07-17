@@ -201,7 +201,7 @@ async function runLighthouse(lighthouseJson, categories) {
             })
 
             // Add Read More -> Open the HTML File
-            lighthouseInfo.innerHTML += "<li><a id='lighthouseReadMore' href='#'>" + "Read More" + "</a></li>";
+            lighthouseInfo.innerHTML += "<li><a id='lighthouseReadMore' href='#'><b>" + "View Full Report" + "</b></a></li>";
             let lighthouseReadMore = document.getElementById("lighthouseReadMore");
             lighthouseReadMore.target = "_blank";
             lighthouseReadMore.href = "https://inspector.littleforest.co.uk/LighthouseWS/lighthouseServlet?url=null&cats=null&view=" + lighthouseJson["htmlReport"];
