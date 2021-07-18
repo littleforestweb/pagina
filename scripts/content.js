@@ -152,7 +152,7 @@ async function runLanguageTool(language) {
 
                     // Update error color on html
                     tagText.innerHTML = tagText.innerHTML.replace(error,
-                        "<a style='text-decoration: none;' href='#'><span title='" + message + "' style='color: black; background-color:" + color + ";font-weight:bold;'>" + error + "</span></a>"
+                        "<span title='" + message + "' style='color: black; background-color:" + color + ";font-weight:bold;'>" + error + "</span>"
                     );;
 
                     // Add/update key error on errorsDict
