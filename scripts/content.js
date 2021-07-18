@@ -36,12 +36,6 @@ async function clearHTML() {
     iframeElement.classList.add("iframe");
     document.body.appendChild(iframeElement);
 
-    // Add Sidebar <style>
-    let css = '.tooltip {position: relative;display: inline-block;border-bottom: 1px dotted black;} .tooltip .tooltiptext {visibility: hidden;width: 120px;background-color: black;color: #fff;text-align: center;border-radius: 6px;padding: 5px 0;z-index: 1;bottom: 100%;left: 50%;margin-left: -60px;}.tooltip:hover .tooltiptext {visibility: visible;}'
-    let report = document.createElement("style");
-    document.getElementById("maincontent").head.appendChild(report).innerHTML = css;
-
-
     // Add base page HTML to iframe content
     let doc = document.getElementById('maincontent').contentWindow.document;
     doc.open();
@@ -158,7 +152,7 @@ async function runLanguageTool(language) {
 
                     // Update error color on html
                     tagText.innerHTML = tagText.innerHTML.replace(error,
-                        '<div class="tooltip">' + error + '<span class="tooltiptext" style="color: black; background-color:"' + color + '";font-weight:bold;">' + message + '</span></div>'
+                        "<a style='text-decoration: none;' href='#'><span title='" + message + "' style='color: black; background-color:" + color + ";font-weight:bold;'>" + error + "</span></a>"
                     );;
 
                     // Add/update key error on errorsDict
