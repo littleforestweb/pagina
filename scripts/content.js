@@ -129,7 +129,7 @@ async function runLanguageTool(language) {
             if (language == "auto") {
                 // Get detected language and confidence
                 let detectedLanguage = data.language.detectedLanguage.name;
-                document.getElementById("detectedLanguage").innerText = detectedLanguage + " (auto-detect) ";
+                document.getElementById("detectedLanguage").innerText = detectedLanguage + " (Auto) ";
             } else {
                 // Get detected language and confidence
                 let detectedLanguage = data.language.name;
@@ -145,7 +145,7 @@ async function runLanguageTool(language) {
                 let message = entry.message;
                 let error = text.substring(entry.context.offset, entry.context.offset + entry.context.length);
                 let reps = entry.replacements;
-                var replacements = reps.map(function (reps) { return reps['value']; }).toString();
+                var replacements = reps.map(function (reps) { return reps['value']; }).toString().replaceAll(",", ", ");
                 let color;
 
                 // Remove false-positive errors (one char and whitespaces)
@@ -160,7 +160,7 @@ async function runLanguageTool(language) {
                     );;
 
                     // Add/update key error on errorsDict
-                    if (error in errorsDict) { errorsDict[error][0] = errorsDict[error][0] + 1; } else { errorsDict[error] = [1, color, message]; }
+                    if (error in errorsDict) { errorsDict[error][0] = errorsDict[error][0] + 1; } else { errorsDict[error] = [1, message, replacements]; }
                 }
             });
 
