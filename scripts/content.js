@@ -9,7 +9,7 @@
 async function getRequest(url) {
     try {
         const res = await fetch(url);
-        if (url.includes("LTServlet") || url.includes("lighthouseServlet")) {
+        if (url.includes("languagetoolplus") || url.includes("lighthouseServlet")) {
             return await res.json();
         }
         return await res.text();
@@ -122,41 +122,45 @@ async function runLanguageTool(language) {
         let tagText = tagsText[i]
 
         // Get LangTool API Response
-        const data = await getRequest("https://inspector.littleforest.co.uk/LanguageToolWS/LTServlet" + "?text=" + tagText.innerHTML.replace(/<\/?[^>]+(>|$)/g, "") + "&lang=" + language);
+        const data = await getRequest("https://api.languagetoolplus.com/v2/check" + "?text=" + tagText.innerHTML.replace(/<\/?[^>]+(>|$)/g, "") + "&language=" + language);
 
         try {
 
-            // Get detected language
-            let detectedLanguage = data.Language
-            document.getElementById("detectedLanguage").innerText = detectedLanguage;
+            if (language == "auto") {
+                // Get detected language and confidence
+                let detectedLanguage = data.language.detectedLanguage.name;
+                document.getElementById("detectedLanguage").innerText = detectedLanguage + " (auto-detect) ";
+            } else {
+                // Get detected language and confidence
+                let detectedLanguage = data.language.name;
+                document.getElementById("detectedLanguage").innerText = detectedLanguage;
+            }
+
 
             // Iterate on every error
-            data.SpellingErrors.forEach(function (entry) {
+            data.matches.forEach(function (entry) {
 
-                // Get error, message;
-                let error = entry.error
+                // Get error, message, replacements and color;
+                let text = entry.context.text;
                 let message = entry.message;
-                let replacements = entry.replacements;
+                let error = text.substring(entry.context.offset, entry.context.offset + entry.context.length);
+                let reps = entry.replacements;
+                var replacements = reps.map(function (reps) { return reps['value']; }).toString();
                 let color;
-
 
                 // Remove false-positive errors (one char and whitespaces)
                 if (error.length >= 3 && !(/\s/g.test(error))) {
+
                     // Set color of error => red for mistake and yellow for others
                     if (message == "Possible spelling mistake found.") { color = "red"; } else { color = "orange"; }
 
                     // Update error color on html
                     tagText.innerHTML = tagText.innerHTML.replace(error,
                         "<span title='Message: " + message + "&#010;" + "Replacements: " + replacements + "' style='color: black; background-color:" + color + ";font-weight:bold;'>" + error + "</span>"
-                    );
+                    );;
 
                     // Add/update key error on errorsDict
-                    if (error in errorsDict) {
-                        errorsDict[error][0] = errorsDict[error][0] + 1;
-                    } else {
-                        errorsDict[error] = [1, message, replacements];
-                    }
-
+                    if (error in errorsDict) { errorsDict[error][0] = errorsDict[error][0] + 1; } else { errorsDict[error] = [1, color, message]; }
                 }
             });
 
@@ -184,6 +188,7 @@ async function runLanguageTool(language) {
 
     //  Add totalErrors to GENERALINFO
     document.getElementById("totalErrors").innerText = Object.keys(errorsDict).length;
+
 }
 
 async function runLighthouse(lighthouseJson, categories) {
