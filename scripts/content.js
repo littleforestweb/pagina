@@ -9,7 +9,7 @@
 async function getRequest(url) {
     try {
         const res = await fetch(url);
-        if (url.includes("languagetoolplus") || url.includes("lighthouseServlet")) {
+        if (url.includes("LTServlet") || url.includes("lighthouseServlet")) {
             return await res.json();
         }
         return await res.text();
@@ -122,41 +122,41 @@ async function runLanguageTool(language) {
         let tagText = tagsText[i]
 
         // Get LangTool API Response
-        const data = await getRequest("https://api.languagetoolplus.com/v2/check" + "?text=" + tagText.innerHTML.replace(/<\/?[^>]+(>|$)/g, "") + "&language=" + language);
+        const data = await getRequest("https://inspector.littleforest.co.uk/LanguageToolWS/LTServlet" + "?text=" + tagText.innerHTML.replace(/<\/?[^>]+(>|$)/g, "") + "&lang=" + language);
 
         try {
 
-            if (language == "auto") {
-                // Get detected language and confidence
-                let detectedLanguage = data.language.detectedLanguage.name;
-                document.getElementById("detectedLanguage").innerText = detectedLanguage + " (auto-detect) ";
-            } else {
-                // Get detected language and confidence
-                let detectedLanguage = data.language.name;
-                document.getElementById("detectedLanguage").innerText = detectedLanguage;
-            }
-
+            // Get detected language
+            let detectedLanguage = data.Language
+            document.getElementById("detectedLanguage").innerText = detectedLanguage;
 
             // Iterate on every error
-            data.matches.forEach(function (entry) {
+            data.SpellingErrors.forEach(function (entry) {
 
                 // Get error, message;
-                let text = entry.context.text; let message = entry.message; let color;
-                let error = text.substring(entry.context.offset, entry.context.offset + entry.context.length);
+                let error = entry.error
+                let message = entry.message;
+                let replacements = entry.replacements;
+                let color;
+
 
                 // Remove false-positive errors (one char and whitespaces)
                 if (error.length >= 3 && !(/\s/g.test(error))) {
-
                     // Set color of error => red for mistake and yellow for others
                     if (message == "Possible spelling mistake found.") { color = "red"; } else { color = "orange"; }
 
                     // Update error color on html
                     tagText.innerHTML = tagText.innerHTML.replace(error,
-                        "<span title='" + message + "' style='color: black; background-color:" + color + ";font-weight:bold;'>" + error + "</span>"
-                    );;
+                        "<span title='Message: " + message + "&#010;" + "Replacements: " + replacements + "' style='color: black; background-color:" + color + ";font-weight:bold;'>" + error + "</span>"
+                    );
 
                     // Add/update key error on errorsDict
-                    if (error in errorsDict) { errorsDict[error][0] = errorsDict[error][0] + 1; } else { errorsDict[error] = [1, color, message]; }
+                    if (error in errorsDict) {
+                        errorsDict[error][0] = errorsDict[error][0] + 1;
+                    } else {
+                        errorsDict[error] = [1, message, replacements];
+                    }
+
                 }
             });
 
@@ -165,16 +165,25 @@ async function runLanguageTool(language) {
         }
     }
 
+    // Create items array
+    var items = Object.keys(errorsDict).map(function (key) {
+        return [key, errorsDict[key]];
+    });
+
+    // Sort the array based on the count element
+    items.sort(function (first, second) {
+        return second[1][0] - first[1][0];
+    });
+
     // Add errors to Sidebar
-    var spellErrors = document.getElementById("spellErrors")
-    Object.entries(errorsDict).forEach(([key, value]) => {
-        var error = key; var count = value[0]; var color = value[1]; var message = value[2];
-        spellErrors.innerHTML += "<li><a href='#' title='" + message + "'>" + error + " (" + count + "x)" + "</a></li>";
+    let spellErrors = document.getElementById("spellErrors")
+    items.forEach(function (entry) {
+        let error = entry[0]; let count = entry[1][0]; let message = entry[1][1]; let replacements = entry[1][2];
+        spellErrors.innerHTML += "<li><a href='#' title='Message: " + message + "&#010;" + "Replacements: " + replacements + "'>" + error + " (" + count + "x)" + "</a></li>";
     });
 
     //  Add totalErrors to GENERALINFO
     document.getElementById("totalErrors").innerText = Object.keys(errorsDict).length;
-
 }
 
 async function runLighthouse(lighthouseJson, categories) {

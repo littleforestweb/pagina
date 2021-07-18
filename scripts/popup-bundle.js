@@ -243,7 +243,6 @@ console.clear();
                     }
                 });
 
-
                 chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) {
                     if (msg.question == "sidebarHTML") {
                         let htmlContent = await getRequest(chrome.runtime.getURL("assets/report.html"));
@@ -316,20 +315,19 @@ console.clear();
                 { id: 'de-DE', title: 'German (Germany)', },
                 { id: 'de-CH', title: 'German (Swiss)', },
                 { id: 'el-GR', title: 'Greek', },
-                { id: 'ga-IE', title: 'Irish', },
-                { id: 'it', title: 'Italian', },
-                { id: 'ja-JP', title: 'Japanese', },
-                { id: 'km-KH', title: 'Khmer', },
-                { id: 'nb', title: 'Norwegian (Bokmål)', },
-                { id: 'no', title: 'Norwegian (Bokmål)', },
-                { id: 'fa', title: 'Persian', },
-                { id: 'pl-PL', title: 'Polish', },
-                { id: 'pt-AO', title: 'Portuguese (Angola preAO)', },
-                { id: 'pt-BR', title: 'Portuguese (Brazil)', },
-                { id: 'pt-MZ', title: 'Portuguese (Moçambique preAO)', },
-                { id: 'pt-PT', title: 'Portuguese (Portugal)', },
-                { id: 'ro-RO', title: 'Romanian', },
-                { id: 'ru-RU', title: 'Russian', },
+                { id: 'it', title: 'Irish', },
+                { id: 'ja-JP', title: 'Italian', },
+                { id: 'km-KH', title: 'Japanese', },
+                { id: 'fa', title: 'Khmer', },
+                { id: 'pl-PL', title: 'Persian', },
+                { id: 'pt', title: 'Polish', },
+                { id: 'pt-AO', title: 'Portuguese', },
+                { id: 'pt-BR', title: 'Portuguese (Angola preAO)', },
+                { id: 'pt-MZ', title: 'Portuguese (Brazil)', },
+                { id: 'pt-PT', title: 'Portuguese (MoÃ§ambique preAO)', },
+                { id: 'ro-RO', title: 'Portuguese (Portugal)', },
+                { id: 'ru-RU', title: 'Romanian', },
+                { id: 'de-DE-x-simple-language', title: 'Russian', },
                 { id: 'sk-SK', title: 'Slovak', },
                 { id: 'sl-SI', title: 'Slovenian', },
                 { id: 'es', title: 'Spanish', },
@@ -337,8 +335,7 @@ console.clear();
                 { id: 'sv', title: 'Swedish', },
                 { id: 'tl-PH', title: 'Tagalog', },
                 { id: 'ta-IN', title: 'Tamil', },
-                { id: 'uk-UA', title: 'Ukrainian', },
-                { id: 'auto', title: 'Auto-Detect', }
+                { id: 'uk-UA', title: 'Ukrainian', }
             ];
 
             // Manually define the default categories, instead of bundling a lot of i18n code.

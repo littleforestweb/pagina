@@ -1,0 +1,44 @@
+Arabic
+Asturian
+Belarusian
+Breton
+Catalan
+Catalan (Valencian)
+Chinese
+Danish
+Dutch
+Dutch (Belgium)
+English (Australian)
+English (Canadian)
+English (GB)
+English (New Zealand)
+English (South African)
+English (US)
+Esperanto
+French
+Galician
+German (Austria)
+German (Germany)
+German (Swiss)
+Greek
+Irish
+Italian
+Japanese
+Khmer
+Persian
+Polish
+Portuguese
+Portuguese (Angola preAO)
+Portuguese (Brazil)
+Portuguese (Moçambique preAO)
+Portuguese (Portugal)
+Romanian
+Russian
+Slovak
+Slovenian
+Spanish
+Spanish (voseo)
+Swedish
+Tagalog
+Tamil
+Ukrainian
