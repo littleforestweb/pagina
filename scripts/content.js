@@ -32,6 +32,7 @@ async function clearHTML() {
     // Add iframe
     let iframeElement = document.createElement('iframe');
     iframeElement.id = "maincontent";
+    iframeElement.style = "maincontent";
     iframeElement.classList.add("iframe-width-300");
     iframeElement.classList.add("iframe");
     document.body.appendChild(iframeElement);
