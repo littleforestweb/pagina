@@ -198,7 +198,7 @@ async function runLighthouse(lighthouseJson, categories) {
     let lighthouseInfo = document.getElementById("lighthouseInfo");
     try {
         lighthouseJson["runtimeError"]["code"];
-        lighthouseInfo.innerHTML = "<li>Lighthouse was unable to reliably load the page you requested.</li>";
+        lighthouseInfo.innerHTML = "<li>Lighthouse was unable to reliably load the page you requested.<br>You can try refreshing the page and retry.</li>";
     } catch (Ex) {
         try {
 
@@ -210,12 +210,12 @@ async function runLighthouse(lighthouseJson, categories) {
             })
 
             // Add Read More -> Open the HTML File
-            lighthouseInfo.innerHTML += "<li><a id='lighthouseReadMore' href='#'><b>" + "View Full Report" + "</b></a></li>";
+            lighthouseInfo.innerHTML += "<li><a id='lighthouseReadMore' href='#'><b>" + "Read More" + "</b></a></li>";
             let lighthouseReadMore = document.getElementById("lighthouseReadMore");
             lighthouseReadMore.target = "_blank";
             lighthouseReadMore.href = "https://inspector.littleforest.co.uk/LighthouseWS/lighthouseServlet?url=null&cats=null&view=" + lighthouseJson["htmlReport"];
         } catch (Ex) {
-            lighthouseInfo.innerHTML = "<li>Lighthouse was unable to reliably load the page you requested.</li>";
+            lighthouseInfo.innerHTML = "<li>Lighthouse was unable to reliably load the page you requested.<br>You can try refreshing the page and retry.</li>";
         }
     }
 }
