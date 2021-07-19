@@ -75,6 +75,7 @@ iframe {
 --------------------------------------------------------------------------------------------------------------------------------------
 */
 
+@import url('https://fonts.googleapis.com/css?family=Muli&display=swap');
 * {
     box-sizing: border-box;
 }
@@ -90,6 +91,12 @@ iframe {
     font-size: 20px;
 }
 
+.netflix-open-btn {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+}
+
 .netflix-nav {
     position: fixed;
     top: 0;
@@ -97,7 +104,6 @@ iframe {
     height: 100vh;
     transform: translateX(-100%);
     transition: transform .3s ease-in-out;
-    width: calc(100% - 300px);
 }
 
 .netflix-nav.visible {
@@ -107,8 +113,8 @@ iframe {
 .netflix-nav-black {
     background-color: rgb(34, 31, 31);
     width: 60%;
-    max-width: 300px;
-    min-width: 250px;
+    max-width: 480px;
+    min-width: 320px;
     transition-delay: .4s;
 }
 
@@ -117,8 +123,9 @@ iframe {
 }
 
 .netflix-nav-red {
+    background-color: rgb(229, 9, 20);
     transition-delay: .2s;
-    width: 102%;
+    width: 95%;
 }
 
 .netflix-nav-red.visible {
@@ -126,10 +133,8 @@ iframe {
 }
 
 .netflix-nav-white {
-    overflow: scroll;
-    overflow-x: hidden;
     background-color: #fff;
-    padding: 20px;
+    padding: 40px;
     position: relative;
     transition-delay: 0s;
     width: 95%;
@@ -151,19 +156,19 @@ iframe {
 }
 
 .netflix-list {
-    border-top: 1px solid grey;
     list-style-type: none;
     padding: 0;
 }
 
 .netflix-list li {
-    margin: 10px 0;
+    margin: 20px 0;
 }
 
 .netflix-list li a {
     color: rgb(34, 31, 31);
-    /* font-size: 14px; */
+    font-size: 14px;
     text-decoration: none;
+    text-transform: uppercase;
 }
 
 .netflix-list ul {
@@ -185,10 +190,102 @@ iframe {
     transform: translateX(-10px);
 }
 
+.social-panel {
+    border-radius: 16px;
+    box-shadow: 0 16px 31px -17px rgba(0, 31, 97, 0.6);
+    border: 5px solid #001F61;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Muli';
+    position: relative;
+    height: 169px;
+    width: 370px;
+    max-width: calc(100% - 10px);
+}
+
+.social-panel button.close-btn {
+    border: 0;
+    color: #97A5CE;
+    cursor: pointer;
+    font-size: 20px;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+.social-panel button.close-btn:focus {
+    outline: none;
+}
+
+.social-panel p {
+    background-color: #001F61;
+    border-radius: 0 0 10px 10px;
+    color: #fff;
+    font-size: 14px;
+    line-height: 18px;
+    padding: 2px 17px 6px;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    margin: 0;
+    transform: translateX(-50%);
+    text-align: center;
+    width: 235px;
+}
+
+.social-panel p i {
+    margin: 0 5px;
+}
+
+.social-panel p a {
+    color: #FF7500;
+    text-decoration: none;
+}
+
+.social-panel h4 {
+    margin: 20px 0;
+    color: #97A5CE;
+    font-family: 'Muli';
+    font-size: 14px;
+    line-height: 18px;
+    text-transform: uppercase;
+}
+
+.social-panel ul {
+    display: flex;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.social-panel ul li {
+    margin: 0 10px;
+}
+
+.social-panel ul li a {
+    border: 1px solid #DCE1F2;
+    border-radius: 50%;
+    color: #001F61;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    width: 50px;
+    text-decoration: none;
+}
+
+.social-panel ul li a:hover {
+    border-color: #FF6A00;
+    box-shadow: 0 9px 12px -9px #FF6A00;
+}
+
 .floating-btn {
     border-radius: 26.5px;
-    background-color: #8dc63f;
-    border: 1px solid #8dc63f;
+    background-color: #001F61;
+    border: 1px solid #001F61;
     box-shadow: 0 16px 22px -17px #03153B;
     color: #fff;
     cursor: pointer;
@@ -203,15 +300,11 @@ iframe {
 
 .floating-btn:hover {
     background-color: #ffffff;
-    color: #8dc63f;
+    color: #001F61;
 }
 
 .floating-btn:focus {
     outline: none;
-}
-
-.open-report {
-    text-decoration: none;
 }
 
 @media screen and (max-width: 480px) {
