@@ -17,7 +17,7 @@ iframe {
     width: 100%;
 }
 
-#overlay {
+#lfi_overlay {
     position: fixed;
     display: none;
     width: 100%;
@@ -31,7 +31,7 @@ iframe {
     cursor: pointer;
 }
 
-#text {
+#lfi_overlay_text {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -79,18 +79,18 @@ iframe {
     box-sizing: border-box;
 }
 
-.netflix-text {
+.lfi_sidebar-text {
     text-transform: uppercase;
 }
 
-.netflix-nav-btn {
+.lfi_sidebar-nav-btn {
     border: 0;
     background: transparent;
     cursor: pointer;
     font-size: 20px;
 }
 
-.netflix-nav {
+.lfi_sidebar-nav {
     position: fixed;
     top: 0;
     left: 0;
@@ -100,11 +100,11 @@ iframe {
     width: calc(100% - 300px);
 }
 
-.netflix-nav.visible {
+.lfi_sidebar-nav.visible {
     transform: translateX(0);
 }
 
-.netflix-nav-black {
+.lfi_sidebar-nav-black {
     background-color: rgb(34, 31, 31);
     width: 60%;
     max-width: 300px;
@@ -112,20 +112,20 @@ iframe {
     transition-delay: .4s;
 }
 
-.netflix-nav-black.visible {
+.lfi_sidebar-nav-black.visible {
     transition-delay: 0s;
 }
 
-.netflix-nav-red {
+.lfi_sidebar-nav-red {
     transition-delay: .2s;
     width: 102%;
 }
 
-.netflix-nav-red.visible {
+.lfi_sidebar-nav-red.visible {
     transition-delay: .2s;
 }
 
-.netflix-nav-white {
+.lfi_sidebar-nav-white {
     overflow: scroll;
     overflow-x: hidden;
     background-color: #fff;
@@ -135,38 +135,38 @@ iframe {
     width: 95%;
 }
 
-.netflix-nav-white.visible {
+.lfi_sidebar-nav-white.visible {
     transition-delay: .4s;
 }
 
-.netflix-close-btn {
+.lfi_sidebar-close-btn {
     opacity: 0.3;
     position: absolute;
     top: 40px;
     right: 30px;
 }
 
-.netflix-logo {
+.lfi_sidebar-logo {
     width: 150px;
 }
 
-.netflix-list {
+.lfi_sidebar-list {
     border-top: 1px solid grey;
     list-style-type: none;
     padding: 0;
 }
 
-.netflix-list li {
+.lfi_sidebar-list li {
     margin: 10px 0;
 }
 
-.netflix-list li a {
+.lfi_sidebar-list li a {
     color: rgb(34, 31, 31);
     /* font-size: 14px; */
     text-decoration: none;
 }
 
-.netflix-list ul {
+.lfi_sidebar-list ul {
     list-style-type: none;
     padding-left: 20px;
 }

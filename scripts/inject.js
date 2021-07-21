@@ -3,13 +3,13 @@
 // Little Forest 2021
 // Author: Francisco 'xhico' Filipe
 // Created: 2021/06/02
-// Updated: 2021/07/18
+// Updated: 2021/07/21
 
 
 async function getRequest(url) {
     try {
         const res = await fetch(url);
-        if (url.includes("languagetoolplus") || url.includes("lighthouseServlet")) {
+        if (url.includes("https://api.languagetoolplus.com/v2/check") || url.includes("https://inspector.littleforest.co.uk/InspectorWS/")) {
             return await res.json();
         }
         return await res.text();
@@ -72,11 +72,11 @@ async function overlay(action) {
     if (action == "addOverlay") {
         // Insert overlay
         console.log("addOverlay")
-        document.getElementById("overlay").style.display = "block";
+        document.getElementById("lfi_overlay").style.display = "block";
     } else if (action == "removeOverlay") {
         // Remove overlay
         console.log("removeOverlay")
-        document.getElementById("overlay").style.display = "none";
+        document.getElementById("lfi_overlay").style.display = "none";
     }
 }
 
@@ -86,21 +86,20 @@ async function addGeneralInfo() {
     // Get iframe element
     let iframeElement = document.getElementById('maincontent').contentDocument;
 
-    //  Add totalLinks to GENERALINFO
+    //  Add lfi_totalLinks to GENERALINFO
     let totalLinks = []; let extLinks = []; let intLinks = []; let allLinks = iframeElement.links;
     for (let i = 0; i < allLinks.length; i++) {
         let linkHref = allLinks[i].href;
         totalLinks.push(linkHref);
         if (linkHref.includes(window.location.href)) { intLinks.push(linkHref); } else { extLinks.push(linkHref); }
     }
-
-    document.getElementById("totalLinks").innerText = totalLinks.length;
-    document.getElementById("extLinks").innerText = extLinks.length;
-    document.getElementById("intLinks").innerText = intLinks.length;
+    document.getElementById("lfi_totalLinks").innerText = totalLinks.length;
+    document.getElementById("lfi_extLinks").innerText = extLinks.length;
+    document.getElementById("lfi_intLinks").innerText = intLinks.length;
 
     //  Add totalImages to GENERALINFO
     let totalImages = iframeElement.getElementsByTagName("img").length;
-    document.getElementById("totalImages").innerText = totalImages;
+    document.getElementById("lfi_totalImages").innerText = totalImages;
 }
 
 async function runLanguageTool(language) {
@@ -132,11 +131,11 @@ async function runLanguageTool(language) {
             if (language == "auto") {
                 // Get detected language and confidence
                 let detectedLanguage = data.language.detectedLanguage.name;
-                document.getElementById("detectedLanguage").innerText = detectedLanguage + " (Auto) ";
+                document.getElementById("lfi_detectedLanguage").innerText = detectedLanguage + " (Auto) ";
             } else {
                 // Get detected language and confidence
                 let detectedLanguage = data.language.name;
-                document.getElementById("detectedLanguage").innerText = detectedLanguage;
+                document.getElementById("lfi_detectedLanguage").innerText = detectedLanguage;
             }
 
 
@@ -183,27 +182,34 @@ async function runLanguageTool(language) {
     });
 
     // Add errors to Sidebar
-    let spellErrors = document.getElementById("spellErrors")
+    let lfi_spelling_errors = document.getElementById("lfi_spelling_errors")
     items.forEach(function (entry) {
         let error = entry[0]; let count = entry[1][0]; let message = entry[1][1]; let replacements = entry[1][2];
-        spellErrors.innerHTML += "<li><a href='#' title='Message: " + message + "&#010;" + "Replacements: " + replacements + "'>" + error + " (" + count + "x)" + "</a></li>";
+        lfi_spelling_errors.innerHTML += "<li><a href='#' title='Message: " + message + "&#010;" + "Replacements: " + replacements + "'>" + error + " (" + count + "x)" + "</a></li>";
     });
 
-    //  Add totalErrors to GENERALINFO
-    document.getElementById("totalErrors").innerText = Object.keys(errorsDict).length;
+    //  Add lfi_totalErrors to GENERALINFO
+    document.getElementById("lfi_totalErrors").innerText = Object.keys(errorsDict).length;
 
 }
 
-async function runLighthouse(lighthouseJson) {
+async function runLighthouse() {
     console.log("runLighthouse")
 
+    // Get lighthouseJson
+    let siteUrl = window.location.href;
+    let categories = "pwa,seo";
+    let device = "mobile";
+    let lighthouseURL = "https://inspector.littleforest.co.uk/InspectorWS/LighthouseServlet?"
+    let lighthouseJson = await getRequest(lighthouseURL + "url=" + siteUrl + "&cats=" + categories + "&device=" + device);
+
     // Get lighthouseInfo div
-    let lighthouseInfo = document.getElementById("lighthouseInfo");
+    let lfi_lighthouseInfo = document.getElementById("lfi_lighthouseInfo");
 
     // Check if Lighthouse ran successfully
     try {
         lighthouseJson["runtimeError"]["code"];
-        lighthouseInfo.innerHTML = "<li>Lighthouse was unable to reliably load the page you requested.<br>You can try refreshing the page and retry.</li>";
+        lfi_lighthouseInfo.innerHTML = "<li>Lighthouse was unable to reliably load the page you requested.<br>You can try refreshing the page and retry.</li>";
     } catch (Ex) {
         try {
 
@@ -211,19 +217,19 @@ async function runLighthouse(lighthouseJson) {
             categories.split(",").forEach(cat => {
                 let catScore = lighthouseJson["categories"][cat]["score"] * 100;
                 let catTitle = lighthouseJson["categories"][cat]["title"];
-                lighthouseInfo.innerHTML += "<li><a></a>" + catTitle + " - " + catScore + " % </li > ";
+                lfi_lighthouseInfo.innerHTML += "<li><a></a>" + catTitle + " - " + catScore + " % </li > ";
             })
 
             // Add Read More -> Open the HTML File
-            lighthouseInfo.innerHTML += "<li><a id='lighthouseReadMore' href='#'><b>" + "Read More" + "</b></a></li>";
+            lfi_lighthouseInfo.innerHTML += "<li><a id='lighthouseReadMore' href='#'><b>" + "Read More" + "</b></a></li>";
             let lighthouseReadMore = document.getElementById("lighthouseReadMore");
             lighthouseReadMore.target = "_blank";
-            lighthouseReadMore.href = "https://inspector.littleforest.co.uk/LighthouseWS/lighthouseServlet?url=null&cats=null&view=" + lighthouseJson["htmlReport"];
-            document.getElementById("lighthouse-section").removeAttribute("hidden");
+            lighthouseReadMore.href = lighthouseURL + "url=null" + "&cats=null" + "&view=" + lighthouseJson["htmlReport"];
+            document.getElementById("lfi_lighthouse-section").removeAttribute("hidden");
         } catch (Ex) {
-            lighthouseInfo.innerHTML = "<li>Lighthouse was unable to reliably load the page you requested.<br>You can try refreshing the page and retry.</li>";
+            lfi_lighthouseInfo.innerHTML = "<li>Lighthouse was unable to reliably load the page you requested.<br>You can try refreshing the page and retry.</li>";
         }
-        document.getElementById("lighthouse-section").removeAttribute("hidden");
+        document.getElementById("lfi_lighthouse-section").removeAttribute("hidden");
     }
 }
 
@@ -235,7 +241,7 @@ console.clear();
     // START
     console.log("Start Inject.js");
 
-    // Check if the script already been injected
+    // Check if the script has already been injected
     if (document.getElementById("maincontent")) {
         console.log("Already Injected");
         return;
@@ -263,16 +269,13 @@ console.clear();
     await addGeneralInfo();
 
     // // Run LanguageTool
-    await runLanguageTool("en-GB");
+    await runLanguageTool("auto");
 
     // Remove overlay
     await overlay("removeOverlay");
 
     // Add Lighthouse
-    chrome.runtime.sendMessage({ url: window.location.href, question: "Lighthouse" });
-    chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
-        await runLighthouse(request.json);
-    });
+    await runLighthouse();
 
     // END
 })();

@@ -50,16 +50,6 @@ body {
   margin: 2px auto 0;
 }
 
-.errormsg {
-  color: var(--color-blue);
-  font-weight: 500;
-  text-align: center;
-}
-
-.errormsg:empty {
-  display: none;
-}
-
 .button {
   font-family: var(--report-font-family);
   font-weight: 500;
@@ -104,21 +94,6 @@ body {
 .section:first-child {
   border-bottom: solid 1px lightgray;
   padding-bottom: 10px;
-}
-
-.devtools-header {
-  font-size: var(--font-size);
-  font-weight: 500;
-  margin-bottom: 5px;
-}
-
-.devtools-note {
-  font-size: 14px;
-  color: grey;
-}
-
-.devtools-shortcut {
-  font-family: var(--report-font-family-monospace);
 }
 
 .button--configure {

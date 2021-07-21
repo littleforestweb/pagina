@@ -9,8 +9,7 @@
     "128": "images/icon.png"
   },
   "permissions": [
-    "activeTab",
-    "storage"
+    "activeTab"
   ],
   "background": {
     "scripts": [
