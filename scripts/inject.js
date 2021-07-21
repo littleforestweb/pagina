@@ -199,12 +199,31 @@ async function runLanguageTool() {
 async function runLighthouse() {
     console.log("runLighthouse")
 
+    // Get selected categories
+    let categories = "";
+    let cat_performance = document.getElementById("cat_performance").checked;
+    let cat_pwa = document.getElementById("cat_pwa").checked;
+    let cat_bp = document.getElementById("cat_bp").checked;
+    let cat_accessibility = document.getElementById("cat_accessibility").checked;
+    let cat_seo = document.getElementById("cat_seo").checked;
+    if (cat_performance) { categories += "performance,"; }
+    if (cat_pwa) { categories += "pwa,"; }
+    if (cat_bp) { categories += "best-practices"; }
+    if (cat_accessibility) { categories += "accessibility,"; }
+    if (cat_seo) { categories += "seo,"; }
+
+    // Get selected device
+    let device;
+    let device_mobile = document.getElementById("dev_mobile").checked;
+    let device_desktop = document.getElementById("dev_desktop").checked;
+    if (device_mobile) { device = "mobile"; } else if (device_desktop) { device = "desktop"; }
+    console.log(device);
+
+
     // Get lighthouseJson
     let siteUrl = window.location.href;
-    let categories = "pwa,seo";
-    let device = "mobile";
     let lighthouseURL = "https://inspector.littleforest.co.uk/InspectorWS/LighthouseServlet?"
-    let lighthouseJson = await getRequest(lighthouseURL + "url=" + siteUrl + "&cats=" + categories + "&device=" + device);
+    let lighthouseJson = await getRequest(lighthouseURL + "url=" + siteUrl + "&cats=" + categories.slice(0, -1) + "&device=" + device);
 
     // Get lighthouseInfo div
     let lfi_lighthouseInfo = document.getElementById("lfi_lighthouseInfo");
