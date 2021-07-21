@@ -102,8 +102,11 @@ async function addGeneralInfo() {
     document.getElementById("lfi_totalImages").innerText = totalImages;
 }
 
-async function runLanguageTool(language) {
-    console.log("runLanguageTool - " + language);
+async function runLanguageTool() {
+    console.log("runLanguageTool");
+
+    let language = document.getElementById("lfi_languages_list").value;
+    console.log("Language - " + language);
 
     // Get iframe element
     let iframeElement = document.getElementById('maincontent').contentDocument;
@@ -269,7 +272,7 @@ console.clear();
     await addGeneralInfo();
 
     // // Run LanguageTool
-    await runLanguageTool("auto");
+    await runLanguageTool();
 
     // Remove overlay
     await overlay("removeOverlay");
