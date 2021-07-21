@@ -21,8 +21,8 @@ async function getRequest(url) {
 async function clearHTML() {
     console.log("clearHTML");
 
-    // Get base page HTML
-    let allHTML = document.documentElement.outerHTML;
+    // // Get base page HTML
+    // let allHTML = document.documentElement.outerHTML;
 
     // Clear current html code
     let newHTML = document.open("text/html", "replace");
@@ -32,15 +32,16 @@ async function clearHTML() {
     // Add iframe
     let iframeElement = document.createElement('iframe');
     iframeElement.id = "maincontent";
+    iframeElement.src = window.location.href;
     iframeElement.classList.add("iframe-width-300");
     iframeElement.classList.add("iframe");
     document.body.appendChild(iframeElement);
 
-    // Add base page HTML to iframe content
-    let doc = document.getElementById('maincontent').contentWindow.document;
-    doc.open();
-    doc.write(allHTML);
-    doc.close();
+    // // Add base page HTML to iframe content
+    // let doc = document.getElementById('maincontent').contentWindow.document;
+    // doc.open();
+    // doc.write(allHTML);
+    // doc.close();
 }
 
 async function addSidebarHTML(htmlContent) {
