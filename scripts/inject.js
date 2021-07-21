@@ -21,6 +21,9 @@ async function getRequest(url) {
 async function clearHTML() {
     console.log("clearHTML");
 
+    // Get base page HTML
+    let allHTML = document.documentElement.outerHTML;
+
     // Clear current html code
     let newHTML = document.open("text/html", "replace");
     newHTML.write('<html><head><body style="margin:0;"></body></html>');
@@ -29,10 +32,16 @@ async function clearHTML() {
     // Add iframe
     let iframeElement = document.createElement('iframe');
     iframeElement.id = "maincontent";
-    iframeElement.src = window.location.href;
+    // iframeElement.src = window.location.href;
     iframeElement.classList.add("iframe-width-300");
     iframeElement.classList.add("iframe");
     document.body.appendChild(iframeElement);
+
+    // Add base page HTML to iframe content
+    let doc = document.getElementById('maincontent').contentWindow.document;
+    doc.open();
+    doc.write(allHTML);
+    doc.close();
 }
 
 async function addSidebarHTML(htmlContent) {
@@ -195,7 +204,7 @@ async function runLanguageTool() {
 }
 
 async function runLighthouse() {
-    console.log("runLighthouse")
+    console.log("runLighthouse");
 
     // Insert overlay
     await overlay("addOverlay", "Lighthouse");
@@ -212,17 +221,21 @@ async function runLighthouse() {
     if (cat_bp) { categories += "best-practices"; }
     if (cat_accessibility) { categories += "accessibility,"; }
     if (cat_seo) { categories += "seo,"; }
+    categories = categories.slice(0, -1);
 
     // Get selected device
     let device;
-    let device_mobile = document.getElementById("dev_mobile").checked;
-    let device_desktop = document.getElementById("dev_desktop").checked;
-    if (device_mobile) { device = "mobile"; } else if (device_desktop) { device = "desktop"; }
+    let device_mobile = document.getElementById("dev_mobile");
+    let device_desktop = document.getElementById("dev_desktop");
+    if (device_mobile.checked) { device = device_mobile.value; } else if (device_desktop.checked) { device = device_desktop.value; }
+
+    console.log("Categories: " + categories);
+    console.log("Device: " + device);
 
     // Get lighthouseJson
     let siteUrl = window.location.href;
     let lighthouseURL = "https://inspector.littleforest.co.uk/InspectorWS/LighthouseServlet?"
-    let lighthouseJson = await getRequest(lighthouseURL + "url=" + siteUrl + "&cats=" + categories.slice(0, -1) + "&device=" + device);
+    let lighthouseJson = await getRequest(lighthouseURL + "url=" + siteUrl + "&cats=" + categories + "&device=" + device);
 
     // Get lighthouseInfo div
     let lfi_lighthouseInfo = document.getElementById("lfi_lighthouseInfo");
@@ -252,6 +265,9 @@ async function runLighthouse() {
         }
         document.getElementById("lfi_lighthouse-section").removeAttribute("hidden");
     }
+
+    // Hide Lighthouse Button
+    document.getElementById("runLighthouse").hidden = true;
 
     // Remove overlay
     await overlay("removeOverlay", "");
@@ -291,7 +307,4 @@ console.clear();
 
     // Run LanguageTool
     await runLanguageTool();
-
-    // // Add Lighthouse
-    await runLighthouse();
 })();

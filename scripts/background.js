@@ -6,7 +6,7 @@
 // Updated: 2021/07/21
 
 document.addEventListener('DOMContentLoaded', function () {
-    var checkPageButton = document.getElementById('mainButton');
+    let checkPageButton = document.getElementById("mainButton");
     if (checkPageButton) {
         checkPageButton.addEventListener('click', function () {
             chrome.tabs.executeScript(null, { file: 'scripts/inject.js' });
