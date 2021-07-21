@@ -1,5 +1,7 @@
 <div id="lfi_overlay">
-    <div id="lfi_overlay_text" style="text-align: center;">Running Report<br>Please Wait</div>
+    <div id="lfi_overlay_text" style="text-align: center;">
+        Running <span id="lfi_reportType"></span> Report<br>Please Wait!
+    </div>
 </div>
 
 <div class="lfi_sidebar-nav lfi_sidebar-nav-black visible">
@@ -12,6 +14,7 @@
                     alt="lfi_sidebar Logo">
             </a>
 
+            <!-- SETTINGS -->
             <ul id="lfi_settings-section" class="lfi_sidebar-list">
                 <li><b><a id="lfi_settings-title" href="#">SETTINGS<i class="arrow down"></i></a></b></li>
                 <li id="lfi_settings-li">
@@ -95,6 +98,7 @@
                 </li>
             </ul>
 
+            <!-- GENREAL -->
             <ul id="lfi_general-section" class="lfi_sidebar-list">
                 <li><b><a id="lfi_general-title" href="#">GENERAL REPORT<i class="arrow down"></i></a></b></li>
                 <li id="lfi_general-li">
@@ -107,6 +111,7 @@
                 </li>
             </ul>
 
+            <!-- SPELLING -->
             <ul id="lfi_spelling-section" class="lfi_sidebar-list">
                 <li><b><a id="lfi_spelling-title" href="#">SPELLING REPORT <i class="arrow down"></i></a></b></li>
                 <li id="lfi_spelling-li">
@@ -114,8 +119,10 @@
                 </li>
             </ul>
 
-            <ul id="lfi_lighthouse-section" hidden class="lfi_sidebar-list">
+            <!-- LIGHTHOUSE -->
+            <ul id="lfi_lighthouse-section" class="lfi_sidebar-list">
                 <li><b><a id="lfi_lighthouse-title" href="#">LIGHTHOUSE REPORT<i class="arrow down"></i></a></b></li>
+                <!-- <button id="runLighthouse" onclick="runLighthouse()">Run Lighthouse Report</button> -->
                 <li id="lfi_lighthouse-li">
                     <ul id="lfi_lighthouseInfo"></ul>
                 </li>

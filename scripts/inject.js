@@ -21,9 +21,6 @@ async function getRequest(url) {
 async function clearHTML() {
     console.log("clearHTML");
 
-    // // Get base page HTML
-    // let allHTML = document.documentElement.outerHTML;
-
     // Clear current html code
     let newHTML = document.open("text/html", "replace");
     newHTML.write('<html><head><body style="margin:0;"></body></html>');
@@ -36,12 +33,6 @@ async function clearHTML() {
     iframeElement.classList.add("iframe-width-300");
     iframeElement.classList.add("iframe");
     document.body.appendChild(iframeElement);
-
-    // // Add base page HTML to iframe content
-    // let doc = document.getElementById('maincontent').contentWindow.document;
-    // doc.open();
-    // doc.write(allHTML);
-    // doc.close();
 }
 
 async function addSidebarHTML(htmlContent) {
@@ -69,18 +60,6 @@ async function addSidebarCSS(cssContent) {
     document.head.appendChild(report).innerHTML = cssContent;
 }
 
-async function overlay(action) {
-    if (action == "addOverlay") {
-        // Insert overlay
-        console.log("addOverlay")
-        document.getElementById("lfi_overlay").style.display = "block";
-    } else if (action == "removeOverlay") {
-        // Remove overlay
-        console.log("removeOverlay")
-        document.getElementById("lfi_overlay").style.display = "none";
-    }
-}
-
 async function addGeneralInfo() {
     console.log("addGeneralInfo");
 
@@ -103,8 +82,24 @@ async function addGeneralInfo() {
     document.getElementById("lfi_totalImages").innerText = totalImages;
 }
 
+async function overlay(action, reportType) {
+    if (action == "addOverlay") {
+        // Insert overlay
+        console.log("addOverlay")
+        document.getElementById("lfi_overlay").style.display = "block";
+        document.getElementById("lfi_reportType").innerText = reportType;
+    } else if (action == "removeOverlay") {
+        // Remove overlay
+        console.log("removeOverlay")
+        document.getElementById("lfi_overlay").style.display = "none";
+    }
+}
+
 async function runLanguageTool() {
     console.log("runLanguageTool");
+
+    // Insert overlay
+    await overlay("addOverlay", "Spelling");
 
     let language = document.getElementById("lfi_languages_list").value;
     console.log("Language - " + language);
@@ -195,10 +190,15 @@ async function runLanguageTool() {
     //  Add lfi_totalErrors to GENERALINFO
     document.getElementById("lfi_totalErrors").innerText = Object.keys(errorsDict).length;
 
+    // Remove overlay
+    await overlay("removeOverlay", "");
 }
 
 async function runLighthouse() {
     console.log("runLighthouse")
+
+    // Insert overlay
+    await overlay("addOverlay", "Lighthouse");
 
     // Get selected categories
     let categories = "";
@@ -218,8 +218,6 @@ async function runLighthouse() {
     let device_mobile = document.getElementById("dev_mobile").checked;
     let device_desktop = document.getElementById("dev_desktop").checked;
     if (device_mobile) { device = "mobile"; } else if (device_desktop) { device = "desktop"; }
-    console.log(device);
-
 
     // Get lighthouseJson
     let siteUrl = window.location.href;
@@ -254,6 +252,9 @@ async function runLighthouse() {
         }
         document.getElementById("lfi_lighthouse-section").removeAttribute("hidden");
     }
+
+    // Remove overlay
+    await overlay("removeOverlay", "");
 }
 
 
@@ -285,20 +286,12 @@ console.clear();
     let cssContent = await getRequest(chrome.runtime.getURL("assets/report.css"));
     await addSidebarCSS(cssContent);
 
-    // Insert overlay
-    await overlay("addOverlay");
-
     // Insert General Information
     await addGeneralInfo();
 
-    // // Run LanguageTool
+    // Run LanguageTool
     await runLanguageTool();
 
-    // Remove overlay
-    await overlay("removeOverlay");
-
-    // Add Lighthouse
+    // // Add Lighthouse
     await runLighthouse();
-
-    // END
 })();
