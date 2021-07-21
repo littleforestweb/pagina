@@ -110,7 +110,10 @@ async function runLanguageTool(language) {
     let iframeElement = document.getElementById('maincontent').contentDocument;
 
     // Get all tagsText
-    let tagsText = iframeElement.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span')
+    let tagsText = iframeElement.querySelectorAll('p, h1, h2');
+    while (tagsText.length == 0) {
+        tagsText = iframeElement.querySelectorAll('p, h1, h2');
+    }
 
     // Set errorsDict where key => error and value => [count, color]
     let errorsDict = {};
@@ -148,7 +151,7 @@ async function runLanguageTool(language) {
                 var replacements = reps.map(function (reps) { return reps['value']; }).toString().replaceAll(",", ", ");
                 let color;
 
-                // Remove false-positive errors (one char and whitespaces)
+                // Remove false-positive errors (three chars and whitespaces)
                 if (error.length >= 3 && !(/\s/g.test(error))) {
 
                     // Set color of error => red for mistake and yellow for others
@@ -156,7 +159,7 @@ async function runLanguageTool(language) {
 
                     // Update error color on html
                     tagText.innerHTML = tagText.innerHTML.replace(error,
-                        "<span title='Message: " + message + "&#010;" + "Replacements: " + replacements + "' style='color: black; background-color:" + color + ";font-weight:bold;'>" + error + "</span>"
+                        "<a href='#' style='text-decoration: none;'><span title='Message: " + message + "&#010;" + "Replacements: " + replacements + "' style='color: black; background-color:" + color + ";font-weight:bold;'>" + error + "</span></a>"
                     );;
 
                     // Add/update key error on errorsDict
@@ -191,11 +194,13 @@ async function runLanguageTool(language) {
 
 }
 
-async function runLighthouse(lighthouseJson, categories) {
+async function runLighthouse(lighthouseJson) {
     console.log("runLighthouse")
 
-    // Check if Lighthouse ran successfully
+    // Get lighthouseInfo div
     let lighthouseInfo = document.getElementById("lighthouseInfo");
+
+    // Check if Lighthouse ran successfully
     try {
         lighthouseJson["runtimeError"]["code"];
         lighthouseInfo.innerHTML = "<li>Lighthouse was unable to reliably load the page you requested.<br>You can try refreshing the page and retry.</li>";
@@ -214,55 +219,60 @@ async function runLighthouse(lighthouseJson, categories) {
             let lighthouseReadMore = document.getElementById("lighthouseReadMore");
             lighthouseReadMore.target = "_blank";
             lighthouseReadMore.href = "https://inspector.littleforest.co.uk/LighthouseWS/lighthouseServlet?url=null&cats=null&view=" + lighthouseJson["htmlReport"];
+            document.getElementById("lighthouse-section").removeAttribute("hidden");
         } catch (Ex) {
             lighthouseInfo.innerHTML = "<li>Lighthouse was unable to reliably load the page you requested.<br>You can try refreshing the page and retry.</li>";
         }
+        document.getElementById("lighthouse-section").removeAttribute("hidden");
     }
 }
 
+
+// MAIN
 console.clear();
-chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) {
-    if (msg.text == "startInject") {
-        // Check if already ran
-        if (document.getElementById("maincontent")) {
-            chrome.runtime.sendMessage({ question: "allDone" });
-        } else {
-            // Clear current html code
-            await clearHTML();
-            chrome.runtime.sendMessage({ question: "sidebarHTML" });
-        }
-    } else if (msg.text == "addSidebarHTML") {
-        // Add Sidebar <html>
-        await addSidebarHTML(msg.content);
-        chrome.runtime.sendMessage({ question: "sidebarJS" });
-    } else if (msg.text == "addSidebarJS") {
-        // Add Sidebar <script>
-        await addSidebarJS(msg.content);
-        chrome.runtime.sendMessage({ question: "sidebarCSS" });
-    } else if (msg.text == "addSidebarCSS") {
-        // Add Sidebar <style>
-        await addSidebarCSS(msg.content);
-        chrome.runtime.sendMessage({ question: "addOverlay" });
-    } else if (msg.text == "addOverlay") {
-        // Insert overlay
-        await overlay(msg.text);
-        chrome.runtime.sendMessage({ question: "generealInfo" });
-    } else if (msg.text == "addGeneralInfo") {
-        // Insert General Information
-        await addGeneralInfo();
-        chrome.runtime.sendMessage({ question: "languageTool" });
-    } else if (msg.text == "runLanguageTool") {
-        // Run LanguageTool
-        await runLanguageTool(msg.lang);
-        chrome.runtime.sendMessage({ question: "removeOverlay" });
-    } else if (msg.text == "removeOverlay") {
-        // Remove overlay
-        await overlay(msg.text);
-        chrome.runtime.sendMessage({ question: "lighthouse" });
-    } else if (msg.text == "runLighthouse") {
-        // Add Lighthouse
-        document.getElementById("lighthouse-section").hidden = false;
-        await runLighthouse(msg.content, msg.categories);
-        chrome.runtime.sendMessage({ question: "end" });
+
+(async function () {
+    // START
+    console.log("Start Inject.js");
+
+    // Check if the script already been injected
+    if (document.getElementById("maincontent")) {
+        console.log("Already Injected");
+        return;
+    } else {
+        // Clear current html code
+        await clearHTML();
     }
-});
+
+    // Add Sidebar <html>
+    let htmlContent = await getRequest(chrome.runtime.getURL("assets/report.html"));
+    await addSidebarHTML(htmlContent);
+
+    // Add Sidebar <script>
+    let jsContent = await getRequest(chrome.runtime.getURL("assets/report.js"));
+    await addSidebarJS(jsContent);
+
+    // Add Sidebar <style>
+    let cssContent = await getRequest(chrome.runtime.getURL("assets/report.css"));
+    await addSidebarCSS(cssContent);
+
+    // Insert overlay
+    await overlay("addOverlay");
+
+    // Insert General Information
+    await addGeneralInfo();
+
+    // // Run LanguageTool
+    await runLanguageTool("en-GB");
+
+    // Remove overlay
+    await overlay("removeOverlay");
+
+    // Add Lighthouse
+    chrome.runtime.sendMessage({ url: window.location.href, question: "Lighthouse" });
+    chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
+        await runLighthouse(request.json);
+    });
+
+    // END
+})();

@@ -12,21 +12,17 @@
     "activeTab",
     "storage"
   ],
+  "background": {
+    "scripts": [
+      "scripts/background.js"
+    ],
+    "persistent": true
+  },
   "browser_action": {
     "default_icon": "images/icon.png",
     "default_title": "Page Inspector | Little Forest UK",
     "default_popup": "popup.html"
   },
-  "content_scripts": [
-    {
-      "matches": [
-        "https://*/*"
-      ],
-      "js": [
-        "scripts/content.js"
-      ]
-    }
-  ],
   "web_accessible_resources": [
     "assets/report.html",
     "assets/report.css",

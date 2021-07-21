@@ -11,7 +11,7 @@ if __name__ == "__main__":
     for entry in resp:
         name = entry["name"]
         code = entry["longCode"]
-        text = "{ id: '" + code + "', title: '" + name + "',} ,"
+        text = "<option value=" + code + ">" + name + "</option>"
         print(text)
 
     # with open("assets/names.txt") as f:

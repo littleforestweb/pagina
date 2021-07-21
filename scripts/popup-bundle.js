@@ -140,16 +140,6 @@ console.clear();
 
                 const optionsLanguageList = find('.options__languages');
                 optionsLanguageList.appendChild(frag);
-
-                // Auto-Select British English
-                var defaultCode = "en-GB";
-                var mySelect = document.getElementById('languagesList');
-                for (var i, j = 0; i = mySelect.options[j]; j++) {
-                    if (i.value == defaultCode) {
-                        mySelect.selectedIndex = j;
-                        break;
-                    }
-                }
             }
 
             /**
@@ -302,7 +292,7 @@ console.clear();
 
             // Manually define the default languages, instead of bundling a lot of i18n code.
             const DEFAULT_LANGUAGES = [
-                // { id: 'auto', title: 'Auto-Detect', },
+                { id: 'auto', title: 'Auto-Detect', },
                 { id: 'ar', title: 'Arabic', },
                 { id: 'ast-ES', title: 'Asturian', },
                 { id: 'be-BY', title: 'Belarusian', },
