@@ -12,6 +12,91 @@
                     alt="lfi_sidebar Logo">
             </a>
 
+            <ul id="lfi_settings-section" class="lfi_sidebar-list">
+                <li><b><a id="lfi_settings-title" href="#">SETTINGS<i class="arrow down"></i></a></b></li>
+                <li id="lfi_settings-li">
+                    <!-- LanguageTool Languages -->
+                    <label>Language</label>
+                    <select id="lfi_languages_list">
+                        <option value=ar>Arabic</option>
+                        <option value=ast-ES>Asturian</option>
+                        <option value=be-BY>Belarusian</option>
+                        <option value=br-FR>Breton</option>
+                        <option value=ca-ES>Catalan</option>
+                        <option value=ca-ES-valencia>Catalan (Valencian)</option>
+                        <option value=zh-CN>Chinese</option>
+                        <option value=da-DK>Danish</option>
+                        <option value=nl>Dutch</option>
+                        <option value=nl-BE>Dutch (Belgium)</option>
+                        <option value=en>English</option>
+                        <option value=en-AU>English (Australian)</option>
+                        <option value=en-CA>English (Canadian)</option>
+                        <option value=en-GB>English (GB)</option>
+                        <option value=en-NZ>English (New Zealand)</option>
+                        <option value=en-ZA>English (South African)</option>
+                        <option value=en-US>English (US)</option>
+                        <option value=eo>Esperanto</option>
+                        <option value=fr>French</option>
+                        <option value=gl-ES>Galician</option>
+                        <option value=de>German</option>
+                        <option value=de-AT>German (Austria)</option>
+                        <option value=de-DE>German (Germany)</option>
+                        <option value=de-CH>German (Swiss)</option>
+                        <option value=el-GR>Greek</option>
+                        <option value=ga-IE>Irish</option>
+                        <option value=it>Italian</option>
+                        <option value=ja-JP>Japanese</option>
+                        <option value=km-KH>Khmer</option>
+                        <option value=nb>Norwegian (Bokmål)</option>
+                        <option value=no>Norwegian (Bokmål)</option>
+                        <option value=fa>Persian</option>
+                        <option value=pl-PL>Polish</option>
+                        <option value=pt>Portuguese</option>
+                        <option value=pt-AO>Portuguese (Angola preAO)</option>
+                        <option value=pt-BR>Portuguese (Brazil)</option>
+                        <option value=pt-MZ>Portuguese (Moçambique preAO)</option>
+                        <option value=pt-PT>Portuguese (Portugal)</option>
+                        <option value=ro-RO>Romanian</option>
+                        <option value=ru-RU>Russian</option>
+                        <option value=de-DE-x-simple-language>Simple German</option>
+                        <option value=sk-SK>Slovak</option>
+                        <option value=sl-SI>Slovenian</option>
+                        <option value=es>Spanish</option>
+                        <option value=es-AR>Spanish (voseo)</option>
+                        <option value=sv>Swedish</option>
+                        <option value=tl-PH>Tagalog</option>
+                        <option value=ta-IN>Tamil</option>
+                        <option value=uk-UA>Ukrainian</option>
+                    </select>
+                    <br><br>
+
+                    <!-- Lighthouse Categories -->
+                    <label>Categories</label><br>
+                    <input type="checkbox" id="cat_performance" name="cat_performance" checked>
+                    <label for="cat_performance">Performance</label>
+                    <br>
+                    <input type="checkbox" id="cat_pwa" name="cat_pwa" checked>
+                    <label for="cat_pwa">Progressive Web App</label>
+                    <br>
+                    <input type="checkbox" id="cat_bp" name="cat_bp" checked>
+                    <label for="cat_bp">Best Practicies</label>
+                    <br>
+                    <input type="checkbox" id="cat_accessibility" name="cat_accessibility" checked>
+                    <label for="cat_accessibility">Accessibility</label>
+                    <br>
+                    <input type="checkbox" id="cat_seo" name="cat_seo" checked>
+                    <label for="cat_seo">SEO</label>
+                    <br><br>
+
+                    <!-- Lighthouse Device -->
+                    <label>Device</label><br>
+                    <input type="radio" id="dev_mobile" name="dev_mobile" value="mobile" checked>
+                    <label for="dev_mobile">Mobile</label><br>
+                    <input type="radio" id="dev_desktop" name="dev_desktop" value="desktop">
+                    <label for="dev_desktop">Desktop</label>
+                </li>
+            </ul>
+
             <ul id="lfi_general-section" class="lfi_sidebar-list">
                 <li><b><a id="lfi_general-title" href="#">GENERAL REPORT<i class="arrow down"></i></a></b></li>
                 <li id="lfi_general-li">
