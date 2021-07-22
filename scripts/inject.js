@@ -66,8 +66,19 @@ async function addSidebarCSS(cssContent) {
     document.head.appendChild(report).innerHTML = cssContent;
 }
 
-async function addGeneralInfo() {
-    console.log("addGeneralInfo");
+async function addContentInfo() {
+    console.log("addContentInfo");
+
+    // Get iframe element
+    let iframeElement = document.getElementById('maincontent').contentDocument;
+
+    //  Add totalImages to GENERALINFO
+    let totalImages = iframeElement.getElementsByTagName("img").length;
+    document.getElementById("lfi_totalImages").innerText = totalImages;
+}
+
+async function addLinksInfo() {
+    console.log("addLinksInfo");
 
     // Get iframe element
     let iframeElement = document.getElementById('maincontent').contentDocument;
@@ -82,10 +93,6 @@ async function addGeneralInfo() {
     document.getElementById("lfi_totalLinks").innerText = totalLinks.length;
     document.getElementById("lfi_extLinks").innerText = extLinks.length;
     document.getElementById("lfi_intLinks").innerText = intLinks.length;
-
-    //  Add totalImages to GENERALINFO
-    let totalImages = iframeElement.getElementsByTagName("img").length;
-    document.getElementById("lfi_totalImages").innerText = totalImages;
 }
 
 async function overlay(action, reportType) {
@@ -326,8 +333,11 @@ let allHTML = document.documentElement.outerHTML;
     let cssContent = await getRequest(chrome.runtime.getURL("assets/report.css"));
     await addSidebarCSS(cssContent);
 
-    // Insert General Information
-    await addGeneralInfo();
+    // Insert Content Information
+    await addContentInfo();
+
+    // Insert Links Information
+    await addLinksInfo();
 
     // Run LanguageTool
     await runLanguageTool();

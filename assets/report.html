@@ -8,6 +8,7 @@
     <div class="lfi_sidebar-nav lfi_sidebar-nav-red visible">
         <div class="lfi_sidebar-nav lfi_sidebar-nav-white visible">
 
+            <!-- LOGO -->
             <a href="https://littleforest.co.uk" target="_blank">
                 <img class="lfi_sidebar-logo"
                     src="https://littleforest.co.uk/wp-content/uploads/2017/06/littleforest_logo.png"
@@ -98,16 +99,30 @@
                 </li>
             </ul>
 
-            <!-- GENREAL -->
-            <ul id="lfi_general-section" class="lfi_sidebar-list">
-                <li><b><a id="lfi_general-title" href="#">GENERAL REPORT<i class="arrow down"></i></a></b></li>
-                <li id="lfi_general-li">
-                    <p>Language: <span id="lfi_detectedLanguage"></span></p>
-                    <p>Found <span id="lfi_totalErrors"></span> possible spelling mistake(s)</p>
-                    <p>Found <span id="lfi_totalLinks"></span> link(s) (<span id="lfi_extLinks"></span> external and
-                        <span id="lfi_intLinks"></span> internal)
+            <!-- ACCESSIBILITY -->
+            <ul id="lfi_accessibility-section" class="lfi_sidebar-list">
+                <li><b><a id="lfi_accessibility-title" href="#">ACCESSIBILITY REPORT <i class="arrow down"></i></a></b>
+                </li>
+                <li id="lfi_accessibility-li">
+                </li>
+            </ul>
+
+            <!-- CONTENT -->
+            <ul id="lfi_content-section" class="lfi_sidebar-list">
+                <li><b><a id="lfi_content-title" href="#">CONTENT REPORT<i class="arrow down"></i></a></b></li>
+                <li id="lfi_content-li">
+                    <p>Found <span id="lfi_totalImages">0</span> image(s)</p>
+                </li>
+            </ul>
+
+            <!-- LINKS -->
+            <ul id="lfi_links-section" class="lfi_sidebar-list">
+                <li><b><a id="lfi_links-title" href="#">LINKS REPORT<i class="arrow down"></i></a></b></li>
+                <li id="lfi_links-li">
+                    <p>Found <span id="lfi_totalLinks">0</span> link(s) (
+                        <span id="lfi_extLinks">0</span> external and
+                        <span id="lfi_intLinks">0</span> internal)
                     </p>
-                    <p>Found <span id="lfi_totalImages"></span> image(s)</p>
                 </li>
             </ul>
 
@@ -115,6 +130,8 @@
             <ul id="lfi_spelling-section" class="lfi_sidebar-list">
                 <li><b><a id="lfi_spelling-title" href="#">SPELLING REPORT <i class="arrow down"></i></a></b></li>
                 <li id="lfi_spelling-li">
+                    <p>Language: <span id="lfi_detectedLanguage">None</span></p>
+                    <p>Found <span id="lfi_totalErrors">0</span> possible spelling mistake(s)</p>
                     <ul id="lfi_spelling_errors"></ul>
                 </li>
             </ul>
@@ -125,6 +142,15 @@
                 <button id="runLighthouse">Run Lighthouse Report</button>
                 <li id="lfi_lighthouse-li">
                     <ul id="lfi_lighthouseInfo"></ul>
+                </li>
+            </ul>
+
+            <!-- TECHOLOGIES -->
+            <ul id="lfi_technologies-section" class="lfi_sidebar-list">
+                <li><b><a id="lfi_technologies-title" href="#">TECHNOLOGIES REPORT <i class="arrow down"></i></a></b>
+                </li>
+                <li id="lfi_technologies-li">
+                    <ul id="lfi_technologiesInfo"></ul>
                 </li>
             </ul>
 
