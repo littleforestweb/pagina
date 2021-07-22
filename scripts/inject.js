@@ -33,7 +33,6 @@ async function clearHTML() {
     let iframeElement = document.createElement('iframe');
     iframeElement.id = "lfi_mainContent";
     // iframeElement.src = window.location.href;
-    iframeElement.classList.add("lfi_iframe-width-300");
     iframeElement.classList.add("lfi_iframe");
     document.body.appendChild(iframeElement);
 
@@ -245,7 +244,6 @@ async function runLighthouse() {
     if (cat_seo) { categories += "seo,"; }
 
     // Check if at least one categories is selected
-    // Get lighthouseInfo div
     let lfi_lighthouse_info = document.getElementById("lfi_lighthouse_info");
     if (categories == "") {
         lfi_lighthouse_info.innerHTML = "<li>Please select at least one categorie</li>";
