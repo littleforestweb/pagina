@@ -21,9 +21,6 @@ async function getRequest(url) {
 async function clearHTML() {
     console.log("clearHTML");
 
-    // Get base page HTML
-    let allHTML = document.documentElement.outerHTML;
-
     // Clear current html code
     let newHTML = document.open("text/html", "replace");
     newHTML.write('<html><head><body style="margin:0;"></body></html>');
@@ -104,6 +101,22 @@ async function overlay(action, reportType) {
     }
 }
 
+async function resetSpell() {
+    console.log("resetSpell");
+
+    // Clear all Spelling Errors in iframe
+    let doc = document.getElementById('maincontent').contentWindow.document;
+    let spellErrors = doc.getElementsByClassName("lfi_spellErrors");
+    for (var errorIdx = 0; errorIdx < spellErrors.length; errorIdx++) {
+        let spellElem = spellErrors[errorIdx];
+        spellElem.removeAttribute("title");
+        spellElem.removeAttribute("style");
+    }
+
+    // Clear all Spelling Errors from sidebar
+    lfi_spelling_errors = document.getElementById("lfi_spelling_errors").innerHTML = "";
+}
+
 async function runLanguageTool() {
     console.log("runLanguageTool");
 
@@ -166,7 +179,7 @@ async function runLanguageTool() {
 
                     // Update error color on html
                     tagText.innerHTML = tagText.innerHTML.replace(error,
-                        "<a href='#' style='text-decoration: none;'><span title='Message: " + message + "&#010;" + "Replacements: " + replacements + "' style='color: black; background-color:" + color + ";font-weight:bold;'>" + error + "</span></a>"
+                        "<span class='lfi_spellErrors' title='Message: " + message + "&#010;" + "Replacements: " + replacements + "' style='color: black; background-color:" + color + ";font-weight:bold;'>" + error + "</span>"
                     );;
 
                     // Add/update key error on errorsDict
@@ -206,9 +219,6 @@ async function runLanguageTool() {
 async function runLighthouse() {
     console.log("runLighthouse");
 
-    // Insert overlay
-    await overlay("addOverlay", "Lighthouse");
-
     // Get selected categories
     let categories = "";
     let cat_performance = document.getElementById("cat_performance").checked;
@@ -221,7 +231,19 @@ async function runLighthouse() {
     if (cat_bp) { categories += "best-practices"; }
     if (cat_accessibility) { categories += "accessibility,"; }
     if (cat_seo) { categories += "seo,"; }
-    categories = categories.slice(0, -1);
+
+    // Check if at least one categories is selected
+    // Get lighthouseInfo div
+    let lfi_lighthouseInfo = document.getElementById("lfi_lighthouseInfo");
+    if (categories == "") {
+        lfi_lighthouseInfo.innerHTML = "<li>Please select at least one categorie</li>";
+        return;
+    } else {
+        categories = categories.slice(0, -1);
+    }
+
+    // Insert overlay
+    await overlay("addOverlay", "Lighthouse");
 
     // Get selected device
     let device;
@@ -237,8 +259,7 @@ async function runLighthouse() {
     let lighthouseURL = "https://inspector.littleforest.co.uk/InspectorWS/LighthouseServlet?"
     let lighthouseJson = await getRequest(lighthouseURL + "url=" + siteUrl + "&cats=" + categories + "&device=" + device);
 
-    // Get lighthouseInfo div
-    let lfi_lighthouseInfo = document.getElementById("lfi_lighthouseInfo");
+
 
     // Check if Lighthouse ran successfully
     try {
@@ -276,6 +297,9 @@ async function runLighthouse() {
 
 // MAIN
 console.clear();
+
+// Get base page HTML
+let allHTML = document.documentElement.outerHTML;
 
 (async function () {
     // START
