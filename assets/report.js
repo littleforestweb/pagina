@@ -9,7 +9,6 @@ document.getElementById("lfi_spelling-li").style.display = "none"
 document.getElementById("lfi_lighthouse-li").style.display = "none"
 document.getElementById("lfi_technologies-li").style.display = "none"
 
-
 // SETTINGS
 document.getElementById('lfi_settings-title').addEventListener('click', () => {
     if (document.getElementById("lfi_settings-li").style.display == "none") {

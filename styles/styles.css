@@ -14,7 +14,7 @@
 
 :root {
   --color-bg: white;
-  --color-blue: #8dc63f;
+  --color-green: #166713;
   --font-size: 14px;
   --report-font-family: Roboto, Helvetica, Arial, sans-serif;
   --report-font-family-monospace: 'Roboto Mono', 'Menlo', 'dejavu sans mono', 'Consolas', 'Lucida Console', monospace;
@@ -45,7 +45,7 @@ body {
 }
 
 .errormsg {
-  color: var(--color-blue);
+  color: var(--color-green);
   font-weight: 500;
   text-align: center;
 }
@@ -74,13 +74,13 @@ body {
   margin: 8px auto;
   padding: 6px 14px 6px 14px;
   border-radius: 13px;
-  background-color: var(--color-blue);
+  background-color: var(--color-green);
   transition: 0.1s all;
 }
 
 .button--generate:hover {
-  background-color: #8dc63f;
-  border: 1px solid #8dc63f;
+  background-color: var(--color-green);
+  border: 1px solid var(--color-green);
 }
 
 .button--generate:disabled {
@@ -123,7 +123,7 @@ body {
 }
 
 .main--options-visible .button--configure {
-  color: var(--color-blue);
+  color: var(--color-green);
 }
 
 .button--configure:disabled {

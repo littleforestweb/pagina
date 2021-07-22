@@ -104,7 +104,6 @@
     margin-left: 300px;
     width: calc(100% - 300px);
     overflow: hidden;
-    color: black;
     background-color: white;
     position: fixed;
     top: 0;
@@ -121,6 +120,7 @@
     text-decoration: none;
     font-size: 17px;
     border-right-style: solid;
+    color: black;
 }
 
 .lfi_navbar a:hover {
