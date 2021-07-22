@@ -8,6 +8,11 @@
     "32": "images/icon.png",
     "128": "images/icon.png"
   },
+  "browser_action": {
+    "default_icon": "images/icon.png",
+    "default_title": "Page Inspector | Little Forest UK",
+    "default_popup": "popup.html"
+  },
   "permissions": [
     "activeTab"
   ],
@@ -15,7 +20,7 @@
     "scripts": [
       "scripts/background.js"
     ],
-    "persistent": true
+    "persistent": false
   },
   "content_scripts": [
     {
@@ -27,11 +32,6 @@
       ]
     }
   ],
-  "browser_action": {
-    "default_icon": "images/icon.png",
-    "default_title": "Page Inspector | Little Forest UK",
-    "default_popup": "popup.html"
-  },
   "web_accessible_resources": [
     "assets/report.html",
     "assets/report.css",
