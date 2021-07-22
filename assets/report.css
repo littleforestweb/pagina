@@ -54,6 +54,8 @@
     min-width: 250px;
     max-width: 300px;
     padding: 20px;
+    overflow: scroll;
+    overflow-x: hidden;
 }
 
 .lfi_sidebar-logo {
@@ -106,7 +108,7 @@
     margin-left: 300px;
     width: calc(100% - 300px);
     overflow: hidden;
-    background-color: #333;
+    background-color: black;
     position: fixed;
     top: 0;
     float: right;
@@ -116,7 +118,7 @@
 .lfi_navbar a {
     float: left;
     display: block;
-    color: #f2f2f2;
+    color: white;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
@@ -124,7 +126,7 @@
 }
 
 .lfi_navbar a:hover {
-    background: #ddd;
+    background: white;
     color: black;
 }
 
@@ -142,10 +144,10 @@
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #8dc63f;
+    background: #166713;
     border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #8dc63f;
+    background: #166713;
 }
