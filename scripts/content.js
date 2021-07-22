@@ -4,7 +4,9 @@ console.clear();
 setInterval(function () {
     // Check if Lighthouse Report Button is clicked
     if (document.getElementById('runLighthouse')) {
-        document.getElementById('runLighthouse').onclick = function () { runLighthouse(); };
+        document.getElementById('runLighthouse').onclick = function () {
+            runLighthouse();
+        };
     }
 }, 100);
 

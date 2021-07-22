@@ -14,7 +14,7 @@
 
 :root {
   --color-bg: white;
-  --color-blue: #0535C1;
+  --color-blue: #8dc63f;
   --font-size: 14px;
   --report-font-family: Roboto, Helvetica, Arial, sans-serif;
   --report-font-family-monospace: 'Roboto Mono', 'Menlo', 'dejavu sans mono', 'Consolas', 'Lucida Console', monospace;
@@ -79,8 +79,8 @@ body {
 }
 
 .button--generate:hover {
-  background-color: #042790;
-  border: 1px solid #0535C1;
+  background-color: #8dc63f;
+  border: 1px solid #8dc63f;
 }
 
 .button--generate:disabled {

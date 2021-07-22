@@ -150,6 +150,10 @@ iframe {
     width: 150px;
 }
 
+.lfi_sidebar_section {
+    display: none;
+}
+
 .lfi_sidebar-list {
     border-top: 1px solid grey;
     list-style-type: none;
