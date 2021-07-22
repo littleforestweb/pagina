@@ -62,10 +62,6 @@
     width: 150px;
 }
 
-.lfi_sidebar_section {
-    display: none;
-}
-
 .lfi_arrow {
     border: solid black;
     border-width: 0 3px 3px 0;
@@ -108,26 +104,28 @@
     margin-left: 300px;
     width: calc(100% - 300px);
     overflow: hidden;
-    background-color: black;
+    color: black;
+    background-color: white;
     position: fixed;
     top: 0;
     float: right;
     height: 50px;
+    border-bottom-style: solid;
 }
 
 .lfi_navbar a {
     float: left;
     display: block;
-    color: white;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
     font-size: 17px;
+    border-right-style: solid;
 }
 
 .lfi_navbar a:hover {
-    background: white;
-    color: black;
+    background: black;
+    color: white;
 }
 
 /*
