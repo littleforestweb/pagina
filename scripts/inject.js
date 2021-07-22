@@ -21,6 +21,9 @@ async function getRequest(url) {
 async function clearHTML() {
     console.log("clearHTML");
 
+    // Get base page HTML
+    let allHTML = document.documentElement.outerHTML;
+
     // Clear current html code
     let newHTML = document.open("text/html", "replace");
     newHTML.write('<html><head><body style="margin:0;"></body></html>');
@@ -260,15 +263,17 @@ async function runLighthouse() {
     let device_desktop = document.getElementById("dev_desktop");
     if (device_mobile.checked) { device = device_mobile.value; } else if (device_desktop.checked) { device = device_desktop.value; }
 
+    // Get siteUrl
+    let siteUrl = window.location.href;
+    // let siteUrl = "https://littleforest.co.uk";
+
+    console.log("siteUrl: " + siteUrl);
     console.log("Categories: " + categories);
     console.log("Device: " + device);
 
     // Get lighthouseJson
-    let siteUrl = window.location.href;
     let lighthouseURL = "https://inspector.littleforest.co.uk/InspectorWS/LighthouseServlet?"
     let lighthouseJson = await getRequest(lighthouseURL + "url=" + siteUrl + "&cats=" + categories + "&device=" + device);
-
-
 
     // Check if Lighthouse ran successfully
     try {
@@ -310,8 +315,7 @@ async function runLighthouse() {
 // MAIN
 console.clear();
 
-// Get base page HTML
-let allHTML = document.documentElement.outerHTML;
+
 
 (async function () {
     // START
