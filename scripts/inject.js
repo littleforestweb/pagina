@@ -3,7 +3,7 @@
 // Little Forest 2021
 // Author: Francisco 'xhico' Filipe
 // Created: 2021/06/02
-// Updated: 2021/07/21
+// Updated: 2021/07/22
 
 
 async function getRequest(url) {
@@ -31,14 +31,14 @@ async function clearHTML() {
 
     // Add iframe
     let iframeElement = document.createElement('iframe');
-    iframeElement.id = "maincontent";
+    iframeElement.id = "lfi_mainContent";
     // iframeElement.src = window.location.href;
-    iframeElement.classList.add("iframe-width-300");
-    iframeElement.classList.add("iframe");
+    iframeElement.classList.add("lfi_iframe-width-300");
+    iframeElement.classList.add("lfi_iframe");
     document.body.appendChild(iframeElement);
 
     // Add base page HTML to iframe content
-    let doc = document.getElementById('maincontent').contentWindow.document;
+    let doc = document.getElementById('lfi_mainContent').contentWindow.document;
     doc.open();
     doc.write(allHTML);
     doc.close();
@@ -86,7 +86,7 @@ async function addContentInfo() {
     console.log("addContentInfo");
 
     // Get iframe element
-    let iframeElement = document.getElementById('maincontent').contentDocument;
+    let iframeElement = document.getElementById('lfi_mainContent').contentDocument;
 
     //  Add totalImages to GENERALINFO
     let totalImages = iframeElement.getElementsByTagName("img").length;
@@ -97,7 +97,7 @@ async function addLinksInfo() {
     console.log("addLinksInfo");
 
     // Get iframe element
-    let iframeElement = document.getElementById('maincontent').contentDocument;
+    let iframeElement = document.getElementById('lfi_mainContent').contentDocument;
 
     //  Get links information
     let totalLinks = []; let extLinks = []; let intLinks = []; let allLinks = iframeElement.links;
@@ -123,7 +123,7 @@ async function runLanguageTool() {
     console.log("Language - " + language);
 
     // Get iframe element
-    let iframeElement = document.getElementById('maincontent').contentDocument;
+    let iframeElement = document.getElementById('lfi_mainContent').contentDocument;
 
     // Get all tagsText
     let tagsText = iframeElement.querySelectorAll('p, h1, h2');
@@ -216,7 +216,7 @@ async function resetSpell() {
     console.log("resetSpell");
 
     // Clear all Spelling Errors in iframe
-    let doc = document.getElementById('maincontent').contentWindow.document;
+    let doc = document.getElementById('lfi_mainContent').contentWindow.document;
     let spellErrors = doc.getElementsByClassName("lfi_spellErrors");
     for (var errorIdx = 0; errorIdx < spellErrors.length; errorIdx++) {
         let spellElem = spellErrors[errorIdx];
@@ -302,7 +302,7 @@ async function runLighthouse() {
     }
 
     // Hide Lighthouse Button
-    document.getElementById("runLighthouse").hidden = true;
+    document.getElementById("lfi_runLighthouse").hidden = true;
 
     // Toggle Lighthouse Section
     document.getElementById("lfi_lighthouse-li").style.display = "block";
@@ -315,14 +315,12 @@ async function runLighthouse() {
 // MAIN
 console.clear();
 
-
-
 (async function () {
     // START
     console.log("Start Inject.js");
 
     // Check if the script has already been injected
-    if (document.getElementById("maincontent")) {
+    if (document.getElementById("lfi_mainContent")) {
         console.log("Already Injected");
         return;
     } else {

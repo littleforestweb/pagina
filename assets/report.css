@@ -1,20 +1,17 @@
-iframe {
+.lfi_iframe {
     display: block;
     border: none;
-    height: 100%;
+    height: calc(100% - 50px);
     overflow: hidden;
     margin: 0;
     padding: 0;
     margin-left: 300px;
     width: calc(100% - 300px);
+    margin-top: 50px;
 }
 
-.iframe-width-300 {
+.lfi_iframe-width-300 {
     width: calc(100% - 300px);
-}
-
-.iframe-width-100 {
-    width: 100%;
 }
 
 #lfi_overlay {
@@ -41,35 +38,6 @@ iframe {
     -ms-transform: translate(-50%, -50%);
 }
 
-.arrow {
-    border: solid black;
-    border-width: 0 3px 3px 0;
-    /* display: inline-block; */
-    padding: 3px;
-    margin-right: 5%;
-    float: right;
-}
-
-.right {
-    transform: rotate(-45deg);
-    -webkit-transform: rotate(-45deg);
-}
-
-.left {
-    transform: rotate(135deg);
-    -webkit-transform: rotate(135deg);
-}
-
-.up {
-    transform: rotate(-135deg);
-    -webkit-transform: rotate(-135deg);
-}
-
-.down {
-    transform: rotate(45deg);
-    -webkit-transform: rotate(45deg);
-}
-
 /*
 --------------------------------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------------------------------------
@@ -79,71 +47,16 @@ iframe {
     box-sizing: border-box;
 }
 
-.lfi_sidebar-text {
-    text-transform: uppercase;
-}
-
-.lfi_sidebar-nav-btn {
-    border: 0;
-    background: transparent;
-    cursor: pointer;
-    font-size: 20px;
-}
-
 .lfi_sidebar-nav {
     position: fixed;
     top: 0;
     left: 0;
     height: 100vh;
-    transform: translateX(-100%);
-    transition: transform .3s ease-in-out;
     width: calc(100% - 300px);
-}
-
-.lfi_sidebar-nav.visible {
     transform: translateX(0);
-}
-
-.lfi_sidebar-nav-black {
-    background-color: rgb(34, 31, 31);
-    width: 60%;
+    border-right-style: solid;
     max-width: 300px;
-    min-width: 250px;
-    transition-delay: .4s;
-}
-
-.lfi_sidebar-nav-black.visible {
-    transition-delay: 0s;
-}
-
-.lfi_sidebar-nav-red {
-    transition-delay: .2s;
-    width: 102%;
-}
-
-.lfi_sidebar-nav-red.visible {
-    transition-delay: .2s;
-}
-
-.lfi_sidebar-nav-white {
-    overflow: scroll;
-    overflow-x: hidden;
-    background-color: #fff;
     padding: 20px;
-    position: relative;
-    transition-delay: 0s;
-    width: 95%;
-}
-
-.lfi_sidebar-nav-white.visible {
-    transition-delay: .4s;
-}
-
-.lfi_sidebar-close-btn {
-    opacity: 0.3;
-    position: absolute;
-    top: 40px;
-    right: 30px;
 }
 
 .lfi_sidebar-logo {
@@ -152,6 +65,19 @@ iframe {
 
 .lfi_sidebar_section {
     display: none;
+}
+
+.lfi_arrow {
+    border: solid black;
+    border-width: 0 3px 3px 0;
+    padding: 3px;
+    margin-right: 5%;
+    float: right;
+}
+
+.lfi_down {
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
 }
 
 .lfi_sidebar-list {
@@ -165,8 +91,7 @@ iframe {
 }
 
 .lfi_sidebar-list li a {
-    color: rgb(34, 31, 31);
-    /* font-size: 14px; */
+    color: black;
     text-decoration: none;
 }
 
@@ -175,13 +100,35 @@ iframe {
     padding-left: 20px;
 }
 
-@media screen and (max-width: 480px) {
-    .social-panel-container.visible {
-        transform: translateX(0px);
-    }
-    .floating-btn {
-        right: 10px;
-    }
+/*
+--------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------
+*/
+
+.lfi_navbar {
+    margin-left: 300px;
+    width: calc(100% - 300px);
+    overflow: hidden;
+    background-color: #333;
+    position: fixed;
+    top: 0;
+    float: right;
+    height: 50px;
+}
+
+.lfi_navbar a {
+    float: left;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.lfi_navbar a:hover {
+    background: #ddd;
+    color: black;
 }
 
 /*
@@ -189,26 +136,18 @@ iframe {
 --------------------------------------------------------------------------------------------------------------------------------------
 */
 
-/* width */
-
 ::-webkit-scrollbar {
     width: 10px;
 }
-
-/* Track */
 
 ::-webkit-scrollbar-track {
     border-radius: 10px;
 }
 
-/* Handle */
-
 ::-webkit-scrollbar-thumb {
     background: #8dc63f;
     border-radius: 10px;
 }
-
-/* Handle on hover */
 
 ::-webkit-scrollbar-thumb:hover {
     background: #8dc63f;
