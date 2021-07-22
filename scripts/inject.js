@@ -66,6 +66,19 @@ async function addSidebarCSS(cssContent) {
     document.head.appendChild(report).innerHTML = cssContent;
 }
 
+async function overlay(action, reportType) {
+    if (action == "addOverlay") {
+        // Insert overlay
+        console.log("addOverlay")
+        document.getElementById("lfi_overlay").style.display = "block";
+        document.getElementById("lfi_reportType").innerText = reportType;
+    } else if (action == "removeOverlay") {
+        // Remove overlay
+        console.log("removeOverlay")
+        document.getElementById("lfi_overlay").style.display = "none";
+    }
+}
+
 async function addContentInfo() {
     console.log("addContentInfo");
 
@@ -83,45 +96,18 @@ async function addLinksInfo() {
     // Get iframe element
     let iframeElement = document.getElementById('maincontent').contentDocument;
 
-    //  Add lfi_totalLinks to GENERALINFO
+    //  Get links information
     let totalLinks = []; let extLinks = []; let intLinks = []; let allLinks = iframeElement.links;
     for (let i = 0; i < allLinks.length; i++) {
         let linkHref = allLinks[i].href;
         totalLinks.push(linkHref);
         if (linkHref.includes(window.location.href)) { intLinks.push(linkHref); } else { extLinks.push(linkHref); }
     }
+
+    // Add Link information to sidebar
     document.getElementById("lfi_totalLinks").innerText = totalLinks.length;
     document.getElementById("lfi_extLinks").innerText = extLinks.length;
     document.getElementById("lfi_intLinks").innerText = intLinks.length;
-}
-
-async function overlay(action, reportType) {
-    if (action == "addOverlay") {
-        // Insert overlay
-        console.log("addOverlay")
-        document.getElementById("lfi_overlay").style.display = "block";
-        document.getElementById("lfi_reportType").innerText = reportType;
-    } else if (action == "removeOverlay") {
-        // Remove overlay
-        console.log("removeOverlay")
-        document.getElementById("lfi_overlay").style.display = "none";
-    }
-}
-
-async function resetSpell() {
-    console.log("resetSpell");
-
-    // Clear all Spelling Errors in iframe
-    let doc = document.getElementById('maincontent').contentWindow.document;
-    let spellErrors = doc.getElementsByClassName("lfi_spellErrors");
-    for (var errorIdx = 0; errorIdx < spellErrors.length; errorIdx++) {
-        let spellElem = spellErrors[errorIdx];
-        spellElem.removeAttribute("title");
-        spellElem.removeAttribute("style");
-    }
-
-    // Clear all Spelling Errors from sidebar
-    lfi_spelling_errors = document.getElementById("lfi_spelling_errors").innerHTML = "";
 }
 
 async function runLanguageTool() {
@@ -223,6 +209,22 @@ async function runLanguageTool() {
     await overlay("removeOverlay", "");
 }
 
+async function resetSpell() {
+    console.log("resetSpell");
+
+    // Clear all Spelling Errors in iframe
+    let doc = document.getElementById('maincontent').contentWindow.document;
+    let spellErrors = doc.getElementsByClassName("lfi_spellErrors");
+    for (var errorIdx = 0; errorIdx < spellErrors.length; errorIdx++) {
+        let spellElem = spellErrors[errorIdx];
+        spellElem.removeAttribute("title");
+        spellElem.removeAttribute("style");
+    }
+
+    // Clear all Spelling Errors from sidebar
+    lfi_spelling_errors = document.getElementById("lfi_spelling_errors").innerHTML = "";
+}
+
 async function runLighthouse() {
     console.log("runLighthouse");
 
@@ -241,9 +243,9 @@ async function runLighthouse() {
 
     // Check if at least one categories is selected
     // Get lighthouseInfo div
-    let lfi_lighthouseInfo = document.getElementById("lfi_lighthouseInfo");
+    let lfi_lighthouse_info = document.getElementById("lfi_lighthouse_info");
     if (categories == "") {
-        lfi_lighthouseInfo.innerHTML = "<li>Please select at least one categorie</li>";
+        lfi_lighthouse_info.innerHTML = "<li>Please select at least one categorie</li>";
         return;
     } else {
         categories = categories.slice(0, -1);
@@ -271,7 +273,7 @@ async function runLighthouse() {
     // Check if Lighthouse ran successfully
     try {
         lighthouseJson["runtimeError"]["code"];
-        lfi_lighthouseInfo.innerHTML = "<li>Lighthouse was unable to reliably load the page you requested.<br>You can try refreshing the page and retry.</li>";
+        lfi_lighthouse_info.innerHTML = "<li>Lighthouse was unable to reliably load the page you requested.<br>You can try refreshing the page and retry.</li>";
     } catch (Ex) {
         try {
 
@@ -279,23 +281,26 @@ async function runLighthouse() {
             categories.split(",").forEach(cat => {
                 let catScore = lighthouseJson["categories"][cat]["score"] * 100;
                 let catTitle = lighthouseJson["categories"][cat]["title"];
-                lfi_lighthouseInfo.innerHTML += "<li><a></a>" + catTitle + " - " + catScore + " % </li > ";
+                lfi_lighthouse_info.innerHTML += "<li><a></a>" + catTitle + " - " + catScore + " % </li > ";
             })
 
             // Add Read More -> Open the HTML File
-            lfi_lighthouseInfo.innerHTML += "<li><a id='lighthouseReadMore' href='#'><b>" + "Read More" + "</b></a></li>";
+            lfi_lighthouse_info.innerHTML += "<li><a id='lighthouseReadMore' href='#'><b>" + "Read More" + "</b></a></li>";
             let lighthouseReadMore = document.getElementById("lighthouseReadMore");
             lighthouseReadMore.target = "_blank";
             lighthouseReadMore.href = lighthouseURL + "url=null" + "&cats=null" + "&view=" + lighthouseJson["htmlReport"];
             document.getElementById("lfi_lighthouse-section").removeAttribute("hidden");
         } catch (Ex) {
-            lfi_lighthouseInfo.innerHTML = "<li>Lighthouse was unable to reliably load the page you requested.<br>You can try refreshing the page and retry.</li>";
+            lfi_lighthouse_info.innerHTML = "<li>Lighthouse was unable to reliably load the page you requested.<br>You can try refreshing the page and retry.</li>";
         }
         document.getElementById("lfi_lighthouse-section").removeAttribute("hidden");
     }
 
     // Hide Lighthouse Button
     document.getElementById("runLighthouse").hidden = true;
+
+    // Toggle Lighthouse Section
+    document.getElementById("lfi_lighthouse-li").style.display = "block";
 
     // Remove overlay
     await overlay("removeOverlay", "");
