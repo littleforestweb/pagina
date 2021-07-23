@@ -32,15 +32,15 @@ async function clearHTML() {
     // Add iframe
     let iframeElement = document.createElement('iframe');
     iframeElement.id = "lfi_mainContent";
-    // iframeElement.src = window.location.href;
+    iframeElement.src = window.location.href;
     iframeElement.classList.add("lfi_iframe");
     document.body.appendChild(iframeElement);
 
-    // Add base page HTML to iframe content
-    let doc = document.getElementById('lfi_mainContent').contentWindow.document;
-    doc.open();
-    doc.write(allHTML);
-    doc.close();
+    // // Add base page HTML to iframe content
+    // let doc = document.getElementById('lfi_mainContent').contentWindow.document;
+    // doc.open();
+    // doc.write(allHTML);
+    // doc.close();
 }
 
 async function addSidebarHTML(htmlContent) {
@@ -84,12 +84,21 @@ async function overlay(action, reportType) {
 async function addContentInfo() {
     console.log("addContentInfo");
 
+    // Insert overlay
+    await overlay("addOverlay", "Content");
+
     // Get iframe element
     let iframeElement = document.getElementById('lfi_mainContent').contentDocument;
 
     //  Add totalImages to GENERALINFO
     let totalImages = iframeElement.getElementsByTagName("img").length;
     document.getElementById("lfi_totalImages").innerText = totalImages;
+
+    // Toggle Content Section
+    document.getElementById("lfi_content-li").style.display = "block";
+
+    // Remove overlay
+    await overlay("removeOverlay", "");
 }
 
 async function addLinksInfo() {
@@ -121,7 +130,6 @@ async function addLinksInfo() {
 
         // Check code status
         if (linkCode === -1 || linkCode >= 400 || linkValid === false) {
-            console.log(linkJSON);
             brokenLinksCount += 1;
         }
     }
@@ -131,6 +139,9 @@ async function addLinksInfo() {
     document.getElementById("lfi_extLinks").innerText = extLinks.length;
     document.getElementById("lfi_intLinks").innerText = intLinks.length;
     document.getElementById("lfi_brokenLinks").innerText = brokenLinksCount;
+
+    // Toggle Links Section
+    document.getElementById("lfi_links-li").style.display = "block";
 
     // Remove overlay
     await overlay("removeOverlay", "");
@@ -231,6 +242,9 @@ async function runLanguageTool() {
     //  Add lfi_totalErrors to GENERALINFO
     document.getElementById("lfi_totalErrors").innerText = Object.keys(errorsDict).length;
 
+    // Toggle Lighthouse Section
+    document.getElementById("lfi_spelling-li").style.display = "block";
+
     // Remove overlay
     await overlay("removeOverlay", "");
 }
@@ -269,12 +283,7 @@ async function runLighthouse() {
 
     // Check if at least one categories is selected
     let lfi_lighthouse_info = document.getElementById("lfi_lighthouse_info");
-    if (categories == "") {
-        lfi_lighthouse_info.innerHTML = "<li>Please select at least one categorie</li>";
-        return;
-    } else {
-        categories = categories.slice(0, -1);
-    }
+    if (categories == "") { lfi_lighthouse_info.innerHTML = "<li>Please select at least one categorie</li>"; return; } else { categories = categories.slice(0, -1); }
 
     // Insert overlay
     await overlay("addOverlay", "Lighthouse");
@@ -287,7 +296,6 @@ async function runLighthouse() {
 
     // Get siteUrl
     let siteUrl = window.location.href;
-    // let siteUrl = "https://littleforest.co.uk";
 
     console.log("siteUrl: " + siteUrl);
     console.log("Categories: " + categories);
@@ -296,7 +304,6 @@ async function runLighthouse() {
     // Get lighthouseJson
     let lighthouseURL = "https://inspector.littleforest.co.uk/InspectorWS/LighthouseServlet?"
     let lighthouseJson = await getRequest(lighthouseURL + "url=" + siteUrl + "&cats=" + categories + "&device=" + device);
-    console.log(lighthouseJson);
 
     try {
         // Iterate over every Category and set the Tittle and Score
@@ -355,12 +362,15 @@ console.clear();
     let cssContent = await getRequest(chrome.runtime.getURL("assets/report.css"));
     await addSidebarCSS(cssContent);
 
-    // // Insert Content Information
-    // await addContentInfo();
+    // Insert Content Information
+    await addContentInfo();
 
-    // // Insert Links Information
-    // await addLinksInfo();
+    // Insert Links Information
+    await addLinksInfo();
 
-    // // Run LanguageTool
-    // await runLanguageTool();
+    // Run LanguageTool
+    await runLanguageTool();
+
+    // Run Lighthouse
+    await runLighthouse();
 })();
