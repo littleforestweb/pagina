@@ -95,21 +95,45 @@ async function addContentInfo() {
 async function addLinksInfo() {
     console.log("addLinksInfo");
 
+    // Insert overlay
+    await overlay("addOverlay", "Links");
+
     // Get iframe element
     let iframeElement = document.getElementById('lfi_mainContent').contentDocument;
+
+    // Set Bwooken links counter
+    let brokenLinksCount = 0;
 
     //  Get links information
     let totalLinks = []; let extLinks = []; let intLinks = []; let allLinks = iframeElement.links;
     for (let i = 0; i < allLinks.length; i++) {
-        let linkHref = allLinks[i].href;
-        totalLinks.push(linkHref);
-        if (linkHref.includes(window.location.href)) { intLinks.push(linkHref); } else { extLinks.push(linkHref); }
+        let linkElem = allLinks[i]
+
+        // Total | Internal || External
+        totalLinks.push(linkElem.href);
+        if (linkElem.href.includes(window.location.href)) { intLinks.push(linkElem.href); } else { extLinks.push(linkElem.href); }
+
+        // Check if broken link
+        let brokenLinkServlet = "https://inspector.littleforest.co.uk/InspectorWS/BrokenLinksServlet?url=" + linkElem.href;
+        let linkJSON = await getRequest(brokenLinkServlet);
+        let linkCode = linkJSON.code;
+        let linkValid = linkJSON.valid;
+
+        // Check code status
+        if (linkCode === -1 || linkCode >= 400 || linkValid === false) {
+            brokenLinksCount += 1;
+        }
+
     }
 
     // Add Link information to sidebar
     document.getElementById("lfi_totalLinks").innerText = totalLinks.length;
     document.getElementById("lfi_extLinks").innerText = extLinks.length;
     document.getElementById("lfi_intLinks").innerText = intLinks.length;
+    document.getElementById("lfi_brokenLinks").innerText = brokenLinksCount;
+
+    // Remove overlay
+    await overlay("removeOverlay", "");
 }
 
 async function runLanguageTool() {
@@ -345,5 +369,5 @@ console.clear();
     await addLinksInfo();
 
     // Run LanguageTool
-    await runLanguageTool();
+    // await runLanguageTool();
 })();
