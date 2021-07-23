@@ -121,9 +121,9 @@ async function addLinksInfo() {
 
         // Check code status
         if (linkCode === -1 || linkCode >= 400 || linkValid === false) {
+            console.log(linkJSON);
             brokenLinksCount += 1;
         }
-
     }
 
     // Add Link information to sidebar
@@ -263,7 +263,7 @@ async function runLighthouse() {
     let cat_seo = document.getElementById("cat_seo").checked;
     if (cat_performance) { categories += "performance,"; }
     if (cat_pwa) { categories += "pwa,"; }
-    if (cat_bp) { categories += "best-practices"; }
+    if (cat_bp) { categories += "best-practices,"; }
     if (cat_accessibility) { categories += "accessibility,"; }
     if (cat_seo) { categories += "seo,"; }
 
@@ -296,31 +296,24 @@ async function runLighthouse() {
     // Get lighthouseJson
     let lighthouseURL = "https://inspector.littleforest.co.uk/InspectorWS/LighthouseServlet?"
     let lighthouseJson = await getRequest(lighthouseURL + "url=" + siteUrl + "&cats=" + categories + "&device=" + device);
+    console.log(lighthouseJson);
 
-    // Check if Lighthouse ran successfully
     try {
-        lighthouseJson["runtimeError"]["code"];
-        lfi_lighthouse_info.innerHTML = "<li>Lighthouse was unable to reliably load the page you requested.<br>You can try refreshing the page and retry.</li>";
-    } catch (Ex) {
-        try {
+        // Iterate over every Category and set the Tittle and Score
+        categories.split(",").forEach(cat => {
+            let catScore = lighthouseJson["categories"][cat]["score"] * 100;
+            let catTitle = lighthouseJson["categories"][cat]["title"];
+            lfi_lighthouse_info.innerHTML += "<li>" + catTitle + " - " + catScore + " % </li > ";
+        })
 
-            // Iterate over every Category and set the Tittle and Score
-            categories.split(",").forEach(cat => {
-                let catScore = lighthouseJson["categories"][cat]["score"] * 100;
-                let catTitle = lighthouseJson["categories"][cat]["title"];
-                lfi_lighthouse_info.innerHTML += "<li><a></a>" + catTitle + " - " + catScore + " % </li > ";
-            })
-
-            // Add Read More -> Open the HTML File
-            lfi_lighthouse_info.innerHTML += "<li><a id='lighthouseReadMore' href='#'><b>" + "Read More" + "</b></a></li>";
-            let lighthouseReadMore = document.getElementById("lighthouseReadMore");
-            lighthouseReadMore.target = "_blank";
-            lighthouseReadMore.href = lighthouseURL + "url=null" + "&cats=null" + "&view=" + lighthouseJson["htmlReport"];
-            document.getElementById("lfi_lighthouse-section").removeAttribute("hidden");
-        } catch (Ex) {
-            lfi_lighthouse_info.innerHTML = "<li>Lighthouse was unable to reliably load the page you requested.<br>You can try refreshing the page and retry.</li>";
-        }
+        // Add Read More -> Open the HTML File
+        lfi_lighthouse_info.innerHTML += "<li><a id='lighthouseReadMore' href='#'><b>" + "Read More" + "</b></a></li>";
+        let lighthouseReadMore = document.getElementById("lighthouseReadMore");
+        lighthouseReadMore.target = "_blank";
+        lighthouseReadMore.href = lighthouseURL + "url=null" + "&cats=null" + "&view=" + lighthouseJson["htmlReport"];
         document.getElementById("lfi_lighthouse-section").removeAttribute("hidden");
+    } catch (Ex) {
+        lfi_lighthouse_info.innerHTML = "<li>Lighthouse was unable to reliably load the page you requested.<br>You can try refreshing the page and retry.</li>";
     }
 
     // Hide Lighthouse Button
@@ -362,12 +355,12 @@ console.clear();
     let cssContent = await getRequest(chrome.runtime.getURL("assets/report.css"));
     await addSidebarCSS(cssContent);
 
-    // Insert Content Information
-    await addContentInfo();
+    // // Insert Content Information
+    // await addContentInfo();
 
-    // Insert Links Information
-    await addLinksInfo();
+    // // Insert Links Information
+    // await addLinksInfo();
 
-    // Run LanguageTool
+    // // Run LanguageTool
     // await runLanguageTool();
 })();
