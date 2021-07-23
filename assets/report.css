@@ -104,11 +104,8 @@
     margin-left: 300px;
     width: calc(100% - 300px);
     overflow: hidden;
-    background-color: white;
     position: fixed;
     top: 0;
-    float: right;
-    height: 50px;
     border-bottom-style: solid;
 }
 
@@ -119,12 +116,15 @@
     padding: 14px 16px;
     text-decoration: none;
     font-size: 17px;
-    border-right-style: solid;
-    color: black;
+}
+
+.lfi_navbar_active {
+    background: #166713;
+    color: white;
 }
 
 .lfi_navbar a:hover {
-    background: black;
+    background: #166713;
     color: white;
 }
 

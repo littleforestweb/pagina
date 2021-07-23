@@ -32,15 +32,14 @@ async function clearHTML() {
     // Add iframe
     let iframeElement = document.createElement('iframe');
     iframeElement.id = "lfi_mainContent";
-    iframeElement.src = window.location.href;
     iframeElement.classList.add("lfi_iframe");
     document.body.appendChild(iframeElement);
 
-    // // Add base page HTML to iframe content
-    // let doc = document.getElementById('lfi_mainContent').contentWindow.document;
-    // doc.open();
-    // doc.write(allHTML);
-    // doc.close();
+    // Add base page HTML to iframe content
+    let doc = document.getElementById('lfi_mainContent').contentWindow.document;
+    doc.open();
+    doc.write(allHTML);
+    doc.close();
 }
 
 async function addSidebarHTML(htmlContent) {
@@ -371,6 +370,6 @@ console.clear();
     // Run LanguageTool
     await runLanguageTool();
 
-    // Run Lighthouse
-    await runLighthouse();
+    // // Run Lighthouse
+    // await runLighthouse();
 })();
