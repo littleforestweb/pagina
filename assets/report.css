@@ -107,19 +107,16 @@
     position: fixed;
     top: 0;
     border-bottom-style: solid;
+    background-color: #555;
 }
 
 .lfi_navbar a {
     float: left;
     display: block;
     text-align: center;
-    padding: 14px 16px;
+    padding: 12px;
     text-decoration: none;
     font-size: 17px;
-}
-
-.lfi_navbar_active {
-    background: #166713;
     color: white;
 }
 
