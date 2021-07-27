@@ -209,12 +209,11 @@ async function checkBrokenLinks() {
             if (linkCode === -1 || linkCode >= 400) {
                 brokenLinksCount += 1;
 
-                // Update error color on html Code
-                htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(linkHref, "<span title='URL: " + linkHref + "&#010;" + "Code: " + linkCode + "' style='background-color: red; color: white'>" + linkHref + "</span>");
-
                 // Highlight Broken Link in HTML View
                 linkElem.innerHTML = linkElem.innerHTML.replaceAll(linkElem.innerText, "<span title='URL: " + linkHref + "&#010;" + "Code: " + linkCode + "' style='background-color: red; color: white'>" + linkElem.innerText + "</span>");
-                console.log(linkElem);
+
+                // Update error color on html Code
+                htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(linkHref, "<span style='background-color: red; color: white'>" + linkHref + "</span>");
             }
         } else {
             console.log("already checked: " + linkHref);
@@ -304,7 +303,7 @@ async function runLanguageTool() {
                     ;
 
                     // Update error color on html Code
-                    htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(error, "<span class='spellErrors' title='Message: " + message + "&#010;" + "Replacements: " + replacements + "' style='color: black; background-color:" + color + ";font-weight:bold;'>" + error + "</span>");
+                    htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(error, "<span class='spellErrors' style='color: black; background-color:" + color + ";font-weight:bold;'>" + error + "</span>");
 
                     // Add/update key error on errorsDict
                     if (error in errorsDict) {
