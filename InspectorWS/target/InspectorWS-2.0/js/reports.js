@@ -89,7 +89,9 @@ async function setIframe() {
             // Set htmlCode Text Area
             html = html.replaceAll("<", "&lt;");
             html = html.replaceAll(">", "&gt;");
-            document.getElementById("htmlView").innerHTML = html;
+            document.getElementById("htmlCode").innerHTML = html;
+
+            // HTMLCode Syntax Highlighter
             w3CodeColor(document.getElementById("htmlView"));
 
             // Hide Go Btn && Show Start Btn

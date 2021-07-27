@@ -13,7 +13,7 @@
     height: calc(100% - 50px);
 }
 
-.htmlCode {
+.htmlView {
     position: absolute;
     margin-left: 300px;
     width: calc(100% - 300px);
