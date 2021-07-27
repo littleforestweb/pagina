@@ -57,17 +57,13 @@ async function setIframe() {
     let siteUrl = await getSiteUrl();
 
     if (siteUrl === "") {
-        console.log("nope");
-
         // Add base page HTML to iframe content
         // Get iframe element
         let iframeElement = document.getElementById('mainContent').contentWindow.document;
         iframeElement.open();
         iframeElement.write("Please insert a valid URL");
         iframeElement.close();
-
     } else {
-
         // Add overlay
         await overlay("addOverlay", "Loading page")
 
@@ -83,7 +79,6 @@ async function setIframe() {
             iframeElement.write("Unable to get HTML");
             iframeElement.close();
         } else {
-
             // Add base page HTML to iframe content
             // Get iframe element
             let iframeElement = document.getElementById('mainContent').contentWindow.document;
