@@ -10,11 +10,11 @@ const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
 
 async  function getSiteUrl() {
     // Set siteUrl
-//    const siteUrl = document.getElementById("searchURL").value;
+    const siteUrl = document.getElementById("searchURL").value;
 //    const siteUrl = "https://www.gov.uk/";
 //    const siteUrl = "https://littleforest.co.uk/";
 //    const siteUrl = "https://pplware.sapo.pt/";
-    const siteUrl = "http://inspector.littleforest.co.uk/InspectorWS/test.html";
+//    const siteUrl = "http://inspector.littleforest.co.uk/InspectorWS/test.html";
 
     return  siteUrl;
 }
@@ -119,6 +119,8 @@ async function addContentInfo() {
     document.getElementById("content-btn").hidden = true;
     document.getElementById("content-li").style.display = "block";
     document.getElementById("content-div").hidden = false;
+
+    document.getElementById("content-keyword-div").hidden = true;
 
     // Remove overlay
     await overlay("removeOverlay", "");
