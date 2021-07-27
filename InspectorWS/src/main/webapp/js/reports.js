@@ -5,12 +5,21 @@
 
 // ------------------ Functions ------------------------------------- //
 
-//const siteUrl = document.getElementById("searchURL").value;
-const siteUrl = "https://www.gov.uk/";
-//const siteUrl = "https://littleforest.co.uk/";
-//const siteUrl = "https://pplware.sapo.pt/";
+
+
+
 const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
 //const inspectorUrl = "http://localhost:8081/InspectorWS/";
+
+async  function getSiteUrl() {
+    // Set siteUrl
+    const siteUrl = document.getElementById("searchURL").value;
+//    const siteUrl = "https://www.gov.uk/";
+//    const siteUrl = "https://littleforest.co.uk/";
+//    const siteUrl = "https://pplware.sapo.pt/";
+
+    return  siteUrl;
+}
 
 async function getRequest(url) {
     try {
@@ -44,29 +53,55 @@ async function overlay(action, message) {
 async function setIframe() {
     console.log("setIframe");
 
-    // Add overlay
-    await overlay("addOverlay", "Loading page")
+    // Get siteUrl
+    let siteUrl = await getSiteUrl();
 
-    // Get HTML from site
-    let HTMLServlet = inspectorUrl + "HTMLDownloaderServlet?url=" + siteUrl;
-    let html = await  getRequest(HTMLServlet);
+    if (siteUrl === "") {
+        console.log("nope");
 
-    // Add base page HTML to iframe content
-    // Get iframe element
-    let iframeElement = document.getElementById('mainContent').contentWindow.document;
-    iframeElement.open();
-    iframeElement.write(html);
-    iframeElement.close();
+        // Add base page HTML to iframe content
+        // Get iframe element
+        let iframeElement = document.getElementById('mainContent').contentWindow.document;
+        iframeElement.open();
+        iframeElement.write("Please insert a valid URL");
+        iframeElement.close();
 
-    // Set htmlCode Text Area
-    document.getElementById("htmlCode").innerText = html.toString();
+    } else {
 
-    // Hide Go Btn && Show Start Btn
-    document.getElementById("goBtn").hidden = true;
-    document.getElementById("mainBtn").hidden = false;
+        // Add overlay
+        await overlay("addOverlay", "Loading page")
 
-    // Remove overlay
-    await overlay("removeOverlay", "")
+        // Get HTML from site
+        let HTMLServlet = inspectorUrl + "HTMLDownloaderServlet?url=" + siteUrl;
+        let html = await  getRequest(HTMLServlet);
+
+        if (html === "") {
+            // Add base page HTML to iframe content
+            // Get iframe element
+            let iframeElement = document.getElementById('mainContent').contentWindow.document;
+            iframeElement.open();
+            iframeElement.write("Unable to get HTML");
+            iframeElement.close();
+        } else {
+
+            // Add base page HTML to iframe content
+            // Get iframe element
+            let iframeElement = document.getElementById('mainContent').contentWindow.document;
+            iframeElement.open();
+            iframeElement.write(html);
+            iframeElement.close();
+
+            // Set htmlCode Text Area
+            document.getElementById("htmlCode").innerText = html.toString();
+
+            // Hide Go Btn && Show Start Btn
+            document.getElementById("goBtn").hidden = true;
+            document.getElementById("mainBtn").hidden = false;
+        }
+
+        // Remove overlay
+        await overlay("removeOverlay", "")
+    }
 }
 
 async function addContentInfo() {
@@ -96,6 +131,9 @@ async function addLinksInfo() {
 
     // Insert overlay
     await overlay("addOverlay", "Gathering Links");
+
+    // Get siteUrl
+    let siteUrl = await getSiteUrl();
 
     // Get iframe element
     let iframeElement = document.getElementById('mainContent').contentDocument;
@@ -131,6 +169,8 @@ async function addLinksInfo() {
 
     // Remove overlay
     await overlay("removeOverlay", "");
+
+    await checkBrokenLinks();
 }
 
 async function checkBrokenLinks() {
@@ -187,6 +227,9 @@ async function runLanguageTool() {
 
     // Insert overlay
     await overlay("addOverlay", "Running Spell Check");
+
+    // Get siteUrl
+    let siteUrl = await getSiteUrl();
 
     let language = document.getElementById("languages_list").value;
     console.log("Language - " + language);
@@ -389,9 +432,6 @@ async function main() {
 
     // Insert Links Information
     await addLinksInfo();
-
-    // Check for Broken Links
-    await checkBrokenLinks();
 
     // Run Spelling Report
     await runLanguageTool();

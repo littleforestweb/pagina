@@ -10,8 +10,8 @@ document.getElementById("accessibility-li").style.display = "none"
 document.getElementById("content-li").style.display = "none"
 document.getElementById("links-li").style.display = "none"
 document.getElementById("spelling-li").style.display = "none"
-document.getElementById("lighthouse-li").style.display = "none"
-document.getElementById("technologies-li").style.display = "none"
+//document.getElementById("lighthouse-li").style.display = "none"
+//document.getElementById("technologies-li").style.display = "none"
 
 // ACCESSIBILITY
 document.getElementById('accessibility-title').addEventListener('click', () => {
@@ -49,24 +49,24 @@ document.getElementById('spelling-title').addEventListener('click', () => {
     }
 });
 
-// LIGHTHOUSE
-document.getElementById('lighthouse-title').addEventListener('click', () => {
-    if (document.getElementById("lighthouse-li").style.display === "none") {
-        document.getElementById("lighthouse-li").style.display = "block";
-    } else {
-        document.getElementById("lighthouse-li").style.display = "none";
-    }
-});
-
-
-// TECHNOLOGIES
-document.getElementById('technologies-title').addEventListener('click', () => {
-    if (document.getElementById("technologies-li").style.display === "none") {
-        document.getElementById("technologies-li").style.display = "block";
-    } else {
-        document.getElementById("technologies-li").style.display = "none";
-    }
-});
+//// LIGHTHOUSE
+//document.getElementById('lighthouse-title').addEventListener('click', () => {
+//    if (document.getElementById("lighthouse-li").style.display === "none") {
+//        document.getElementById("lighthouse-li").style.display = "block";
+//    } else {
+//        document.getElementById("lighthouse-li").style.display = "none";
+//    }
+//});
+//
+//
+//// TECHNOLOGIES
+//document.getElementById('technologies-title').addEventListener('click', () => {
+//    if (document.getElementById("technologies-li").style.display === "none") {
+//        document.getElementById("technologies-li").style.display = "block";
+//    } else {
+//        document.getElementById("technologies-li").style.display = "none";
+//    }
+//});
 
 
 // ------------------ Toggle Page <-> HTML View ------------------ //
