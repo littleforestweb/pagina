@@ -15,8 +15,9 @@ async  function getSiteUrl() {
     // Set siteUrl
 //    const siteUrl = document.getElementById("searchURL").value;
 //    const siteUrl = "https://www.gov.uk/";
-    const siteUrl = "https://littleforest.co.uk/";
+//    const siteUrl = "https://littleforest.co.uk/";
 //    const siteUrl = "https://pplware.sapo.pt/";
+    const siteUrl = "http://inspector.littleforest.co.uk/InspectorWS/test.html";
 
     return  siteUrl;
 }
@@ -208,11 +209,15 @@ async function checkBrokenLinks() {
             console.log(linkJSON);
 
             // Check code status
-            if (linkCode === -1 || linkCode >= 400 || linkValid === false) {
+            if (linkCode === -1 || linkCode >= 400) {
                 brokenLinksCount += 1;
 
                 // Update error color on html Code
                 htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(linkHref, "<span title='Code: " + linkCode + "' style='background-color: red; color: white'>" + linkHref + "</span>");
+
+                // Highlight Broken Link in HTML View
+                linkElem.innerHTML = linkElem.innerHTML.replaceAll(linkElem.innerText, "<span title='Code: " + linkCode + "' style='background-color: red; color: white'>" + linkElem.innerText + "</span>");
+                console.log(linkElem);
             }
         } else {
             console.log("already checked: " + linkHref);
