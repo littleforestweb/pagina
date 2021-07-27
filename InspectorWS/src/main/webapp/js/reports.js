@@ -210,10 +210,10 @@ async function checkBrokenLinks() {
                 brokenLinksCount += 1;
 
                 // Update error color on html Code
-                htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(linkHref, "<span title='Code: " + linkCode + "' style='background-color: red; color: white'>" + linkHref + "</span>");
+                htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(linkHref, "<span title='URL: " + linkHref + "&#010;" + "Code: " + linkCode + "' style='background-color: red; color: white'>" + linkHref + "</span>");
 
                 // Highlight Broken Link in HTML View
-                linkElem.innerHTML = linkElem.innerHTML.replaceAll(linkElem.innerText, "<span title='Code: " + linkCode + "' style='background-color: red; color: white'>" + linkElem.innerText + "</span>");
+                linkElem.innerHTML = linkElem.innerHTML.replaceAll(linkElem.innerText, "<span title='URL: " + linkHref + "&#010;" + "Code: " + linkCode + "' style='background-color: red; color: white'>" + linkElem.innerText + "</span>");
                 console.log(linkElem);
             }
         } else {
