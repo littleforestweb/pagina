@@ -211,15 +211,15 @@ async function runLanguageTool() {
 
         try {
 
-//            if (language === "auto") {
-//                // Get detected language and confidence
-//                let detectedLanguage = data.language.detectedLanguage.name;
-//                document.getElementById("detectedLanguage").innerText = detectedLanguage + " (Auto) ";
-//            } else {
-//                // Get detected language and confidence
-//                let detectedLanguage = data.language.name;
-//                document.getElementById("detectedLanguage").innerText = detectedLanguage;
-//            }
+            if (language === "auto") {
+                // Get detected language and confidence
+                let detectedLanguage = data.language.detectedLanguage.name;
+                document.getElementById("detectedLanguage").innerText = detectedLanguage + " (Auto) ";
+            } else {
+                // Get detected language and confidence
+                let detectedLanguage = data.language.name;
+                document.getElementById("detectedLanguage").innerText = detectedLanguage;
+            }
 
 
             // Iterate on every error
