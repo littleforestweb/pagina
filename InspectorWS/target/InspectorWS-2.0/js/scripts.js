@@ -6,22 +6,12 @@
 // ------------------ Toggle Sidebar Section On/Off ------------------ //
 
 // Default hide every section apart from Settings and General
-document.getElementById("settings-li").style.display = "block"
 document.getElementById("accessibility-li").style.display = "none"
 document.getElementById("content-li").style.display = "none"
 document.getElementById("links-li").style.display = "none"
 document.getElementById("spelling-li").style.display = "none"
 document.getElementById("lighthouse-li").style.display = "none"
 document.getElementById("technologies-li").style.display = "none"
-
-// SETTINGS
-document.getElementById('settings-title').addEventListener('click', () => {
-    if (document.getElementById("settings-li").style.display === "none") {
-        document.getElementById("settings-li").style.display = "block";
-    } else {
-        document.getElementById("settings-li").style.display = "none";
-    }
-});
 
 // ACCESSIBILITY
 document.getElementById('accessibility-title').addEventListener('click', () => {

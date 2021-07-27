@@ -1,5 +1,5 @@
 <!-- 
-Document   : lighthouse
+Document   : Little Forest - PageInspector
 Created on : Jul 7, 2021, 7:13:28 PM
 Author     : xhico
 -->
@@ -28,23 +28,24 @@ Author     : xhico
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <button type="button" class="btn btn-outline-dark me-2">Comment</button>
-                        <button type="button" class="btn btn-outline-dark me-2">Fix</button>
-                        <button type="button" class="btn btn-outline-dark me-2">History</button>
-                        <button type="button" class="btn btn-outline-dark me-2">Crawl</button>
-                        <button type="button" class="btn btn-outline-dark me-2">Edit</button>
-                        <button type="button" class="btn btn-outline-dark me-2">Share</button>
-                    </ul>
+                    <div class="d-flex me-auto mb-2 mb-lg-0">
+                        <input id="searchURL" class="form-control me-2" type="search" placeholder="Check URL" aria-label="Search">
+                        <button type="button" id="goBtn" onclick="setIframe()" class="btn btn-outline-dark">Load</button>
+                        <button type="button" id="mainBtn" hidden onclick="main()" class="btn btn-outline-dark">Go</button>
+                    </div>
+                    <!--                    <ul class="navbar-nav mb-2 mb-lg-0">
+                                            <button type="button" class="btn btn-outline-dark me-2">Comment</button>
+                                            <button type="button" class="btn btn-outline-dark me-2">Fix</button>
+                                            <button type="button" class="btn btn-outline-dark me-2">History</button>
+                                            <button type="button" class="btn btn-outline-dark me-2">Crawl</button>
+                                            <button type="button" class="btn btn-outline-dark me-2">Edit</button>
+                                            <button type="button" class="btn btn-outline-dark me-2">Share</button>
+                                        </ul>-->
                     <div class="btn-group me-2" role="group" aria-label="Basic example">
                         <button type="button" id="PageBtn" onclick="toggleView('Page')" class="active btn btn-outline-dark">Page</button>
                         <button type="button" id="HTMLBtn" onclick="toggleView('HTML')" class="btn btn-outline-dark">HTML</button>
                     </div>
-                    <div class="d-flex">
-                        <input id="searchURL" class="form-control me-2" type="search" placeholder="Search URL" aria-label="Search">
-                        <button type="button" id="goBtn" onclick="setIframe()" class="btn btn-outline-dark">Load</button>
-                        <button type="button" id="mainBtn" hidden onclick="main()" class="btn btn-outline-dark">Go</button>
-                    </div>
+
                 </div>
             </div>
         </nav>
@@ -58,11 +59,45 @@ Author     : xhico
                 <img class="sidebar-logo" alt="sidebar Logo" src="https://littleforest.co.uk/wp-content/uploads/2020/11/littleforest_logo.png">
             </a>
 
-            <!-- SETTINGS -->
-            <ul id="settings-section" class="sidebar-list">
-                <li><b><a id="settings-title" href="#">SETTINGS<i class="arrow down"></i></a></b></li>
-                <li id="settings-li">
-                    <!-- LanguageTool Languages -->
+            <!-- ACCESSIBILITY -->
+            <ul id="accessibility-section" class="sidebar-list">
+                <li><b><a id="accessibility-title" href="#">ACCESSIBILITY REPORT <i class="arrow down"></i></a></b></li>
+                <button type="button" id="accessibility-btn" class="btn btn-outline-dark" onclick="runAccessibility()">Run Accessibility Report</button>
+                <div id="accessibility-div" hidden>
+                    <li id="accessibility-li">
+                    </li>
+                </div>
+            </ul>
+
+            <!-- CONTENT -->
+            <ul id="content-section" class="sidebar-list">
+                <li><b><a id="content-title" href="#">CONTENT REPORT<i class="arrow down"></i></a></b></li>
+                <button type="button" id="content-btn" class="btn btn-outline-dark" onclick="addContentInfo()">Run Content Report</button>
+                <div id="content-div" hidden>
+                    <li id="content-li">
+                        <p>Found <span id="totalImages">0</span> image(s)</p>
+                    </li>
+                </div>
+            </ul>
+
+            <!-- LINKS -->
+            <ul id="links-section" class="sidebar-list">
+                <li><b><a id="links-title" href="#">LINKS REPORT<i class="arrow down"></i></a></b></li>
+                <button type="button" id="links-btn" class="btn btn-outline-dark" onclick="addLinksInfo()">Run Links Report</button>
+                <div id="links-div" hidden>
+                    <li id="links-li">
+                        <p>Found <span id="totalLinks">0</span> link(s) (<span id="extLinks">0</span> external and <span id="intLinks">0</span> internal)
+                        </p>
+                        <button type="button" id="brokenLinks-btn" class="btn btn-outline-dark btn-sm" onclick="checkBrokenLinks()">Check for Broken Links</button>
+                        <p id="brokenLinks-p" hidden>Found <span id="brokenLinks">0</span> broken links(s)</p>
+                    </li>
+                </div>
+            </ul>
+
+            <!-- SPELLING -->
+            <ul id="spelling-section" class="sidebar-list">
+                <li><b><a id="spelling-title" href="#">SPELLING REPORT <i class="arrow down"></i></a></b></li>
+                <div id="language-select-div">
                     <label>Language</label>
                     <select class="form-select" id="languages_list">
                         <option value=ar>Arabic</option>
@@ -112,73 +147,7 @@ Author     : xhico
                         <option value=uk-UA>Ukrainian</option>
                     </select>
                     <br>
-
-
-                    <!-- Lighthouse Categories -->
-                    <label>Categories</label><br>
-                    <input type="checkbox" id="cat_performance" name="cat_performance" checked>
-                    <label for="cat_performance">Performance</label>
-                    <br>
-                    <input type="checkbox" id="cat_pwa" name="cat_pwa" checked>
-                    <label for="cat_pwa">Progressive Web App</label>
-                    <br>
-                    <input type="checkbox" id="cat_bp" name="cat_bp" checked>
-                    <label for="cat_bp">Best Practicies</label>
-                    <br>
-                    <input type="checkbox" id="cat_accessibility" name="cat_accessibility" checked>
-                    <label for="cat_accessibility">Accessibility</label>
-                    <br>
-                    <input type="checkbox" id="cat_seo" name="cat_seo" checked>
-                    <label for="cat_seo">SEO</label>
-                    <br><br>
-
-                    <!-- Lighthouse Device -->
-                    <label>Device</label><br>
-                    <input type="radio" id="dev_mobile" name="devices" value="mobile" checked>
-                    <label for="dev_mobile">Mobile</label><br>
-                    <input type="radio" id="dev_desktop" name="devices" value="desktop">
-                    <label for="dev_desktop">Desktop</label>
-                </li>
-            </ul>
-
-            <!-- ACCESSIBILITY -->
-            <ul id="accessibility-section" class="sidebar-list">
-                <li><b><a id="accessibility-title" href="#">ACCESSIBILITY REPORT <i class="arrow down"></i></a></b></li>
-                <button type="button" id="accessibility-btn" class="btn btn-outline-dark" onclick="runAccessibility()">Run Accessibility Report</button>
-                <div id="accessibility-div" hidden>
-                    <li id="accessibility-li">
-                    </li>
                 </div>
-            </ul>
-
-            <!-- CONTENT -->
-            <ul id="content-section" class="sidebar-list">
-                <li><b><a id="content-title" href="#">CONTENT REPORT<i class="arrow down"></i></a></b></li>
-                <button type="button" id="content-btn" class="btn btn-outline-dark" onclick="addContentInfo()">Run Content Report</button>
-                <div id="content-div" hidden>
-                    <li id="content-li">
-                        <p>Found <span id="totalImages">0</span> image(s)</p>
-                    </li>
-                </div>
-            </ul>
-
-            <!-- LINKS -->
-            <ul id="links-section" class="sidebar-list">
-                <li><b><a id="links-title" href="#">LINKS REPORT<i class="arrow down"></i></a></b></li>
-                <button type="button" id="links-btn" class="btn btn-outline-dark" onclick="addLinksInfo()">Run Links Report</button>
-                <div id="links-div" hidden>
-                    <li id="links-li">
-                        <p>Found <span id="totalLinks">0</span> link(s) (<span id="extLinks">0</span> external and <span id="intLinks">0</span> internal)
-                        </p>
-                        <button type="button" id="brokenLinks-btn" class="btn btn-outline-dark btn-sm" onclick="checkBrokenLinks()">Check for Broken Links</button>
-                        <p id="brokenLinks-p" hidden>Found <span id="brokenLinks">0</span> broken links(s)</p>
-                    </li>
-                </div>
-            </ul>
-
-            <!-- SPELLING -->
-            <ul id="spelling-section" class="sidebar-list">
-                <li><b><a id="spelling-title" href="#">SPELLING REPORT <i class="arrow down"></i></a></b></li>
                 <button type="button" id="spelling-btn" class="btn btn-outline-dark" onclick="runLanguageTool()" >Run Spelling Report</button>
                 <div id="spelling-div" hidden>
                     <li id="spelling-li">
@@ -189,38 +158,64 @@ Author     : xhico
                 </div>
             </ul>
 
-            <!-- LIGHTHOUSE -->
-            <ul id="lighthouse-section" class="sidebar-list">
-                <li><b><a id="lighthouse-title" href="#">LIGHTHOUSE REPORT<i class="arrow down"></i></a></b></li>
-                <button type="button" id="lighthouse-btn" class="btn btn-outline-dark" onclick="runLighthouse()">Run Lighthouse Report</button>
-                <div id="lighthouse-div" hidden>
-                    <li id="lighthouse-li">
-                        <ul id="lighthouse_info"></ul>
-                    </li>
-                </div>
-            </ul>
-
-            <!-- TECHNOLOGIES -->
-            <ul id="technologies-section" class="sidebar-list">
-                <li><b><a id="technologies-title" href="#">TECHNOLOGIES REPORT <i class="arrow down"></i></a></b></li>
-                <button type="button" id="technologies-btn" class="btn btn-outline-dark" onclick="runTechnologies()">Run Technologies Report</button>
-                <div id="technologies-div" hidden>
-                    <li id="technologies-li">
-                        <ul id="technologies_info"></ul>
-                    </li>
-                </div>
-            </ul>
-
-            <!-- COOKIES -->
-            <ul id="cookies-section" class="sidebar-list">
-                <li><b><a id="cookies-title" href="#">COOKIES REPORT <i class="arrow down"></i></a></b></li>
-                <button type="button" id="cookies-btn" class="btn btn-outline-dark" onclick="runCookies()">Run Cookies Report</button>
-                <div id="cookies-div" hidden>
-                    <li id="cookies-li">
-                        <ul id="cookies_info"></ul>
-                    </li>
-                </div>
-            </ul>
+            <!--            LIGHTHOUSE 
+                        <ul id="lighthouse-section" class="sidebar-list">
+                            <li><b><a id="lighthouse-title" href="#">LIGHTHOUSE REPORT<i class="arrow down"></i></a></b></li>
+                             Lighthouse Categories 
+                            <label>Categories</label><br>
+                            <input type="checkbox" id="cat_performance" name="cat_performance" checked>
+                            <label for="cat_performance">Performance</label>
+                            <br>
+                            <input type="checkbox" id="cat_pwa" name="cat_pwa" checked>
+                            <label for="cat_pwa">Progressive Web App</label>
+                            <br>
+                            <input type="checkbox" id="cat_bp" name="cat_bp" checked>
+                            <label for="cat_bp">Best Practicies</label>
+                            <br>
+                            <input type="checkbox" id="cat_accessibility" name="cat_accessibility" checked>
+                            <label for="cat_accessibility">Accessibility</label>
+                            <br>
+                            <input type="checkbox" id="cat_seo" name="cat_seo" checked>
+                            <label for="cat_seo">SEO</label>
+                            <br><br>
+            
+                             Lighthouse Device 
+                            <label>Device</label><br>
+                            <input type="radio" id="dev_mobile" name="devices" value="mobile" checked>
+                            <label for="dev_mobile">Mobile</label><br>
+                            <input type="radio" id="dev_desktop" name="devices" value="desktop">
+                            <label for="dev_desktop">Desktop</label>
+                            <br><br>
+            
+                            <button type="button" id="lighthouse-btn" class="btn btn-outline-dark" onclick="runLighthouse()">Run Lighthouse Report</button>
+                            <div id="lighthouse-div" hidden>
+                                <li id="lighthouse-li">
+                                    <ul id="lighthouse_info"></ul>
+                                </li>
+                            </div>
+                        </ul>
+            
+                        TECHNOLOGIES 
+                        <ul id="technologies-section" class="sidebar-list">
+                            <li><b><a id="technologies-title" href="#">TECHNOLOGIES REPORT <i class="arrow down"></i></a></b></li>
+                            <button type="button" id="technologies-btn" class="btn btn-outline-dark" onclick="runTechnologies()">Run Technologies Report</button>
+                            <div id="technologies-div" hidden>
+                                <li id="technologies-li">
+                                    <ul id="technologies_info"></ul>
+                                </li>
+                            </div>
+                        </ul>
+            
+                        COOKIES 
+                        <ul id="cookies-section" class="sidebar-list">
+                            <li><b><a id="cookies-title" href="#">COOKIES REPORT <i class="arrow down"></i></a></b></li>
+                            <button type="button" id="cookies-btn" class="btn btn-outline-dark" onclick="runCookies()">Run Cookies Report</button>
+                            <div id="cookies-div" hidden>
+                                <li id="cookies-li">
+                                    <ul id="cookies_info"></ul>
+                                </li>
+                            </div>
+                        </ul>-->
 
         </div>
         <!-- END SIDEBAR -->

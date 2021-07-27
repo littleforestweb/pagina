@@ -5,10 +5,10 @@
 
 // ------------------ Functions ------------------------------------- //
 
-const siteUrl = document.getElementById("searchURL").value;
-//const siteUrl = "https://www.gov.uk/";
-const siteUrl = "https://littleforest.co.uk/";
-const siteUrl = "https://pplware.sapo.pt/";
+//const siteUrl = document.getElementById("searchURL").value;
+const siteUrl = "https://www.gov.uk/";
+//const siteUrl = "https://littleforest.co.uk/";
+//const siteUrl = "https://pplware.sapo.pt/";
 const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
 //const inspectorUrl = "http://localhost:8081/InspectorWS/";
 
@@ -211,15 +211,15 @@ async function runLanguageTool() {
 
         try {
 
-            if (language === "auto") {
-                // Get detected language and confidence
-                let detectedLanguage = data.language.detectedLanguage.name;
-                document.getElementById("detectedLanguage").innerText = detectedLanguage + " (Auto) ";
-            } else {
-                // Get detected language and confidence
-                let detectedLanguage = data.language.name;
-                document.getElementById("detectedLanguage").innerText = detectedLanguage;
-            }
+//            if (language === "auto") {
+//                // Get detected language and confidence
+//                let detectedLanguage = data.language.detectedLanguage.name;
+//                document.getElementById("detectedLanguage").innerText = detectedLanguage + " (Auto) ";
+//            } else {
+//                // Get detected language and confidence
+//                let detectedLanguage = data.language.name;
+//                document.getElementById("detectedLanguage").innerText = detectedLanguage;
+//            }
 
 
             // Iterate on every error
@@ -290,6 +290,7 @@ async function runLanguageTool() {
 
     // Toggle Spelling Section
     document.getElementById("spelling-btn").hidden = true;
+    document.getElementById("language-select-div").hidden = true;
     document.getElementById("spelling-li").style.display = "block";
     document.getElementById("spelling-div").hidden = false;
 
@@ -388,6 +389,12 @@ async function main() {
 
     // Insert Links Information
     await addLinksInfo();
+
+    // Check for Broken Links
+    await checkBrokenLinks();
+
+    // Run Spelling Report
+    await runLanguageTool();
 
     console.log("----------------------");
 }
