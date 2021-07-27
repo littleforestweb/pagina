@@ -5,9 +5,6 @@
 
 // ------------------ Functions ------------------------------------- //
 
-
-
-
 const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
 //const inspectorUrl = "http://localhost:8081/InspectorWS/";
 
