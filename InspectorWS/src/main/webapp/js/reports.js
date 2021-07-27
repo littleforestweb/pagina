@@ -14,8 +14,8 @@ const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
 async  function getSiteUrl() {
     // Set siteUrl
 //    const siteUrl = document.getElementById("searchURL").value;
-    const siteUrl = "https://www.gov.uk/";
-//    const siteUrl = "https://littleforest.co.uk/";
+//    const siteUrl = "https://www.gov.uk/";
+    const siteUrl = "https://littleforest.co.uk/";
 //    const siteUrl = "https://pplware.sapo.pt/";
 
     return  siteUrl;
@@ -92,7 +92,7 @@ async function setIframe() {
             document.getElementById("htmlCode").innerHTML = html;
 
             // HTMLCode Syntax Highlighter
-            w3CodeColor(document.getElementById("htmlView"));
+            w3CodeColor(document.getElementById("htmlCode"));
 
             // Hide Go Btn && Show Start Btn
             document.getElementById("goBtn").hidden = true;
@@ -182,6 +182,10 @@ async function checkBrokenLinks() {
     // Get iframe element
     let iframeElement = document.getElementById('mainContent').contentDocument;
 
+    // Get htmlCode
+    let htmlCode = document.getElementById("htmlCode");
+
+    // Set vars
     let brokenLinksCount = 0;
     let checkedLinks = [];
     let allLinks = iframeElement.links;
@@ -206,6 +210,9 @@ async function checkBrokenLinks() {
             // Check code status
             if (linkCode === -1 || linkCode >= 400 || linkValid === false) {
                 brokenLinksCount += 1;
+
+                // Update error color on html Code
+                htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(linkHref, "<span title='Code: " + linkCode + "' style='background-color: red; color: white'>" + linkHref + "</span>");
             }
         } else {
             console.log("already checked: " + linkHref);
@@ -228,8 +235,8 @@ async function runLanguageTool() {
     // Insert overlay
     await overlay("addOverlay", "Running Spell Check");
 
-    // Get siteUrl
-    let siteUrl = await getSiteUrl();
+    // Get htmlCode
+    let htmlCode = document.getElementById("htmlCode");
 
     let language = document.getElementById("languages_list").value;
     console.log("Language - " + language);
@@ -288,11 +295,14 @@ async function runLanguageTool() {
                         color = "orange";
                     }
 
-                    // Update error color on html
+                    // Update error color on html View
                     tagText.innerHTML = tagText.innerHTML.replace(error,
                             "<span class='spellErrors' title='Message: " + message + "&#010;" + "Replacements: " + replacements + "' style='color: black; background-color:" + color + ";font-weight:bold;'>" + error + "</span>"
                             );
                     ;
+
+                    // Update error color on html Code
+                    htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(error, "<span class='spellErrors' title='Message: " + message + "&#010;" + "Replacements: " + replacements + "' style='color: black; background-color:" + color + ";font-weight:bold;'>" + error + "</span>");
 
                     // Add/update key error on errorsDict
                     if (error in errorsDict) {
@@ -318,8 +328,10 @@ async function runLanguageTool() {
         return second[1][0] - first[1][0];
     });
 
+
+
     // Add errors to Sidebar
-    let spelling_errors = document.getElementById("spelling_errors")
+    let spelling_errors = document.getElementById("spelling_errors");
     items.forEach(function (entry) {
         let error = entry[0];
         let count = entry[1][0];
