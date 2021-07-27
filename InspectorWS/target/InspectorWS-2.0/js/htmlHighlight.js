@@ -5,9 +5,6 @@
  */
 
 
-
-w3CodeColor(document.getElementById("htmlCode"));
-
 function w3CodeColor(elmnt, mode) {
     var lang = (mode || "html");
     var elmntObj = (document.getElementById(elmnt) || elmnt);

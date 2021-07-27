@@ -13,8 +13,8 @@ const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
 
 async  function getSiteUrl() {
     // Set siteUrl
-    const siteUrl = document.getElementById("searchURL").value;
-//    const siteUrl = "https://www.gov.uk/";
+//    const siteUrl = document.getElementById("searchURL").value;
+    const siteUrl = "https://www.gov.uk/";
 //    const siteUrl = "https://littleforest.co.uk/";
 //    const siteUrl = "https://pplware.sapo.pt/";
 
@@ -92,7 +92,10 @@ async function setIframe() {
             iframeElement.close();
 
             // Set htmlCode Text Area
-            document.getElementById("htmlCode").innerText = html.toString();
+            html = html.replaceAll("<", "&lt;");
+            html = html.replaceAll(">", "&gt;");
+            document.getElementById("htmlView").innerHTML = html;
+            w3CodeColor(document.getElementById("htmlView"));
 
             // Hide Go Btn && Show Start Btn
             document.getElementById("goBtn").hidden = true;

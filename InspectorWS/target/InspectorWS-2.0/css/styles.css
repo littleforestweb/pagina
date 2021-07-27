@@ -18,8 +18,8 @@
     margin-left: 300px;
     width: calc(100% - 300px);
     height: calc(100% - 50px);
-    background-color: #303030;
-    color: white;
+/*    background-color: #303030;
+    color: white;*/
 }
 
 #overlay {
