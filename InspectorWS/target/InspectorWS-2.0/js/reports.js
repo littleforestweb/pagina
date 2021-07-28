@@ -23,10 +23,10 @@ async function getRequest(url) {
     try {
         const res = await fetch(url);
         if (url.includes("languagetoolplus") ||
-                url.includes("BrokenLinksServlet") ||
-                url.includes("CodeSnifferServlet") ||
-                url.includes("LanguageToolServlet") ||
-                url.includes("LighthouseServlet")) {
+                url.includes("BrokenLinks") ||
+                url.includes("CodeSniffer") ||
+                url.includes("LanguageTool") ||
+                url.includes("Lighthouse")) {
             return await res.json();
         }
         return await res.text();
@@ -66,7 +66,7 @@ async function setIframe() {
         await overlay("addOverlay", "Loading page")
 
         // Get HTML from site
-        let HTMLServlet = inspectorUrl + "HTMLDownloaderServlet?url=" + siteUrl;
+        let HTMLServlet = inspectorUrl + "HTMLDownloader?url=" + siteUrl;
         let html = await  getRequest(HTMLServlet);
 
         if (html === "") {
@@ -201,7 +201,7 @@ async function checkBrokenLinks() {
             checkedLinks.push(linkHref);
 
             // Check if broken link
-            let brokenLinkServlet = inspectorUrl + "BrokenLinksServlet?url=" + linkHref;
+            let brokenLinkServlet = inspectorUrl + "BrokenLinks?url=" + linkHref;
             let linkJSON = await getRequest(brokenLinkServlet);
             let linkCode = linkJSON.code;
             let linkValid = linkJSON.valid;
@@ -337,8 +337,6 @@ async function runLanguageTool() {
         return second[1][0] - first[1][0];
     });
 
-
-
     // Add errors to Sidebar
     let spelling_errors = document.getElementById("spelling_errors");
     items.forEach(function (entry) {
@@ -364,6 +362,9 @@ async function runLanguageTool() {
 
 async function runLighthouse() {
     console.log("runLighthouse");
+
+    // Get siteUrl
+    let siteUrl = await getSiteUrl();
 
     // Get selected categories
     let categories = "";
@@ -415,7 +416,7 @@ async function runLighthouse() {
     console.log("Device: " + device);
 
     // Get lighthouseJson
-    let lighthouseJson = await getRequest(inspectorUrl + "LighthouseServlet?" + "url=" + siteUrl + "&cats=" + categories + "&device=" + device);
+    let lighthouseJson = await getRequest(inspectorUrl + "Lighthouse?" + "url=" + siteUrl + "&cats=" + categories + "&device=" + device);
 
     try {
         // Iterate over every Category and set the Tittle and Score
@@ -429,7 +430,7 @@ async function runLighthouse() {
         lighthouse_info.innerHTML += "<li><a id='lighthouseReadMore' href='#'><b>" + "Read More" + "</b></a></li>";
         let lighthouseReadMore = document.getElementById("lighthouseReadMore");
         lighthouseReadMore.target = "_blank";
-        lighthouseReadMore.href = lighthouseURL + "url=null" + "&cats=null" + "&view=" + lighthouseJson["htmlReport"];
+        lighthouseReadMore.href = inspectorUrl + "Lighthouse?" + "url=null" + "&cats=null" + "&view=" + lighthouseJson["htmlReport"];
         document.getElementById("lighthouse-section").removeAttribute("hidden");
     } catch (Ex) {
         lighthouse_info.innerHTML = "<li>Lighthouse was unable to reliably load the page you requested.<br>You can try refreshing the page and retry.</li>";

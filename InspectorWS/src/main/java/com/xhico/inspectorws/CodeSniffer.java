@@ -31,7 +31,7 @@ import org.json.JSONObject;
  * @author xhico
  */
 @WebServlet(name = "CodeSnifferServlet", urlPatterns = {"/CodeSnifferServlet"})
-public class CodeSnifferServlet extends HttpServlet {
+public class CodeSniffer extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>

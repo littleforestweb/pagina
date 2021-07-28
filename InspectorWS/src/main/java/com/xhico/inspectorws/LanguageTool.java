@@ -72,7 +72,7 @@ import org.languagetool.rules.RuleMatch;
  * @author xhico
  */
 @WebServlet(name = "LanguageToolServlet", urlPatterns = {"/LanguageToolServlet"})
-public class LanguageToolServlet extends HttpServlet {
+public class LanguageTool extends HttpServlet {
 
     private JLanguageTool langTool;
     private String langName;

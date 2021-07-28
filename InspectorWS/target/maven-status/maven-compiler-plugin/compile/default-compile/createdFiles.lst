@@ -1,6 +1,6 @@
-com\xhico\inspectorws\BrokenLinksServlet.class
-com\xhico\inspectorws\CodeSnifferServlet.class
-com\xhico\inspectorws\LanguageToolServlet.class
-com\xhico\inspectorws\LighthouseServlet$1.class
-com\xhico\inspectorws\LighthouseServlet.class
-com\xhico\inspectorws\HTMLDownloaderServlet.class
+com\xhico\inspectorws\BrokenLinks.class
+com\xhico\inspectorws\CodeSniffer.class
+com\xhico\inspectorws\HTMLDownloader.class
+com\xhico\inspectorws\LanguageTool.class
+com\xhico\inspectorws\Lighthouse.class
+com\xhico\inspectorws\Lighthouse$1.class

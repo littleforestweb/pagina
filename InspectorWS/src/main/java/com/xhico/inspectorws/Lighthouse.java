@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author xhico
  */
 @WebServlet(name = "LighthouseServlet", urlPatterns = {"/LighthouseServlet"})
-public class LighthouseServlet extends HttpServlet {
+public class Lighthouse extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>

@@ -22,7 +22,7 @@ import org.jsoup.select.Elements;
  * @author xhico
  */
 @WebServlet(name = "HTMLDownloaderServlet", urlPatterns = {"/HTMLDownloaderServlet"})
-public class HTMLDownloaderServlet extends HttpServlet {
+public class HTMLDownloader extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>

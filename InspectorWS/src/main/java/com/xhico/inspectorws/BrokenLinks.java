@@ -29,7 +29,7 @@ import org.json.JSONObject;
  * @author xhico
  */
 @WebServlet(name = "BrokenLinksServlet", urlPatterns = {"/BrokenLinksServlet"})
-public class BrokenLinksServlet extends HttpServlet {
+public class BrokenLinks extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -77,7 +77,7 @@ public class BrokenLinksServlet extends HttpServlet {
                 obj.put("valid", valid);
                 obj.put("code", code);
             } catch (JSONException ex) {
-                Logger.getLogger(BrokenLinksServlet.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(BrokenLinks.class.getName()).log(Level.SEVERE, null, ex);
             }
 
             // Pretty Print JSON
