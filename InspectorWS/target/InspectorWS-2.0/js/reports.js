@@ -11,8 +11,8 @@ const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
 async  function getSiteUrl() {
     // Set siteUrl
 //    const siteUrl = document.getElementById("searchURL").value;
-//    const siteUrl = "https://www.gov.uk/";
-    const siteUrl = "https://littleforest.co.uk/";
+    const siteUrl = "https://www.gov.uk/";
+//    const siteUrl = "https://littleforest.co.uk/";
 //    const siteUrl = "https://pplware.sapo.pt/";
 //    const siteUrl = "http://inspector.littleforest.co.uk/InspectorWS/test.html";
 
@@ -209,9 +209,9 @@ async function checkBrokenLinks() {
             let textColor = "white";
 
             // Check code status
-            if (linkCode === -1 || (linkCode >= 400 && linkCode < 900)) {
+            if (linkCode === -1 || (linkCode === 404)) {
                 console.log(linkJSON);
-                
+
                 brokenLinksCount += 1;
 
                 if (linkCode === -1) {
@@ -221,10 +221,10 @@ async function checkBrokenLinks() {
                 }
 
                 // Highlight Broken Link in HTML View
-                linkElem.innerHTML = "<div style='color: " + textColor + ";border: 4px solid " + color + ";'>" + linkElem.innerHTML + "</div>";
+                linkElem.innerHTML = "<div style='color: " + textColor + ";border: 2px solid " + color + ";'>" + linkElem.innerHTML + "</div>";
 
                 // Update error color on html Code
-                htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(linkHref, "<span style='border: 4px solid " + color + "; color: " + textColor + "'>" + linkHref + "</span>");
+                htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(linkHref, "<span style='border: 2px solid " + color + "; color: " + textColor + "'>" + linkHref + "</span>");
             }
         } else {
             continue;
@@ -308,13 +308,10 @@ async function runLanguageTool() {
                     }
 
                     // Update error color on html View
-                    tagText.innerHTML = tagText.innerHTML.replace(error,
-                            "<span class='spellErrors' title='Message: " + message + "&#010;" + "Replacements: " + replacements + "' style='color: black; background-color:" + color + ";font-weight:bold;'>" + error + "</span>"
-                            );
-                    ;
+                    tagText.innerHTML = tagText.innerHTML.replace(error, "<span class='spellErrors' title='Message: " + message + "&#010;" + "Replacements: " + replacements + "' style='color: black; background-color:" + color + ";font-weight:bold;'>" + error + "</span>");
 
                     // Update error color on html Code
-                    htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(error, "<span class='spellErrors' style='color: black; background-color:" + color + ";font-weight:bold;'>" + error + "</span>");
+                    htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(error, "<span class='spellErrors' title='Message: " + message + "&#010;" + "Replacements: " + replacements + "' style='color: black; background-color:" + color + ";font-weight:bold;'>" + error + "</span>");
 
                     // Add/update key error on errorsDict
                     if (error in errorsDict) {
