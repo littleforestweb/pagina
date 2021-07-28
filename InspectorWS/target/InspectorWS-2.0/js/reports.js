@@ -10,8 +10,8 @@ const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
 
 async  function getSiteUrl() {
     // Set siteUrl
-//    const siteUrl = document.getElementById("searchURL").value;
-    const siteUrl = "https://www.gov.uk/";
+    const siteUrl = document.getElementById("searchURL").value;
+//    const siteUrl = "https://www.gov.uk/";
 //    const siteUrl = "https://littleforest.co.uk/";
 //    const siteUrl = "https://pplware.sapo.pt/";
 //    const siteUrl = "http://inspector.littleforest.co.uk/InspectorWS/test.html";
@@ -48,8 +48,68 @@ async function overlay(action, message) {
     }
 }
 
+async function setActionBtn(btn) {
+    // Switch Go Btn && Show Start Btn
+    switch (btn) {
+        case "load":
+            document.getElementById("loadBtn").hidden = false;
+            document.getElementById("goBtn").hidden = true;
+            document.getElementById("clearBtn").hidden = true;
+            break;
+        case "go":
+            document.getElementById("loadBtn").hidden = true;
+            document.getElementById("goBtn").hidden = false;
+            document.getElementById("clearBtn").hidden = true;
+            break;
+        case "clear":
+            document.getElementById("loadBtn").hidden = true;
+            document.getElementById("goBtn").hidden = true;
+            document.getElementById("clearBtn").hidden = false;
+            break;
+    }
+
+}
+
+async function clearAll() {
+    console.log("clearReports");
+
+    // Clear Page and HTM
+    let iframeElement = document.getElementById('mainContent').contentWindow.document;
+    iframeElement.open();
+    iframeElement.write("");
+    iframeElement.close();
+    document.getElementById("htmlCode").innerHTML = "";
+
+    // Clear Content Report
+    document.getElementById("content-keyword-div").hidden = false;
+    document.getElementById("content-btn").hidden = false;
+    document.getElementById("content-div").hidden = true;
+    document.getElementById("totalImages").innerHTML = "";
+
+    // Clear Links Report
+    document.getElementById("content-keyword-div").hidden = false;
+    document.getElementById("links-btn").hidden = false;
+    document.getElementById("links-div").hidden = true;
+    document.getElementById("totalLinks").innerHTML = "";
+    document.getElementById("extLinks").innerHTML = "";
+    document.getElementById("intLinks").innerHTML = "";
+    document.getElementById("brokenLinks").innerHTML = "";
+
+    // Clear Spelling Report
+    document.getElementById("language-select-div").hidden = false;
+    document.getElementById("spelling-btn").hidden = false;
+    document.getElementById("spelling-div").hidden = true;
+    document.getElementById("detectedLanguage").innerHTML = "";
+    document.getElementById("totalErrors").innerHTML = "";
+    document.getElementById("spelling_errors").innerHTML = "";
+
+    await setActionBtn("load");
+}
+
 async function setIframe() {
     console.log("setIframe");
+
+    await clearAll();
 
     // Get siteUrl
     let siteUrl = await getSiteUrl();
@@ -93,9 +153,11 @@ async function setIframe() {
             w3CodeColor(document.getElementById("htmlCode"));
 
             // Hide Go Btn && Show Start Btn
-            document.getElementById("goBtn").hidden = true;
-            document.getElementById("mainBtn").hidden = false;
+            document.getElementById("loadBtn").hidden = true;
+            document.getElementById("goBtn").hidden = false;
         }
+
+        await setActionBtn("go");
 
         // Remove overlay
         await overlay("removeOverlay", "")
@@ -109,7 +171,8 @@ async function addContentInfo() {
     await overlay("addOverlay", "Gathering Content");
 
     // Get iframe element
-    let iframeElement = document.getElementById('mainContent').contentDocument;
+    let iframeElement = document.getElementById('mainContent').contentWindow.document;
+    ;
 
     //  Add totalImages to GENERALINFO
     let totalImages = iframeElement.getElementsByTagName("img").length;
@@ -119,7 +182,6 @@ async function addContentInfo() {
     document.getElementById("content-btn").hidden = true;
     document.getElementById("content-li").style.display = "block";
     document.getElementById("content-div").hidden = false;
-
     document.getElementById("content-keyword-div").hidden = true;
 
     // Remove overlay
@@ -136,7 +198,8 @@ async function addLinksInfo() {
     let siteUrl = await getSiteUrl();
 
     // Get iframe element
-    let iframeElement = document.getElementById('mainContent').contentDocument;
+    let iframeElement = document.getElementById('mainContent').contentWindow.document;
+    ;
 
     // Set links counter
     let totalLinksCount = 0;
@@ -180,7 +243,8 @@ async function checkBrokenLinks() {
     await overlay("addOverlay", "Checking for Broken Links");
 
     // Get iframe element
-    let iframeElement = document.getElementById('mainContent').contentDocument;
+    let iframeElement = document.getElementById('mainContent').contentWindow.document;
+    ;
 
     // Get htmlCode
     let htmlCode = document.getElementById("htmlCode");
@@ -221,7 +285,7 @@ async function checkBrokenLinks() {
                 }
 
                 // Highlight Broken Link in HTML View
-                linkElem.innerHTML = "<div style='color: " + textColor + ";border: 2px solid " + color + ";'>" + linkElem.innerHTML + "</div>";
+                linkElem.innerHTML = "<div style='color: " + textColor + ";border: 4px solid " + color + ";'>" + linkElem.innerHTML + "</div>";
 
                 // Update error color on html Code
                 htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(linkHref, "<span style='border: 2px solid " + color + "; color: " + textColor + "'>" + linkHref + "</span>");
@@ -235,7 +299,6 @@ async function checkBrokenLinks() {
     document.getElementById("brokenLinks").innerText = brokenLinksCount;
     document.getElementById("brokenLinks-p").hidden = false;
     document.getElementById("brokenLinks-btn").hidden = true;
-
 
     // Remove overlay
     await overlay("removeOverlay", "");
@@ -254,7 +317,7 @@ async function runLanguageTool() {
     console.log("Language - " + language);
 
     // Get iframe element
-    let iframeElement = document.getElementById('mainContent').contentDocument;
+    let iframeElement = document.getElementById('mainContent').contentWindow.document;
 
     // Get all tagsText
     let tagsText = iframeElement.querySelectorAll('p, h1, h2');
@@ -269,7 +332,7 @@ async function runLanguageTool() {
         let tagText = tagsText[i]
 
         // Get LangTool API Response
-        const data = await getRequest("https://api.languagetoolplus.com/v2/check" + "?text=" + tagText.innerHTML.replace(/<\/?[^>]+(>|$)/g, "") + "&language=" + language);
+        const data = await getRequest("https://api.languagetoolplus.com/v2/check" + "?text=" + tagText.innerText + "&language=" + language);
 
         try {
 
@@ -457,6 +520,8 @@ async function main() {
 
     // Run Spelling Report
     await runLanguageTool();
+
+    await setActionBtn("clear");
 
     console.log("----------------------");
 }

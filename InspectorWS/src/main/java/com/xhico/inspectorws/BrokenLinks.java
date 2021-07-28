@@ -28,7 +28,7 @@ import org.json.JSONObject;
  *
  * @author xhico
  */
-@WebServlet(name = "BrokenLinksServlet", urlPatterns = {"/BrokenLinksServlet"})
+@WebServlet(name = "BrokenLinks", urlPatterns = {"/BrokenLinks"})
 public class BrokenLinks extends HttpServlet {
 
     /**

@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author xhico
  */
-@WebServlet(name = "LighthouseServlet", urlPatterns = {"/LighthouseServlet"})
+@WebServlet(name = "Lighthouse", urlPatterns = {"/Lighthouse"})
 public class Lighthouse extends HttpServlet {
 
     /**

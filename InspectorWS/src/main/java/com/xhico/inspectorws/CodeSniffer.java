@@ -30,7 +30,7 @@ import org.json.JSONObject;
  *
  * @author xhico
  */
-@WebServlet(name = "CodeSnifferServlet", urlPatterns = {"/CodeSnifferServlet"})
+@WebServlet(name = "CodeSniffer", urlPatterns = {"/CodeSniffer"})
 public class CodeSniffer extends HttpServlet {
 
     /**

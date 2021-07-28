@@ -21,7 +21,7 @@ import org.jsoup.select.Elements;
  *
  * @author xhico
  */
-@WebServlet(name = "HTMLDownloaderServlet", urlPatterns = {"/HTMLDownloaderServlet"})
+@WebServlet(name = "HTMLDownloader", urlPatterns = {"/HTMLDownloader"})
 public class HTMLDownloader extends HttpServlet {
 
     /**
