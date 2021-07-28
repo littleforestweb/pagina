@@ -49,7 +49,7 @@ async function overlay(action, message) {
 }
 
 async function setActionBtn(btn) {
-    // Switch Go Btn && Show Start Btn
+    // Switch Load Go Clear Btn
     switch (btn) {
         case "load":
             document.getElementById("loadBtn").hidden = false;
