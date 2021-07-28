@@ -274,10 +274,10 @@ async function checkBrokenLinks() {
             let color = "red";
             let textColor = "white";
 
+            console.log(linkCode + " - " + linkHref);
+
             // Check code status
             if (linkCode === -1 || (linkCode === 404)) {
-                console.log(linkJSON);
-
                 brokenLinksCount += 1;
 
                 if (linkCode === -1) {
@@ -375,14 +375,13 @@ async function runLanguageTool() {
                     // Update error color on html View
                     tagText.innerHTML = tagText.innerHTML.replace(error, "<span class='spellErrors' title='Message: " + message + "&#010;" + "Replacements: " + replacements + "' style='color: black; background-color:" + color + ";font-weight:bold;'>" + error + "</span>");
 
-                    // Update error color on html Code
-                    htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(error, "<span class='spellErrors' title='Message: " + message + "&#010;" + "Replacements: " + replacements + "' style='color: black; background-color:" + color + ";font-weight:bold;'>" + error + "</span>");
+
 
                     // Add/update key error on errorsDict
                     if (error in errorsDict) {
                         errorsDict[error][0] = errorsDict[error][0] + 1;
                     } else {
-                        errorsDict[error] = [1, message, replacements];
+                        errorsDict[error] = [1, message, replacements, color];
                     }
                 }
             });
@@ -409,7 +408,11 @@ async function runLanguageTool() {
         let count = entry[1][0];
         let message = entry[1][1];
         let replacements = entry[1][2];
+        let color = entry[1][3];
         spelling_errors.innerHTML += "<li><a href='#' title='Message: " + message + "&#010;" + "Replacements: " + replacements + "'>" + error + " (" + count + "x)" + "</a></li>";
+
+        // Update error color on html Code
+        htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(error, "<span class='spellErrors' title='Message: " + message + "&#010;" + "Replacements: " + replacements + "' style='color: black; background-color:" + color + ";font-weight:bold;'>" + error + "</span>");
     });
 
     //  Add totalErrors to GENERALINFO
