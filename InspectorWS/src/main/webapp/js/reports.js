@@ -10,9 +10,9 @@ const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
 
 async  function getSiteUrl() {
     // Set siteUrl
-    const siteUrl = document.getElementById("searchURL").value;
+//    const siteUrl = document.getElementById("searchURL").value;
 //    const siteUrl = "https://www.gov.uk/";
-//    const siteUrl = "https://littleforest.co.uk/";
+    const siteUrl = "https://littleforest.co.uk/";
 //    const siteUrl = "https://pplware.sapo.pt/";
 //    const siteUrl = "http://inspector.littleforest.co.uk/InspectorWS/test.html";
 
@@ -196,6 +196,7 @@ async function checkBrokenLinks() {
 
         // Check if href has already been checked
         if (checkedLinks.includes(linkHref) !== true) {
+
             // Add href to checkedLinks
             checkedLinks.push(linkHref);
 
@@ -204,21 +205,29 @@ async function checkBrokenLinks() {
             let linkJSON = await getRequest(brokenLinkServlet);
             let linkCode = linkJSON.code;
             let linkValid = linkJSON.valid;
-
-            console.log(linkJSON);
+            let color = "red";
+            let textColor = "white";
 
             // Check code status
-            if (linkCode === -1 || linkCode >= 400) {
+            if (linkCode === -1 || (linkCode >= 400 && linkCode < 900)) {
+                console.log(linkJSON);
+                
                 brokenLinksCount += 1;
 
+                if (linkCode === -1) {
+                    linkCode = "Couldnt get URL status";
+                    color = "orange";
+                    textColor = "black";
+                }
+
                 // Highlight Broken Link in HTML View
-                linkElem.innerHTML = linkElem.innerHTML.replaceAll(linkElem.innerText, "<span title='URL: " + linkHref + "&#010;" + "Code: " + linkCode + "' style='background-color: red; color: white'>" + linkElem.innerText + "</span>");
+                linkElem.innerHTML = "<div style='color: " + textColor + ";border: 4px solid " + color + ";'>" + linkElem.innerHTML + "</div>";
 
                 // Update error color on html Code
-                htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(linkHref, "<span style='background-color: red; color: white'>" + linkHref + "</span>");
+                htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(linkHref, "<span style='border: 4px solid " + color + "; color: " + textColor + "'>" + linkHref + "</span>");
             }
         } else {
-            console.log("already checked: " + linkHref);
+            continue;
         }
     }
 
