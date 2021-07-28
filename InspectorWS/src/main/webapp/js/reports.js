@@ -103,6 +103,7 @@ async function clearAll() {
     document.getElementById("totalErrors").innerHTML = "";
     document.getElementById("spelling_errors").innerHTML = "";
 
+    // Set active Action Btn
     await setActionBtn("load");
 }
 
@@ -157,6 +158,7 @@ async function setIframe() {
             document.getElementById("goBtn").hidden = false;
         }
 
+        // Set active Action Btn
         await setActionBtn("go");
 
         // Remove overlay
@@ -512,15 +514,16 @@ async function main() {
     // START
     console.log("----------------------");
 
-    // Insert Content Information
-    await addContentInfo();
+    // Run Spelling Report
+    await runLanguageTool();
 
     // Insert Links Information
     await addLinksInfo();
 
-    // Run Spelling Report
-    await runLanguageTool();
+    // Insert Content Information
+    await addContentInfo();
 
+    // Set active Action Btn
     await setActionBtn("clear");
 
     console.log("----------------------");

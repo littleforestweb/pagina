@@ -9,7 +9,6 @@ Author     : xhico
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <meta http-equiv="Content-Security-Policy" content="child-src http://localhost:8081/InspectorWS/ https://www.gov.uk/">
         <link rel="stylesheet" href="css/styles.css"/>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -17,7 +16,7 @@ Author     : xhico
     <body>
         <!-- OVERLAY -->
         <div id="overlay">
-            <div id="overlay_text" style="text-align: center;">
+            <div id="overlay_text">
                 <span id="overlayMessage"></span><br>
                 <div class="spinner-border"></div><br>Please Wait!
             </div>
@@ -59,46 +58,6 @@ Author     : xhico
             <a href="https://littleforest.co.uk" target="_blank">
                 <img class="sidebar-logo" alt="sidebar Logo" src="https://littleforest.co.uk/wp-content/uploads/2020/11/littleforest_logo.png">
             </a>
-
-            <!-- ACCESSIBILITY -->
-            <ul id="accessibility-section" class="sidebar-list">
-                <li><b><a id="accessibility-title" href="#">ACCESSIBILITY REPORT <i class="arrow down"></i></a></b></li>
-                <button type="button" id="accessibility-btn" class="btn btn-outline-dark" onclick="runAccessibility()">Run Accessibility Report</button>
-                <div id="accessibility-div" hidden>
-                    <li id="accessibility-li">
-                    </li>
-                </div>
-            </ul>
-
-            <!-- CONTENT -->
-            <ul id="content-section" class="sidebar-list">
-                <li><b><a id="content-title" href="#">CONTENT REPORT<i class="arrow down"></i></a></b></li>
-                <div id="content-keyword-div">
-                    <label>Keyword</label>
-                    <input class="form-control" placeholder="Not done">
-                    <br>
-                </div>
-                <button type="button" id="content-btn" class="btn btn-outline-dark" onclick="addContentInfo()">Run Content Report</button>
-                <div id="content-div" hidden>
-                    <li id="content-li">
-                        <p>Found <span id="totalImages">0</span> image(s)</p>
-                    </li>
-                </div>
-            </ul>
-
-            <!-- LINKS -->
-            <ul id="links-section" class="sidebar-list">
-                <li><b><a id="links-title" href="#">LINKS REPORT<i class="arrow down"></i></a></b></li>
-                <button type="button" id="links-btn" class="btn btn-outline-dark" onclick="addLinksInfo()">Run Links Report</button>
-                <div id="links-div" hidden>
-                    <li id="links-li">
-                        <p>Found <span id="totalLinks">0</span> link(s) (<span id="extLinks">0</span> external and <span id="intLinks">0</span> internal)
-                        </p>
-                        <button type="button" id="brokenLinks-btn" class="btn btn-outline-dark btn-sm" onclick="checkBrokenLinks()">Check for Broken Links</button>
-                        <p id="brokenLinks-p" hidden>Found <span id="brokenLinks">0</span> broken links(s)</p>
-                    </li>
-                </div>
-            </ul>
 
             <!-- SPELLING -->
             <ul id="spelling-section" class="sidebar-list">
@@ -160,6 +119,46 @@ Author     : xhico
                         <p>Language: <span id="detectedLanguage">None</span></p>
                         <p>Found <span id="totalErrors">0</span> possible spelling mistake(s)</p>
                         <ul id="spelling_errors"></ul>
+                    </li>
+                </div>
+            </ul>
+
+            <!-- LINKS -->
+            <ul id="links-section" class="sidebar-list">
+                <li><b><a id="links-title" href="#">LINKS REPORT<i class="arrow down"></i></a></b></li>
+                <button type="button" id="links-btn" class="btn btn-outline-dark" onclick="addLinksInfo()">Run Links Report</button>
+                <div id="links-div" hidden>
+                    <li id="links-li">
+                        <p>Found <span id="totalLinks">0</span> link(s) (<span id="extLinks">0</span> external and <span id="intLinks">0</span> internal)
+                        </p>
+                        <button type="button" id="brokenLinks-btn" class="btn btn-outline-dark btn-sm" onclick="checkBrokenLinks()">Check for Broken Links</button>
+                        <p id="brokenLinks-p" hidden>Found <span id="brokenLinks">0</span> broken links(s)</p>
+                    </li>
+                </div>
+            </ul>
+
+            <!-- ACCESSIBILITY -->
+            <ul id="accessibility-section" class="sidebar-list">
+                <li><b><a id="accessibility-title" href="#">ACCESSIBILITY REPORT <i class="arrow down"></i></a></b></li>
+                <button type="button" id="accessibility-btn" class="btn btn-outline-dark" onclick="runAccessibility()">Run Accessibility Report</button>
+                <div id="accessibility-div" hidden>
+                    <li id="accessibility-li">
+                    </li>
+                </div>
+            </ul>
+
+            <!-- CONTENT -->
+            <ul id="content-section" class="sidebar-list">
+                <li><b><a id="content-title" href="#">CONTENT REPORT<i class="arrow down"></i></a></b></li>
+                <div id="content-keyword-div">
+                    <label>Keyword</label>
+                    <input class="form-control" placeholder="Not done">
+                    <br>
+                </div>
+                <button type="button" id="content-btn" class="btn btn-outline-dark" onclick="addContentInfo()">Run Content Report</button>
+                <div id="content-div" hidden>
+                    <li id="content-li">
+                        <p>Found <span id="totalImages">0</span> image(s)</p>
                     </li>
                 </div>
             </ul>
