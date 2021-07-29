@@ -136,12 +136,22 @@ async function setIframe() {
             w3CodeColor(document.getElementById("htmlCode"));
         }
 
+        // Add Stylesheet to iframe head
+        await addStyleHead();
+
         // Set active Action Btn
         await runMain();
 
         // Remove overlay
         await overlay("removeOverlay", "")
     }
+}
+
+async function addStyleHead() {
+    // Add Stylesheet to iframe head
+    let iframeElement = document.getElementById('mainContent').contentWindow.document;
+    let iframeCSS = inspectorUrl + "css/iframe.css";
+    iframeElement.head.innerHTML = iframeElement.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
 }
 
 async function addContentInfo() {
@@ -323,7 +333,6 @@ async function runLanguageTool() {
 //                document.getElementById("detectedLanguage").innerText = detectedLanguage;
 //            }
 
-
             // Iterate on every error
             data.matches.forEach(function (entry) {
 
@@ -348,7 +357,7 @@ async function runLanguageTool() {
                     }
 
                     // Update error color on html View
-                    tagText.innerHTML = tagText.innerHTML.replace(error, "<mark id='spell_" + error + "' title='Message: " + message + "&#010;" + "Replacements: " + replacements + "' style='padding: 5px 5px; color: black; background-color:" + color + "; font-weight:bold;'>" + error + "</mark>");
+                    tagText.innerHTML = tagText.innerHTML.replace(error, "<span class='spell' aria-label='" + message + " Replacements: " + replacements + "' id='spell_" + error + "' style='background-color:" + color + "'>" + error + "</span>");
 
                     // Add/update key error on errorsDict
                     if (error in errorsDict) {
@@ -382,10 +391,10 @@ async function runLanguageTool() {
         let message = entry[1][1];
         let replacements = entry[1][2];
         let color = entry[1][3];
-        spelling_errors.innerHTML += "<li><a href=javascript:gotoSpellError('spell_" + error + "'); title='Message: " + message + "&#010;" + "Replacements: " + replacements + "'>" + error + " (" + count + "x)" + "</a></li>";
+        spelling_errors.innerHTML += "<li><a href=javascript:gotoSpellError('spell_" + error + "');>" + error + " (" + count + "x)" + "</a></li>";
 
         // Update error color on html Code
-        htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(error, "<mark title='Message: " + message + "&#010;" + "Replacements: " + replacements + "' style='padding: 5px 5px; color: black; background-color:" + color + ";font-weight:bold;'>" + error + "</mark>");
+        htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(error, "<span class='spell' aria-label='" + message + " Replacements: " + replacements + "' style='background-color:" + color + ";'>" + error + "</span>");
     });
 
     //  Add totalErrors to GENERALINFO
@@ -500,7 +509,7 @@ async function main() {
     await runLanguageTool();
 
     // Insert Links Information
-    await addLinksInfo();
+//    await addLinksInfo();
 
     // Enable goBtn
     document.getElementById("goBtn").disabled = false;
