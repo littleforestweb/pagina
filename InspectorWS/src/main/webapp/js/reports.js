@@ -6,7 +6,6 @@
 // ------------------ Functions ------------------------------------- //
 
 const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
-//const inspectorUrl = "http://localhost:8081/InspectorWS/";
 
 async  function getSiteUrl() {
     // Set siteUrl
@@ -349,9 +348,7 @@ async function runLanguageTool() {
                     }
 
                     // Update error color on html View
-                    tagText.innerHTML = tagText.innerHTML.replace(error, "<span class='spellErrors' title='Message: " + message + "&#010;" + "Replacements: " + replacements + "' style='color: black; background-color:" + color + ";font-weight:bold;'>" + error + "</span>");
-
-
+                    tagText.innerHTML = tagText.innerHTML.replace(error, "<span id='spell_" + error + "' class='spellErrors' title='Message: " + message + "&#010;" + "Replacements: " + replacements + "' style='color: black; background-color:" + color + "; font-weight:bold;'>" + error + "</span>");
 
                     // Add/update key error on errorsDict
                     if (error in errorsDict) {
@@ -385,7 +382,7 @@ async function runLanguageTool() {
         let message = entry[1][1];
         let replacements = entry[1][2];
         let color = entry[1][3];
-        spelling_errors.innerHTML += "<li><a href='#' title='Message: " + message + "&#010;" + "Replacements: " + replacements + "'>" + error + " (" + count + "x)" + "</a></li>";
+        spelling_errors.innerHTML += "<li><a href=javascript:gotoSpellError('spell_" + error + "'); title='Message: " + message + "&#010;" + "Replacements: " + replacements + "'>" + error + " (" + count + "x)" + "</a></li>";
 
         // Update error color on html Code
         htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(error, "<span class='spellErrors' title='Message: " + message + "&#010;" + "Replacements: " + replacements + "' style='color: black; background-color:" + color + ";font-weight:bold;'>" + error + "</span>");
@@ -400,6 +397,14 @@ async function runLanguageTool() {
 
     // Remove overlay
     await overlay("removeOverlay", "");
+}
+
+async function gotoSpellError(spellError) {
+    console.log("Goto " + spellError);
+
+    // Get iframe element
+    var iframeElement = document.getElementById("mainContent").contentWindow;
+    iframeElement.scrollTo(0, iframeElement.document.getElementById(spellError).offsetTop - 100);
 }
 
 async function runLighthouse() {
@@ -495,7 +500,7 @@ async function main() {
     await runLanguageTool();
 
     // Insert Links Information
-    await addLinksInfo();
+//    await addLinksInfo();
 
     // Enable goBtn
     document.getElementById("goBtn").disabled = false;
