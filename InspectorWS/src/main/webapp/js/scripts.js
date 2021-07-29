@@ -6,30 +6,30 @@
 // ------------------ Toggle Sidebar Section On/Off ------------------ //
 
 // Default hide every section apart from Settings and General
-document.getElementById("accessibility-li").style.display = "none"
-document.getElementById("content-li").style.display = "none"
+//document.getElementById("accessibility-li").style.display = "none"
+//document.getElementById("content-li").style.display = "none"
 document.getElementById("links-li").style.display = "none"
 document.getElementById("spelling-li").style.display = "none"
 //document.getElementById("lighthouse-li").style.display = "none"
 //document.getElementById("technologies-li").style.display = "none"
 
-// ACCESSIBILITY
-document.getElementById('accessibility-title').addEventListener('click', () => {
-    if (document.getElementById("accessibility-li").style.display === "none") {
-        document.getElementById("accessibility-li").style.display = "block";
-    } else {
-        document.getElementById("accessibility-li").style.display = "none";
-    }
-});
+//// ACCESSIBILITY
+//document.getElementById('accessibility-title').addEventListener('click', () => {
+//    if (document.getElementById("accessibility-li").style.display === "none") {
+//        document.getElementById("accessibility-li").style.display = "block";
+//    } else {
+//        document.getElementById("accessibility-li").style.display = "none";
+//    }
+//});
 
-// CONTENT
-document.getElementById('content-title').addEventListener('click', () => {
-    if (document.getElementById("content-li").style.display === "none") {
-        document.getElementById("content-li").style.display = "block";
-    } else {
-        document.getElementById("content-li").style.display = "none";
-    }
-});
+//// CONTENT
+//document.getElementById('content-title').addEventListener('click', () => {
+//    if (document.getElementById("content-li").style.display === "none") {
+//        document.getElementById("content-li").style.display = "block";
+//    } else {
+//        document.getElementById("content-li").style.display = "none";
+//    }
+//});
 
 // LINKS
 document.getElementById('links-title').addEventListener('click', () => {

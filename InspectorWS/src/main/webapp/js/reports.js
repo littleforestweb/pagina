@@ -10,8 +10,8 @@ const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
 
 async  function getSiteUrl() {
     // Set siteUrl
-    const siteUrl = document.getElementById("searchURL").value;
-//    const siteUrl = "https://www.gov.uk/";
+//    const siteUrl = document.getElementById("searchURL").value;
+    const siteUrl = "https://www.gov.uk/";
 //    const siteUrl = "https://littleforest.co.uk/";
 //    const siteUrl = "https://pplware.sapo.pt/";
 //    const siteUrl = "http://inspector.littleforest.co.uk/InspectorWS/test.html";
@@ -86,15 +86,15 @@ async function clearAll() {
     iframeElement.close();
     document.getElementById("htmlCode").innerHTML = "";
 
-    // Clear Content Report
-    document.getElementById("content-keyword-div").hidden = false;
-    document.getElementById("content-btn").hidden = false;
-    document.getElementById("content-div").hidden = true;
-    document.getElementById("totalImages").innerHTML = "";
+//    // Clear Content Report
+//    document.getElementById("content-keyword-div").hidden = false;
+//    document.getElementById("content-btn").hidden = false;
+//    document.getElementById("content-div").hidden = true;
+//    document.getElementById("totalImages").innerHTML = "";
 
     // Clear Links Report
-    document.getElementById("content-keyword-div").hidden = false;
-    document.getElementById("links-btn").hidden = false;
+//    document.getElementById("content-keyword-div").hidden = false;
+//    document.getElementById("links-btn").hidden = false;
     document.getElementById("links-div").hidden = true;
     document.getElementById("totalLinks").innerHTML = "";
     document.getElementById("extLinks").innerHTML = "";
@@ -103,7 +103,7 @@ async function clearAll() {
 
     // Clear Spelling Report
     document.getElementById("language-select-div").hidden = false;
-    document.getElementById("spelling-btn").hidden = false;
+//    document.getElementById("spelling-btn").hidden = false;
     document.getElementById("spelling-div").hidden = true;
     document.getElementById("detectedLanguage").innerHTML = "";
     document.getElementById("totalErrors").innerHTML = "";
@@ -234,7 +234,7 @@ async function addLinksInfo() {
     document.getElementById("intLinks").innerText = intLinksCount;
 
     // Toggle Links Section
-    document.getElementById("links-btn").hidden = true;
+//    document.getElementById("links-btn").hidden = true;
     document.getElementById("links-li").style.display = "block";
     document.getElementById("links-div").hidden = false;
 
@@ -306,7 +306,7 @@ async function checkBrokenLinks() {
     // Toggle Broken Links Sectin
     document.getElementById("brokenLinks").innerText = brokenLinksCount;
     document.getElementById("brokenLinks-p").hidden = false;
-    document.getElementById("brokenLinks-btn").hidden = true;
+//    document.getElementById("brokenLinks-btn").hidden = true;
 
     // Remove overlay
     await overlay("removeOverlay", "");
@@ -425,7 +425,7 @@ async function runLanguageTool() {
     document.getElementById("totalErrors").innerText = Object.keys(errorsDict).length;
 
     // Toggle Spelling Section
-    document.getElementById("spelling-btn").hidden = true;
+//    document.getElementById("spelling-btn").hidden = true;
     document.getElementById("language-select-div").hidden = true;
     document.getElementById("spelling-li").style.display = "block";
     document.getElementById("spelling-div").hidden = false;
@@ -511,7 +511,6 @@ async function runLighthouse() {
     }
 
     // Toggle Lighthouse Section
-    document.getElementById("lighthouse-btn").hidden = true;
     document.getElementById("lighthouse-li").style.display = "block";
     document.getElementById("lighthouse-div").hidden = false;
 
@@ -528,9 +527,6 @@ async function main() {
 
     // Insert Links Information
     await addLinksInfo();
-
-    // Insert Content Information
-    await addContentInfo();
 
     // Set active Action Btn
     await setActionBtn("clear");
