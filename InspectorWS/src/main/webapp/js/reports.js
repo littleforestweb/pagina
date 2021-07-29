@@ -9,9 +9,9 @@ const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
 
 async  function getSiteUrl() {
     // Set siteUrl
-//    const siteUrl = document.getElementById("searchURL").value;
+    const siteUrl = document.getElementById("searchURL").value;
 //    const siteUrl = "https://www.gov.uk/";
-    const siteUrl = "https://littleforest.co.uk/";
+//    const siteUrl = "https://littleforest.co.uk/";
 //    const siteUrl = "https://pplware.sapo.pt/";
 //    const siteUrl = "http://inspector.littleforest.co.uk/InspectorWS/test.html";
 
@@ -512,7 +512,7 @@ async function main() {
     await runLanguageTool();
 
     // Insert Links Information
-//    await addLinksInfo();
+    await addLinksInfo();
 
     // Enable goBtn
     document.getElementById("goBtn").disabled = false;
