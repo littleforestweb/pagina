@@ -348,7 +348,7 @@ async function runLanguageTool() {
                     }
 
                     // Update error color on html View
-                    tagText.innerHTML = tagText.innerHTML.replace(error, "<span id='spell_" + error + "' class='spellErrors' title='Message: " + message + "&#010;" + "Replacements: " + replacements + "' style='color: black; background-color:" + color + "; font-weight:bold;'>" + error + "</span>");
+                    tagText.innerHTML = tagText.innerHTML.replace(error, "<mark id='spell_" + error + "' title='Message: " + message + "&#010;" + "Replacements: " + replacements + "' style='padding: 5px 5px; color: black; background-color:" + color + "; font-weight:bold;'>" + error + "</mark>");
 
                     // Add/update key error on errorsDict
                     if (error in errorsDict) {
@@ -385,7 +385,7 @@ async function runLanguageTool() {
         spelling_errors.innerHTML += "<li><a href=javascript:gotoSpellError('spell_" + error + "'); title='Message: " + message + "&#010;" + "Replacements: " + replacements + "'>" + error + " (" + count + "x)" + "</a></li>";
 
         // Update error color on html Code
-        htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(error, "<span class='spellErrors' title='Message: " + message + "&#010;" + "Replacements: " + replacements + "' style='color: black; background-color:" + color + ";font-weight:bold;'>" + error + "</span>");
+        htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(error, "<mark title='Message: " + message + "&#010;" + "Replacements: " + replacements + "' style='padding: 5px 5px; color: black; background-color:" + color + ";font-weight:bold;'>" + error + "</mark>");
     });
 
     //  Add totalErrors to GENERALINFO
