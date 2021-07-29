@@ -36,7 +36,7 @@ body * {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(255, 255, 255, 0.8);
     z-index: 2;
     cursor: pointer;
 }
@@ -45,7 +45,7 @@ body * {
     position: absolute;
     top: 50%;
     left: 50%;
-    color: white;
+    color: #212429;
     transform: translate(-50%, -50%);
     -ms-transform: translate(-50%, -50%);
 }
@@ -72,10 +72,11 @@ body * {
     padding: 20px;
     overflow: scroll;
     overflow-x: hidden;
+    z-index: 2;
 }
 
 .sidebar-logo {
-    width: 150px;
+    width: 200px;
     margin-bottom: 10px;
 }
 
@@ -122,7 +123,7 @@ body * {
     height: 50px;
     border-bottom-style: solid;
     border-bottom: 2px solid;
-    z-index: 1;
+    z-index: 3;
 }
 
 /*
