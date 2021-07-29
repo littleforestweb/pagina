@@ -10,8 +10,8 @@ const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
 
 async  function getSiteUrl() {
     // Set siteUrl
-//    const siteUrl = document.getElementById("searchURL").value;
-    const siteUrl = "https://www.gov.uk/";
+    const siteUrl = document.getElementById("searchURL").value;
+//    const siteUrl = "https://www.gov.uk/";
 //    const siteUrl = "https://littleforest.co.uk/";
 //    const siteUrl = "https://pplware.sapo.pt/";
 //    const siteUrl = "http://inspector.littleforest.co.uk/InspectorWS/test.html";
@@ -48,32 +48,11 @@ async function overlay(action, message) {
     }
 }
 
-async function setActionBtn(btn) {
-    // Switch Load Go Clear Btn
-    switch (btn) {
-        case "load":
-            document.getElementById("loadBtn").hidden = false;
-            document.getElementById("goBtn").hidden = true;
-            document.getElementById("clearBtn").hidden = true;
-            break;
-        case "go":
-            document.getElementById("loadBtn").hidden = true;
-            document.getElementById("goBtn").hidden = true;
-
-            var myIframe = document.getElementById('mainContent');
-            myIframe.addEventListener("load", function () {
-                document.getElementById("goBtn").click();
-            });
-
-            document.getElementById("clearBtn").hidden = true;
-            break;
-        case "clear":
-            document.getElementById("loadBtn").hidden = true;
-            document.getElementById("goBtn").hidden = true;
-            document.getElementById("clearBtn").hidden = false;
-            break;
-    }
-
+async function runMain() {
+    var myIframe = document.getElementById('mainContent');
+    myIframe.addEventListener("load", function () {
+        document.getElementById("mainBtn").click();
+    });
 }
 
 async function clearAll() {
@@ -93,8 +72,6 @@ async function clearAll() {
 //    document.getElementById("totalImages").innerHTML = "";
 
     // Clear Links Report
-//    document.getElementById("content-keyword-div").hidden = false;
-//    document.getElementById("links-btn").hidden = false;
     document.getElementById("links-div").hidden = true;
     document.getElementById("totalLinks").innerHTML = "";
     document.getElementById("extLinks").innerHTML = "";
@@ -103,14 +80,10 @@ async function clearAll() {
 
     // Clear Spelling Report
     document.getElementById("language-select-div").hidden = false;
-//    document.getElementById("spelling-btn").hidden = false;
     document.getElementById("spelling-div").hidden = true;
     document.getElementById("detectedLanguage").innerHTML = "";
     document.getElementById("totalErrors").innerHTML = "";
     document.getElementById("spelling_errors").innerHTML = "";
-
-    // Set active Action Btn
-    await setActionBtn("load");
 }
 
 async function setIframe() {
@@ -158,14 +131,10 @@ async function setIframe() {
 
             // HTMLCode Syntax Highlighter
             w3CodeColor(document.getElementById("htmlCode"));
-
-            // Hide Go Btn && Show Start Btn
-            document.getElementById("loadBtn").hidden = true;
-            document.getElementById("goBtn").hidden = false;
         }
 
         // Set active Action Btn
-        await setActionBtn("go");
+        await runMain();
 
         // Remove overlay
         await overlay("removeOverlay", "")
@@ -234,7 +203,6 @@ async function addLinksInfo() {
     document.getElementById("intLinks").innerText = intLinksCount;
 
     // Toggle Links Section
-//    document.getElementById("links-btn").hidden = true;
     document.getElementById("links-li").style.display = "block";
     document.getElementById("links-div").hidden = false;
 
@@ -289,11 +257,10 @@ async function checkBrokenLinks() {
                 if (linkCode === -1) {
                     linkCode = "Couldnt get URL status";
                     color = "orange";
-                    textColor = "black";
                 }
 
                 // Highlight Broken Link in HTML View
-                linkElem.innerHTML = "<div style='color: " + textColor + ";border: 4px solid " + color + ";'>" + linkElem.innerHTML + "</div>";
+                linkElem.innerHTML = "<div style='border: 4px solid " + color + ";'>" + linkElem.innerHTML + "</div>";
 
                 // Update error color on html Code
                 htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(linkHref, "<span style='border: 2px solid " + color + "; color: " + textColor + "'>" + linkHref + "</span>");
@@ -306,7 +273,6 @@ async function checkBrokenLinks() {
     // Toggle Broken Links Sectin
     document.getElementById("brokenLinks").innerText = brokenLinksCount;
     document.getElementById("brokenLinks-p").hidden = false;
-//    document.getElementById("brokenLinks-btn").hidden = true;
 
     // Remove overlay
     await overlay("removeOverlay", "");
@@ -425,8 +391,6 @@ async function runLanguageTool() {
     document.getElementById("totalErrors").innerText = Object.keys(errorsDict).length;
 
     // Toggle Spelling Section
-//    document.getElementById("spelling-btn").hidden = true;
-    document.getElementById("language-select-div").hidden = true;
     document.getElementById("spelling-li").style.display = "block";
     document.getElementById("spelling-div").hidden = false;
 
@@ -511,6 +475,7 @@ async function runLighthouse() {
     }
 
     // Toggle Lighthouse Section
+    document.getElementById("lighthouse-btn").hidden = true;
     document.getElementById("lighthouse-li").style.display = "block";
     document.getElementById("lighthouse-div").hidden = false;
 
@@ -527,9 +492,6 @@ async function main() {
 
     // Insert Links Information
     await addLinksInfo();
-
-    // Set active Action Btn
-    await setActionBtn("clear");
 
     console.log("----------------------");
 }
