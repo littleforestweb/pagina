@@ -58,7 +58,13 @@ async function setActionBtn(btn) {
             break;
         case "go":
             document.getElementById("loadBtn").hidden = true;
-            document.getElementById("goBtn").hidden = false;
+            document.getElementById("goBtn").hidden = true;
+
+            var myIframe = document.getElementById('mainContent');
+            myIframe.addEventListener("load", function () {
+                document.getElementById("goBtn").click();
+            });
+
             document.getElementById("clearBtn").hidden = true;
             break;
         case "clear":

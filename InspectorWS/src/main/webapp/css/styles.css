@@ -3,20 +3,25 @@
     Author     : xhico
 */
 
+@import "../fonts/inter/style.css";
+body * {
+    font-family: 'Inter Regular';
+}
+
 .iframe {
     position: absolute;
     display: block;
     border: none;
     overflow: hidden;
-    margin-left: 300px;
-    width: calc(100% - 300px);
+    margin-left: 298px;
+    width: calc(100% - 298px);
     height: calc(100% - 50px);
 }
 
 .htmlView {
     position: absolute;
     margin-left: 300px;
-    width: calc(100% - 300px);
+    width: calc(100% - 298px);
     height: calc(100% - 50px);
 }
 
@@ -59,9 +64,9 @@
     top: 0;
     left: 0;
     height: 100vh;
-    width: calc(100% - 300px);
+    width: calc(100% - 298px);
     transform: translateX(0);
-    border-right-style: solid;
+    border-right: 2px solid;
     min-width: 250px;
     max-width: 300px;
     padding: 20px;
@@ -112,10 +117,12 @@
 --------------------------------------------------------------------------------------------------------------------------------------
 */
 .navbar {
-    margin-left: 300px;
-    width: calc(100% - 300px);
+    margin-left: 298px;
+    width: calc(100% - 298px);
     height: 50px;
     border-bottom-style: solid;
+    border-bottom: 2px solid;
+    z-index: 1;
 }
 
 /*
@@ -140,3 +147,19 @@
 --------------------------------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------------------------------------
 */
+
+.btn {
+    background-color: #166713;
+    color: #ffffff;
+    border: none;
+}
+
+.btn:hover {
+    box-shadow: 0 0 0 4px #02490E;
+    background-color: #166713;
+    transition: all .5s ease-in-out;
+    -o-transition: all .2s ease-in-out;
+    -ms-transition: all .2s ease-in-out;
+    -moz-transition: all .2s ease-in-out;
+    -webkit-transition: all .2s ease-in-out;
+}
