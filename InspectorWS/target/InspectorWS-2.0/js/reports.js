@@ -404,7 +404,7 @@ async function gotoSpellError(spellError) {
 
     // Get iframe element
     var iframeElement = document.getElementById("mainContent").contentWindow;
-    iframeElement.scrollTo(0, iframeElement.document.getElementById(spellError).offsetTop - 100);
+    iframeElement.scrollTo(0, iframeElement.document.getElementById(spellError).offsetTop - 200);
 }
 
 async function runLighthouse() {
@@ -500,7 +500,7 @@ async function main() {
     await runLanguageTool();
 
     // Insert Links Information
-//    await addLinksInfo();
+    await addLinksInfo();
 
     // Enable goBtn
     document.getElementById("goBtn").disabled = false;
