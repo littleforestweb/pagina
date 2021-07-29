@@ -10,9 +10,9 @@ const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
 
 async  function getSiteUrl() {
     // Set siteUrl
-    const siteUrl = document.getElementById("searchURL").value;
+//    const siteUrl = document.getElementById("searchURL").value;
 //    const siteUrl = "https://www.gov.uk/";
-//    const siteUrl = "https://littleforest.co.uk/";
+    const siteUrl = "https://littleforest.co.uk/";
 //    const siteUrl = "https://pplware.sapo.pt/";
 //    const siteUrl = "http://inspector.littleforest.co.uk/InspectorWS/test.html";
 
@@ -81,7 +81,7 @@ async function clearAll() {
     // Clear Spelling Report
     document.getElementById("language-select-div").hidden = false;
     document.getElementById("spelling-div").hidden = true;
-    document.getElementById("detectedLanguage").innerHTML = "";
+//    document.getElementById("detectedLanguage").innerHTML = "";
     document.getElementById("totalErrors").innerHTML = "";
     document.getElementById("spelling_errors").innerHTML = "";
 }
@@ -89,6 +89,10 @@ async function clearAll() {
 async function setIframe() {
     console.log("setIframe");
 
+    // Disable goBtn
+    document.getElementById("goBtn").disabled = true;
+
+    // Clear mainContent and Sidebar
     await clearAll();
 
     // Get siteUrl
@@ -310,15 +314,15 @@ async function runLanguageTool() {
 
         try {
 
-            if (language === "auto") {
-                // Get detected language and confidence
-                let detectedLanguage = data.language.detectedLanguage.name;
-                document.getElementById("detectedLanguage").innerText = detectedLanguage + " (Auto) ";
-            } else {
-                // Get detected language and confidence
-                let detectedLanguage = data.language.name;
-                document.getElementById("detectedLanguage").innerText = detectedLanguage;
-            }
+//            if (language === "auto") {
+//                // Get detected language and confidence
+//                let detectedLanguage = data.language.detectedLanguage.name;
+//                document.getElementById("detectedLanguage").innerText = detectedLanguage + " (Auto) ";
+//            } else {
+//                // Get detected language and confidence
+//                let detectedLanguage = data.language.name;
+//                document.getElementById("detectedLanguage").innerText = detectedLanguage;
+//            }
 
 
             // Iterate on every error
@@ -492,6 +496,9 @@ async function main() {
 
     // Insert Links Information
     await addLinksInfo();
+
+    // Enable goBtn
+    document.getElementById("goBtn").disabled = false;
 
     console.log("----------------------");
 }
