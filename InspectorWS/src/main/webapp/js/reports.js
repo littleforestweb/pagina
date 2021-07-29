@@ -258,8 +258,8 @@ async function checkBrokenLinks() {
             let linkJSON = await getRequest(brokenLinkServlet);
             let linkCode = linkJSON.code;
             let linkValid = linkJSON.valid;
-            let color = "red";
-            let textColor = "white";
+            let message = "";
+            let borderColor = "red";
 
             console.log(linkCode + " - " + linkHref);
 
@@ -268,15 +268,18 @@ async function checkBrokenLinks() {
                 brokenLinksCount += 1;
 
                 if (linkCode === -1) {
-                    linkCode = "Couldnt get URL status";
-                    color = "orange";
+                    message = "Couldnt get URL status";
+                    borderColor = "orange";
+                } else {
+                    message = "Not Found";
+                    borderColor = "Red";
                 }
 
                 // Highlight Broken Link in HTML View
-                linkElem.innerHTML = "<div style='border: 4px solid " + color + ";'>" + linkElem.innerHTML + "</div>";
+                linkElem.innerHTML = "<span class='hoverMessage' aria-label='" + message + "' style='padding: 2px 2px; border: 4px solid " + borderColor + ";'>" + linkElem.innerHTML + "</span>";
 
                 // Update error color on html Code
-                htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(linkHref, "<span style='border: 2px solid " + color + "; color: " + textColor + "'>" + linkHref + "</span>");
+                htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(linkHref, "<span class='hoverMessage' aria-label='" + message + "' style='padding: 2px 2px; border: 4px solid " + borderColor + ";'>" + linkHref + "</span>");
             }
         } else {
             continue;
@@ -357,7 +360,7 @@ async function runLanguageTool() {
                     }
 
                     // Update error color on html View
-                    tagText.innerHTML = tagText.innerHTML.replace(error, "<span class='spell' aria-label='" + message + " Replacements: " + replacements + "' id='spell_" + error + "' style='background-color:" + color + "'>" + error + "</span>");
+                    tagText.innerHTML = tagText.innerHTML.replace(error, "<span class='hoverMessage' aria-label='" + message + " Replacements: " + replacements + "' id='spell_" + error + "' style='background-color:" + color + "'>" + error + "</span>");
 
                     // Add/update key error on errorsDict
                     if (error in errorsDict) {
@@ -394,7 +397,7 @@ async function runLanguageTool() {
         spelling_errors.innerHTML += "<li><a href=javascript:gotoSpellError('spell_" + error + "');>" + error + " (" + count + "x)" + "</a></li>";
 
         // Update error color on html Code
-        htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(error, "<span class='spell' aria-label='" + message + " Replacements: " + replacements + "' style='background-color:" + color + ";'>" + error + "</span>");
+        htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(error, "<span class='hoverMessage' aria-label='" + message + " Replacements: " + replacements + "' style='background-color:" + color + ";'>" + error + "</span>");
     });
 
     //  Add totalErrors to GENERALINFO

@@ -3,22 +3,23 @@
     Author     : xhico
 */
 
-span.spell {
-    padding: 5px 5px;
+span.hoverMessage {
+    padding: 4px 4px;
     color: black; 
     font-weight:bold;
 }
 
-span.spell:hover {
+span.hoverMessage:hover {
     position: relative;
 }
 
-span[aria-label].spell:hover:after {
+span[aria-label].hoverMessage:hover:after {
     content: attr(aria-label);
+    font-size: 15px;
     padding: 8px 8px;
     position: absolute;
     left: 0;
-    bottom: 100%;
+    bottom: 125%;
     white-space: nowrap;
     background:#f8f9fa;
     border: 2px solid grey;
