@@ -105,6 +105,9 @@ async function setIframe() {
         iframeElement.open();
         iframeElement.write("Please insert a valid URL");
         iframeElement.close();
+
+        // Enable goBtn
+        document.getElementById("goBtn").disabled = false;
     } else {
         // Add overlay
         await overlay("addOverlay", "Loading page")
@@ -120,6 +123,9 @@ async function setIframe() {
             iframeElement.open();
             iframeElement.write("Unable to get HTML");
             iframeElement.close();
+
+            // Enable goBtn
+            document.getElementById("goBtn").disabled = false;
         } else {
             // Add base page HTML to iframe content
             // Get iframe element
@@ -361,7 +367,7 @@ async function runLanguageTool() {
                     }
 
                     // Update error color on html View
-                    tagText.innerHTML = tagText.innerHTML.replace(error, "<span class='hoverMessage' aria-label='" + message + " Replacements: " + replacements + "' id='spell_" + error + "' style='background-color:" + color + "'>" + error + "</span>");
+                    tagText.innerHTML = tagText.innerHTML.replace(error, "<span class='hoverMessage' id='spell_" + error + "' style='background-color:" + color + "'>" + error + "<span class='msgPopup'>" + message + " Replacements: " + replacements + "</span></span>");
 
                     // Add/update key error on errorsDict
                     if (error in errorsDict) {
@@ -513,7 +519,7 @@ async function main() {
     await runLanguageTool();
 
     // Insert Links Information
-    await addLinksInfo();
+//    await addLinksInfo();
 
     // Enable goBtn
     document.getElementById("goBtn").disabled = false;

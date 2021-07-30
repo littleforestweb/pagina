@@ -4,24 +4,25 @@
 */
 
 span.hoverMessage {
-    padding: 6px 6px;
-    color: black; 
-    font-weight:bold;
-}
-
-span.hoverMessage:hover {
     position: relative;
 }
 
-span[aria-label].hoverMessage:hover:after {
-    content: attr(aria-label);
-    font-size: 18px;
+span.hoverMessage .msgPopup {
+    padding: 6px 6px;
+    color: black; 
+    z-index: 9999999999;
+    min-width: 300px;
+    display: none;
+    font-size: 16px;
     padding: 8px 8px;
     position: absolute;
     left: 0;
-    bottom: 125%;
-    white-space: nowrap;
     background:#f8f9fa;
     border: 2px solid grey;
     border-radius: 5px;
+    font-family: "Inter Medium";
+}
+
+span.hoverMessage:hover .msgPopup {
+    display: block;
 }
