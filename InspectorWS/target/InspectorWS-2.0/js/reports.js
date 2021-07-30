@@ -367,7 +367,7 @@ async function runLanguageTool() {
                     }
 
                     // Update error color on html View
-                    tagText.innerHTML = tagText.innerHTML.replace(error, "<span class='hoverMessage' id='spell_" + error + "' style='background-color:" + color + "'>" + error + "<span class='msgPopup'>" + message + " Replacements: " + replacements + "</span></span>");
+                    tagText.innerHTML = tagText.innerHTML.replace(error, "<span class='hoverMessage' id='spell_" + error + "' style='background-color:" + color + "'><b>" + error + "</b><span class='msgPopup'>" + message + " Replacements: " + replacements + "</span></span>");
 
                     // Add/update key error on errorsDict
                     if (error in errorsDict) {
@@ -404,7 +404,7 @@ async function runLanguageTool() {
         spelling_errors.innerHTML += "<li><a href=javascript:gotoSpellError('spell_" + error + "');>" + error + " (" + count + "x)" + "</a></li>";
 
         // Update error color on html Code
-        htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(error, "<span class='hoverMessage' aria-label='" + message + " Replacements: " + replacements + "' style='background-color:" + color + ";'>" + error + "</span>");
+        htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(error, "<span class='hoverMessage' style='background-color:" + color + ";'>" + error + "<span class='msgPopup'>" + message + " Replacements: " + replacements + "</span></span>");
     });
 
     //  Add totalErrors to GENERALINFO

@@ -5,6 +5,7 @@
 
 span.hoverMessage {
     position: relative;
+    padding: 4px;
 }
 
 span.hoverMessage .msgPopup {
@@ -14,7 +15,7 @@ span.hoverMessage .msgPopup {
     min-width: 300px;
     display: none;
     font-size: 16px;
-    padding: 8px 8px;
+    padding: 8px;
     position: absolute;
     left: 0;
     background:#f8f9fa;
@@ -25,4 +26,5 @@ span.hoverMessage .msgPopup {
 
 span.hoverMessage:hover .msgPopup {
     display: block;
+    margin: 4px 0;
 }
