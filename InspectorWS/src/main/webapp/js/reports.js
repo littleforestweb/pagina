@@ -6,6 +6,7 @@
 // ------------------ Functions ------------------------------------- //
 
 const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
+//const inspectorUrl = "http://localhost:8081/InspectorWS/";
 
 async  function getSiteUrl() {
     // Set siteUrl
@@ -244,7 +245,7 @@ async function checkBrokenLinks() {
     let allLinks = iframeElement.links;
 
     for (let i = 0; i < allLinks.length; i++) {
-        let linkElem = allLinks[i]
+        let linkElem = allLinks[i];
         let linkHref = linkElem.href;
 
         // Check if href has already been checked

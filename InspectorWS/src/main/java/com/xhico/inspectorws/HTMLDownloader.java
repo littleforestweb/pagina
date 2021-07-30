@@ -47,14 +47,17 @@ public class HTMLDownloader extends HttpServlet {
             Document doc = Jsoup.parse(html, url);
 
             // Check possible broken href or src
-            Elements elemHref = doc.select("a, link");
-            for (Element e : elemHref) {
+            doc.select("a, link").forEach(e -> {
                 e.attr("href", e.absUrl("href"));
-            }
-            Elements elemSrc = doc.select("img, script");
-            for (Element e : elemSrc) {
+            });
+
+            doc.select("img, script").forEach(e -> {
                 e.attr("src", e.absUrl("src"));
-            }
+            });
+
+            doc.select("source").forEach(e -> {
+                e.attr("srcset", e.absUrl("srcset"));
+            });
 
             // Return modified HTML
             out.print(doc);
