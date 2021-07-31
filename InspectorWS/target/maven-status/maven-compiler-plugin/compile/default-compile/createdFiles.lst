@@ -1,6 +1,7 @@
+com\xhico\inspectorws\Inspector.class
+com\xhico\inspectorws\LanguageTool.class
 com\xhico\inspectorws\BrokenLinks.class
 com\xhico\inspectorws\CodeSniffer.class
 com\xhico\inspectorws\HTMLDownloader.class
-com\xhico\inspectorws\LanguageTool.class
 com\xhico\inspectorws\Lighthouse.class
 com\xhico\inspectorws\Lighthouse$1.class

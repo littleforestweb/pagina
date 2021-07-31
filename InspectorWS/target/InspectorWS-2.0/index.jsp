@@ -1,10 +1,11 @@
-<!-- 
+<%-- 
 Document   : Little Forest - PageInspector
 Created on : Jul 7, 2021, 7:13:28 PM
 Author     : xhico
--->
+--%>
 
-
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
 <!DOCTYPE html>
 <html>
     <head>
@@ -15,6 +16,10 @@ Author     : xhico
         <link rel="stylesheet" href="css/iframe.css"/>
     </head>
     <body>
+        <%
+            String mainURL = request.getAttribute("mainURL").toString();
+        %>
+
         <!-- OVERLAY -->
         <div id="overlay">
             <div id="overlay_text">
@@ -237,5 +242,11 @@ Author     : xhico
         <script src="js/scripts.js"></script>
         <script src="js/reports.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <% if (!(mainURL.equals("null"))) {%>
+        <script>
+                            document.getElementById("searchURL").value = "<%=mainURL%>";
+                            document.getElementById("goBtn").click();
+        </script>
+        <% }%>
     </body>
 </html>

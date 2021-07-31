@@ -519,7 +519,7 @@ async function main() {
     await runLanguageTool();
 
     // Insert Links Information
-//    await addLinksInfo();
+    await addLinksInfo();
 
     // Enable goBtn
     document.getElementById("goBtn").disabled = false;
