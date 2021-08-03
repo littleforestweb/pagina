@@ -6,10 +6,15 @@ Author     : xhico
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+        <link rel="icon" href="images/lf_logo-100x100.png" sizes="32x32" />
+        <link rel="icon" href="images/lf_logo.png" sizes="192x192" />
+        <link rel="apple-touch-icon" href="images/lf_logo.png" />
+        <meta name="msapplication-TileImage" content="images/lf_logo.png" />
+
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <link rel="stylesheet" href="css/styles.css"/>
@@ -35,8 +40,7 @@ Author     : xhico
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <div class="d-flex me-auto">
                         <input id="searchURL" class="form-control col-md-6 me-2" type="search" placeholder="Check URL" aria-label="Search">
-                        <button type="button" id="goBtn" onclick="setIframe()" class="btn col-md-3 btn-outline-dark me-2">Go</button>
-                        <button type="button" id="mainBtn" hidden onclick="main()" class="btn col-md-3 btn-outline-dark me-2">Main</button>
+                        <button type="button" id="goBtn" onclick="main()" class="btn col-md-3 btn-outline-dark me-2">Go</button>
                     </div>
                     <!--                    <ul class="navbar-nav mb-2 mb-lg-0">
                                             <button type="button" class="btn btn-outline-dark me-2">Comment</button>
@@ -242,6 +246,8 @@ Author     : xhico
         <script src="js/scripts.js"></script>
         <script src="js/reports.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        
+        <!--If a URL Param is present auto run-->
         <% if (!(mainURL.equals("null"))) {%>
         <script>
                             document.getElementById("searchURL").value = "<%=mainURL%>";
