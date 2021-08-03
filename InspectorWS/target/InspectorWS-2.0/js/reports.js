@@ -5,8 +5,8 @@
 
 // ------------------ Functions ------------------------------------- //
 
-const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
-//const inspectorUrl = "http://localhost:8081/InspectorWS/";
+//const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
+const inspectorUrl = "http://localhost:8081/InspectorWS/";
 
 async  function getSiteUrl() {
     // Set siteUrl
@@ -84,6 +84,74 @@ async function clearAll() {
 //    document.getElementById("detectedLanguage").innerHTML = "";
     document.getElementById("totalErrors").innerHTML = "";
     document.getElementById("spelling_errors").innerHTML = "";
+}
+
+async function setIframe() {
+    console.log("setIframe");
+
+    // Disable goBtn
+    document.getElementById("loadBtn").disabled = true;
+
+    // Clear mainContent and Sidebar
+    await clearAll();
+
+    // Get siteUrl
+    let siteUrl = await getSiteUrl();
+
+    if (siteUrl === "") {
+        // Add base page HTML to iframe content
+        // Get iframe element
+        let iframeElement = document.getElementById('mainContent').contentWindow.document;
+        iframeElement.open();
+        iframeElement.write("Please insert a valid URL");
+        iframeElement.close();
+
+        // Enable goBtn
+        document.getElementById("loadBtn").disabled = false;
+    } else {
+        // Add overlay
+        await overlay("addOverlay", "Loading page")
+
+        // Get HTML from site
+        let HTMLServlet = inspectorUrl + "HTMLDownloader?url=" + siteUrl;
+        let html = await  getRequest(HTMLServlet);
+
+        if (html === "") {
+            // Add base page HTML to iframe content
+            // Get iframe element
+            let iframeElement = document.getElementById('mainContent').contentWindow.document;
+            iframeElement.open();
+            iframeElement.write("Unable to get HTML");
+            iframeElement.close();
+
+            // Enable goBtn
+            document.getElementById("goBtn").disabled = false;
+        } else {
+            // Add base page HTML to iframe content
+            // Get iframe element
+            let iframeElement = document.getElementById('mainContent').contentWindow.document;
+            iframeElement.open();
+            iframeElement.write(html);
+            iframeElement.close();
+
+            // Set htmlCode Text Area
+            html = html.replaceAll("<", "&lt;");
+            html = html.replaceAll(">", "&gt;");
+            document.getElementById("htmlCode").innerHTML = html;
+
+            // HTMLCode Syntax Highlighter
+            w3CodeColor(document.getElementById("htmlCode"));
+        }
+
+        // Add Stylesheet to iframe head
+        await addStyleHead();
+
+        // Set active Action Btn
+        await runMain();
+
+        // Remove overlay
+        await overlay("removeOverlay", "")
+    }
 }
 
 async function addStyleHead() {
@@ -443,74 +511,26 @@ async function runLighthouse() {
     await overlay("removeOverlay", "");
 }
 
+async function load() {
+    // Get siteUrl
+    let siteUrl = await getSiteUrl();
+    let language = document.getElementById("languages_list").value;
+
+    window.location.href = inspectorUrl + "Inspector?url=" + siteUrl + "&lang=" + language;
+}
+
 async function main() {
     // START
     console.log("----------------------");
 
-    // Disable goBtn
-    document.getElementById("goBtn").disabled = true;
+    // Run Spelling Report
+    await runLanguageTool();
 
-    // Get siteUrl
-    let siteUrl = await getSiteUrl();
+    // Insert Links Information
+    await addLinksInfo();
 
-    if (siteUrl === "") {
-        // Add base page HTML to iframe content
-        // Get iframe element
-        let iframeElement = document.getElementById('mainContent').contentWindow.document;
-        iframeElement.open();
-        iframeElement.write("Please insert a valid URL");
-        iframeElement.close();
+    // Enable goBtn
+    document.getElementById("loadBtn").disabled = false;
 
-        // Enable goBtn
-        document.getElementById("goBtn").disabled = false;
-    } else {
-        // Add overlay
-        await overlay("addOverlay", "Loading page")
-
-        // Get HTML from site
-        let HTMLServlet = inspectorUrl + "HTMLDownloader?url=" + siteUrl;
-        let html = await  getRequest(HTMLServlet);
-
-        if (html === "") {
-            // Add base page HTML to iframe content
-            // Get iframe element
-            let iframeElement = document.getElementById('mainContent').contentWindow.document;
-            iframeElement.open();
-            iframeElement.write("Unable to get HTML");
-            iframeElement.close();
-
-            // Enable goBtn
-            document.getElementById("goBtn").disabled = false;
-        } else {
-            // Add base page HTML to iframe content
-            // Get iframe element
-            let iframeElement = document.getElementById('mainContent').contentWindow.document;
-            iframeElement.open();
-            iframeElement.write(html);
-            iframeElement.close();
-
-            // Set htmlCode Text Area
-            html = html.replaceAll("<", "&lt;");
-            html = html.replaceAll(">", "&gt;");
-            document.getElementById("htmlCode").innerHTML = html;
-
-            // HTMLCode Syntax Highlighter
-            w3CodeColor(document.getElementById("htmlCode"));
-        }
-
-        // Add Stylesheet to iframe head
-        await addStyleHead();
-
-        // Run Spelling Report
-        await runLanguageTool();
-
-        // Insert Links Information
-        await addLinksInfo();
-
-        // Enable goBtn
-        document.getElementById("goBtn").disabled = false;
-
-        console.log("----------------------");
-    }
+    console.log("----------------------");
 }
-

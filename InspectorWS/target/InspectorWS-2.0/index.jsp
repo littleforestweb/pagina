@@ -10,19 +10,24 @@ Author     : xhico
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
+        <!-- Favicon -->
         <link rel="icon" href="images/lf_logo-100x100.png" sizes="32x32" />
         <link rel="icon" href="images/lf_logo.png" sizes="192x192" />
         <link rel="apple-touch-icon" href="images/lf_logo.png" />
         <meta name="msapplication-TileImage" content="images/lf_logo.png" />
 
+        <!-- Font-Awesome / Bootstrap -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+        <!-- Custom -->
         <link rel="stylesheet" href="css/styles.css"/>
         <link rel="stylesheet" href="css/iframe.css"/>
     </head>
     <body>
         <%
             String mainURL = request.getAttribute("mainURL").toString();
+            String mainLang = request.getAttribute("mainLang").toString();
         %>
 
         <!-- OVERLAY -->
@@ -40,7 +45,9 @@ Author     : xhico
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <div class="d-flex me-auto">
                         <input id="searchURL" class="form-control col-md-6 me-2" type="search" placeholder="Check URL" aria-label="Search">
-                        <button type="button" id="goBtn" onclick="main()" class="btn col-md-3 btn-outline-dark me-2">Go</button>
+                        <button type="button" id="loadBtn" onclick="load()" class="btn col-md-3 btn-outline-dark me-2">Go</button>
+                        <button type="button" id="goBtn" hidden onclick="setIframe()" class="btn col-md-3 btn-outline-dark me-2">setIframe</button>
+                        <button type="button" id="mainBtn" hidden onclick="main()" class="btn col-md-3 btn-outline-dark me-2">Main</button>
                     </div>
                     <!--                    <ul class="navbar-nav mb-2 mb-lg-0">
                                             <button type="button" class="btn btn-outline-dark me-2">Comment</button>
@@ -54,7 +61,6 @@ Author     : xhico
                         <button type="button" id="PageBtn" onclick="toggleView('Page')" class="btn btn-outline-dark">Page</button>
                         <button type="button" id="HTMLBtn" onclick="toggleView('HTML')" class="active btn btn-outline-dark">HTML</button>
                     </div>
-
                 </div>
             </div>
         </nav>
@@ -247,10 +253,18 @@ Author     : xhico
         <script src="js/reports.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
         
-        <!--If a URL Param is present auto run-->
+        <!-- If a URL Param is present auto run-->
         <% if (!(mainURL.equals("null"))) {%>
         <script>
+                            // Set URL on search bar
                             document.getElementById("searchURL").value = "<%=mainURL%>";
+
+            <% if (!(mainLang.equals("null"))) {%>
+                            // Set Language on Languages Dropdown list
+                            var selectLang = document.getElementById("languages_list").value = "<%=mainLang%>";
+            <% }%>
+
+                            // Run Main()
                             document.getElementById("goBtn").click();
         </script>
         <% }%>

@@ -35,14 +35,21 @@ public class Inspector extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
 
             String url = request.getParameter("url");
+            String lang = request.getParameter("lang");
+
             String mainURL;
+            String mainLang;
+
             if (url == null) {
                 mainURL = "null";
+                mainLang = "null";
             } else {
                 mainURL = url;
+                mainLang = lang;
             }
 
             request.setAttribute("mainURL", mainURL);
+            request.setAttribute("mainLang", mainLang);
             request.getRequestDispatcher("/index.jsp").forward(request, response);
         }
     }
