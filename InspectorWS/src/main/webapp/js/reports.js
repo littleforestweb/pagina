@@ -5,8 +5,8 @@
 
 // ------------------ Functions ------------------------------------- //
 
-//const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
-const inspectorUrl = "http://localhost:8081/InspectorWS/";
+const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
+//const inspectorUrl = "http://localhost:8081/InspectorWS/";
 
 async  function getSiteUrl() {
     // Set siteUrl
@@ -514,6 +514,8 @@ async function runLighthouse() {
 async function load() {
     // Get siteUrl
     let siteUrl = await getSiteUrl();
+
+    // Get selected Language
     let language = document.getElementById("languages_list").value;
 
     window.location.href = inspectorUrl + "Inspector?url=" + siteUrl + "&lang=" + language;
