@@ -33,12 +33,15 @@ public class Inspector extends HttpServlet {
 
         try (PrintWriter out = response.getWriter()) {
 
+            // Get url && lang from params
             String url = request.getParameter("url");
             String lang = request.getParameter("lang");
 
+            // Initialize mainURL && mainLang variables
             String mainURL;
             String mainLang;
 
+            // Check if there is a url or not
             if (url == null) {
                 mainURL = "null";
                 mainLang = "null";
@@ -47,6 +50,7 @@ public class Inspector extends HttpServlet {
                 mainLang = lang;
             }
 
+            // Set attributes mainURL && mainLang
             request.setAttribute("mainURL", mainURL);
             request.setAttribute("mainLang", mainLang);
             request.getRequestDispatcher("/index.jsp").forward(request, response);

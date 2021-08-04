@@ -73,19 +73,19 @@ Author     : xhico
                     Main
                 </button>
             </div>
-            <!--                    <ul class="navbar-nav mb-2 mb-lg-0">
-                                    <button type="button" class="btn btn-outline-dark me-2">Comment</button>
-                                    <button type="button" class="btn btn-outline-dark me-2">Fix</button>
-                                    <button type="button" class="btn btn-outline-dark me-2">History</button>
-                                    <button type="button" class="btn btn-outline-dark me-2">Crawl</button>
-                                    <button type="button" class="btn btn-outline-dark me-2">Edit</button>
-                                    <button type="button" class="btn btn-outline-dark me-2">Share</button>
-                                </ul>-->
+            <%--            <ul class="navbar-nav mb-2 mb-lg-0">--%>
+            <%--                <button type="button" class="btn btn-outline-dark me-2">Comment</button>--%>
+            <%--                <button type="button" class="btn btn-outline-dark me-2">Fix</button>--%>
+            <%--                <button type="button" class="btn btn-outline-dark me-2">History</button>--%>
+            <%--                <button type="button" class="btn btn-outline-dark me-2">Crawl</button>--%>
+            <%--                <button type="button" class="btn btn-outline-dark me-2">Edit</button>--%>
+            <%--                <button type="button" class="btn btn-outline-dark me-2">Share</button>--%>
+            <%--            </ul>--%>
             <div class="btn-group me-2" role="group" aria-label="Basic example">
-                <button type="button" id="PageBtn" onclick="toggleView('Page')" class="btn btn-outline-dark">Page
+                <button type="button" id="PageBtn" onclick="toggleView('Page')" class="btn btn-outline-dark">View
                 </button>
                 <button type="button" id="HTMLBtn" onclick="toggleView('HTML')" class="active btn btn-outline-dark">
-                    HTML
+                    Code
                 </button>
             </div>
         </div>
@@ -292,7 +292,7 @@ Author     : xhico
 
     <% if (!(mainLang.equals("null"))) {%>
     // Set Language on Languages Dropdown list
-    var selectLang = document.getElementById("languages_list").value = "<%=mainLang%>";
+    let selectLang = document.getElementById("languages_list").value = "<%=mainLang%>";
     <% }%>
 
     // Run Main()

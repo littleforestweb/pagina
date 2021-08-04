@@ -5,10 +5,11 @@
 
 // ------------------ Functions ------------------------------------- //
 
-const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
-//const inspectorUrl = "http://localhost:8081/InspectorWS/";
+// const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
 
-async  function getSiteUrl() {
+const inspectorUrl = "http://localhost:8081/InspectorWS/";
+
+async function getSiteUrl() {
     // Set siteUrl
     const siteUrl = document.getElementById("searchURL").value;
 //    const siteUrl = "https://www.gov.uk/";
@@ -16,17 +17,17 @@ async  function getSiteUrl() {
 //    const siteUrl = "https://pplware.sapo.pt/";
 //    const siteUrl = "http://inspector.littleforest.co.uk/InspectorWS/test.html";
 
-    return  siteUrl;
+    return siteUrl;
 }
 
 async function getRequest(url) {
     try {
         const res = await fetch(url);
         if (url.includes("languagetoolplus") ||
-                url.includes("BrokenLinks") ||
-                url.includes("CodeSniffer") ||
-                url.includes("LanguageTool") ||
-                url.includes("Lighthouse")) {
+            url.includes("BrokenLinks") ||
+            url.includes("CodeSniffer") ||
+            url.includes("LanguageTool") ||
+            url.includes("Lighthouse")) {
             return await res.json();
         }
         return await res.text();
@@ -114,7 +115,7 @@ async function setIframe() {
 
         // Get HTML from site
         let HTMLServlet = inspectorUrl + "HTMLDownloader?url=" + siteUrl;
-        let html = await  getRequest(HTMLServlet);
+        let html = await getRequest(HTMLServlet);
 
         if (html === "") {
             // Add base page HTML to iframe content
@@ -240,7 +241,6 @@ async function checkBrokenLinks() {
 
     // Get iframe element
     let iframeElement = document.getElementById('mainContent').contentWindow.document;
-    ;
 
     // Get htmlCode
     let htmlCode = document.getElementById("htmlCode");
@@ -265,22 +265,14 @@ async function checkBrokenLinks() {
             let linkJSON = await getRequest(brokenLinkServlet);
             let linkCode = linkJSON.code;
             let linkValid = linkJSON.valid;
-            let message = "";
+            let message = "Not Found";
             let borderColor = "red";
 
             console.log(linkCode + " - " + linkHref);
 
             // Check code status
-            if (linkCode === -1 || (linkCode === 404)) {
+            if (linkCode === 404) {
                 brokenLinksCount += 1;
-
-                if (linkCode === -1) {
-                    message = "Couldnt get URL status";
-                    borderColor = "orange";
-                } else {
-                    message = "Not Found";
-                    borderColor = "Red";
-                }
 
                 // Highlight Broken Link in HTML View
                 linkElem.innerHTML = "<span class='hoverMessage' aria-label='" + message + "' style='padding: 2px 2px; border: 4px solid " + borderColor + ";'>" + linkElem.innerHTML + "</span>";
