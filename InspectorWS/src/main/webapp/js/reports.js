@@ -326,10 +326,14 @@ async function runLanguageTool() {
         // Set phrase from content array index
         let tagText = tagsText[i]
 
-        // Get LangTool API Response
-        const data = await getRequest("https://api.languagetoolplus.com/v2/check" + "?text=" + tagText.innerText + "&language=" + language);
+        let isVisible = tagText.offsetWidth > 0 && tagText.offsetHeight > 0;
+        if (isVisible) {
 
-        try {
+
+            // Get LangTool API Response
+            const data = await getRequest("https://api.languagetoolplus.com/v2/check" + "?text=" + tagText.innerText + "&language=" + language);
+
+            try {
 
 //            if (language === "auto") {
 //                // Get detected language and confidence
@@ -341,43 +345,44 @@ async function runLanguageTool() {
 //                document.getElementById("detectedLanguage").innerText = detectedLanguage;
 //            }
 
-            // Iterate on every error
-            data.matches.forEach(function (entry) {
+                // Iterate on every error
+                data.matches.forEach(function (entry) {
 
-                // Get error, message, replacements and color;
-                let text = entry.context.text;
-                let message = entry.message;
-                let error = text.substring(entry.context.offset, entry.context.offset + entry.context.length);
-                let reps = entry.replacements;
-                var replacements = reps.map(function (reps) {
-                    return reps['value'];
-                }).toString().replaceAll(",", ", ");
-                let color;
+                    // Get error, message, replacements and color;
+                    let text = entry.context.text;
+                    let message = entry.message;
+                    let error = text.substring(entry.context.offset, entry.context.offset + entry.context.length);
+                    let reps = entry.replacements;
+                    var replacements = reps.map(function (reps) {
+                        return reps['value'];
+                    }).toString().replaceAll(",", ", ");
+                    let color;
 
-                // Remove false-positive errors (three chars and whitespaces)
-                if (error.length >= 3 && !(/\s/g.test(error))) {
+                    // Remove false-positive errors (three chars and whitespaces)
+                    if (error.length >= 3 && !(/\s/g.test(error))) {
 
-                    // Set color of error => red for mistake and yellow for others
-                    if (message === "Possible spelling mistake found.") {
-                        color = "red";
-                    } else {
-                        color = "orange";
+                        // Set color of error => red for mistake and yellow for others
+                        if (message === "Possible spelling mistake found.") {
+                            color = "red";
+                        } else {
+                            color = "orange";
+                        }
+
+                        // Update error color on html View
+                        tagText.innerHTML = tagText.innerHTML.replace(error, "<span class='hoverMessage' id='spell_" + error + "' style='background-color:" + color + "'><b>" + error + "</b><span class='msgPopup'>" + message + " Replacements: " + replacements + "</span></span>");
+
+                        // Add/update key error on errorsDict
+                        if (error in errorsDict) {
+                            errorsDict[error][0] = errorsDict[error][0] + 1;
+                        } else {
+                            errorsDict[error] = [1, message, replacements, color];
+                        }
                     }
+                });
 
-                    // Update error color on html View
-                    tagText.innerHTML = tagText.innerHTML.replace(error, "<span class='hoverMessage' id='spell_" + error + "' style='background-color:" + color + "'><b>" + error + "</b><span class='msgPopup'>" + message + " Replacements: " + replacements + "</span></span>");
-
-                    // Add/update key error on errorsDict
-                    if (error in errorsDict) {
-                        errorsDict[error][0] = errorsDict[error][0] + 1;
-                    } else {
-                        errorsDict[error] = [1, message, replacements, color];
-                    }
-                }
-            });
-
-        } catch (error) {
-            continue;
+            } catch (error) {
+                continue;
+            }
         }
     }
 
@@ -532,7 +537,7 @@ async function main() {
     await runLanguageTool();
 
     // Insert Links Information
-    await addLinksInfo();
+    // await addLinksInfo();
 
     // Enable goBtn
     document.getElementById("loadBtn").disabled = false;
