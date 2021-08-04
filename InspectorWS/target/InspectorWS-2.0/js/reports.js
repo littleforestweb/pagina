@@ -49,10 +49,34 @@ async function overlay(action, message) {
     }
 }
 
-async function runMain() {
-    let myIframe = document.getElementById('mainContent');
+async function enableDisableActions(action) {
+    if (action === "enable") {
+        // Enable goBtn
+        document.getElementById("loadBtn").disabled = false;
+        // Enable searchURL
+        document.getElementById("searchURL").disabled = false;
+        // Enable HTML Code Switch
+        document.getElementById("PageBtn").disabled = false;
+        document.getElementById("HTMLBtn").disabled = false;
+        // Enable languages_list
+        document.getElementById("languages_list").disabled = false;
+    } else {
+        // Enable goBtn
+        document.getElementById("loadBtn").disabled = true;
+        // Enable searchURL
+        document.getElementById("searchURL").disabled = true;
+        // Enable HTML Code Switch
+        document.getElementById("PageBtn").disabled = true;
+        document.getElementById("HTMLBtn").disabled = true;
+        // Enable languages_list
+        document.getElementById("languages_list").disabled = true;
+    }
+}
 
-    myIframe.addEventListener("load", function () {
+async function runMain() {
+    let iframeElement = document.getElementById('mainContent');
+
+    iframeElement.addEventListener("load", function () {
         document.getElementById("mainBtn").click();
     });
 }
@@ -61,14 +85,7 @@ async function setIframe() {
     console.log("setIframe");
 
     // Disable goBtn
-    document.getElementById("loadBtn").disabled = true;
-    // Disable searchURL
-    document.getElementById("searchURL").disabled = true;
-    // Disable HTML Code Switch
-    document.getElementById("PageBtn").disabled = true;
-    document.getElementById("HTMLBtn").disabled = true;
-    // Disable languages_list
-    document.getElementById("languages_list").disabled = true;
+    await enableDisableActions("disable");
 
     // Get siteUrl
     let siteUrl = await getSiteUrl();
@@ -81,8 +98,8 @@ async function setIframe() {
         iframeElement.write("Please insert a valid URL");
         iframeElement.close();
 
-        // Enable goBtn
-        document.getElementById("loadBtn").disabled = false;
+        // Enable Actions
+        await enableDisableActions("enable");
     } else {
         // Add overlay
         await overlay("addOverlay", "Loading page")
@@ -99,8 +116,8 @@ async function setIframe() {
             iframeElement.write("Unable to get HTML");
             iframeElement.close();
 
-            // Enable goBtn
-            document.getElementById("goBtn").disabled = false;
+            // Enable Actions
+            await enableDisableActions("enable");
         } else {
             // Add base page HTML to iframe content
             // Get iframe element
@@ -151,7 +168,7 @@ async function addContentInfo() {
 
     // Get iframe element
     let iframeElement = document.getElementById('mainContent').contentWindow.document;
-    ;
+
 
     //  Add totalImages to GENERALINFO
     let totalImages = iframeElement.getElementsByTagName("img").length;
@@ -178,7 +195,6 @@ async function addLinksInfo() {
 
     // Get iframe element
     let iframeElement = document.getElementById('mainContent').contentWindow.document;
-    ;
 
     // Set links counter
     let totalLinksCount = 0;
@@ -224,7 +240,7 @@ async function checkBrokenLinks() {
     let iframeElement = document.getElementById('mainContent').contentWindow.document;
 
     // Get htmlCode
-    let htmlCode = document.getElementById("htmlCode");
+    let htmlCode = document.getElementById("mainCode").contentWindow.document;
 
     // Set vars
     let brokenLinksCount = 0;
@@ -235,38 +251,42 @@ async function checkBrokenLinks() {
         let linkElem = allLinks[i];
         let linkHref = linkElem.href;
 
-        // Check if href has already been checked
-        if (checkedLinks.includes(linkHref) !== true) {
+        let isVisible = linkElem.offsetParent;
+        if (isVisible !== null) {
 
-            // Add href to checkedLinks
-            checkedLinks.push(linkHref);
+            // Check if href has already been checked
+            if (checkedLinks.includes(linkHref) !== true) {
 
-            // Check if broken link
-            let brokenLinkServlet = inspectorUrl + "BrokenLinks?url=" + linkHref;
-            let linkJSON = await getRequest(brokenLinkServlet);
-            let linkCode = linkJSON.code;
-            let linkValid = linkJSON.valid;
-            let message = "Not Found";
-            let borderColor = "red";
+                // Add href to checkedLinks
+                checkedLinks.push(linkHref);
 
-            console.log(linkCode + " - " + linkHref);
+                // Check if broken link
+                let brokenLinkServlet = inspectorUrl + "BrokenLinks?url=" + linkHref;
+                let linkJSON = await getRequest(brokenLinkServlet);
+                let linkCode = linkJSON.code;
+                let linkValid = linkJSON.valid;
+                let message = "Not Found";
+                let borderColor = "red";
 
-            // Check code status
-            if (linkCode === 404) {
-                brokenLinksCount += 1;
+                // Check code status
+                if (linkCode === 404) {
+                    console.log(linkCode + " - " + linkHref);
 
-                // Highlight Broken Link in HTML View
-                linkElem.innerHTML = "<span class='hoverMessage' aria-label='" + message + "' style='padding: 2px 2px; border: 4px solid " + borderColor + ";'>" + linkElem.innerHTML + "</span>";
+                    brokenLinksCount += 1;
 
-                // Update error color on html Code
-                htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(linkHref, "<span class='hoverMessage' aria-label='" + message + "' style='padding: 2px 2px; border: 4px solid " + borderColor + ";'>" + linkHref + "</span>");
+                    // Highlight Broken Link in HTML View
+                    linkElem.parentNode.setAttribute("style", "padding: 2px 2px; border: 4px solid " + borderColor + ";");
+
+                    // Update error color on html Code
+                    htmlCode.getElementById("htmlCode").innerHTML = htmlCode.getElementById("htmlCode").innerHTML.replaceAll(linkHref, "<span class='hoverMessage' aria-label='" + message + "' style='padding: 2px 2px; outline: 4px solid " + borderColor + ";'>" + linkHref + "</span>");
+                }
+            } else {
+                continue;
             }
-        } else {
-            continue;
         }
     }
 
-    // Toggle Broken Links Sectin
+    // Toggle Broken Links Section
     document.getElementById("brokenLinks").innerText = brokenLinksCount;
 
     // If there is no Broken Links add "Good Job!"
@@ -274,6 +294,7 @@ async function checkBrokenLinks() {
         document.getElementById("brokenLinks-p").innerHTML = document.getElementById("brokenLinks-p").innerHTML + "<br><b>Good Job!<br>";
     }
 
+    // Show Broken Links Message
     document.getElementById("brokenLinks-p").hidden = false;
 
     // Remove overlay
@@ -517,6 +538,10 @@ async function load() {
     window.location.href = inspectorUrl + "Inspector?url=" + siteUrl + "&lang=" + language;
 }
 
+async function resetPage() {
+    window.location.href = inspectorUrl + "Inspector";
+}
+
 async function main() {
     // START
     console.log("----------------------");
@@ -527,15 +552,8 @@ async function main() {
     // Insert Links Information
     await addLinksInfo();
 
-    // Enable goBtn
-    document.getElementById("loadBtn").disabled = false;
-    // Enable searchURL
-    document.getElementById("searchURL").disabled = false;
-    // Enable HTML Code Switch
-    document.getElementById("PageBtn").disabled = false;
-    document.getElementById("HTMLBtn").disabled = false;
-    // Enable languages_list
-    document.getElementById("languages_list").disabled = false;
+    // Enable Actions
+    await enableDisableActions("enable");
 
     console.log("----------------------");
 }

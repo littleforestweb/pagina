@@ -66,6 +66,7 @@ Author     : xhico
                        aria-label="Search">
                 <button type="button" id="loadBtn" onclick="load()" class="btn col-md-3 btn-outline-dark me-2">Go
                 </button>
+                <button type="button" onclick="resetPage()" class="btn col-md-3 btn-outline-dark me-2">Clear</button>
                 <button type="button" id="goBtn" hidden onclick="setIframe()"
                         class="btn col-md-3 btn-outline-dark me-2">setIframe
                 </button>
@@ -273,7 +274,6 @@ Author     : xhico
 
     <!-- CODE -->
     <iframe hidden sandbox="allow-same-origin allow-scripts" id="mainCode" class="iframe" src="about:blank"></iframe>
-
     <!-- END CODE -->
 </main>
 

@@ -10,15 +10,14 @@ span.hoverMessage {
 
 span.hoverMessage .msgPopup {
     padding: 6px 6px;
-    color: black; 
+    color: black;
     z-index: 9999999999;
     min-width: 300px;
     display: none;
     font-size: 16px;
-    padding: 8px;
     position: absolute;
     left: 0;
-    background:#f8f9fa;
+    background: #f8f9fa;
     border: 2px solid grey;
     border-radius: 5px;
     font-family: "Inter Medium";
