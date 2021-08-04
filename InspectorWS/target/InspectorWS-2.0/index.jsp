@@ -170,7 +170,7 @@ Author     : xhico
         <div id="links-div" hidden>
             <li id="links-li">
                 <p>Found <span id="totalLinks">0</span> link(s) (<span id="extLinks">0</span> external and <span
-                        id="intLinks">0</span> internal)
+                        id="intLinks">0</span> internal).
                 </p>
                 <p id="brokenLinks-p" hidden>Found <span id="brokenLinks">0</span> broken links(s).</p>
             </li>

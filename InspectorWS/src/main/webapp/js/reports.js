@@ -62,6 +62,13 @@ async function setIframe() {
 
     // Disable goBtn
     document.getElementById("loadBtn").disabled = true;
+    // Disable searchURL
+    document.getElementById("searchURL").disabled = true;
+    // Disable HTML Code Switch
+    document.getElementById("PageBtn").disabled = true;
+    document.getElementById("HTMLBtn").disabled = true;
+    // Disable languages_list
+    document.getElementById("languages_list").disabled = true;
 
     // Get siteUrl
     let siteUrl = await getSiteUrl();
@@ -264,7 +271,7 @@ async function checkBrokenLinks() {
 
     // If there is no Broken Links add "Good Job!"
     if (brokenLinksCount === 0) {
-        document.getElementById("brokenLinks-p").innerHTML = document.getElementById("brokenLinks-p").innerHTML + " Good Job!"
+        document.getElementById("brokenLinks-p").innerHTML = document.getElementById("brokenLinks-p").innerHTML + "<br><b>Good Job!<br>";
     }
 
     document.getElementById("brokenLinks-p").hidden = false;
@@ -327,7 +334,7 @@ async function runLanguageTool() {
                     let message = entry.message;
                     let error = text.substring(entry.context.offset, entry.context.offset + entry.context.length);
                     let reps = entry.replacements;
-                    var replacements = reps.map(function (reps) {
+                    let replacements = reps.map(function (reps) {
                         return reps['value'];
                     }).toString().replaceAll(",", ", ");
                     let color;
@@ -389,7 +396,7 @@ async function runLanguageTool() {
 
     // If there is no spell errors add "Good Job!"
     if (Object.keys(errorsDict).length === 0) {
-        document.getElementById("spellErrors-p").innerHTML = document.getElementById("spellErrors-p").innerHTML + " Good Job!"
+        document.getElementById("spellErrors-p").innerHTML = document.getElementById("spellErrors-p").innerHTML + "<br><b>Good Job!<br>"
     }
 
     // Toggle Spelling Section
@@ -518,10 +525,17 @@ async function main() {
     await runLanguageTool();
 
     // Insert Links Information
-    // await addLinksInfo();
+    await addLinksInfo();
 
     // Enable goBtn
     document.getElementById("loadBtn").disabled = false;
+    // Enable searchURL
+    document.getElementById("searchURL").disabled = false;
+    // Enable HTML Code Switch
+    document.getElementById("PageBtn").disabled = false;
+    document.getElementById("HTMLBtn").disabled = false;
+    // Enable languages_list
+    document.getElementById("languages_list").disabled = false;
 
     console.log("----------------------");
 }
