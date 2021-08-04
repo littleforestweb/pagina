@@ -7,7 +7,7 @@
 
 // const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
 
-const inspectorUrl = "http://localhost:8081/InspectorWS/";
+const inspectorUrl = "http://localhost:8080/InspectorWS/";
 
 async function getSiteUrl() {
     // Set siteUrl
@@ -287,6 +287,12 @@ async function checkBrokenLinks() {
 
     // Toggle Broken Links Sectin
     document.getElementById("brokenLinks").innerText = brokenLinksCount;
+
+    // If there is no Broken Links add "Good Job!"
+    if (brokenLinksCount === 0) {
+        document.getElementById("brokenLinks-p").innerHTML = document.getElementById("brokenLinks-p").innerHTML + " Good Job!"
+    }
+
     document.getElementById("brokenLinks-p").hidden = false;
 
     // Remove overlay
@@ -401,6 +407,11 @@ async function runLanguageTool() {
 
     //  Add totalErrors to GENERALINFO
     document.getElementById("totalErrors").innerText = Object.keys(errorsDict).length;
+
+    // If there is no spell errors add "Good Job!"
+    if (Object.keys(errorsDict).length === 0) {
+        document.getElementById("spellErrors-p").innerHTML = document.getElementById("spellErrors-p").innerHTML + " Good Job!"
+    }
 
     // Toggle Spelling Section
     document.getElementById("spelling-li").style.display = "block";

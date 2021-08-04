@@ -158,7 +158,7 @@ Author     : xhico
         <div id="spelling-div" hidden>
             <li id="spelling-li">
                 <!--<p>Language: <span id="detectedLanguage">None</span></p>-->
-                <p>Found <span id="totalErrors">0</span> possible spelling mistake(s)</p>
+                <p id="spellErrors-p">Found <span id="totalErrors">0</span> possible spelling mistake(s).</p>
                 <ul id="spelling_errors"></ul>
             </li>
         </div>
@@ -172,7 +172,7 @@ Author     : xhico
                 <p>Found <span id="totalLinks">0</span> link(s) (<span id="extLinks">0</span> external and <span
                         id="intLinks">0</span> internal)
                 </p>
-                <p id="brokenLinks-p" hidden>Found <span id="brokenLinks">0</span> broken links(s)</p>
+                <p id="brokenLinks-p" hidden>Found <span id="brokenLinks">0</span> broken links(s).</p>
             </li>
         </div>
     </ul>
