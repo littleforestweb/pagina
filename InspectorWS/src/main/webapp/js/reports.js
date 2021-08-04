@@ -326,8 +326,8 @@ async function runLanguageTool() {
         // Set phrase from content array index
         let tagText = tagsText[i]
 
-        let isVisible = tagText.offsetWidth > 0 && tagText.offsetHeight > 0;
-        if (isVisible) {
+        let isVisible = tagText.offsetParent;
+        if (isVisible !== null) {
 
 
             // Get LangTool API Response
