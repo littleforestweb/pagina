@@ -73,13 +73,13 @@ document.getElementById('spelling-title').addEventListener('click', () => {
 function toggleView(view) {
     if (view === "Page") {
         document.getElementById("mainContent").hidden = false;
-        document.getElementById("htmlView").hidden = true;
+        document.getElementById("mainCode").hidden = true;
         document.getElementById("PageBtn").classList.remove("active");
         document.getElementById("HTMLBtn").classList.add("active");
 
     } else {
         document.getElementById("mainContent").hidden = true;
-        document.getElementById("htmlView").hidden = false;
+        document.getElementById("mainCode").hidden = false;
         document.getElementById("PageBtn").classList.add("active");
         document.getElementById("HTMLBtn").classList.remove("active");
     }

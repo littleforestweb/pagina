@@ -272,7 +272,8 @@ Author     : xhico
     <!-- END IFRAME -->
 
     <!-- CODE -->
-    <pre hidden id="htmlView" class="htmlView"><code id="htmlCode"></code></pre>
+    <iframe hidden sandbox="allow-same-origin allow-scripts" id="mainCode" class="iframe" src="about:blank"></iframe>
+
     <!-- END CODE -->
 </main>
 

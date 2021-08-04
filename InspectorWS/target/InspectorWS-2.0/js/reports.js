@@ -50,41 +50,11 @@ async function overlay(action, message) {
 }
 
 async function runMain() {
-    var myIframe = document.getElementById('mainContent');
+    let myIframe = document.getElementById('mainContent');
+
     myIframe.addEventListener("load", function () {
         document.getElementById("mainBtn").click();
     });
-}
-
-async function clearAll() {
-    console.log("clearReports");
-
-    // Clear Page and HTM
-    let iframeElement = document.getElementById('mainContent').contentWindow.document;
-    iframeElement.open();
-    iframeElement.write("");
-    iframeElement.close();
-    document.getElementById("htmlCode").innerHTML = "";
-
-//    // Clear Content Report
-//    document.getElementById("content-keyword-div").hidden = false;
-//    document.getElementById("content-btn").hidden = false;
-//    document.getElementById("content-div").hidden = true;
-//    document.getElementById("totalImages").innerHTML = "";
-
-    // Clear Links Report
-    document.getElementById("links-div").hidden = true;
-    document.getElementById("totalLinks").innerHTML = "";
-    document.getElementById("extLinks").innerHTML = "";
-    document.getElementById("intLinks").innerHTML = "";
-    document.getElementById("brokenLinks").innerHTML = "";
-
-    // Clear Spelling Report
-    document.getElementById("language-select-div").hidden = false;
-    document.getElementById("spelling-div").hidden = true;
-//    document.getElementById("detectedLanguage").innerHTML = "";
-    document.getElementById("totalErrors").innerHTML = "";
-    document.getElementById("spelling_errors").innerHTML = "";
 }
 
 async function setIframe() {
@@ -92,9 +62,6 @@ async function setIframe() {
 
     // Disable goBtn
     document.getElementById("loadBtn").disabled = true;
-
-    // Clear mainContent and Sidebar
-    await clearAll();
 
     // Get siteUrl
     let siteUrl = await getSiteUrl();
@@ -138,10 +105,13 @@ async function setIframe() {
             // Set htmlCode Text Area
             html = html.replaceAll("<", "&lt;");
             html = html.replaceAll(">", "&gt;");
-            document.getElementById("htmlCode").innerHTML = html;
+            let iframeCode = document.getElementById('mainCode').contentWindow.document;
+            iframeCode.open();
+            iframeCode.write('<pre id="htmlView" class="htmlView"><code id="htmlCode">' + html + '</code></pre>');
+            iframeCode.close();
 
             // HTMLCode Syntax Highlighter
-            w3CodeColor(document.getElementById("htmlCode"));
+            w3CodeColor();
         }
 
         // Add Stylesheet to iframe head
@@ -160,6 +130,10 @@ async function addStyleHead() {
     let iframeElement = document.getElementById('mainContent').contentWindow.document;
     let iframeCSS = inspectorUrl + "css/iframe.css";
     iframeElement.head.innerHTML = iframeElement.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
+
+    // Add Stylesheet to iframe head
+    let iframeCode = document.getElementById('mainCode').contentWindow.document;
+    iframeCode.head.innerHTML = iframeCode.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
 }
 
 async function addContentInfo() {
@@ -306,8 +280,9 @@ async function runLanguageTool() {
     await overlay("addOverlay", "Running Spell Check");
 
     // Get htmlCode
-    let htmlCode = document.getElementById("htmlCode");
+    let htmlCode = document.getElementById("mainCode").contentWindow.document;
 
+    // Get selected Language
     let language = document.getElementById("languages_list").value;
     console.log("Language - " + language);
 
@@ -328,7 +303,6 @@ async function runLanguageTool() {
 
         let isVisible = tagText.offsetParent;
         if (isVisible !== null) {
-
 
             // Get LangTool API Response
             const data = await getRequest("https://api.languagetoolplus.com/v2/check" + "?text=" + tagText.innerText + "&language=" + language);
@@ -387,7 +361,7 @@ async function runLanguageTool() {
     }
 
     // Create items array
-    var items = Object.keys(errorsDict).map(function (key) {
+    let items = Object.keys(errorsDict).map(function (key) {
         return [key, errorsDict[key]];
     });
 
@@ -407,7 +381,7 @@ async function runLanguageTool() {
         spelling_errors.innerHTML += "<li><a href=javascript:gotoSpellError('spell_" + error + "');>" + error + " (" + count + "x)" + "</a></li>";
 
         // Update error color on html Code
-        htmlCode.innerHTML = htmlCode.innerHTML.replaceAll(error, "<span class='hoverMessage' style='background-color:" + color + ";'>" + error + "<span class='msgPopup'>" + message + " Replacements: " + replacements + "</span></span>");
+        htmlCode.getElementById("htmlCode").innerHTML = htmlCode.getElementById("htmlCode").innerHTML.replaceAll(error, "<span id='spell_" + error + "' class='hoverMessage' style='background-color:" + color + ";'>" + error + "<span class='msgPopup'>" + message + " Replacements: " + replacements + "</span></span>");
     });
 
     //  Add totalErrors to GENERALINFO
@@ -430,8 +404,15 @@ async function gotoSpellError(spellError) {
     console.log("Goto " + spellError);
 
     // Get iframe element
-    var iframeElement = document.getElementById("mainContent").contentWindow;
+    let iframeElement = document.getElementById("mainContent").contentWindow;
+
+    // Get htmlCode
+    let htmlCode = document.getElementById("mainCode").contentWindow;
+
+    // Scroll to spell Errors in htmlView and htmlCode
     iframeElement.scrollTo(0, iframeElement.document.getElementById(spellError).offsetTop - 200);
+    htmlCode.scrollTo(htmlCode.document.getElementById(spellError).offsetLeft - 500, htmlCode.document.getElementById(spellError).offsetTop - 200);
+
 }
 
 async function runLighthouse() {

@@ -5,9 +5,9 @@
  */
 
 
-function w3CodeColor(elmnt, mode) {
+function w3CodeColor(mode) {
     var lang = (mode || "html");
-    var elmntObj = (document.getElementById(elmnt) || elmnt);
+    var elmntObj = document.getElementById('mainCode').contentWindow.document.getElementById("htmlCode");
     var elmntTxt = elmntObj.innerHTML;
     var tagcolor = "mediumblue";
     var tagnamecolor = "brown";
@@ -59,6 +59,7 @@ function w3CodeColor(elmnt, mode) {
         this.rest = d + str;
         this.arr = a;
     }
+
     function htmlMode(txt) {
         var rest = txt, done = "", php, comment, angular, startpos, endpos, note, i;
         comment = new extract(rest, "&lt;!--", "--&gt;", commentMode, "W3HTMLCOMMENTPOS");
@@ -100,6 +101,7 @@ function w3CodeColor(elmnt, mode) {
         }
         return rest;
     }
+
     function tagMode(txt) {
         var rest = txt, done = "", startpos, endpos, result;
         while (rest.search(/(\s|<br>)/) > -1) {
@@ -119,6 +121,7 @@ function w3CodeColor(elmnt, mode) {
         }
         return "<span style=color:" + tagnamecolor + ">" + result + "</span>";
     }
+
     function attributeMode(txt) {
         var rest = txt, done = "", startpos, endpos, singlefnuttpos, doublefnuttpos, spacepos;
         while (rest.indexOf("=") > -1) {
@@ -143,12 +146,15 @@ function w3CodeColor(elmnt, mode) {
         }
         return "<span style=color:" + attributecolor + ">" + done + rest + "</span>";
     }
+
     function attributeValueMode(txt) {
         return "<span style=color:" + attributevaluecolor + ">" + txt + "</span>";
     }
+
     function commentMode(txt) {
         return "<span style=color:" + commentcolor + ">" + txt + "</span>";
     }
+
     function cssMode(txt) {
         var rest = txt, done = "", s, e, comment, i, midz, c, cc;
         comment = new extract(rest, /\/\*/, "*/", commentMode, "W3CSSCOMMENTPOS");
@@ -192,6 +198,7 @@ function w3CodeColor(elmnt, mode) {
         }
         return "<span style=color:" + cssselectorcolor + ">" + rest + "</span>";
     }
+
     function cssPropertyMode(txt) {
         var rest = txt, done = "", s, e, n, loop;
         if (rest.indexOf("{") > -1) {
@@ -218,6 +225,7 @@ function w3CodeColor(elmnt, mode) {
         }
         return "<span style=color:" + csspropertycolor + ">" + done + rest + "</span>";
     }
+
     function cssPropertyValueMode(txt) {
         var rest = txt, done = "", s;
         rest = "<span style=color:" + cssdelimitercolor + ">:</span>" + rest.substring(1);
@@ -233,11 +241,14 @@ function w3CodeColor(elmnt, mode) {
         }
         return "<span style=color:" + csspropertyvaluecolor + ">" + result + "</span>";
     }
+
     function cssImportantMode(txt) {
         return "<span style=color:" + cssimportantcolor + ";font-weight:bold;>" + txt + "</span>";
     }
+
     function jsMode(txt) {
-        var rest = txt, done = "", esc = [], i, cc, tt = "", sfnuttpos, dfnuttpos, compos, comlinepos, keywordpos, numpos, mypos, dotpos, y;
+        var rest = txt, done = "", esc = [], i, cc, tt = "", sfnuttpos, dfnuttpos, compos, comlinepos, keywordpos,
+            numpos, mypos, dotpos, y;
         for (i = 0; i < rest.length; i++) {
             cc = rest.substr(i, 1);
             if (cc == "\\") {
@@ -276,20 +287,26 @@ function w3CodeColor(elmnt, mode) {
         }
         return "<span style=color:" + jscolor + ">" + rest + "</span>";
     }
+
     function jsStringMode(txt) {
         return "<span style=color:" + jsstringcolor + ">" + txt + "</span>";
     }
+
     function jsKeywordMode(txt) {
         return "<span style=color:" + jskeywordcolor + ">" + txt + "</span>";
     }
+
     function jsNumberMode(txt) {
         return "<span style=color:" + jsnumbercolor + ">" + txt + "</span>";
     }
+
     function jsPropertyMode(txt) {
         return "<span style=color:" + jspropertycolor + ">" + txt + "</span>";
     }
+
     function getDotPos(txt, func) {
-        var x, i, j, s, e, arr = [".", "<", " ", ";", "(", "+", ")", "[", "]", ",", "&", ":", "{", "}", "/", "-", "*", "|", "%"];
+        var x, i, j, s, e,
+            arr = [".", "<", " ", ";", "(", "+", ")", "[", "]", ",", "&", ":", "{", "}", "/", "-", "*", "|", "%"];
         s = txt.indexOf(".");
         if (s > -1) {
             x = txt.substr(s + 1);
@@ -305,6 +322,7 @@ function w3CodeColor(elmnt, mode) {
         }
         return [-1, -1, func];
     }
+
     function getMinPos() {
         var i, arr = [];
         for (i = 0; i < arguments.length; i++) {
@@ -319,6 +337,7 @@ function w3CodeColor(elmnt, mode) {
         }
         return arr;
     }
+
     function getKeywordPos(typ, txt, func) {
         var words, i, pos, rpos = -1, rpos2 = -1, patt;
         if (typ == "js") {
@@ -341,6 +360,7 @@ function w3CodeColor(elmnt, mode) {
         }
         return [rpos, rpos2, func];
     }
+
     function getPos(txt, start, end, func) {
         var s, e;
         s = txt.search(start);
@@ -350,8 +370,10 @@ function w3CodeColor(elmnt, mode) {
         }
         return [s, e + (end.length), func];
     }
+
     function getNumPos(txt, func) {
-        var arr = ["<br>", " ", ";", "(", "+", ")", "[", "]", ",", "&", ":", "{", "}", "/", "-", "*", "|", "%", "="], i, j, c, startpos = 0, endpos, word;
+        var arr = ["<br>", " ", ";", "(", "+", ")", "[", "]", ",", "&", ":", "{", "}", "/", "-", "*", "|", "%", "="], i,
+            j, c, startpos = 0, endpos, word;
         for (i = 0; i < txt.length; i++) {
             for (j = 0; j < arr.length; j++) {
                 c = txt.substr(i, arr[j].length);
