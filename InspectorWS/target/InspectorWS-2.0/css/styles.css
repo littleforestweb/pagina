@@ -121,7 +121,7 @@ body * {
 .navbar {
     margin-left: 298px;
     width: calc(100% - 298px);
-    height: 50px;
+    height: auto;
     border-bottom: 2px solid;
     z-index: 3;
 }

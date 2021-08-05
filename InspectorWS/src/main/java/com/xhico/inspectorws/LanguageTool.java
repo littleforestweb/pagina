@@ -5,21 +5,18 @@
  */
 package com.xhico.inspectorws;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
 import org.languagetool.JLanguageTool;
 import org.languagetool.language.AmericanEnglish;
 import org.languagetool.language.AngolaPortuguese;
@@ -67,8 +64,17 @@ import org.languagetool.language.Ukrainian;
 import org.languagetool.language.ValencianCatalan;
 import org.languagetool.rules.RuleMatch;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
- *
  * @author xhico
  */
 @WebServlet(name = "LanguageTool", urlPatterns = {"/LanguageTool"})
@@ -81,10 +87,10 @@ public class LanguageTool extends HttpServlet {
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setHeader("Access-Control-Allow-Origin", "*");
@@ -94,26 +100,24 @@ public class LanguageTool extends HttpServlet {
             try {
 
                 // Set variables
-                String text = request.getParameter("text");
+                String content = request.getParameter("text");
                 String langCode = request.getParameter("lang");
-
-                // Check Spelling
-                setLanguage(langCode);
-                List<RuleMatch> matches = langTool.check(text);
 
                 // Initialize JSONObject
                 JSONObject jo = new JSONObject();
                 JSONArray ja = new JSONArray();
 
-                // Putting Language to JSONObject
-                jo.put("Language", langName);
+                // Check html
+                setLanguage(langCode);
+                List<RuleMatch> matches = langTool.check(content);
 
                 // Iterate over every error found
                 for (RuleMatch match : matches) {
 
                     // Get error, message and replacements
-                    String error = text.substring(match.getFromPos(), match.getToPos());
+                    String error = content.substring(match.getFromPos(), match.getToPos());
                     String message = match.getMessage().replace("<suggestion>", "").replace("</suggestion>", "").replace("'", "");
+
                     List<String> rep = match.getSuggestedReplacements();
                     String replacements = null;
                     if (rep.size() > 5) {
@@ -122,12 +126,14 @@ public class LanguageTool extends HttpServlet {
                         replacements = rep.toString();
                     }
 
-                    // Add error, message, replacements to LinkedHashMap
-                    Map m = new LinkedHashMap(3);
-                    m.put("error", error);
-                    m.put("message", message);
-                    m.put("replacements", replacements);
-                    ja.put(m);
+                    if (!ignore(error)) {
+                        // Add error, message, replacements to LinkedHashMap
+                        Map<String, String> m = new LinkedHashMap<>(4);
+                        m.put("error", error);
+                        m.put("message", message);
+                        m.put("replacements", replacements);
+                        ja.put(m);
+                    }
 
                     // Putting SpellingErrors to JSONObject
                     jo.put("SpellingErrors", ja);
@@ -140,7 +146,7 @@ public class LanguageTool extends HttpServlet {
                 JsonObject jsonObject = gson.fromJson(jo.toString(), JsonObject.class);
                 String jsonOutput = gsonPP.toJson(jsonObject);
 
-                // Return JSON Report
+                // Return JSON
                 out.println(jsonOutput);
             } catch (Exception ex) {
                 out.println(ex);
@@ -331,14 +337,27 @@ public class LanguageTool extends HttpServlet {
 
     }
 
+    private boolean ignore(String error) {
+        Pattern p = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(error);
+        boolean b = m.find();
+
+        boolean c = error.toUpperCase().equals(error);
+
+        boolean d = error.length() < 3 || error.length() > 20;
+
+        return b || c || d;
+    }
+
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -349,10 +368,10 @@ public class LanguageTool extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

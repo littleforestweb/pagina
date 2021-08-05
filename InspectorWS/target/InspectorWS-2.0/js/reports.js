@@ -5,9 +5,9 @@
 
 // ------------------ Functions ------------------------------------- //
 
-// const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
+const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
 
-const inspectorUrl = "http://localhost:8080/InspectorWS/";
+// const inspectorUrl = "http://localhost:8080/InspectorWS/";
 
 async function getSiteUrl() {
     // Set siteUrl
@@ -329,8 +329,7 @@ async function runLanguageTool() {
         // Set phrase from content array index
         let tagText = tagsText[i]
 
-        let isVisible = tagText.offsetParent;
-        if (isVisible !== null) {
+        if (tagText.offsetParent !== null && window.getComputedStyle(tagText).display !== 'none') {
 
             // Get LangTool API Response
             const data = await getRequest("https://api.languagetoolplus.com/v2/check" + "?text=" + tagText.innerText + "&language=" + language);
@@ -371,14 +370,18 @@ async function runLanguageTool() {
                         }
 
                         // Update error color on html View
-                        tagText.innerHTML = tagText.innerHTML.replace(error, "<span class='hoverMessage' id='spell_" + error + "' style='background-color:" + color + "'><b>" + error + "</b><span class='msgPopup'>" + message + " Replacements: " + replacements + "</span></span>");
+                        tagText.lastElementChild.innerHTML = tagText.lastElementChild.innerHTML.replace(error, "<span class='hoverMessage' id='spell_" + error + "' style='background-color:" + color + "'><b>" + error + "</b><span class='msgPopup'>" + message + " Replacements: " + replacements + "</span></span>");
 
-                        // Add/update key error on errorsDict
-                        if (error in errorsDict) {
-                            errorsDict[error][0] = errorsDict[error][0] + 1;
-                        } else {
-                            errorsDict[error] = [1, message, replacements, color];
+                        // Only add if the div is not null
+                        if (iframeElement.getElementById("spell_" + error).offsetTop !== null) {
+                            // Add/update key error on errorsDict
+                            if (error in errorsDict) {
+                                errorsDict[error][0] = errorsDict[error][0] + 1;
+                            } else {
+                                errorsDict[error] = [1, message, replacements, color];
+                            }
                         }
+
                     }
                 });
 
@@ -550,7 +553,7 @@ async function main() {
     await runLanguageTool();
 
     // Insert Links Information
-    await addLinksInfo();
+    // await addLinksInfo();
 
     // Enable Actions
     await enableDisableActions("enable");

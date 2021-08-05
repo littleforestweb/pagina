@@ -21,8 +21,8 @@
   <component name="LogFilters">
     <option name="FILTER_ERRORS" value="false" />
     <option name="FILTER_WARNINGS" value="false" />
-    <option name="FILTER_INFO" value="true" />
-    <option name="FILTER_DEBUG" value="true" />
+    <option name="FILTER_INFO" value="false" />
+    <option name="FILTER_DEBUG" value="false" />
     <option name="CUSTOM_FILTER" />
   </component>
   <component name="ProjectId" id="1wEJPCxh4eHhdpJOFzCVUnTxFcm" />
@@ -159,6 +159,8 @@
       <workItem from="1628064805412" duration="842000" />
       <workItem from="1628065666777" duration="6006000" />
       <workItem from="1628081626514" duration="14815000" />
+      <workItem from="1628108984588" duration="9391000" />
+      <workItem from="1628150642446" duration="4434000" />
     </task>
     <servers />
   </component>
