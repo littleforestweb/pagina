@@ -9,6 +9,8 @@
 
 const inspectorUrl = "http://localhost:8080/InspectorWS/";
 
+let counter = 0;
+
 async function getSiteUrl() {
     // Set siteUrl
     const siteUrl = document.getElementById("searchURL").value;
@@ -76,13 +78,10 @@ async function enableDisableActions(action) {
 async function runMain() {
     let iframeElement = document.getElementById('mainContent');
     iframeElement.addEventListener("load", function () {
-        // Get Iframe
-        let iframeElement = document.getElementById('mainContent');
-        let y = (iframeElement.contentWindow || iframeElement.contentDocument);
-        let html = y.document.documentElement.outerHTML;
-        if (html.length !== 436) {
+        if (counter !== 0) {
             document.getElementById("mainBtn").click();
         }
+        counter = counter + 1;
     });
 }
 
@@ -96,7 +95,6 @@ async function setIframe() {
     let siteUrl = await getSiteUrl();
 
     if (siteUrl === "") {
-        // Add base page HTML to iframe content
         // Get iframe element
         let iframeElement = document.getElementById('mainContent').contentWindow.document;
         iframeElement.open();
@@ -109,53 +107,51 @@ async function setIframe() {
         // Add overlay
         await overlay("addOverlay", "Loading page")
 
+        // Set iframe src to siteUrl
         document.getElementById('mainContent').src = siteUrl;
-
-        // // Get HTML from site
-        // let HTMLServlet = inspectorUrl + "HTMLDownloader?url=" + siteUrl;
-        // let html = await getRequest(HTMLServlet);
-        //
-        // if (html === "") {
-        //     // Add base page HTML to iframe content
-        //     // Get iframe element
-        //     let iframeElement = document.getElementById('mainContent').contentWindow.document;
-        //     iframeElement.open();
-        //     iframeElement.write("Unable to get HTML");
-        //     iframeElement.close();
-        //
-        //     // Enable Actions
-        //     await enableDisableActions("enable");
-        // } else {
-        //
-        //     let pathArray = siteUrl.split('/');
-        //     let baseURL = pathArray[0] + "//" + pathArray[2];
-        //     html = html.replaceAll("background-image: url(", "background-image: url(" + baseURL);
-        //
-        //     // Add base page HTML to iframe content
-        //     // Get iframe element
-        //     let iframeElement = document.getElementById('mainContent').contentWindow.document;
-        //     iframeElement.open();
-        //     iframeElement.write(html);
-        //     iframeElement.close();
-        //
-        //     // Set htmlCode Text Area
-        //     html = html.replaceAll("<", "&lt;");
-        //     html = html.replaceAll(">", "&gt;");
-        //     let iframeCode = document.getElementById('mainCode').contentWindow.document;
-        //     iframeCode.open();
-        //     iframeCode.write('<pre id="htmlView" class="htmlView"><code id="htmlCode">' + html + '</code></pre>');
-        //     iframeCode.close();
-        //
-        //     // HTMLCode Syntax Highlighter
-        //     w3CodeColor();
-        // }
-
-        // Add Stylesheet to iframe head
-        // await addStyleHead();
 
         // Set active Action Btn
         await runMain();
     }
+
+    // // Get HTML from site
+    // let HTMLServlet = inspectorUrl + "HTMLDownloader?url=" + siteUrl;
+    // let html = await getRequest(HTMLServlet);
+    //
+    // if (html === "") {
+    //     // Add base page HTML to iframe content
+    //     // Get iframe element
+    //     let iframeElement = document.getElementById('mainContent').contentWindow.document;
+    //     iframeElement.open();
+    //     iframeElement.write("Unable to get HTML");
+    //     iframeElement.close();
+    //
+    //     // Enable Actions
+    //     await enableDisableActions("enable");
+    // } else {
+    //
+    //     let pathArray = siteUrl.split('/');
+    //     let baseURL = pathArray[0] + "//" + pathArray[2];
+    //     html = html.replaceAll("background-image: url(", "background-image: url(" + baseURL);
+    //
+    //     // Add base page HTML to iframe content
+    //     // Get iframe element
+    //     let iframeElement = document.getElementById('mainContent').contentWindow.document;
+    //     iframeElement.open();
+    //     iframeElement.write(html);
+    //     iframeElement.close();
+    //
+    //     // Set htmlCode Text Area
+    //     html = html.replaceAll("<", "&lt;");
+    //     html = html.replaceAll(">", "&gt;");
+    //     let iframeCode = document.getElementById('mainCode').contentWindow.document;
+    //     iframeCode.open();
+    //     iframeCode.write('<pre id="htmlView" class="htmlView"><code id="htmlCode">' + html + '</code></pre>');
+    //     iframeCode.close();
+    //
+    //     // HTMLCode Syntax Highlighter
+    //     w3CodeColor();
+    // }
 }
 
 async function addStyleHead() {
@@ -548,6 +544,7 @@ async function load() {
     // Get selected Language
     let language = document.getElementById("languages_list").value;
 
+    // Launch new Inspector
     window.location.href = inspectorUrl + "Inspector?url=" + siteUrl + "&lang=" + language;
 }
 

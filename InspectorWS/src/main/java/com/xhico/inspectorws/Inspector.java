@@ -7,6 +7,8 @@ package com.xhico.inspectorws;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -37,6 +39,16 @@ public class Inspector extends HttpServlet {
             String url = request.getParameter("url");
             String lang = request.getParameter("lang");
 
+            // Check if the URL is valid
+            int code;
+            try {
+                URL myURL = new URL(url);
+                HttpURLConnection connect = (HttpURLConnection) myURL.openConnection();
+                code = connect.getResponseCode();
+            } catch (Exception ex) {
+                code = -1;
+            }
+
             // Initialize mainURL && mainLang variables
             String mainURL;
             String mainLang;
@@ -46,6 +58,7 @@ public class Inspector extends HttpServlet {
                 mainURL = "null";
                 mainLang = "null";
             } else {
+                // Connect to the URL
                 mainURL = url;
                 mainLang = lang;
             }
@@ -53,6 +66,7 @@ public class Inspector extends HttpServlet {
             // Set attributes mainURL && mainLang
             request.setAttribute("mainURL", mainURL);
             request.setAttribute("mainLang", mainLang);
+            request.setAttribute("URLCode", code);
             request.getRequestDispatcher("/index.jsp").forward(request, response);
         }
     }

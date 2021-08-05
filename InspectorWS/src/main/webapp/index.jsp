@@ -21,14 +21,15 @@ Author     : xhico
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
+    <%--  X-Frame Bypass  --%>
     <script src="https://unpkg.com/@ungap/custom-elements-builtin"></script>
     <script type="module" src="https://unpkg.com/x-frame-bypass"></script>
-
 
     <!-- Custom -->
     <link rel="stylesheet" href="css/styles.css"/>
     <link rel="stylesheet" href="css/iframe.css"/>
 
+    <%-- Google Analytics --%>
     <script>
         (function (i, s, o, g, r, a, m) {
             i['GoogleAnalyticsObject'] = r;
@@ -49,6 +50,7 @@ Author     : xhico
 <%
     String mainURL = request.getAttribute("mainURL").toString();
     String mainLang = request.getAttribute("mainLang").toString();
+    String URLCode = request.getAttribute("URLCode").toString();
 %>
 
 <!-- OVERLAY -->
@@ -59,10 +61,6 @@ Author     : xhico
         <br>Please Wait
     </div>
 </div>
-<!-- END OVERLAY -->
-
-<!-- OVERLAY -->
-<%--<div id="overlayClear"></div>--%>
 <!-- END OVERLAY -->
 
 <!-- TOPNAV -->
@@ -283,7 +281,6 @@ Author     : xhico
 <main>
     <!-- IFRAME -->
     <iframe is="x-frame-bypass" sandbox="allow-same-origin allow-scripts" id="mainContent" class="iframe"></iframe>
-
     <!-- END IFRAME -->
 
     <!-- CODE -->
@@ -299,20 +296,28 @@ Author     : xhico
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
 
-<!-- If a URL Param is present auto run-->
-<% if (!(mainURL.equals("null"))) {%>
 <script>
+    // If a URL is 200
+    <% if (URLCode.equals("200")) {%>
+
+    // If a URL Param is present auto run
+    <% if (!(mainURL.equals("null"))) {%>
+
     // Set URL on search bar
     document.getElementById("searchURL").value = "<%=mainURL%>";
 
-    <% if (!(mainLang.equals("null"))) {%>
     // Set Language on Languages Dropdown list
+    <% if (!(mainLang.equals("null"))) {%>
     let selectLang = document.getElementById("languages_list").value = "<%=mainLang%>";
     <% }%>
 
     // Run Main()
     document.getElementById("goBtn").click();
+    <% }%>
+
+    <% } else { %>
+    alert("NOOOOPE - " + "<%=URLCode%>")
+    <% } %>
 </script>
-<% }%>
 </body>
 </html>
