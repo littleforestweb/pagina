@@ -328,6 +328,7 @@ async function runLanguageTool() {
         // Set phrase from content array index
         let tagText = tagsText[i]
 
+        // Only check if tagText is visible
         if (tagText.offsetParent !== null && window.getComputedStyle(tagText).display !== 'none') {
 
             // Get LangTool API Response
