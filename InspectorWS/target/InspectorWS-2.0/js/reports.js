@@ -5,9 +5,9 @@
 
 // ------------------ Functions ------------------------------------- //
 
-const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
+// const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
 
-// const inspectorUrl = "http://localhost:8080/InspectorWS/";
+const inspectorUrl = "http://localhost:8080/InspectorWS/";
 
 async function getSiteUrl() {
     // Set siteUrl
@@ -129,6 +129,7 @@ async function setIframe() {
             // Set htmlCode Text Area
             html = html.replaceAll("<", "&lt;");
             html = html.replaceAll(">", "&gt;");
+            html = html.replaceAll("background-image: url(", "background-image: url(")
             let iframeCode = document.getElementById('mainCode').contentWindow.document;
             iframeCode.open();
             iframeCode.write('<pre id="htmlView" class="htmlView"><code id="htmlCode">' + html + '</code></pre>');

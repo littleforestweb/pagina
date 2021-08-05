@@ -43,9 +43,16 @@ public class HTMLDownloader extends HttpServlet {
 
             // Get search URL
             String url = request.getParameter("url");
+            if (!(url.contains("https://"))) {
+                url = "https://" + url;
+            }
 
             // Get HTML from URL
             String html = Jsoup.connect(url).get().html();
+            if (html.equals("")) {
+                url = url.replace("https://", "http://");
+                html = Jsoup.connect(url).get().html();
+            }
             Document doc = Jsoup.parse(html, url);
 
             // Check possible broken href | src | srcset
