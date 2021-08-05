@@ -8,7 +8,7 @@
 // Default hide every section apart from Settings and General
 //document.getElementById("accessibility-li").style.display = "none"
 //document.getElementById("content-li").style.display = "none"
-document.getElementById("links-li").style.display = "none"
+// document.getElementById("links-li").style.display = "none"
 document.getElementById("spelling-li").style.display = "none"
 //document.getElementById("lighthouse-li").style.display = "none"
 //document.getElementById("technologies-li").style.display = "none"
@@ -31,14 +31,14 @@ document.getElementById("spelling-li").style.display = "none"
 //    }
 //});
 
-// LINKS
-document.getElementById('links-title').addEventListener('click', () => {
-    if (document.getElementById("links-li").style.display === "none") {
-        document.getElementById("links-li").style.display = "block";
-    } else {
-        document.getElementById("links-li").style.display = "none";
-    }
-});
+// // LINKS
+// document.getElementById('links-title').addEventListener('click', () => {
+//     if (document.getElementById("links-li").style.display === "none") {
+//         document.getElementById("links-li").style.display = "block";
+//     } else {
+//         document.getElementById("links-li").style.display = "none";
+//     }
+// });
 
 // SPELLING
 document.getElementById('spelling-title').addEventListener('click', () => {

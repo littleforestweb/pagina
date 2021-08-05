@@ -57,6 +57,10 @@ Author     : xhico
 </div>
 <!-- END OVERLAY -->
 
+<!-- OVERLAY -->
+<%--<div id="overlayClear"></div>--%>
+<!-- END OVERLAY -->
+
 <!-- TOPNAV -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
@@ -103,7 +107,7 @@ Author     : xhico
              src="https://littleforest.co.uk/wp-content/uploads/2020/11/littleforest_logo.png">
     </a>
 
-    <!-- SPELLING -->
+    <%--    SPELLING--%>
     <ul id="spelling-section" class="sidebar-list">
         <li><b><a id="spelling-title" href="#">SPELLING REPORT <i class="arrow down"></i></a></b></li>
         <div id="language-select-div">
@@ -165,111 +169,116 @@ Author     : xhico
         </div>
     </ul>
 
-    <!-- LINKS -->
-    <ul id="links-section" class="sidebar-list">
-        <li><b><a id="links-title" href="#">LINKS REPORT<i class="arrow down"></i></a></b></li>
-        <div id="links-div" hidden>
-            <li id="links-li">
-                <p>Found <span id="totalLinks">0</span> link(s) (<span id="extLinks">0</span> external and <span
-                        id="intLinks">0</span> internal).
-                </p>
-                <p id="brokenLinks-p" hidden>Found <span id="brokenLinks">0</span> broken links(s).</p>
-            </li>
-        </div>
-    </ul>
+    <%--    LINKS--%>
+    <%--    <ul id="links-section" class="sidebar-list">--%>
+    <%--        <li><b><a id="links-title" href="#">LINKS REPORT<i class="arrow down"></i></a></b></li>--%>
+    <%--        <div id="links-div" hidden>--%>
+    <%--            <li id="links-li">--%>
+    <%--                <p>Found <span id="totalLinks">0</span> link(s) (<span id="extLinks">0</span> external and <span--%>
+    <%--                        id="intLinks">0</span> internal).--%>
+    <%--                </p>--%>
+    <%--                <p id="brokenLinks-p" hidden>Found <span id="brokenLinks">0</span> broken links(s).</p>--%>
+    <%--            </li>--%>
+    <%--        </div>--%>
+    <%--    </ul>--%>
 
-    <!--
-                ACCESSIBILITY
-    <ul id="accessibility-section" class="sidebar-list">
-        <li><b><a id="accessibility-title" href="#">ACCESSIBILITY REPORT <i class="arrow down"></i></a></b></li>
-        <div id="accessibility-div" hidden>
-            <li id="accessibility-li">
-            </li>
-        </div>
-    </ul>
+    <%--    ACCESSIBILITY--%>
+    <%--    <ul id="accessibility-section" class="sidebar-list">--%>
+    <%--        <li><b><a id="accessibility-title" href="#">ACCESSIBILITY REPORT <i class="arrow down"></i></a></b></li>--%>
+    <%--        <div id="accessibility-div" hidden>--%>
+    <%--            <li id="accessibility-li">--%>
+    <%--            </li>--%>
+    <%--        </div>--%>
+    <%--    </ul>--%>
 
-    CONTENT
-    <ul id="content-section" class="sidebar-list">
-        <li><b><a id="content-title" href="#">CONTENT REPORT<i class="arrow down"></i></a></b></li>
-        <div id="content-keyword-div">
-            <label>Keyword</label>
-            <input class="form-control" placeholder="Not done">
-            <br>
-        </div>
-        <button type="button" id="content-btn" class="btn btn-outline-dark" onclick="addContentInfo()">Run Content Report</button>
-        <div id="content-div" hidden>
-            <li id="content-li">
-                <p>Found <span id="totalImages">0</span> image(s)</p>
-            </li>
-        </div>
-    </ul>
+    <%--    CONTENT--%>
+    <%--    <ul id="content-section" class="sidebar-list">--%>
+    <%--        <li><b><a id="content-title" href="#">CONTENT REPORT<i class="arrow down"></i></a></b></li>--%>
+    <%--        <div id="content-keyword-div">--%>
+    <%--            <label>Keyword</label>--%>
+    <%--            <input class="form-control" placeholder="Not done">--%>
+    <%--            <br>--%>
+    <%--        </div>--%>
+    <%--        <button type="button" id="content-btn" class="btn btn-outline-dark" onclick="addContentInfo()">Run Content--%>
+    <%--            Report--%>
+    <%--        </button>--%>
+    <%--        <div id="content-div" hidden>--%>
+    <%--            <li id="content-li">--%>
+    <%--                <p>Found <span id="totalImages">0</span> image(s)</p>--%>
+    <%--            </li>--%>
+    <%--        </div>--%>
+    <%--    </ul>--%>
 
-    LIGHTHOUSE
-                <ul id="lighthouse-section" class="sidebar-list">
-                    <li><b><a id="lighthouse-title" href="#">LIGHTHOUSE REPORT<i class="arrow down"></i></a></b></li>
-                     Lighthouse Categories
-                    <label>Categories</label><br>
-                    <input type="checkbox" id="cat_performance" name="cat_performance" checked>
-                    <label for="cat_performance">Performance</label>
-                    <br>
-                    <input type="checkbox" id="cat_pwa" name="cat_pwa" checked>
-                    <label for="cat_pwa">Progressive Web App</label>
-                    <br>
-                    <input type="checkbox" id="cat_bp" name="cat_bp" checked>
-                    <label for="cat_bp">Best Practicies</label>
-                    <br>
-                    <input type="checkbox" id="cat_accessibility" name="cat_accessibility" checked>
-                    <label for="cat_accessibility">Accessibility</label>
-                    <br>
-                    <input type="checkbox" id="cat_seo" name="cat_seo" checked>
-                    <label for="cat_seo">SEO</label>
-                    <br><br>
+    <%--    LIGHTHOUSE--%>
+    <%--    <ul id="lighthouse-section" class="sidebar-list">--%>
+    <%--        <li><b><a id="lighthouse-title" href="#">LIGHTHOUSE REPORT<i class="arrow down"></i></a></b></li>--%>
+    <%--        Lighthouse Categories--%>
+    <%--        <label>Categories</label><br>--%>
+    <%--        <input type="checkbox" id="cat_performance" name="cat_performance" checked>--%>
+    <%--        <label for="cat_performance">Performance</label>--%>
+    <%--        <br>--%>
+    <%--        <input type="checkbox" id="cat_pwa" name="cat_pwa" checked>--%>
+    <%--        <label for="cat_pwa">Progressive Web App</label>--%>
+    <%--        <br>--%>
+    <%--        <input type="checkbox" id="cat_bp" name="cat_bp" checked>--%>
+    <%--        <label for="cat_bp">Best Practicies</label>--%>
+    <%--        <br>--%>
+    <%--        <input type="checkbox" id="cat_accessibility" name="cat_accessibility" checked>--%>
+    <%--        <label for="cat_accessibility">Accessibility</label>--%>
+    <%--        <br>--%>
+    <%--        <input type="checkbox" id="cat_seo" name="cat_seo" checked>--%>
+    <%--        <label for="cat_seo">SEO</label>--%>
+    <%--        <br><br>--%>
 
-                     Lighthouse Device
-                    <label>Device</label><br>
-                    <input type="radio" id="dev_mobile" name="devices" value="mobile" checked>
-                    <label for="dev_mobile">Mobile</label><br>
-                    <input type="radio" id="dev_desktop" name="devices" value="desktop">
-                    <label for="dev_desktop">Desktop</label>
-                    <br><br>
+    <%--        Lighthouse Device--%>
+    <%--        <label>Device</label><br>--%>
+    <%--        <input type="radio" id="dev_mobile" name="devices" value="mobile" checked>--%>
+    <%--        <label for="dev_mobile">Mobile</label><br>--%>
+    <%--        <input type="radio" id="dev_desktop" name="devices" value="desktop">--%>
+    <%--        <label for="dev_desktop">Desktop</label>--%>
+    <%--        <br><br>--%>
 
-                    <button type="button" id="lighthouse-btn" class="btn btn-outline-dark" onclick="runLighthouse()">Run Lighthouse Report</button>
-                    <div id="lighthouse-div" hidden>
-                        <li id="lighthouse-li">
-                            <ul id="lighthouse_info"></ul>
-                        </li>
-                    </div>
-                </ul>
+    <%--        <button type="button" id="lighthouse-btn" class="btn btn-outline-dark" onclick="runLighthouse()">Run Lighthouse--%>
+    <%--            Report--%>
+    <%--        </button>--%>
+    <%--        <div id="lighthouse-div" hidden>--%>
+    <%--            <li id="lighthouse-li">--%>
+    <%--                <ul id="lighthouse_info"></ul>--%>
+    <%--            </li>--%>
+    <%--        </div>--%>
+    <%--    </ul>--%>
 
-                TECHNOLOGIES
-                <ul id="technologies-section" class="sidebar-list">
-                    <li><b><a id="technologies-title" href="#">TECHNOLOGIES REPORT <i class="arrow down"></i></a></b></li>
-                    <button type="button" id="technologies-btn" class="btn btn-outline-dark" onclick="runTechnologies()">Run Technologies Report</button>
-                    <div id="technologies-div" hidden>
-                        <li id="technologies-li">
-                            <ul id="technologies_info"></ul>
-                        </li>
-                    </div>
-                </ul>
+    <%--    TECHNOLOGIES--%>
+    <%--    <ul id="technologies-section" class="sidebar-list">--%>
+    <%--        <li><b><a id="technologies-title" href="#">TECHNOLOGIES REPORT <i class="arrow down"></i></a></b></li>--%>
+    <%--        <button type="button" id="technologies-btn" class="btn btn-outline-dark" onclick="runTechnologies()">Run--%>
+    <%--            Technologies Report--%>
+    <%--        </button>--%>
+    <%--        <div id="technologies-div" hidden>--%>
+    <%--            <li id="technologies-li">--%>
+    <%--                <ul id="technologies_info"></ul>--%>
+    <%--            </li>--%>
+    <%--        </div>--%>
+    <%--    </ul>--%>
 
-                COOKIES
-                <ul id="cookies-section" class="sidebar-list">
-                    <li><b><a id="cookies-title" href="#">COOKIES REPORT <i class="arrow down"></i></a></b></li>
-                    <button type="button" id="cookies-btn" class="btn btn-outline-dark" onclick="runCookies()">Run Cookies Report</button>
-                    <div id="cookies-div" hidden>
-                        <li id="cookies-li">
-                            <ul id="cookies_info"></ul>
-                        </li>
-                    </div>
-                </ul>
-    -->
+    <%--    COOKIES--%>
+    <%--    <ul id="cookies-section" class="sidebar-list">--%>
+    <%--        <li><b><a id="cookies-title" href="#">COOKIES REPORT <i class="arrow down"></i></a></b></li>--%>
+    <%--        <button type="button" id="cookies-btn" class="btn btn-outline-dark" onclick="runCookies()">Run Cookies Report--%>
+    <%--        </button>--%>
+    <%--        <div id="cookies-div" hidden>--%>
+    <%--            <li id="cookies-li">--%>
+    <%--                <ul id="cookies_info"></ul>--%>
+    <%--            </li>--%>
+    <%--        </div>--%>
+    <%--    </ul>--%>
 
 </div>
 <!-- END SIDEBAR -->
 
 <main>
     <!-- IFRAME -->
-    <iframe sandbox="allow-same-origin allow-scripts" id="mainContent" class="iframe" src="about:blank"></iframe>
+    <iframe sandbox="allow-same-origin allow-scripts" id="mainContent" class="iframe" rc="about:blank"></iframe>
     <!-- END IFRAME -->
 
     <!-- CODE -->

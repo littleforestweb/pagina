@@ -144,8 +144,7 @@ async function setIframe() {
         // Set active Action Btn
         await runMain();
 
-        // Remove overlay
-        await overlay("removeOverlay", "")
+
     }
 }
 
@@ -370,7 +369,7 @@ async function runLanguageTool() {
                         }
 
                         // Update error color on html View
-                        tagText.lastElementChild.innerHTML = tagText.lastElementChild.innerHTML.replace(error, "<span class='hoverMessage' id='spell_" + error + "' style='background-color:" + color + "'><b>" + error + "</b><span class='msgPopup'>" + message + " Replacements: " + replacements + "</span></span>");
+                        tagText.innerHTML = tagText.innerHTML.replace(error, "<span class='hoverMessage' id='spell_" + error + "' style='background-color:" + color + "'><b>" + error + "</b><span class='msgPopup'>" + message + " Replacements: " + replacements + "</span></span>");
 
                         // Only add if the div is not null
                         if (iframeElement.getElementById("spell_" + error).offsetTop !== null) {
@@ -549,11 +548,11 @@ async function main() {
     // START
     console.log("----------------------");
 
+    // Remove overlay
+    await overlay("removeOverlay", "")
+
     // Run Spelling Report
     await runLanguageTool();
-
-    // Insert Links Information
-    // await addLinksInfo();
 
     // Enable Actions
     await enableDisableActions("enable");

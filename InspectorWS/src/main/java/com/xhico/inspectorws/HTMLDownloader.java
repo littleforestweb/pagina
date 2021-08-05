@@ -48,7 +48,7 @@ public class HTMLDownloader extends HttpServlet {
             String html = Jsoup.connect(url).get().html();
             Document doc = Jsoup.parse(html, url);
 
-            // Check possible broken href or src
+            // Check possible broken href | src | srcset
             doc.select("a, link").forEach(e -> {
                 e.attr("href", e.absUrl("href"));
             });
