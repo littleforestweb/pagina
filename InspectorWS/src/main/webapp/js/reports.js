@@ -371,14 +371,11 @@ async function runLanguageTool() {
                         // Update error color on html View
                         tagText.innerHTML = tagText.innerHTML.replace(error, "<span class='hoverMessage' id='spell_" + error + "' style='background-color:" + color + "'><b>" + error + "</b><span class='msgPopup'>" + message + " Replacements: " + replacements + "</span></span>");
 
-                        // Only add if the div is not null
-                        if (iframeElement.getElementById("spell_" + error).offsetTop !== null) {
-                            // Add/update key error on errorsDict
-                            if (error in errorsDict) {
-                                errorsDict[error][0] = errorsDict[error][0] + 1;
-                            } else {
-                                errorsDict[error] = [1, message, replacements, color];
-                            }
+                        // Add/update key error on errorsDict
+                        if (error in errorsDict) {
+                            errorsDict[error][0] = errorsDict[error][0] + 1;
+                        } else {
+                            errorsDict[error] = [1, message, replacements, color];
                         }
 
                     }
@@ -404,14 +401,17 @@ async function runLanguageTool() {
     let spelling_errors = document.getElementById("spelling_errors");
     items.forEach(function (entry) {
         let error = entry[0];
-        let count = entry[1][0];
-        let message = entry[1][1];
-        let replacements = entry[1][2];
-        let color = entry[1][3];
-        spelling_errors.innerHTML += "<li><a href=javascript:gotoSpellError('spell_" + error + "');>" + error + " (" + count + "x)" + "</a></li>";
+        if (iframeElement.getElementById("spell_" + error) !== null) {
+            let count = entry[1][0];
+            let message = entry[1][1];
+            let replacements = entry[1][2];
+            let color = entry[1][3];
+            spelling_errors.innerHTML += "<li><a href=javascript:gotoSpellError('spell_" + error + "');>" + error + " (" + count + "x)" + "</a></li>";
 
-        // Update error color on html Code
-        htmlCode.getElementById("htmlCode").innerHTML = htmlCode.getElementById("htmlCode").innerHTML.replaceAll(error, "<span id='spell_" + error + "' class='hoverMessage' style='background-color:" + color + ";'>" + error + "<span class='msgPopup'>" + message + " Replacements: " + replacements + "</span></span>");
+            // Update error color on html Code
+            htmlCode.getElementById("htmlCode").innerHTML = htmlCode.getElementById("htmlCode").innerHTML.replaceAll(error, "<span id='spell_" + error + "' class='hoverMessage' style='background-color:" + color + ";'>" + error + "<span class='msgPopup'>" + message + " Replacements: " + replacements + "</span></span>");
+
+        }
     });
 
     //  Add totalErrors to GENERALINFO
@@ -440,8 +440,8 @@ async function gotoSpellError(spellError) {
     let htmlCode = document.getElementById("mainCode").contentWindow;
 
     // Scroll to spell Errors in htmlView and htmlCode
-    iframeElement.scrollTo(0, iframeElement.document.getElementById(spellError).offsetTop - 200);
-    htmlCode.scrollTo(htmlCode.document.getElementById(spellError).offsetLeft - 500, htmlCode.document.getElementById(spellError).offsetTop - 200);
+    iframeElement.document.getElementById(spellError).scrollIntoView();
+    htmlCode.document.getElementById(spellError).scrollIntoView();
 
 }
 
