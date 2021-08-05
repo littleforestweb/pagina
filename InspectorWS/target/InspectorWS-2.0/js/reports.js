@@ -75,9 +75,14 @@ async function enableDisableActions(action) {
 
 async function runMain() {
     let iframeElement = document.getElementById('mainContent');
-
     iframeElement.addEventListener("load", function () {
-        document.getElementById("mainBtn").click();
+        // Get Iframe
+        let iframeElement = document.getElementById('mainContent');
+        let y = (iframeElement.contentWindow || iframeElement.contentDocument);
+        let html = y.document.documentElement.outerHTML;
+        if (html.length !== 436) {
+            document.getElementById("mainBtn").click();
+        }
     });
 }
 
@@ -104,48 +109,52 @@ async function setIframe() {
         // Add overlay
         await overlay("addOverlay", "Loading page")
 
-        // Get HTML from site
-        let HTMLServlet = inspectorUrl + "HTMLDownloader?url=" + siteUrl;
-        let html = await getRequest(HTMLServlet);
+        document.getElementById('mainContent').src = siteUrl;
 
-        if (html === "") {
-            // Add base page HTML to iframe content
-            // Get iframe element
-            let iframeElement = document.getElementById('mainContent').contentWindow.document;
-            iframeElement.open();
-            iframeElement.write("Unable to get HTML");
-            iframeElement.close();
-
-            // Enable Actions
-            await enableDisableActions("enable");
-        } else {
-            // Add base page HTML to iframe content
-            // Get iframe element
-            let iframeElement = document.getElementById('mainContent').contentWindow.document;
-            iframeElement.open();
-            iframeElement.write(html);
-            iframeElement.close();
-
-            // Set htmlCode Text Area
-            html = html.replaceAll("<", "&lt;");
-            html = html.replaceAll(">", "&gt;");
-            html = html.replaceAll("background-image: url(", "background-image: url(")
-            let iframeCode = document.getElementById('mainCode').contentWindow.document;
-            iframeCode.open();
-            iframeCode.write('<pre id="htmlView" class="htmlView"><code id="htmlCode">' + html + '</code></pre>');
-            iframeCode.close();
-
-            // HTMLCode Syntax Highlighter
-            w3CodeColor();
-        }
+        // // Get HTML from site
+        // let HTMLServlet = inspectorUrl + "HTMLDownloader?url=" + siteUrl;
+        // let html = await getRequest(HTMLServlet);
+        //
+        // if (html === "") {
+        //     // Add base page HTML to iframe content
+        //     // Get iframe element
+        //     let iframeElement = document.getElementById('mainContent').contentWindow.document;
+        //     iframeElement.open();
+        //     iframeElement.write("Unable to get HTML");
+        //     iframeElement.close();
+        //
+        //     // Enable Actions
+        //     await enableDisableActions("enable");
+        // } else {
+        //
+        //     let pathArray = siteUrl.split('/');
+        //     let baseURL = pathArray[0] + "//" + pathArray[2];
+        //     html = html.replaceAll("background-image: url(", "background-image: url(" + baseURL);
+        //
+        //     // Add base page HTML to iframe content
+        //     // Get iframe element
+        //     let iframeElement = document.getElementById('mainContent').contentWindow.document;
+        //     iframeElement.open();
+        //     iframeElement.write(html);
+        //     iframeElement.close();
+        //
+        //     // Set htmlCode Text Area
+        //     html = html.replaceAll("<", "&lt;");
+        //     html = html.replaceAll(">", "&gt;");
+        //     let iframeCode = document.getElementById('mainCode').contentWindow.document;
+        //     iframeCode.open();
+        //     iframeCode.write('<pre id="htmlView" class="htmlView"><code id="htmlCode">' + html + '</code></pre>');
+        //     iframeCode.close();
+        //
+        //     // HTMLCode Syntax Highlighter
+        //     w3CodeColor();
+        // }
 
         // Add Stylesheet to iframe head
-        await addStyleHead();
+        // await addStyleHead();
 
         // Set active Action Btn
         await runMain();
-
-
     }
 }
 
@@ -549,6 +558,25 @@ async function resetPage() {
 async function main() {
     // START
     console.log("----------------------");
+
+    // Get Iframe
+    let iframeElement = document.getElementById('mainContent');
+    let y = (iframeElement.contentWindow || iframeElement.contentDocument);
+    let html = y.document.documentElement.outerHTML;
+
+    // Set htmlCode Text Area
+    html = html.replaceAll("<", "&lt;");
+    html = html.replaceAll(">", "&gt;");
+    let iframeCode = document.getElementById('mainCode').contentWindow.document;
+    iframeCode.open();
+    iframeCode.write('<pre id="htmlView" class="htmlView"><code id="htmlCode">' + html + '</code></pre>');
+    iframeCode.close();
+
+    // HTMLCode Syntax Highlighter
+    w3CodeColor();
+
+    // Add Stylesheet to iframe head
+    await addStyleHead();
 
     // Remove overlay
     await overlay("removeOverlay", "")
