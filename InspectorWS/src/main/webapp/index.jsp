@@ -325,6 +325,7 @@ Author     : xhico
 <script>
     // If a URL Param is present auto run
     <% if (!(mainURL.equals("null"))) {%>
+
     // Set URL on search bar
     let siteUrl = "<%=mainURL%>";
     document.getElementById("searchURL").value = siteUrl;
@@ -341,7 +342,7 @@ Author     : xhico
 
     <% } else { %>
     document.getElementById("modalTitle").innerHTML = "Something went wrong!";
-    document.getElementById("modalBody").innerHTML = "Unable to load <b>" + siteUrl + "</b></br>Please check the URL.";
+    document.getElementById("modalBody").innerHTML = "Failed to load <b>" + siteUrl + "</b> (<%=URLCode%>)</br>Please check the URL.";
     document.getElementById("showModal").click();
     <% } %>
 

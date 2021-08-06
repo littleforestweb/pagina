@@ -3,13 +3,44 @@
  Author     : xhico
  */
 
-// ------------------ Functions ------------------------------------- //
+// ------------------------------------- GLOBAL VARIABLES ------------------------------------- //
 
 const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
-
 // const inspectorUrl = "http://localhost:8080/InspectorWS/";
 
 let counter = 0;
+let myTimmer = setInterval(myTimer, 1000);
+
+// ------------------------------------- Functions ------------------------------------- //
+
+async function myTimer() {
+    let iframeElement = document.getElementById('mainContent');
+    let y = (iframeElement.contentWindow || iframeElement.contentDocument);
+    let html = y.document.documentElement.outerHTML;
+
+    console.log(counter + " - " + html.length);
+    if (html.length === 436) {
+        if (counter === 10) {
+
+            // Set Error Message in MODAL
+            document.getElementById("modalTitle").innerHTML = "Something went wrong!";
+            document.getElementById("modalBody").innerHTML = "Failed to load <b>" + siteUrl + "</b> (Timeout)</br>";
+            document.getElementById("showModal").click();
+
+            // Remove overlay
+            await overlay("removeOverlay", "")
+
+            // Enable Actions
+            await enableDisableActions("enable");
+
+            clearInterval(myTimmer);
+        }
+    } else {
+        clearInterval(myTimmer);
+    }
+
+    counter = counter + 1
+}
 
 async function getSiteUrl() {
     // Set siteUrl
@@ -78,10 +109,11 @@ async function enableDisableActions(action) {
 async function runMain() {
     let iframeElement = document.getElementById('mainContent');
     iframeElement.addEventListener("load", function () {
-        if (counter !== 0) {
+        let y = (iframeElement.contentWindow || iframeElement.contentDocument);
+        let html = y.document.documentElement.outerHTML;
+        if (html.length !== 436) {
             document.getElementById("mainBtn").click();
         }
-        counter = counter + 1;
     });
 }
 
@@ -94,25 +126,14 @@ async function setIframe() {
     // Get siteUrl
     let siteUrl = await getSiteUrl();
 
-    if (siteUrl === "") {
-        // Get iframe element
-        let iframeElement = document.getElementById('mainContent').contentWindow.document;
-        iframeElement.open();
-        iframeElement.write("Please insert a valid URL");
-        iframeElement.close();
+    // Add overlay
+    await overlay("addOverlay", "Loading page")
 
-        // Enable Actions
-        await enableDisableActions("enable");
-    } else {
-        // Add overlay
-        await overlay("addOverlay", "Loading page")
+    // Set iframe src to siteUrl
+    document.getElementById('mainContent').src = siteUrl;
 
-        // Set iframe src to siteUrl
-        document.getElementById('mainContent').src = siteUrl;
-
-        // Set active Action Btn
-        await runMain();
-    }
+    // Set active Action Btn
+    await runMain();
 
     // // Get HTML from site
     // let HTMLServlet = inspectorUrl + "HTMLDownloader?url=" + siteUrl;
@@ -417,7 +438,6 @@ async function runLanguageTool() {
 
             // Update error color on html Code
             htmlCode.getElementById("htmlCode").innerHTML = htmlCode.getElementById("htmlCode").innerHTML.replaceAll(error, "<span id='spell_" + error + "' class='hoverMessage' style='background-color:" + color + ";'>" + error + "<span class='msgPopup'>" + message + " Replacements: " + replacements + "</span></span>");
-
         }
     });
 
@@ -541,11 +561,18 @@ async function load() {
     // Get siteUrl
     let siteUrl = await getSiteUrl();
 
-    // Get selected Language
-    let language = document.getElementById("languages_list").value;
+    if (siteUrl === "") {
+        // Set Error Message in MODAL
+        document.getElementById("modalTitle").innerHTML = "Something went wrong!";
+        document.getElementById("modalBody").innerHTML = "Please insert a valid URL";
+        document.getElementById("showModal").click();
+    } else {
+        // Get selected Language
+        let language = document.getElementById("languages_list").value;
 
-    // Launch new Inspector
-    window.location.href = inspectorUrl + "Inspector?url=" + siteUrl + "&lang=" + language;
+        // Launch new Inspector
+        window.location.href = inspectorUrl + "Inspector?url=" + siteUrl + "&lang=" + language;
+    }
 }
 
 async function resetPage() {

@@ -161,7 +161,8 @@
       <workItem from="1628081626514" duration="14815000" />
       <workItem from="1628108984588" duration="9391000" />
       <workItem from="1628150642446" duration="26108000" />
-      <workItem from="1628181340702" duration="19753000" />
+      <workItem from="1628181340702" duration="20087000" />
+      <workItem from="1628236973667" duration="6546000" />
     </task>
     <servers />
   </component>
@@ -179,17 +180,6 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/webapp/index.jsp</url>
-          <line>6</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
