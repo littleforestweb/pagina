@@ -549,6 +549,9 @@ async function load() {
 }
 
 async function resetPage() {
+    // Remove overlay
+    await overlay("addOverlay", "Loading")
+
     window.location.href = inspectorUrl + "Inspector";
 }
 

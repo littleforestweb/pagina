@@ -49,21 +49,25 @@ public class Inspector extends HttpServlet {
                 mainURL = "null";
                 mainLang = "null";
             } else {
-                // Check if the URL is valid
-                // Check if URL has https
                 String[] searchUrl = url.split("://");
-                if (!searchUrl[0].contains("http") || searchUrl[0].equals("http")) {
-                    url = "https://" + searchUrl[1];
+
+                if (url.contains("http")) {
+                    if (searchUrl[0].equals("http")) {
+                        url = "https://" + searchUrl[1];
+                    }
+                } else {
+                    url = "https://" + url;
                 }
 
                 // Get response code HTTPS
+                String[] baseURL = url.split("://");
                 try {
                     URL myURL = new URL(url);
                     HttpURLConnection connect = (HttpURLConnection) myURL.openConnection();
                     code = connect.getResponseCode();
                 } catch (Exception ex) {
                     try {
-                        url = "http://" + searchUrl[1];
+                        url = "http://" + baseURL[1];
                         URL myURL = new URL(url);
                         HttpURLConnection connect = (HttpURLConnection) myURL.openConnection();
                         code = connect.getResponseCode();

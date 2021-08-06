@@ -45,7 +45,7 @@ body * {
 #overlay_text {
     position: absolute;
     top: 50%;
-    left: 50%;
+    left: 60%;
     color: #212429;
     transform: translate(-50%, -50%);
     -ms-transform: translate(-50%, -50%);
