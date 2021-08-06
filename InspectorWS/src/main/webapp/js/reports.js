@@ -14,13 +14,19 @@ let myTimmer = setInterval(myTimer, 1000);
 // ------------------------------------- Functions ------------------------------------- //
 
 async function myTimer() {
+    // Get Iframe
     let iframeElement = document.getElementById('mainContent');
-    let y = (iframeElement.contentWindow || iframeElement.contentDocument);
-    let html = y.document.documentElement.outerHTML;
+    let html = iframeElement.contentWindow.document.documentElement.outerHTML;
 
     console.log(counter + " - " + html.length);
     if (html.length === 436) {
         if (counter === 10) {
+
+            // Get iframe element
+            let iframeElement = document.getElementById('mainContent').contentWindow.document;
+            iframeElement.open();
+            iframeElement.write("");
+            iframeElement.close();
 
             // Set Error Message in MODAL
             document.getElementById("modalTitle").innerHTML = "Something went wrong!";
@@ -33,9 +39,11 @@ async function myTimer() {
             // Enable Actions
             await enableDisableActions("enable");
 
+            // Stop Interval
             clearInterval(myTimmer);
         }
     } else {
+        // Stop Interval
         clearInterval(myTimmer);
     }
 
@@ -109,9 +117,9 @@ async function enableDisableActions(action) {
 async function runMain() {
     let iframeElement = document.getElementById('mainContent');
     iframeElement.addEventListener("load", function () {
-        let y = (iframeElement.contentWindow || iframeElement.contentDocument);
-        let html = y.document.documentElement.outerHTML;
-        if (html.length !== 436) {
+        let html = iframeElement.contentWindow.document.documentElement.outerHTML;
+        if (html.length !== 436 && html.length !== 39) {
+            console.log(html.length);
             document.getElementById("mainBtn").click();
         }
     });
@@ -588,8 +596,7 @@ async function main() {
 
     // Get Iframe
     let iframeElement = document.getElementById('mainContent');
-    let y = (iframeElement.contentWindow || iframeElement.contentDocument);
-    let html = y.document.documentElement.outerHTML;
+    let html = iframeElement.contentWindow.document.documentElement.outerHTML;
 
     // Set htmlCode Text Area
     html = html.replaceAll("<", "&lt;");
