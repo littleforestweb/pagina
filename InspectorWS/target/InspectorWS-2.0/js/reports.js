@@ -579,7 +579,7 @@ async function main() {
     await overlay("removeOverlay", "")
 
     // Run Spelling Report
-    await runLanguageTool();
+    // await runLanguageTool();
 
     // Enable Actions
     await enableDisableActions("enable");

@@ -16,10 +16,15 @@ Author     : xhico
     <link rel="apple-touch-icon" href="images/lf_logo.png"/>
     <meta name="msapplication-TileImage" content="images/lf_logo.png"/>
 
-    <!-- Font-Awesome / Bootstrap -->
+    <!-- Font-Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <%--  Bootstrap  --%>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
 
     <%--  X-Frame Bypass  --%>
     <script src="https://unpkg.com/@ungap/custom-elements-builtin"></script>
@@ -63,6 +68,25 @@ Author     : xhico
 </div>
 <!-- END OVERLAY -->
 
+<%-- MODAL --%>
+<div class="modal fade" id="vertCentModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Heading of Scrollable Modal Here</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                Vertically centered Modal content here
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<%-- END MODAL--%>
+
 <!-- TOPNAV -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
@@ -78,6 +102,11 @@ Author     : xhico
                 </button>
                 <button type="button" id="mainBtn" hidden onclick="main()" class="btn col-md-3 btn-outline-dark me-2">
                     Main
+                </button>
+                <button type="button" id="showModal" hidden class="btn col-md-3 btn-outline-dark me-2"
+                        data-bs-toggle="modal"
+                        data-bs-target="#vertCentModal">
+                    Modal
                 </button>
             </div>
             <%--            <ul class="navbar-nav mb-2 mb-lg-0">--%>
@@ -292,32 +321,31 @@ Author     : xhico
 <script src="js/syntaxHighlighter.js"></script>
 <script src="js/scripts.js"></script>
 <script src="js/reports.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script>
 
 <script>
-    // If a URL is 200
-    <% if (URLCode.equals("200")) {%>
-
     // If a URL Param is present auto run
     <% if (!(mainURL.equals("null"))) {%>
-
     // Set URL on search bar
-    document.getElementById("searchURL").value = "<%=mainURL%>";
+    let siteUrl = "<%=mainURL%>";
+    document.getElementById("searchURL").value = siteUrl;
 
     // Set Language on Languages Dropdown list
     <% if (!(mainLang.equals("null"))) {%>
     let selectLang = document.getElementById("languages_list").value = "<%=mainLang%>";
     <% }%>
 
+    // If a URL is 200
+    <% if (URLCode.equals("200")) {%>
     // Run Main()
     document.getElementById("goBtn").click();
-    <% }%>
 
     <% } else { %>
-    alert("NOOOOPE - " + "<%=URLCode%>")
+    document.getElementById("modalTitle").innerHTML = "Something went wrong!";
+    document.getElementById("modalBody").innerHTML = "Unable to load <b>" + siteUrl + "</b></br>Please check the URL.";
+    document.getElementById("showModal").click();
     <% } %>
+
+    <% }%>
 </script>
 </body>
 </html>

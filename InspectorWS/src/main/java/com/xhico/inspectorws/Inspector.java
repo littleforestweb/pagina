@@ -42,9 +42,18 @@ public class Inspector extends HttpServlet {
             // Check if the URL is valid
             int code;
             try {
+
+                // Check if URL has https
+                String[] searchUrl = url.split("://");
+                if (!searchUrl[0].contains("http")) {
+                    url = "https://" + searchUrl[1];
+                }
+
+                // Get response code
                 URL myURL = new URL(url);
                 HttpURLConnection connect = (HttpURLConnection) myURL.openConnection();
                 code = connect.getResponseCode();
+
             } catch (Exception ex) {
                 code = -1;
             }
