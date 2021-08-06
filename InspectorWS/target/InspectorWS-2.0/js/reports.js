@@ -5,8 +5,8 @@
 
 // ------------------------------------- GLOBAL VARIABLES ------------------------------------- //
 
-const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
-// const inspectorUrl = "http://localhost:8080/InspectorWS/";
+// const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
+const inspectorUrl = "http://localhost:8080/InspectorWS/";
 
 let counter = 0;
 let myTimmer = setInterval(myTimer, 1000);
@@ -119,7 +119,6 @@ async function runMain() {
     iframeElement.addEventListener("load", function () {
         let html = iframeElement.contentWindow.document.documentElement.outerHTML;
         if (html.length !== 436 && html.length !== 39) {
-            console.log(html.length);
             document.getElementById("mainBtn").click();
         }
     });
