@@ -39,34 +39,39 @@ public class Inspector extends HttpServlet {
             String url = request.getParameter("url");
             String lang = request.getParameter("lang");
 
-            // Check if the URL is valid
-            int code;
-            try {
-
-                // Check if URL has https
-                String[] searchUrl = url.split("://");
-                if (!searchUrl[0].contains("http")) {
-                    url = "https://" + searchUrl[1];
-                }
-
-                // Get response code
-                URL myURL = new URL(url);
-                HttpURLConnection connect = (HttpURLConnection) myURL.openConnection();
-                code = connect.getResponseCode();
-
-            } catch (Exception ex) {
-                code = -1;
-            }
-
             // Initialize mainURL && mainLang variables
             String mainURL;
             String mainLang;
+            int code = -1;
 
             // Check if there is a url or not
             if (url == null) {
                 mainURL = "null";
                 mainLang = "null";
             } else {
+                // Check if the URL is valid
+                // Check if URL has https
+                String[] searchUrl = url.split("://");
+                if (!searchUrl[0].contains("http") || searchUrl[0].equals("http")) {
+                    url = "https://" + searchUrl[1];
+                }
+
+                // Get response code HTTPS
+                try {
+                    URL myURL = new URL(url);
+                    HttpURLConnection connect = (HttpURLConnection) myURL.openConnection();
+                    code = connect.getResponseCode();
+                } catch (Exception ex) {
+                    try {
+                        url = "http://" + searchUrl[1];
+                        URL myURL = new URL(url);
+                        HttpURLConnection connect = (HttpURLConnection) myURL.openConnection();
+                        code = connect.getResponseCode();
+                    } catch (Exception ex_) {
+                        code = -1;
+                    }
+                }
+
                 // Connect to the URL
                 mainURL = url;
                 mainLang = lang;

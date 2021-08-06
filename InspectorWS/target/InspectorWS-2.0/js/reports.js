@@ -5,9 +5,9 @@
 
 // ------------------ Functions ------------------------------------- //
 
-// const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
+const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
 
-const inspectorUrl = "http://localhost:8080/InspectorWS/";
+// const inspectorUrl = "http://localhost:8080/InspectorWS/";
 
 let counter = 0;
 
@@ -579,7 +579,7 @@ async function main() {
     await overlay("removeOverlay", "")
 
     // Run Spelling Report
-    // await runLanguageTool();
+    await runLanguageTool();
 
     // Enable Actions
     await enableDisableActions("enable");
