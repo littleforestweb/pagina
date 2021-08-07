@@ -114,6 +114,31 @@ async function enableDisableActions(action) {
     }
 }
 
+async function load() {
+    // Get siteUrl
+    let siteUrl = await getSiteUrl();
+
+    if (siteUrl === "") {
+        // Set Error Message in MODAL
+        document.getElementById("modalTitle").innerHTML = "Something went wrong!";
+        document.getElementById("modalBody").innerHTML = "Please insert a valid URL";
+        document.getElementById("showModal").click();
+    } else {
+        // Get selected Language
+        let language = document.getElementById("languages_list").value;
+
+        // Launch new Inspector
+        window.location.href = inspectorUrl + "Inspector?url=" + siteUrl + "&lang=" + language;
+    }
+}
+
+async function resetPage() {
+    // Remove overlay
+    await overlay("addOverlay", "Loading")
+
+    window.location.href = inspectorUrl;
+}
+
 async function runMain() {
     let iframeElement = document.getElementById('mainContent');
     iframeElement.addEventListener("load", function () {
@@ -180,17 +205,6 @@ async function setIframe() {
     //     // HTMLCode Syntax Highlighter
     //     w3CodeColor();
     // }
-}
-
-async function addStyleHead() {
-    // Add Stylesheet to iframe head
-    let iframeElement = document.getElementById('mainContent').contentWindow.document;
-    let iframeCSS = inspectorUrl + "css/iframe.css";
-    iframeElement.head.innerHTML = iframeElement.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
-
-    // Add Stylesheet to iframe head
-    let iframeCode = document.getElementById('mainCode').contentWindow.document;
-    iframeCode.head.innerHTML = iframeCode.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
 }
 
 async function addContentInfo() {
@@ -383,34 +397,42 @@ async function runLanguageTool() {
                 // Iterate on every error
                 data.matches.forEach(function (entry) {
 
-                    // Get error, message, replacements and color;
-                    let text = entry.context.text;
-                    let message = entry.message;
-                    let error = text.substring(entry.context.offset, entry.context.offset + entry.context.length);
-                    let reps = entry.replacements;
-                    let replacements = reps.map(function (reps) {
-                        return reps['value'];
-                    }).toString().replaceAll(",", ", ");
-                    let color;
+                    // Get error
+                    let error = entry.context.text.substring(entry.context.offset, entry.context.offset + entry.context.length);
 
                     // Remove false-positive errors (three chars and whitespaces)
                     if (error.length >= 3 && !(/\s/g.test(error))) {
 
+                        // Get message, replacements, color and sentense
+                        let message = entry.message;
+                        let reps = entry.replacements;
+                        let replacements = reps.map(function (reps) {
+                            return reps['value'];
+                        }).toString().replaceAll(",", ", ");
+                        let sentence = tagText.innerText;
+
                         // Set color of error => red for mistake and yellow for others
+                        let color;
                         if (message === "Possible spelling mistake found.") {
                             color = "red";
                         } else {
                             color = "orange";
                         }
 
-                        // Update error color on html View
+                        // Update error in HTML Page
                         tagText.innerHTML = tagText.innerHTML.replace(error, "<span class='hoverMessage' id='spell_" + error + "' style='background-color:" + color + "'><b>" + error + "</b><span class='msgPopup'>" + message + " Replacements: " + replacements + "</span></span>");
+
+                        // Update error in HTML Code
+                        let newSentence = sentence.replace(error, "<span id='spell_" + error + "' class='hoverMessage' style='background-color:" + color + ";'>" + error + "<span class='msgPopup'>" + message + " Replacements: " + replacements + "</span></span>");
+                        console.log(sentence);
+                        console.log(newSentence);
+                        htmlCode.getElementById("htmlCode").innerHTML = htmlCode.getElementById("htmlCode").innerHTML.replace(sentence, newSentence);
 
                         // Add/update key error on errorsDict
                         if (error in errorsDict) {
                             errorsDict[error][0] = errorsDict[error][0] + 1;
                         } else {
-                            errorsDict[error] = [1, message, replacements, color];
+                            errorsDict[error] = [1];
                         }
 
                     }
@@ -438,13 +460,7 @@ async function runLanguageTool() {
         let error = entry[0];
         if (iframeElement.getElementById("spell_" + error) !== null) {
             let count = entry[1][0];
-            let message = entry[1][1];
-            let replacements = entry[1][2];
-            let color = entry[1][3];
             spelling_errors.innerHTML += "<li><a href=javascript:gotoSpellError('spell_" + error + "');>" + error + " (" + count + "x)" + "</a></li>";
-
-            // Update error color on html Code
-            htmlCode.getElementById("htmlCode").innerHTML = htmlCode.getElementById("htmlCode").innerHTML.replaceAll(error, "<span id='spell_" + error + "' class='hoverMessage' style='background-color:" + color + ";'>" + error + "<span class='msgPopup'>" + message + " Replacements: " + replacements + "</span></span>");
         }
     });
 
@@ -564,38 +580,13 @@ async function runLighthouse() {
     await overlay("removeOverlay", "");
 }
 
-async function load() {
-    // Get siteUrl
-    let siteUrl = await getSiteUrl();
-
-    if (siteUrl === "") {
-        // Set Error Message in MODAL
-        document.getElementById("modalTitle").innerHTML = "Something went wrong!";
-        document.getElementById("modalBody").innerHTML = "Please insert a valid URL";
-        document.getElementById("showModal").click();
-    } else {
-        // Get selected Language
-        let language = document.getElementById("languages_list").value;
-
-        // Launch new Inspector
-        window.location.href = inspectorUrl + "Inspector?url=" + siteUrl + "&lang=" + language;
-    }
-}
-
-async function resetPage() {
-    // Remove overlay
-    await overlay("addOverlay", "Loading")
-
-    window.location.href = inspectorUrl + "Inspector";
-}
-
 async function main() {
     // START
     console.log("----------------------");
 
     // Get Iframe
-    let iframeElement = document.getElementById('mainContent');
-    let html = iframeElement.contentWindow.document.documentElement.outerHTML;
+    let iframeElement = document.getElementById('mainContent').contentWindow.document;
+    let html = iframeElement.documentElement.outerHTML;
 
     // Set htmlCode Text Area
     html = html.replaceAll("<", "&lt;");
@@ -609,7 +600,11 @@ async function main() {
     w3CodeColor();
 
     // Add Stylesheet to iframe head
-    await addStyleHead();
+    let iframeCSS = inspectorUrl + "css/iframe.css";
+    iframeElement.head.innerHTML = iframeElement.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
+
+    // Add Stylesheet to iframe head
+    iframeCode.head.innerHTML = iframeCode.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
 
     // Remove overlay
     await overlay("removeOverlay", "")

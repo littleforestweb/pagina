@@ -53,9 +53,18 @@ Author     : xhico
 </head>
 <body>
 <%
-    String mainURL = request.getAttribute("mainURL").toString();
-    String mainLang = request.getAttribute("mainLang").toString();
-    String URLCode = request.getAttribute("URLCode").toString();
+    String mainURL;
+    String mainLang;
+    String URLCode;
+    try {
+        mainURL = request.getAttribute("mainURL").toString();
+        mainLang = request.getAttribute("mainLang").toString();
+        URLCode = request.getAttribute("URLCode").toString();
+    } catch (Exception ex) {
+        mainURL = "null";
+        mainLang = "null";
+        URLCode = "null";
+    }
 %>
 
 <!-- OVERLAY -->
