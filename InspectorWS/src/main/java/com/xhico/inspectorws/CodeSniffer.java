@@ -43,7 +43,6 @@ public class CodeSniffer extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setHeader("Access-Control-Allow-Origin", "*");
         response.setContentType("application/json");
 
         try (PrintWriter out = response.getWriter()) {

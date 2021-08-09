@@ -126,11 +126,15 @@ Author     : xhico
             <%--                <button type="button" class="btn btn-outline-dark me-2">Edit</button>--%>
             <%--                <button type="button" class="btn btn-outline-dark me-2">Share</button>--%>
             <%--            </ul>--%>
-            <div class="btn-group me-2" role="group" aria-label="Basic example">
-                <button type="button" id="PageBtn" onclick="toggleView('Page')" class="btn btn-outline-dark">View
+            <div class="btn-group me-2" role="group">
+                <button type="button" id="PageBtn" onclick="toggleView('Page')" class="btn btn-outline-dark">
+                    Page
                 </button>
                 <button type="button" id="HTMLBtn" onclick="toggleView('HTML')" class="active btn btn-outline-dark">
                     Code
+                </button>
+                <button hidden type="button" id="LighthouseViewBtn" onclick="toggleView('lighthouseReport')"
+                        class="active btn btn-outline-dark">Lighthouse
                 </button>
             </div>
         </div>
@@ -250,43 +254,48 @@ Author     : xhico
     <%--    </ul>--%>
 
     <%--    LIGHTHOUSE--%>
-    <%--    <ul id="lighthouse-section" class="sidebar-list">--%>
-    <%--        <li><b><a id="lighthouse-title" href="#">LIGHTHOUSE REPORT<i class="arrow down"></i></a></b></li>--%>
-    <%--        Lighthouse Categories--%>
-    <%--        <label>Categories</label><br>--%>
-    <%--        <input type="checkbox" id="cat_performance" name="cat_performance" checked>--%>
-    <%--        <label for="cat_performance">Performance</label>--%>
-    <%--        <br>--%>
-    <%--        <input type="checkbox" id="cat_pwa" name="cat_pwa" checked>--%>
-    <%--        <label for="cat_pwa">Progressive Web App</label>--%>
-    <%--        <br>--%>
-    <%--        <input type="checkbox" id="cat_bp" name="cat_bp" checked>--%>
-    <%--        <label for="cat_bp">Best Practicies</label>--%>
-    <%--        <br>--%>
-    <%--        <input type="checkbox" id="cat_accessibility" name="cat_accessibility" checked>--%>
-    <%--        <label for="cat_accessibility">Accessibility</label>--%>
-    <%--        <br>--%>
-    <%--        <input type="checkbox" id="cat_seo" name="cat_seo" checked>--%>
-    <%--        <label for="cat_seo">SEO</label>--%>
-    <%--        <br><br>--%>
+    <ul id="lighthouse-section" class="sidebar-list">
+        <li><b><a id="lighthouse-title" href="#">LIGHTHOUSE REPORT<i class="arrow down"></i></a></b></li>
 
-    <%--        Lighthouse Device--%>
-    <%--        <label>Device</label><br>--%>
-    <%--        <input type="radio" id="dev_mobile" name="devices" value="mobile" checked>--%>
-    <%--        <label for="dev_mobile">Mobile</label><br>--%>
-    <%--        <input type="radio" id="dev_desktop" name="devices" value="desktop">--%>
-    <%--        <label for="dev_desktop">Desktop</label>--%>
-    <%--        <br><br>--%>
+        <%--        Lighthouse Categories--%>
+        <div id="lighthouseCategories">
+            <label>Categories</label><br>
+            <input type="checkbox" id="cat_performance" name="cat_performance" checked>
+            <label for="cat_performance">Performance</label>
+            <br>
+            <input type="checkbox" id="cat_pwa" name="cat_pwa" checked>
+            <label for="cat_pwa">Progressive Web App</label>
+            <br>
+            <input type="checkbox" id="cat_bp" name="cat_bp" checked>
+            <label for="cat_bp">Best Practicies</label>
+            <br>
+            <input type="checkbox" id="cat_accessibility" name="cat_accessibility" checked>
+            <label for="cat_accessibility">Accessibility</label>
+            <br>
+            <input type="checkbox" id="cat_seo" name="cat_seo" checked>
+            <label for="cat_seo">SEO</label>
+            <br><br>
+        </div>
 
-    <%--        <button type="button" id="lighthouse-btn" class="btn btn-outline-dark" onclick="runLighthouse()">Run Lighthouse--%>
-    <%--            Report--%>
-    <%--        </button>--%>
-    <%--        <div id="lighthouse-div" hidden>--%>
-    <%--            <li id="lighthouse-li">--%>
-    <%--                <ul id="lighthouse_info"></ul>--%>
-    <%--            </li>--%>
-    <%--        </div>--%>
-    <%--    </ul>--%>
+        <%--        Lighthouse Device--%>
+        <div id="lighthouseDevice">
+            <label>Device</label><br>
+            <input type="radio" id="dev_mobile" name="devices" value="mobile" checked>
+            <label for="dev_mobile">Mobile</label><br>
+            <input type="radio" id="dev_desktop" name="devices" value="desktop">
+            <label for="dev_desktop">Desktop</label>
+            <br><br>
+        </div>
+
+        <button type="button" id="lighthouse-btn" class="btn btn-outline-dark" onclick="runLighthouse()">Run Lighthouse
+            Report
+        </button>
+        <div id="lighthouse-div" hidden>
+            <li id="lighthouse-li">
+                <ul id="lighthouse_info"></ul>
+            </li>
+        </div>
+    </ul>
 
     <%--    TECHNOLOGIES--%>
     <%--    <ul id="technologies-section" class="sidebar-list">--%>
@@ -324,6 +333,10 @@ Author     : xhico
     <!-- CODE -->
     <iframe hidden sandbox="allow-same-origin allow-scripts" id="mainCode" class="iframe" src="about:blank"></iframe>
     <!-- END CODE -->
+
+    <!-- LIGHTHOUSE REPORT -->
+    <iframe hidden sandbox="allow-same-origin allow-scripts" id="mainLighthouse" class="iframe"></iframe>
+    <!-- LIGHTHOUSE REPORT -->
 </main>
 
 <!-- SCRIPT -->
@@ -344,11 +357,9 @@ Author     : xhico
     let selectLang = document.getElementById("languages_list").value = "<%=mainLang%>";
     <% }%>
 
-    // If a URL is 200
+    // If a URL is 200 Run Main()
     <% if (URLCode.equals("200")) {%>
-    // Run Main()
     document.getElementById("goBtn").click();
-
     <% } else { %>
     document.getElementById("modalTitle").innerHTML = "Something went wrong!";
     document.getElementById("modalBody").innerHTML = "Failed to load <b>" + siteUrl + "</b> (<%=URLCode%>)</br>Please check the URL.";

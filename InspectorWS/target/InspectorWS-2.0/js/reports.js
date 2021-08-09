@@ -5,8 +5,10 @@
 
 // ------------------------------------- GLOBAL VARIABLES ------------------------------------- //
 
-// const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
-const inspectorUrl = "http://localhost:8080/InspectorWS/";
+const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
+// const inspectorUrl = "http://localhost:8080/InspectorWS/";
+// const LTHTTPServer = "http://inspector.littleforest.co.uk:8081/v2/check?";
+const LTHTTPServer = "https://api.languagetoolplus.com/v2/check?";
 
 let counter = 0;
 let myTimmer = setInterval(myTimer, 1000);
@@ -64,7 +66,7 @@ async function getSiteUrl() {
 async function getRequest(url) {
     try {
         const res = await fetch(url);
-        if (url.includes("languagetoolplus") ||
+        if (url.includes("language") ||
             url.includes("BrokenLinks") ||
             url.includes("CodeSniffer") ||
             url.includes("LanguageTool") ||
@@ -79,6 +81,9 @@ async function getRequest(url) {
 
 async function overlay(action, message) {
     if (action === "addOverlay") {
+        // Disable goBtn
+        await enableDisableActions("disable");
+
         // Insert overlay
         console.log("addOverlay")
         document.getElementById("overlay").style.display = "block";
@@ -87,6 +92,9 @@ async function overlay(action, message) {
         // Remove overlay
         console.log("removeOverlay")
         document.getElementById("overlay").style.display = "none";
+
+        // Enable goBtn
+        await enableDisableActions("enable");
     }
 }
 
@@ -96,21 +104,27 @@ async function enableDisableActions(action) {
         document.getElementById("loadBtn").disabled = false;
         // Enable searchURL
         document.getElementById("searchURL").disabled = false;
-        // Enable HTML Code Switch
+        // Enable View Switch
         document.getElementById("PageBtn").disabled = false;
         document.getElementById("HTMLBtn").disabled = false;
+        document.getElementById("LighthouseViewBtn").disabled = false;
         // Enable languages_list
         document.getElementById("languages_list").disabled = false;
+        // Enable Lighthouse Btn
+        document.getElementById("lighthouse-btn").disabled = false;
     } else {
-        // Enable goBtn
+        // Disable goBtn
         document.getElementById("loadBtn").disabled = true;
-        // Enable searchURL
+        // Disable searchURL
         document.getElementById("searchURL").disabled = true;
-        // Enable HTML Code Switch
+        // Disable View Switch
         document.getElementById("PageBtn").disabled = true;
         document.getElementById("HTMLBtn").disabled = true;
-        // Enable languages_list
+        document.getElementById("LighthouseViewBtn").disabled = true;
+        // Disable languages_list
         document.getElementById("languages_list").disabled = true;
+        // Disable Lighthouse Btn
+        document.getElementById("lighthouse-btn").disabled = true;
     }
 }
 
@@ -139,21 +153,8 @@ async function resetPage() {
     window.location.href = inspectorUrl;
 }
 
-async function runMain() {
-    let iframeElement = document.getElementById('mainContent');
-    iframeElement.addEventListener("load", function () {
-        let html = iframeElement.contentWindow.document.documentElement.outerHTML;
-        if (html.length !== 436 && html.length !== 39) {
-            document.getElementById("mainBtn").click();
-        }
-    });
-}
-
 async function setIframe() {
     console.log("setIframe");
-
-    // Disable goBtn
-    await enableDisableActions("disable");
 
     // Get siteUrl
     let siteUrl = await getSiteUrl();
@@ -161,50 +162,14 @@ async function setIframe() {
     // Add overlay
     await overlay("addOverlay", "Loading page")
 
+    // Get iframe element
+    let iframeElement = document.getElementById('mainContent');
+
     // Set iframe src to siteUrl
-    document.getElementById('mainContent').src = siteUrl;
+    iframeElement.src = siteUrl;
 
-    // Set active Action Btn
-    await runMain();
-
-    // // Get HTML from site
-    // let HTMLServlet = inspectorUrl + "HTMLDownloader?url=" + siteUrl;
-    // let html = await getRequest(HTMLServlet);
-    //
-    // if (html === "") {
-    //     // Add base page HTML to iframe content
-    //     // Get iframe element
-    //     let iframeElement = document.getElementById('mainContent').contentWindow.document;
-    //     iframeElement.open();
-    //     iframeElement.write("Unable to get HTML");
-    //     iframeElement.close();
-    //
-    //     // Enable Actions
-    //     await enableDisableActions("enable");
-    // } else {
-    //
-    //     let pathArray = siteUrl.split('/');
-    //     let baseURL = pathArray[0] + "//" + pathArray[2];
-    //     html = html.replaceAll("background-image: url(", "background-image: url(" + baseURL);
-    //
-    //     // Add base page HTML to iframe content
-    //     // Get iframe element
-    //     let iframeElement = document.getElementById('mainContent').contentWindow.document;
-    //     iframeElement.open();
-    //     iframeElement.write(html);
-    //     iframeElement.close();
-    //
-    //     // Set htmlCode Text Area
-    //     html = html.replaceAll("<", "&lt;");
-    //     html = html.replaceAll(">", "&gt;");
-    //     let iframeCode = document.getElementById('mainCode').contentWindow.document;
-    //     iframeCode.open();
-    //     iframeCode.write('<pre id="htmlView" class="htmlView"><code id="htmlCode">' + html + '</code></pre>');
-    //     iframeCode.close();
-    //
-    //     // HTMLCode Syntax Highlighter
-    //     w3CodeColor();
-    // }
+    // Add EventListener on load
+    iframeElement.addEventListener("load", main);
 }
 
 async function addContentInfo() {
@@ -354,115 +319,98 @@ async function runLanguageTool() {
     // Insert overlay
     await overlay("addOverlay", "Running Spell Check");
 
-    // Get htmlCode
-    let htmlCode = document.getElementById("mainCode").contentWindow.document;
-
     // Get selected Language
-    let language = document.getElementById("languages_list").value;
-    console.log("Language - " + language);
+    let langCode = document.getElementById("languages_list").value;
+    console.log("Language - " + langCode);
 
     // Get iframe element
     let iframeElement = document.getElementById('mainContent').contentWindow.document;
 
-    // Get all tagsText
-    let tagsText = iframeElement.querySelectorAll('p, h1, h2');
+    // Get htmlCode
+    let iframeCode = document.getElementById('mainCode').contentWindow.document;
 
     // Set errorsDict where key => error and value => [count, color]
     let errorsDict = {};
 
+    // Get all tagsText
+    let tagsElem = iframeElement.querySelectorAll("p, h1, h2, h3, h4, h5, h6");
+
     // Iterate on every tag
-    for (let i = 0; i < tagsText.length; i++) {
+    for (let i = 0; i < tagsElem.length; i++) {
 
         // Set phrase from content array index
-        let tagText = tagsText[i]
+        let tagElem = tagsElem[i]
 
         // Only check if tagText is visible
-        if (tagText.offsetParent !== null && window.getComputedStyle(tagText).display !== 'none') {
+        let style = window.getComputedStyle(tagElem);
+        if (tagElem.offsetParent !== null && style.display !== 'none' && style.visibility !== "hidden") {
 
-            // Get LangTool API Response
-            const data = await getRequest("https://api.languagetoolplus.com/v2/check" + "?text=" + tagText.innerText + "&language=" + language);
+            // Get Spell Check JSON
+            let spellCheckJSON = await getRequest(LTHTTPServer + "language=" + langCode + "&text=" + tagElem.innerText);
+            let spellMatches = spellCheckJSON.matches;
 
-            try {
-
-//            if (language === "auto") {
-//                // Get detected language and confidence
-//                let detectedLanguage = data.language.detectedLanguage.name;
-//                document.getElementById("detectedLanguage").innerText = detectedLanguage + " (Auto) ";
-//            } else {
-//                // Get detected language and confidence
-//                let detectedLanguage = data.language.name;
-//                document.getElementById("detectedLanguage").innerText = detectedLanguage;
-//            }
+            // If there is errors
+            if (spellMatches.length !== 0) {
 
                 // Iterate on every error
-                data.matches.forEach(function (entry) {
+                for (let j = 0; j < spellMatches.length; j++) {
+                    let entry = spellMatches[j];
 
-                    // Get error
+                    // Set error
                     let error = entry.context.text.substring(entry.context.offset, entry.context.offset + entry.context.length);
 
                     // Remove false-positive errors (three chars and whitespaces)
                     if (error.length >= 3 && !(/\s/g.test(error))) {
 
-                        // Get message, replacements, color and sentense
+                        // Set message, replacements, color
                         let message = entry.message;
                         let reps = entry.replacements;
                         let replacements = reps.map(function (reps) {
                             return reps['value'];
                         }).toString().replaceAll(",", ", ");
-                        let sentence = tagText.innerText;
-
-                        // Set color of error => red for mistake and yellow for others
-                        let color;
+                        let color
                         if (message === "Possible spelling mistake found.") {
                             color = "red";
                         } else {
                             color = "orange";
                         }
 
-                        // Update error in HTML Page
-                        tagText.innerHTML = tagText.innerHTML.replace(error, "<span class='hoverMessage' id='spell_" + error + "' style='background-color:" + color + "'><b>" + error + "</b><span class='msgPopup'>" + message + " Replacements: " + replacements + "</span></span>");
-
                         // Update error in HTML Code
-                        let newSentence = sentence.replace(error, "<span id='spell_" + error + "' class='hoverMessage' style='background-color:" + color + ";'>" + error + "<span class='msgPopup'>" + message + " Replacements: " + replacements + "</span></span>");
-                        console.log(sentence);
-                        console.log(newSentence);
-                        htmlCode.getElementById("htmlCode").innerHTML = htmlCode.getElementById("htmlCode").innerHTML.replace(sentence, newSentence);
+                        let newHTML = tagElem.innerHTML.replace(error, "<span id='spell_" + error + "' class='hoverMessage' style='background-color:" + color + ";'>" + error + "<span class='msgPopup'>" + message + " Replacements: " + replacements + "</span></span>");
+                        iframeCode.getElementById("htmlCode").innerHTML = iframeCode.getElementById("htmlCode").innerHTML.replace(error, newHTML);
+
+                        // Update error in HTML Page
+                        tagElem.innerHTML = tagElem.innerHTML.replace(error, "<span class='hoverMessage' id='spell_" + error + "' style='background-color:" + color + "'><b>" + error + "</b><span class='msgPopup'>" + message + " Replacements: " + replacements + "</span></span>");
 
                         // Add/update key error on errorsDict
                         if (error in errorsDict) {
                             errorsDict[error][0] = errorsDict[error][0] + 1;
                         } else {
-                            errorsDict[error] = [1];
+                            errorsDict[error] = [1, message, replacements, tagElem, color];
                         }
-
                     }
-                });
-
-            } catch (error) {
-                continue;
+                }
             }
         }
     }
 
-    // Create items array
+    // Sort the array based on the count element
     let items = Object.keys(errorsDict).map(function (key) {
         return [key, errorsDict[key]];
-    });
-
-    // Sort the array based on the count element
-    items.sort(function (first, second) {
+    }).sort(function (first, second) {
         return second[1][0] - first[1][0];
     });
 
     // Add errors to Sidebar
-    let spelling_errors = document.getElementById("spelling_errors");
-    items.forEach(function (entry) {
+    for (let i = 0; i < items.length; i++) {
+        let entry = items[i];
         let error = entry[0];
-        if (iframeElement.getElementById("spell_" + error) !== null) {
-            let count = entry[1][0];
-            spelling_errors.innerHTML += "<li><a href=javascript:gotoSpellError('spell_" + error + "');>" + error + " (" + count + "x)" + "</a></li>";
-        }
-    });
+        let count = entry[1][0];
+
+        // Add errors to Sidebar
+        let spelling_errors = document.getElementById("spelling_errors");
+        spelling_errors.innerHTML += "<li><a href=javascript:gotoSpellError('spell_" + error + "');>" + error + " (" + count + "x)" + "</a></li>";
+    }
 
     //  Add totalErrors to GENERALINFO
     document.getElementById("totalErrors").innerText = Object.keys(errorsDict).length;
@@ -478,6 +426,9 @@ async function runLanguageTool() {
 
     // Remove overlay
     await overlay("removeOverlay", "");
+
+    // Enable Actions
+    await enableDisableActions("enable");
 }
 
 async function gotoSpellError(spellError) {
@@ -536,6 +487,9 @@ async function runLighthouse() {
     // Insert overlay
     await overlay("addOverlay", "Running Lighthouse Report");
 
+    // Enable Actions
+    await enableDisableActions("disable");
+
     // Get selected device
     let device;
     let device_mobile = document.getElementById("dev_mobile");
@@ -561,50 +515,58 @@ async function runLighthouse() {
             lighthouse_info.innerHTML += "<li>" + catTitle + " - " + catScore + " % </li > ";
         })
 
-        // Add Read More -> Open the HTML File
-        lighthouse_info.innerHTML += "<li><a id='lighthouseReadMore' href='#'><b>" + "Read More" + "</b></a></li>";
-        let lighthouseReadMore = document.getElementById("lighthouseReadMore");
-        lighthouseReadMore.target = "_blank";
-        lighthouseReadMore.href = inspectorUrl + "Lighthouse?" + "url=null" + "&cats=null" + "&view=" + lighthouseJson["htmlReport"];
+        // Toggle Lighthouse Section
+        document.getElementById("mainLighthouse").src = inspectorUrl + "Lighthouse?" + "url=null" + "&cats=null" + "&view=" + lighthouseJson["htmlReport"];
         document.getElementById("lighthouse-section").removeAttribute("hidden");
+        document.getElementById("lighthouse-btn").hidden = true;
+        document.getElementById("lighthouseCategories").hidden = true;
+        document.getElementById("lighthouseDevice").hidden = true;
+        document.getElementById("lighthouse-li").style.display = "block";
+        document.getElementById("lighthouse-div").hidden = false;
+        document.getElementById("LighthouseViewBtn").hidden = false;
+        toggleView("lighthouseReport");
     } catch (Ex) {
-        lighthouse_info.innerHTML = "<li>Lighthouse was unable to reliably load the page you requested.<br>You can try refreshing the page and retry.</li>";
+        document.getElementById("modalTitle").innerHTML = "Something went wrong!";
+        document.getElementById("modalBody").innerHTML = "Lighthouse was unable to reliably load the page you requested.<br>Please try again.";
+        document.getElementById("showModal").click();
     }
-
-    // Toggle Lighthouse Section
-    document.getElementById("lighthouse-btn").hidden = true;
-    document.getElementById("lighthouse-li").style.display = "block";
-    document.getElementById("lighthouse-div").hidden = false;
 
     // Remove overlay
     await overlay("removeOverlay", "");
 }
 
 async function main() {
+    // Get iframe element
+    let iframeElement = document.getElementById('mainContent').contentWindow.document;
+
+    // Get Iframe html
+    let html = iframeElement.documentElement.outerHTML;
+
+    // Check if content has loaded successfully
+    if (html.length === 436 || html.length === 39) {
+        return;
+    }
+
     // START
     console.log("----------------------");
 
-    // Get Iframe
-    let iframeElement = document.getElementById('mainContent').contentWindow.document;
-    let html = iframeElement.documentElement.outerHTML;
+    // Remove Event Listener
+    document.getElementById('mainContent').removeEventListener("load", main);
 
     // Set htmlCode Text Area
-    html = html.replaceAll("<", "&lt;");
-    html = html.replaceAll(">", "&gt;");
     let iframeCode = document.getElementById('mainCode').contentWindow.document;
     iframeCode.open();
+    html = html.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
     iframeCode.write('<pre id="htmlView" class="htmlView"><code id="htmlCode">' + html + '</code></pre>');
     iframeCode.close();
 
-    // HTMLCode Syntax Highlighter
-    w3CodeColor();
-
-    // Add Stylesheet to iframe head
+    // Add Stylesheet to iframe head Page and Code
     let iframeCSS = inspectorUrl + "css/iframe.css";
     iframeElement.head.innerHTML = iframeElement.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
-
-    // Add Stylesheet to iframe head
     iframeCode.head.innerHTML = iframeCode.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
+
+    // HTMLCode Syntax Highlighter
+    await w3CodeColor();
 
     // Remove overlay
     await overlay("removeOverlay", "")
@@ -612,8 +574,6 @@ async function main() {
     // Run Spelling Report
     await runLanguageTool();
 
-    // Enable Actions
-    await enableDisableActions("enable");
-
+    // END
     console.log("----------------------");
 }
