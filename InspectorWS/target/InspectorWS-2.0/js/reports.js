@@ -7,8 +7,6 @@
 
 const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
 // const inspectorUrl = "http://localhost:8080/InspectorWS/";
-// const LTHTTPServer = "http://inspector.littleforest.co.uk:8081/v2/check?";
-const LTHTTPServer = "https://api.languagetoolplus.com/v2/check?";
 
 let counter = 0;
 let myTimmer = setInterval(myTimer, 1000);
@@ -20,8 +18,11 @@ async function myTimer() {
     let iframeElement = document.getElementById('mainContent');
     let html = iframeElement.contentWindow.document.documentElement.outerHTML;
 
+    // Get siteUrl
+    let siteUrl = await getSiteUrl();
+
     console.log(counter + " - " + html.length);
-    if (html.length === 436) {
+    if (html.length <= 1000 && siteUrl !== "") {
         if (counter === 10) {
 
             // Get iframe element
@@ -335,6 +336,7 @@ async function runLanguageTool() {
     // Get all tagsText
     let tagsElem = iframeElement.querySelectorAll("p, h1, h2, h3, h4, h5, h6");
 
+
     // Iterate on every tag
     for (let i = 0; i < tagsElem.length; i++) {
 
@@ -345,52 +347,66 @@ async function runLanguageTool() {
         let style = window.getComputedStyle(tagElem);
         if (tagElem.offsetParent !== null && style.display !== 'none' && style.visibility !== "hidden") {
 
-            // Get Spell Check JSON
-            let spellCheckJSON = await getRequest(LTHTTPServer + "language=" + langCode + "&text=" + tagElem.innerText);
-            let spellMatches = spellCheckJSON.matches;
+            try {
 
-            // If there is errors
-            if (spellMatches.length !== 0) {
+                // Get SpellCheck
+                console.log(tagElem.innerText);
+                let spellCheckJSON = await $.post("/InspectorWS/LanguageTool", {
+                    content: tagElem.innerText,
+                    langCode: langCode
+                }, function (result) {
+                    return result;
+                });
+                console.log(spellCheckJSON);
 
-                // Iterate on every error
-                for (let j = 0; j < spellMatches.length; j++) {
-                    let entry = spellMatches[j];
+                // If there is errors
+                let spellMatches = spellCheckJSON.matches;
+                if (spellMatches.length !== 0) {
 
-                    // Set error
-                    let error = entry.context.text.substring(entry.context.offset, entry.context.offset + entry.context.length);
+                    // Iterate on every error
+                    for (let j = 0; j < spellMatches.length; j++) {
+                        let entry = spellMatches[j];
 
-                    // Remove false-positive errors (three chars and whitespaces)
-                    if (error.length >= 3 && !(/\s/g.test(error))) {
+                        // Set error
+                        let error = entry.context.text.substring(entry.context.offset, entry.context.offset + entry.context.length);
 
-                        // Set message, replacements, color
-                        let message = entry.message;
-                        let reps = entry.replacements;
-                        let replacements = reps.map(function (reps) {
-                            return reps['value'];
-                        }).toString().replaceAll(",", ", ");
-                        let color
-                        if (message === "Possible spelling mistake found.") {
-                            color = "red";
-                        } else {
-                            color = "orange";
-                        }
+                        // Remove false-positive errors (three chars and whitespaces)
+                        if (error.length >= 3 && !(/\s/g.test(error))) {
 
-                        // Update error in HTML Code
-                        let newHTML = tagElem.innerHTML.replace(error, "<span id='spell_" + error + "' class='hoverMessage' style='background-color:" + color + ";'>" + error + "<span class='msgPopup'>" + message + " Replacements: " + replacements + "</span></span>");
-                        iframeCode.getElementById("htmlCode").innerHTML = iframeCode.getElementById("htmlCode").innerHTML.replace(error, newHTML);
+                            // Set message, replacements, color
+                            let message = entry.message;
+                            let reps = entry.replacements;
+                            let replacements = reps.map(function (reps) {
+                                return reps['value'];
+                            }).toString().replaceAll(",", ", ");
+                            let color
+                            if (message === "Possible spelling mistake found.") {
+                                color = "red";
+                            } else {
+                                color = "orange";
+                            }
 
-                        // Update error in HTML Page
-                        tagElem.innerHTML = tagElem.innerHTML.replace(error, "<span class='hoverMessage' id='spell_" + error + "' style='background-color:" + color + "'><b>" + error + "</b><span class='msgPopup'>" + message + " Replacements: " + replacements + "</span></span>");
+                            // Update error in HTML Code
+                            let newHTML = tagElem.innerHTML.replace(error, "<span id='spell_" + error + "' class='hoverMessage' style='background-color:" + color + ";'>" + error + "<span class='msgPopup'>" + message + " Replacements: " + replacements + "</span></span>");
+                            iframeCode.getElementById("htmlCode").innerHTML = iframeCode.getElementById("htmlCode").innerHTML.replace(error, newHTML);
 
-                        // Add/update key error on errorsDict
-                        if (error in errorsDict) {
-                            errorsDict[error][0] = errorsDict[error][0] + 1;
-                        } else {
-                            errorsDict[error] = [1, message, replacements, tagElem, color];
+                            // Update error in HTML Page
+                            tagElem.innerHTML = tagElem.innerHTML.replace(error, "<span class='hoverMessage' id='spell_" + error + "' style='background-color:" + color + "'><b>" + error + "</b><span class='msgPopup'>" + message + " Replacements: " + replacements + "</span></span>");
+
+                            // Add/update key error on errorsDict
+                            if (error in errorsDict) {
+                                errorsDict[error][0] = errorsDict[error][0] + 1;
+                            } else {
+                                errorsDict[error] = [1, message, replacements, tagElem, color];
+                            }
                         }
                     }
                 }
+
+            } catch (Ex) {
+                console.log(Ex);
             }
+
         }
     }
 
@@ -505,7 +521,13 @@ async function runLighthouse() {
     console.log("Device: " + device);
 
     // Get lighthouseJson
-    let lighthouseJson = await getRequest(inspectorUrl + "Lighthouse?" + "url=" + siteUrl + "&cats=" + categories + "&device=" + device);
+    let lighthouseJson = await $.post("/InspectorWS/Lighthouse", {
+        url: siteUrl,
+        cats: categories,
+        device: device
+    }, function (result) {
+        return result;
+    });
 
     try {
         // Iterate over every Category and set the Tittle and Score
@@ -536,6 +558,8 @@ async function runLighthouse() {
 }
 
 async function main() {
+
+
     // Get iframe element
     let iframeElement = document.getElementById('mainContent').contentWindow.document;
 
@@ -543,7 +567,7 @@ async function main() {
     let html = iframeElement.documentElement.outerHTML;
 
     // Check if content has loaded successfully
-    if (html.length === 436 || html.length === 39) {
+    if (html.length <= 1000) {
         return;
     }
 

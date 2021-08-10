@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -69,9 +70,14 @@ import org.languagetool.language.ValencianCatalan;
 import org.languagetool.rules.CategoryId;
 import org.languagetool.rules.RuleMatch;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -102,66 +108,74 @@ public class LanguageTool extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             try {
 
-                // Read data from request
-                StringBuilder buffer = new StringBuilder();
-                BufferedReader reader = request.getReader();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line);
-                    buffer.append(System.lineSeparator());
-                }
-                String data = buffer.toString();
-
                 // Read JSON data
-                JSONObject obj = new JSONObject(data);
-                String bodyContent = obj.get("bodyContent").toString();
-                String langCode = obj.get("langCode").toString();
+                String content = request.getParameter("content");
+                content = content.replace(" ", "+");
+                String langCode = request.getParameter("langCode");
+                System.out.println(content);
+                System.out.println(langCode);
 
-                // Initialize JSONObject
-                JSONObject jo = new JSONObject();
-                JSONArray ja = new JSONArray();
-
-                // Set Language Code and Rules
-                setLanguage(langCode);
-                disableAll();
-
-                // HTML Check
-                Document doc = Jsoup.parse(bodyContent);
-                String bodyText = doc.body().text();
-
-                // Check and Iterate over every error found
-                List<RuleMatch> matches = langTool.check(bodyText);
-                for (RuleMatch match : matches) {
-
-                    // Get error, message, sentence and replacements
-                    String error = bodyText.substring(match.getFromPos(), match.getToPos());
-                    String message = match.getMessage().replace("<suggestion>", "").replace("</suggestion>", "").replace("'", "");
-                    List<String> rep = match.getSuggestedReplacements();
-                    String replacements;
-                    if (rep.size() > 5) {
-                        replacements = rep.subList(0, 5).toString();
-                    } else {
-                        replacements = rep.toString();
-                    }
-                    String sentence = match.getSentence().getText();
-
-                    // Add error, message, replacements, text to LinkedHashMap
-                    Map<String, String> m = new LinkedHashMap<>();
-                    m.put("error", error);
-                    m.put("message", message);
-                    m.put("replacements", replacements);
-                    m.put("sentence", sentence);
-                    ja.put(m);
-
-                    // Putting SpellingErrors to JSONObject
-                    jo.put("SpellingErrors", ja);
+                // Make GET Request
+                HttpURLConnection c = null;
+                URL u = new URL("http://localhost:8081/v2/check?language=" + langCode + "&text=" + content);
+                c = (HttpURLConnection) u.openConnection();
+                c.setRequestMethod("GET");
+                c.connect();
+                BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream(), "UTF-8"));
+                StringBuilder jsonOutput = new StringBuilder();
+                String l;
+                while ((l = br.readLine()) != null) {
+                    jsonOutput.append(l).append("\n");
                 }
+                br.close();
+                System.out.println(jsonOutput);
 
-                // Pretty Print JSON
-                Gson gson = new Gson();
-                Gson gsonPP = new GsonBuilder().setPrettyPrinting().create();
-                JsonObject jsonObject = gson.fromJson(jo.toString(), JsonObject.class);
-                String jsonOutput = gsonPP.toJson(jsonObject);
+
+//                // Initialize JSONObject
+//                JSONObject jo = new JSONObject();
+//                JSONArray ja = new JSONArray();
+//
+//                // Set Language Code and Rules
+//                setLanguage(langCode);
+//                disableAll();
+//
+//                // HTML Check
+//                Document doc = Jsoup.parse(content);
+//                String bodyText = doc.body().text();
+//
+//                // Check and Iterate over every error found
+//                List<RuleMatch> matches = langTool.check(bodyText);
+//                for (RuleMatch match : matches) {
+//
+//                    // Get error, message, sentence and replacements
+//                    String error = bodyText.substring(match.getFromPos(), match.getToPos());
+//                    String message = match.getMessage().replace("<suggestion>", "").replace("</suggestion>", "").replace("'", "");
+//                    List<String> rep = match.getSuggestedReplacements();
+//                    String replacements;
+//                    if (rep.size() > 5) {
+//                        replacements = rep.subList(0, 5).toString();
+//                    } else {
+//                        replacements = rep.toString();
+//                    }
+//                    String sentence = match.getSentence().getText();
+//
+//                    // Add error, message, replacements, text to LinkedHashMap
+//                    Map<String, String> m = new LinkedHashMap<>();
+//                    m.put("error", error);
+//                    m.put("message", message);
+//                    m.put("replacements", replacements);
+//                    m.put("sentence", sentence);
+//                    ja.put(m);
+//
+//                    // Putting SpellingErrors to JSONObject
+//                    jo.put("SpellingErrors", ja);
+//                }
+//
+//                // Pretty Print JSON
+//                Gson gson = new Gson();
+//                Gson gsonPP = new GsonBuilder().setPrettyPrinting().create();
+//                JsonObject jsonObject = gson.fromJson(jo.toString(), JsonObject.class);
+//                String jsonOutput = gsonPP.toJson(jsonObject);
 
                 // Return JSON
                 out.print(jsonOutput);
@@ -333,8 +347,7 @@ public class LanguageTool extends HttpServlet {
      * @throws IOException      if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 
@@ -347,8 +360,7 @@ public class LanguageTool extends HttpServlet {
      * @throws IOException      if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 

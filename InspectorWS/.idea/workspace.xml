@@ -35,7 +35,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../languagetool-spelling" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../crawler" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -43,13 +43,24 @@
     <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="editor.preferences.completion" />
+    <property name="settings.editor.selected.configurable" value="reference.settings.project.maven.repository.indices" />
   </component>
   <component name="RunDashboard">
     <option name="excludedTypes">
       <set>
         <option value="TomeeConfiguration" />
       </set>
+    </option>
+    <option name="hiddenConfigurations">
+      <map>
+        <entry key="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory">
+          <value>
+            <set>
+              <option value="Tomcat 9.0.14" />
+            </set>
+          </value>
+        </entry>
+      </map>
     </option>
   </component>
   <component name="RunManager">
@@ -165,7 +176,9 @@
       <workItem from="1628236973667" duration="20031000" />
       <workItem from="1628334404903" duration="46003000" />
       <workItem from="1628443351290" duration="12836000" />
-      <workItem from="1628499929389" duration="7775000" />
+      <workItem from="1628499929389" duration="21983000" />
+      <workItem from="1628534053848" duration="2648000" />
+      <workItem from="1628586873132" duration="10181000" />
     </task>
     <servers />
   </component>

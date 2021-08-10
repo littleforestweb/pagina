@@ -26,6 +26,8 @@ Author     : xhico
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
             crossorigin="anonymous"></script>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <%--  X-Frame Bypass  --%>
     <script src="https://unpkg.com/@ungap/custom-elements-builtin"></script>
     <script type="module" src="https://unpkg.com/x-frame-bypass"></script>
