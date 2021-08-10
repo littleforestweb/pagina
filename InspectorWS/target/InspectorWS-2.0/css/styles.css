@@ -69,7 +69,7 @@ body * {
     padding: 20px;
     overflow: scroll;
     overflow-x: hidden;
-    z-index: 2;
+    z-index: 3;
 }
 
 .sidebar-logo {
@@ -159,4 +159,31 @@ body * {
     -ms-transition: all .2s ease-in-out;
     -moz-transition: all .2s ease-in-out;
     -webkit-transition: all .2s ease-in-out;
+}
+
+
+span.hoverMessage {
+    position: relative;
+}
+
+span.hoverMessage .msgPopup {
+    padding: 6px 6px;
+    color: black;
+    z-index: 10;
+    min-width: 300px;
+    display: none;
+    font-size: 16px;
+    position: absolute;
+    left: 0;
+    background: #f8f9fa;
+    border: 2px solid grey;
+    border-radius: 5px;
+    font-family: "Inter Medium";
+}
+
+span.hoverMessage:hover .msgPopup {
+    display: block;
+    margin: 4px 0;
+    z-index: 10;
+    position: absolute;
 }

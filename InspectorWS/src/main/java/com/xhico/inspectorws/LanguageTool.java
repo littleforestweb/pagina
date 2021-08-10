@@ -108,12 +108,9 @@ public class LanguageTool extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             try {
 
-                // Read JSON data
-                String content = request.getParameter("content");
-                content = content.replace(" ", "+");
+                // Read Params
+                String content = request.getParameter("content").replace(" ", "+");
                 String langCode = request.getParameter("langCode");
-                System.out.println(content);
-                System.out.println(langCode);
 
                 // Make GET Request
                 HttpURLConnection c = null;
@@ -130,53 +127,6 @@ public class LanguageTool extends HttpServlet {
                 br.close();
                 System.out.println(jsonOutput);
 
-
-//                // Initialize JSONObject
-//                JSONObject jo = new JSONObject();
-//                JSONArray ja = new JSONArray();
-//
-//                // Set Language Code and Rules
-//                setLanguage(langCode);
-//                disableAll();
-//
-//                // HTML Check
-//                Document doc = Jsoup.parse(content);
-//                String bodyText = doc.body().text();
-//
-//                // Check and Iterate over every error found
-//                List<RuleMatch> matches = langTool.check(bodyText);
-//                for (RuleMatch match : matches) {
-//
-//                    // Get error, message, sentence and replacements
-//                    String error = bodyText.substring(match.getFromPos(), match.getToPos());
-//                    String message = match.getMessage().replace("<suggestion>", "").replace("</suggestion>", "").replace("'", "");
-//                    List<String> rep = match.getSuggestedReplacements();
-//                    String replacements;
-//                    if (rep.size() > 5) {
-//                        replacements = rep.subList(0, 5).toString();
-//                    } else {
-//                        replacements = rep.toString();
-//                    }
-//                    String sentence = match.getSentence().getText();
-//
-//                    // Add error, message, replacements, text to LinkedHashMap
-//                    Map<String, String> m = new LinkedHashMap<>();
-//                    m.put("error", error);
-//                    m.put("message", message);
-//                    m.put("replacements", replacements);
-//                    m.put("sentence", sentence);
-//                    ja.put(m);
-//
-//                    // Putting SpellingErrors to JSONObject
-//                    jo.put("SpellingErrors", ja);
-//                }
-//
-//                // Pretty Print JSON
-//                Gson gson = new Gson();
-//                Gson gsonPP = new GsonBuilder().setPrettyPrinting().create();
-//                JsonObject jsonObject = gson.fromJson(jo.toString(), JsonObject.class);
-//                String jsonOutput = gsonPP.toJson(jsonObject);
-
                 // Return JSON
                 out.print(jsonOutput);
             } catch (Exception ex) {
@@ -184,156 +134,6 @@ public class LanguageTool extends HttpServlet {
             }
 
         }
-    }
-
-    private void setLanguage(String language) {
-        switch (language) {
-            case "ar":
-                langTool = new JLanguageTool(new Arabic());
-                break;
-            case "ast-ES":
-                langTool = new JLanguageTool(new Asturian());
-                break;
-            case "be-BY":
-                langTool = new JLanguageTool(new Belarusian());
-                break;
-            case "br-FR":
-                langTool = new JLanguageTool(new Breton());
-                break;
-            case "ca-ES":
-                langTool = new JLanguageTool(new Catalan());
-                break;
-            case "ca-ES-valencia":
-                langTool = new JLanguageTool(new ValencianCatalan());
-                break;
-            case "zh-CN":
-                langTool = new JLanguageTool(new Chinese());
-                break;
-            case "da-DK":
-                langTool = new JLanguageTool(new Danish());
-                break;
-            case "nl":
-                langTool = new JLanguageTool(new Dutch());
-                break;
-            case "nl-BE":
-                langTool = new JLanguageTool(new BelgianDutch());
-                break;
-            case "en-AU":
-                langTool = new JLanguageTool(new AustralianEnglish());
-                break;
-            case "en-CA":
-                langTool = new JLanguageTool(new CanadianEnglish());
-                break;
-            case "en-GB":
-                langTool = new JLanguageTool(new BritishEnglish());
-                break;
-            case "en-NZ":
-                langTool = new JLanguageTool(new NewZealandEnglish());
-                break;
-            case "en-ZA":
-                langTool = new JLanguageTool(new SouthAfricanEnglish());
-                break;
-            case "en-US":
-                langTool = new JLanguageTool(new AmericanEnglish());
-                break;
-            case "eo":
-                langTool = new JLanguageTool(new Esperanto());
-                break;
-            case "fr":
-                langTool = new JLanguageTool(new French());
-                break;
-            case "gl-ES":
-                langTool = new JLanguageTool(new Galician());
-                break;
-            case "de-AT":
-                langTool = new JLanguageTool(new AustrianGerman());
-                break;
-            case "de-DE":
-                langTool = new JLanguageTool(new GermanyGerman());
-                break;
-            case "de-CH":
-                langTool = new JLanguageTool(new SwissGerman());
-                break;
-            case "el-GR":
-                langTool = new JLanguageTool(new Greek());
-                break;
-            case "it":
-                langTool = new JLanguageTool(new Irish());
-                break;
-            case "ja-JP":
-                langTool = new JLanguageTool(new Italian());
-                break;
-            case "km-KH":
-                langTool = new JLanguageTool(new Japanese());
-                break;
-            case "fa":
-                langTool = new JLanguageTool(new Khmer());
-                break;
-            case "pl-PL":
-                langTool = new JLanguageTool(new Persian());
-                break;
-            case "pt":
-                langTool = new JLanguageTool(new Polish());
-                break;
-            case "pt-AO":
-                langTool = new JLanguageTool(new Portuguese());
-                break;
-            case "pt-BR":
-                langTool = new JLanguageTool(new AngolaPortuguese());
-                break;
-            case "pt-MZ":
-                langTool = new JLanguageTool(new BrazilianPortuguese());
-                break;
-            case "pt-PT":
-                langTool = new JLanguageTool(new MozambiquePortuguese());
-                break;
-            case "ro-RO":
-                langTool = new JLanguageTool(new PortugalPortuguese());
-                break;
-            case "ru-RU":
-                langTool = new JLanguageTool(new Romanian());
-                break;
-            case "de-DE-x-simple-language":
-                langTool = new JLanguageTool(new Russian());
-                break;
-            case "sk-SK":
-                langTool = new JLanguageTool(new Slovak());
-                break;
-            case "sl-SI":
-                langTool = new JLanguageTool(new Slovenian());
-                break;
-            case "es":
-                langTool = new JLanguageTool(new Spanish());
-                break;
-            case "es-AR":
-                langTool = new JLanguageTool(new SpanishVoseo());
-                break;
-            case "sv":
-                langTool = new JLanguageTool(new Swedish());
-                break;
-            case "tl-PH":
-                langTool = new JLanguageTool(new Tagalog());
-                break;
-            case "ta-IN":
-                langTool = new JLanguageTool(new Tamil());
-                break;
-            case "uk-UA":
-                langTool = new JLanguageTool(new Ukrainian());
-                break;
-        }
-
-    }
-
-    private void disableAll() {
-        // https://languagetool.org/development/api/org/languagetool/rules/Categories.html
-
-        for (CategoryId id : langTool.getCategories().keySet()) {
-            langTool.disableCategory(id);
-        }
-        langTool.enableRuleCategory(new CategoryId("TYPOS"));
-        langTool.enableRuleCategory(new CategoryId("COMPOUNDING"));
-        langTool.enableRuleCategory(new CategoryId("CONFUSED_WORDS"));
-        langTool.enableRuleCategory(new CategoryId("TYPOGRAPHY"));
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

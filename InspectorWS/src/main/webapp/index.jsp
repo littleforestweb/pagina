@@ -209,7 +209,7 @@ Author     : xhico
         <div id="spelling-div" hidden>
             <li id="spelling-li">
                 <!--<p>Language: <span id="detectedLanguage">None</span></p>-->
-                <p id="spellErrors-p">Found <span id="totalErrors">0</span> possible spelling mistake(s).</p>
+                <p id="spellErrors-p">Found <span id="totalErrors">0</span> occurrences.</p>
                 <ul id="spelling_errors"></ul>
             </li>
         </div>
@@ -265,17 +265,17 @@ Author     : xhico
             <input type="checkbox" id="cat_performance" name="cat_performance" checked>
             <label for="cat_performance">Performance</label>
             <br>
-            <input type="checkbox" id="cat_pwa" name="cat_pwa" checked>
-            <label for="cat_pwa">Progressive Web App</label>
-            <br>
-            <input type="checkbox" id="cat_bp" name="cat_bp" checked>
-            <label for="cat_bp">Best Practicies</label>
-            <br>
             <input type="checkbox" id="cat_accessibility" name="cat_accessibility" checked>
             <label for="cat_accessibility">Accessibility</label>
             <br>
             <input type="checkbox" id="cat_seo" name="cat_seo" checked>
             <label for="cat_seo">SEO</label>
+            <br>
+            <input type="checkbox" id="cat_bp" name="cat_bp" checked>
+            <label for="cat_bp">Best Practicies</label>
+            <br>
+            <input type="checkbox" id="cat_pwa" name="cat_pwa" checked>
+            <label for="cat_pwa">Progressive Web App</label>
             <br><br>
         </div>
 
@@ -342,6 +342,7 @@ Author     : xhico
 </main>
 
 <!-- SCRIPT -->
+<script src="js/findAndReplaceDOMText.js"></script>
 <script src="js/syntaxHighlighter.js"></script>
 <script src="js/scripts.js"></script>
 <script src="js/reports.js"></script>
