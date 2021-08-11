@@ -46,7 +46,6 @@ public class Lighthouse extends HttpServlet {
             // Set variables
             String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
             String url = request.getParameter("url");
-            String cats = request.getParameter("cats");
             String view = request.getParameter("view");
             String device = request.getParameter("device");
             String folderPath = "/root/lighthouse/";
@@ -66,12 +65,6 @@ public class Lighthouse extends HttpServlet {
                         cmd.add("--preset=desktop");
                     } else if (device.equals("mobile")) {
                         cmd.add("--form-factor=mobile");
-                    }
-
-                    // Run with categories
-                    if (!(cats.equals("null"))) {
-                        cmd.add("--only-categories");
-                        cmd.add(cats);
                     }
 
                     // Run Lighthouse Process

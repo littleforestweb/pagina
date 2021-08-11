@@ -184,6 +184,4 @@ span.hoverMessage .msgPopup {
 span.hoverMessage:hover .msgPopup {
     display: block;
     margin: 4px 0;
-    z-index: 10;
-    position: absolute;
 }

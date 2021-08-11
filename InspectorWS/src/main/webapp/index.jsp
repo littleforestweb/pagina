@@ -129,6 +129,17 @@ Author     : xhico
             <%--                <button type="button" class="btn btn-outline-dark me-2">Share</button>--%>
             <%--            </ul>--%>
             <div class="btn-group me-2" role="group">
+                <button type="button" id="desktopView" onclick="toggleDeviceView('Desktop')"
+                        class="btn btn-outline-dark">
+                    Desktop
+                </button>
+                <button type="button" id="mobileView" onclick="toggleDeviceView('Mobile')"
+                        class="active btn btn-outline-dark">
+                    Mobile
+                </button>
+
+            </div>
+            <div class="btn-group me-2" role="group">
                 <button type="button" id="PageBtn" onclick="toggleView('Page')" class="btn btn-outline-dark">
                     Page
                 </button>
@@ -258,37 +269,6 @@ Author     : xhico
     <%--    LIGHTHOUSE--%>
     <ul id="lighthouse-section" class="sidebar-list">
         <li><b><a id="lighthouse-title" href="#">LIGHTHOUSE REPORT<i class="arrow down"></i></a></b></li>
-
-        <%--        Lighthouse Categories--%>
-        <div id="lighthouseCategories">
-            <label>Categories</label><br>
-            <input type="checkbox" id="cat_performance" name="cat_performance" checked>
-            <label for="cat_performance">Performance</label>
-            <br>
-            <input type="checkbox" id="cat_accessibility" name="cat_accessibility" checked>
-            <label for="cat_accessibility">Accessibility</label>
-            <br>
-            <input type="checkbox" id="cat_seo" name="cat_seo" checked>
-            <label for="cat_seo">SEO</label>
-            <br>
-            <input type="checkbox" id="cat_bp" name="cat_bp" checked>
-            <label for="cat_bp">Best Practicies</label>
-            <br>
-            <input type="checkbox" id="cat_pwa" name="cat_pwa" checked>
-            <label for="cat_pwa">Progressive Web App</label>
-            <br><br>
-        </div>
-
-        <%--        Lighthouse Device--%>
-        <div id="lighthouseDevice">
-            <label>Device</label><br>
-            <input type="radio" id="dev_mobile" name="devices" value="mobile" checked>
-            <label for="dev_mobile">Mobile</label><br>
-            <input type="radio" id="dev_desktop" name="devices" value="desktop">
-            <label for="dev_desktop">Desktop</label>
-            <br><br>
-        </div>
-
         <button type="button" id="lighthouse-btn" class="btn btn-outline-dark" onclick="runLighthouse()">Run Lighthouse
             Report
         </button>

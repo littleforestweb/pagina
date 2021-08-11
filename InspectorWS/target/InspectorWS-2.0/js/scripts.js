@@ -93,3 +93,16 @@ function toggleView(view) {
     } else {
     }
 }
+
+
+// ------------------ Toggle Desktop <-> Mobile View ------------------ //
+function toggleDeviceView(view) {
+    if (view === "Desktop") {
+        document.getElementById("desktopView").classList.add("active");
+        document.getElementById("mobileView").classList.remove("active");
+    } else if (view === "Mobile") {
+        document.getElementById("desktopView").classList.remove("active");
+        document.getElementById("mobileView").classList.add("active");
+    } else {
+    }
+}

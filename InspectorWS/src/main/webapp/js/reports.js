@@ -5,8 +5,8 @@
 
 // ------------------------------------- GLOBAL VARIABLES ------------------------------------- //
 
-// const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
-const inspectorUrl = "http://localhost:8080/InspectorWS/";
+const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
+// const inspectorUrl = "http://localhost:8080/InspectorWS/";
 
 let counter = 0;
 let myTimmer = setInterval(myTimer, 1000);
@@ -109,6 +109,9 @@ async function enableDisableActions(action) {
         document.getElementById("PageBtn").disabled = false;
         document.getElementById("HTMLBtn").disabled = false;
         document.getElementById("LighthouseViewBtn").disabled = false;
+        // Enable Device View Switch
+        document.getElementById("desktopView").disabled = false;
+        document.getElementById("mobileView").disabled = false;
         // Enable languages_list
         document.getElementById("languages_list").disabled = false;
         // Enable Lighthouse Btn
@@ -122,6 +125,9 @@ async function enableDisableActions(action) {
         document.getElementById("PageBtn").disabled = true;
         document.getElementById("HTMLBtn").disabled = true;
         document.getElementById("LighthouseViewBtn").disabled = true;
+        // Disable Device View Switch
+        document.getElementById("desktopView").disabled = true;
+        document.getElementById("mobileView").disabled = true;
         // Disable languages_list
         document.getElementById("languages_list").disabled = true;
         // Disable Lighthouse Btn
@@ -436,7 +442,7 @@ async function runLanguageTool() {
 
         // Add errors to Sidebar
         let spelling_errors = document.getElementById("spelling_errors");
-        spelling_errors.innerHTML += "<li><a href=javascript:gotoSpellError('spell_" + error + "');><span class='hoverMessage'>" + error + "<span class='msgPopup'>" + message + " Replacements: " + replacements + "</span></span></a></li>";
+        spelling_errors.innerHTML += "<li><a href=javascript:gotoSpellError('spell_" + error + "');><span class='hoverMessage'>" + error + " (" + count + "x)" + "<span class='msgPopup'>" + message + " Replacements: " + replacements + "</span></span></a></li>";
     }
 
     //  Add totalErrors to GENERALINFO
@@ -479,37 +485,8 @@ async function runLighthouse() {
     // Get siteUrl
     let siteUrl = await getSiteUrl();
 
-    // Get selected categories
-    let categories = "";
-    let cat_performance = document.getElementById("cat_performance").checked;
-    let cat_pwa = document.getElementById("cat_pwa").checked;
-    let cat_bp = document.getElementById("cat_bp").checked;
-    let cat_accessibility = document.getElementById("cat_accessibility").checked;
-    let cat_seo = document.getElementById("cat_seo").checked;
-    if (cat_performance) {
-        categories += "performance,";
-    }
-    if (cat_pwa) {
-        categories += "pwa,";
-    }
-    if (cat_bp) {
-        categories += "best-practices,";
-    }
-    if (cat_accessibility) {
-        categories += "accessibility,";
-    }
-    if (cat_seo) {
-        categories += "seo,";
-    }
-
     // Check if at least one categories is selected
     let lighthouse_info = document.getElementById("lighthouse_info");
-    if (categories === "") {
-        lighthouse_info.innerHTML = "<li>Please select at least one categorie</li>";
-        return;
-    } else {
-        categories = categories.slice(0, -1);
-    }
 
     // Insert overlay
     await overlay("addOverlay", "Running Lighthouse Report");
@@ -518,31 +495,25 @@ async function runLighthouse() {
     await enableDisableActions("disable");
 
     // Get selected device
-    let device;
-    let device_mobile = document.getElementById("dev_mobile");
-    let device_desktop = document.getElementById("dev_desktop");
-    if (device_mobile.checked) {
-        device = device_mobile.value;
-    } else if (device_desktop.checked) {
-        device = device_desktop.value;
-    }
+    let checkMobile = document.getElementById("mobileView").classList.contains("active");
+    let device = ((checkMobile) ? "mobile" : "desktop");
 
     console.log("siteUrl: " + siteUrl);
-    console.log("Categories: " + categories);
     console.log("Device: " + device);
 
-    // Get lighthouseJson
-    let lighthouseJson = await $.post("/InspectorWS/Lighthouse", {
-        url: siteUrl,
-        cats: categories,
-        device: device
-    }, function (result) {
-        return result;
-    });
-
     try {
+
+        // Get lighthouseJson
+        let lighthouseJson = await $.post("/InspectorWS/Lighthouse", {
+            url: siteUrl,
+            device: device
+        }, function (result) {
+            return result;
+        });
+
         // Iterate over every Category and set the Tittle and Score
-        categories.split(",").forEach(cat => {
+        let categories = ["performance", "accessibility", "seo", "best-practices", "pwa"];
+        categories.forEach(cat => {
             let catScore = lighthouseJson["categories"][cat]["score"] * 100;
             let catTitle = lighthouseJson["categories"][cat]["title"];
             lighthouse_info.innerHTML += "<li>" + catTitle + " - " + catScore + " % </li > ";
@@ -552,8 +523,6 @@ async function runLighthouse() {
         document.getElementById("mainLighthouse").src = inspectorUrl + "Lighthouse?" + "url=null" + "&cats=null" + "&view=" + lighthouseJson["htmlReport"];
         document.getElementById("lighthouse-section").removeAttribute("hidden");
         document.getElementById("lighthouse-btn").hidden = true;
-        document.getElementById("lighthouseCategories").hidden = true;
-        document.getElementById("lighthouseDevice").hidden = true;
         document.getElementById("lighthouse-li").style.display = "block";
         document.getElementById("lighthouse-div").hidden = false;
         document.getElementById("LighthouseViewBtn").hidden = false;
