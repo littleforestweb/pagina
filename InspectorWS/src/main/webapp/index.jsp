@@ -79,20 +79,45 @@ Author     : xhico
 </div>
 <!-- END OVERLAY -->
 
-<%-- MODAL --%>
-<div class="modal fade" id="vertCentModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+<%-- ERROR MODAL --%>
+<button type="button" id="errorModalBtn" hidden data-bs-toggle="modal" data-bs-target="#errorModal">Error Modal</button>
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalTitle">Heading of Scrollable Modal Here</h5>
+                <h5 class="modal-title" id="modalTitle">Something Went Wrong!</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body" id="modalBody">
-                Vertically centered Modal content here
-            </div>
+            <div class="modal-body" id="modalErrorBody"></div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn active" data-bs-dismiss="modal">Cancel</button>
             </div>
+        </div>
+    </div>
+</div>
+<%-- END MODAL--%>
+
+<%-- DICTIONARY MODAL --%>
+<div class="modal fade" id="dictionaryModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Manage Dictionary</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div id="dictionaryList" class="list-group">
+            </div>
+
+            <div class="container input-group mb-3 mt-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-default">Word</span>
+                </div>
+                <input type="text" class="form-control" id="dictionaryWord">
+                <button type="button" class="btn active" onclick="addDictionary()">Add</button>
+            </div>
+
         </div>
     </div>
 </div>
@@ -105,20 +130,19 @@ Author     : xhico
             <div class="d-flex me-auto">
                 <input id="searchURL" class="form-control col-md-6 me-2" type="search" placeholder="Check URL"
                        aria-label="Search">
-                <button type="button" id="loadBtn" onclick="load()" class="btn col-md-3 btn-outline-dark me-2">Go
+                <button type="button" id="loadBtn" onclick="gotoNewPage()"
+                        class="btn active col-md-3 btn-outline-dark me-2">Go
                 </button>
-                <button type="button" onclick="resetPage()" class="btn col-md-3 btn-outline-dark me-2">Clear</button>
+                <button type="button" onclick="resetPage()" class="btn active col-md-3 btn-outline-dark me-2">Clear
+                </button>
                 <button type="button" id="goBtn" hidden onclick="setIframe()"
                         class="btn col-md-3 btn-outline-dark me-2">setIframe
                 </button>
-                <button type="button" id="mainBtn" hidden onclick="main()" class="btn col-md-3 btn-outline-dark me-2">
+                <button type="button" id="mainBtn" hidden onclick="main()"
+                        class="btn col-md-3 btn-outline-dark me-2">
                     Main
                 </button>
-                <button type="button" id="showModal" hidden class="btn col-md-3 btn-outline-dark me-2"
-                        data-bs-toggle="modal"
-                        data-bs-target="#vertCentModal">
-                    Modal
-                </button>
+
             </div>
             <%--            <ul class="navbar-nav mb-2 mb-lg-0">--%>
             <%--                <button type="button" class="btn btn-outline-dark me-2">Comment</button>--%>
@@ -130,20 +154,19 @@ Author     : xhico
             <%--            </ul>--%>
             <div class="btn-group me-2" role="group">
                 <button type="button" id="desktopView" onclick="toggleDeviceView('Desktop')"
-                        class="btn btn-outline-dark">
+                        class="active btn btn-outline-dark">
                     Desktop
                 </button>
                 <button type="button" id="mobileView" onclick="toggleDeviceView('Mobile')"
-                        class="active btn btn-outline-dark">
+                        class="btn btn-outline-dark">
                     Mobile
                 </button>
-
             </div>
             <div class="btn-group me-2" role="group">
-                <button type="button" id="PageBtn" onclick="toggleView('Page')" class="btn btn-outline-dark">
+                <button type="button" id="PageBtn" onclick="toggleView('Page')" class="active btn btn-outline-dark">
                     Page
                 </button>
-                <button type="button" id="HTMLBtn" onclick="toggleView('HTML')" class="active btn btn-outline-dark">
+                <button type="button" id="HTMLBtn" onclick="toggleView('HTML')" class="btn btn-outline-dark">
                     Code
                 </button>
                 <button hidden type="button" id="LighthouseViewBtn" onclick="toggleView('lighthouseReport')"
@@ -216,6 +239,10 @@ Author     : xhico
                 <option value=ta-IN>Tamil</option>
                 <option value=uk-UA>Ukrainian</option>
             </select>
+            <br>
+            <button type="button" id="dictionaryModalBtn" class="btn active btn-outline-dark" data-bs-toggle="modal"
+                    data-bs-target="#dictionaryModal">Manage Dictionary
+            </button>
         </div>
         <div id="spelling-div" hidden>
             <li id="spelling-li">
@@ -269,7 +296,8 @@ Author     : xhico
     <%--    LIGHTHOUSE--%>
     <ul id="lighthouse-section" class="sidebar-list">
         <li><b><a id="lighthouse-title" href="#">LIGHTHOUSE REPORT<i class="arrow down"></i></a></b></li>
-        <button type="button" id="lighthouse-btn" class="btn btn-outline-dark" onclick="runLighthouse()">Run Lighthouse
+        <button type="button" id="lighthouse-btn" class="btn active btn-outline-dark" onclick="runLighthouse()">Run
+            Lighthouse
             Report
         </button>
         <div id="lighthouse-div" hidden>
@@ -321,11 +349,11 @@ Author     : xhico
     <!-- LIGHTHOUSE REPORT -->
 </main>
 
-<!-- SCRIPT -->
+<!-- SCRIPTS -->
 <script src="js/findAndReplaceDOMText.js"></script>
 <script src="js/syntaxHighlighter.js"></script>
 <script src="js/scripts.js"></script>
-<script src="js/reports.js"></script>
+<script src="js/main.js"></script>
 
 <script>
     // If a URL Param is present auto run
@@ -341,12 +369,11 @@ Author     : xhico
     <% }%>
 
     // If a URL is 200 Run Main()
-    <% if (URLCode.equals("200")) {%>
+    <% if (!(URLCode.equals("404"))) {%>
     document.getElementById("goBtn").click();
     <% } else { %>
-    document.getElementById("modalTitle").innerHTML = "Something went wrong!";
-    document.getElementById("modalBody").innerHTML = "Failed to load <b>" + siteUrl + "</b> (<%=URLCode%>)</br>Please check the URL.";
-    document.getElementById("showModal").click();
+    document.getElementById("modalErrorBody").innerHTML = "Failed to load <b>" + siteUrl + "</b> (<%=URLCode%>)</br>Please check the URL.";
+    document.getElementById("errorModalBtn").click();
     <% } %>
 
     <% }%>

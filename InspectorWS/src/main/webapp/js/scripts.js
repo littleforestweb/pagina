@@ -67,7 +67,6 @@ document.getElementById('lighthouse-title').addEventListener('click', () => {
 //});
 
 
-// ------------------ Toggle Page <-> HTML View ------------------ //
 function toggleView(view) {
     if (view === "Page") {
         document.getElementById("mainContent").hidden = false;
@@ -94,8 +93,6 @@ function toggleView(view) {
     }
 }
 
-
-// ------------------ Toggle Desktop <-> Mobile View ------------------ //
 function toggleDeviceView(view) {
     if (view === "Desktop") {
         document.getElementById("desktopView").classList.add("active");
@@ -107,4 +104,349 @@ function toggleDeviceView(view) {
         document.getElementById("mainContent").classList.add("iframePageMobile");
     } else {
     }
+}
+
+async function myTimer() {
+    // Get Iframe
+    let iframeElement = document.getElementById('mainContent');
+    let html = iframeElement.contentWindow.document.documentElement.outerHTML;
+
+    // Get siteUrl
+    let siteUrl = await getSiteUrl();
+
+    console.log(counter + " - " + html.length);
+    if (html.length <= 1000 && siteUrl !== "") {
+        if (counter === 10) {
+
+            // Get iframe element
+            let iframeElement = document.getElementById('mainContent').contentWindow.document;
+            iframeElement.open();
+            iframeElement.write("");
+            iframeElement.close();
+
+            // Set Error Message in MODAL
+            document.getElementById("modalErrorBody").innerHTML = "Failed to load <b>" + siteUrl + "</b> (Timeout)</br>";
+            document.getElementById("errorModalBtn").click();
+
+            // Remove overlay
+            await overlay("removeOverlay", "")
+
+            // Enable Actions
+            await enableDisableActions("enable");
+
+            // Stop Interval
+            clearInterval(myTimmer);
+        }
+    } else {
+        // Stop Interval
+        clearInterval(myTimmer);
+    }
+
+    counter = counter + 1
+}
+
+async function getSiteUrl() {
+    // Return siteUrl
+    return document.getElementById("searchURL").value;
+}
+
+async function getRequest(url) {
+    try {
+        const res = await fetch(url);
+        if (url.includes("language") ||
+            url.includes("BrokenLinks") ||
+            url.includes("CodeSniffer") ||
+            url.includes("LanguageTool") ||
+            url.includes("Lighthouse")) {
+            return await res.json();
+        }
+        return await res.text();
+    } catch (error) {
+        return error;
+    }
+}
+
+async function overlay(action, message) {
+    if (action === "addOverlay") {
+        // Disable goBtn
+        await enableDisableActions("disable");
+
+        // Insert overlay
+        console.log("addOverlay")
+        document.getElementById("overlay").style.display = "block";
+        document.getElementById("overlayMessage").innerText = message;
+    } else if (action === "removeOverlay") {
+        // Remove overlay
+        console.log("removeOverlay")
+        document.getElementById("overlay").style.display = "none";
+
+        // Enable goBtn
+        await enableDisableActions("enable");
+    }
+}
+
+async function enableDisableActions(action) {
+    if (action === "enable") {
+        // Enable goBtn
+        document.getElementById("loadBtn").disabled = false;
+        // Enable searchURL
+        document.getElementById("searchURL").disabled = false;
+        // Enable View Switch
+        document.getElementById("PageBtn").disabled = false;
+        document.getElementById("HTMLBtn").disabled = false;
+        document.getElementById("LighthouseViewBtn").disabled = false;
+        // Enable Device View Switch
+        document.getElementById("desktopView").disabled = false;
+        document.getElementById("mobileView").disabled = false;
+        // Enable languages_list
+        document.getElementById("languages_list").disabled = false;
+        // Enable Lighthouse Btn
+        document.getElementById("lighthouse-btn").disabled = false;
+        // Enable Dictionary Btn
+        document.getElementById("dictionaryModalBtn").disabled = false;
+    } else {
+        // Disable goBtn
+        document.getElementById("loadBtn").disabled = true;
+        // Disable searchURL
+        document.getElementById("searchURL").disabled = true;
+        // Disable View Switch
+        document.getElementById("PageBtn").disabled = true;
+        document.getElementById("HTMLBtn").disabled = true;
+        document.getElementById("LighthouseViewBtn").disabled = true;
+        // Disable Device View Switch
+        document.getElementById("desktopView").disabled = true;
+        document.getElementById("mobileView").disabled = true;
+        // Disable languages_list
+        document.getElementById("languages_list").disabled = true;
+        // Disable Lighthouse Btn
+        document.getElementById("lighthouse-btn").disabled = true;
+        // Disable Dictionary Btn
+        document.getElementById("dictionaryModalBtn").disabled = true;
+    }
+}
+
+async function gotoNewPage() {
+    // Get siteUrl
+    let siteUrl = await getSiteUrl();
+
+    if (siteUrl === "") {
+        // Set Error Message in MODAL
+        document.getElementById("modalTitle").innerHTML = "Something went wrong!";
+        document.getElementById("modalBody").innerHTML = "Please insert a valid URL";
+        document.getElementById("errorModalBtn").click();
+    } else {
+        // Get selected Language
+        let language = document.getElementById("languages_list").value;
+
+        // Launch new Inspector
+        window.location.href = inspectorUrl + "Inspector?url=" + siteUrl + "&lang=" + language;
+    }
+}
+
+async function resetPage() {
+    // Remove overlay
+    await overlay("addOverlay", "Loading")
+
+    window.location.href = inspectorUrl;
+}
+
+async function setIframe() {
+    console.log("setIframe");
+
+    // Get siteUrl
+    let siteUrl = await getSiteUrl();
+
+    // Add overlay
+    await overlay("addOverlay", "Loading page");
+
+    // Get iframe element
+    let iframeElement = document.getElementById('mainContent');
+
+    // Set iframe src to siteUrl
+    iframeElement.src = siteUrl;
+
+    // Add EventListener on load
+    iframeElement.addEventListener("load", main);
+}
+
+async function gotoSpellError(spellError) {
+    console.log("Goto " + spellError);
+
+    // Get iframe element
+    let iframeElement = document.getElementById("mainContent").contentWindow;
+
+    // Get htmlCode
+    let htmlCode = document.getElementById("mainCode").contentWindow;
+
+    // Scroll to spell Errors in htmlView and htmlCode
+    iframeElement.document.getElementById(spellError).scrollIntoView();
+    htmlCode.document.getElementById(spellError).scrollIntoView();
+
+}
+
+async function checkBrokenLinks() {
+    console.log("checkBrokenLinks");
+
+    // Insert overlay
+    await overlay("addOverlay", "Checking for Broken Links");
+
+    // Get iframe element
+    let iframeElement = document.getElementById('mainContent').contentWindow.document;
+
+    // Get htmlCode
+    let htmlCode = document.getElementById("mainCode").contentWindow.document;
+
+    // Set vars
+    let brokenLinksCount = 0;
+    let checkedLinks = [];
+    let allLinks = iframeElement.links;
+
+    for (let i = 0; i < allLinks.length; i++) {
+        let linkElem = allLinks[i];
+        let linkHref = linkElem.href;
+
+        let isVisible = linkElem.offsetParent;
+        if (isVisible !== null) {
+
+            // Check if href has already been checked
+            if (checkedLinks.includes(linkHref) !== true) {
+
+                // Add href to checkedLinks
+                checkedLinks.push(linkHref);
+
+                // Check if broken link
+                let brokenLinkServlet = inspectorUrl + "BrokenLinks?url=" + linkHref;
+                let linkJSON = await getRequest(brokenLinkServlet);
+                let linkCode = linkJSON.code;
+                let linkValid = linkJSON.valid;
+                let message = "Not Found";
+                let borderColor = "red";
+
+                // Check code status
+                if (linkCode === 404) {
+                    console.log(linkCode + " - " + linkHref);
+
+                    brokenLinksCount += 1;
+
+                    // Highlight Broken Link in HTML View
+                    linkElem.parentNode.setAttribute("style", "padding: 2px 2px; border: 4px solid " + borderColor + ";");
+
+                    // Update error color on html Code
+                    htmlCode.getElementById("htmlCode").innerHTML = htmlCode.getElementById("htmlCode").innerHTML.replaceAll(linkHref, "<span class='hoverMessage' aria-label='" + message + "' style='padding: 2px 2px; outline: 4px solid " + borderColor + ";'>" + linkHref + "</span>");
+                }
+            } else {
+                continue;
+            }
+        }
+    }
+
+    // Toggle Broken Links Section
+    document.getElementById("brokenLinks").innerText = brokenLinksCount;
+
+    // If there is no Broken Links add "Good Job!"
+    if (brokenLinksCount === 0) {
+        document.getElementById("brokenLinks-p").innerHTML = document.getElementById("brokenLinks-p").innerHTML + "<br><b>Good Job!<br>";
+    }
+
+    // Show Broken Links Message
+    document.getElementById("brokenLinks-p").hidden = false;
+
+    // Remove overlay
+    await overlay("removeOverlay", "");
+}
+
+async function setDictionary(cname, cvalue, exdays) {
+    // Create Array from cvalue string
+    cvalue = cvalue.join(",");
+    console.log(cvalue);
+
+    // Check if the String is Empty and Only has one element
+    if (cvalue.length === 1 && cvalue[0] === "") {
+        return;
+    }
+
+    // Set Expire Date
+    const d = new Date();
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    let expires = "expires=" + d.toUTCString();
+
+    // Save Cookie
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+async function getDictionary(cname) {
+    let name = cname + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    let dictionary = [];
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) === 0) {
+            dictionary = c.substring(name.length, c.length).split(",");
+        }
+    }
+
+    console.log(dictionary);
+    return dictionary;
+}
+
+async function addDictionary() {
+    // Get inserted word
+    let word = document.getElementById("dictionaryWord").value;
+
+    // Get existing Dictionary
+    let dict = await getDictionary("dictionary");
+
+    // Set new Dictionary
+    if (dict === "") {
+        dict = [word];
+    } else {
+        dict.push(word);
+    }
+
+    // Update Cookie with the new Dictionary
+    await setDictionary("dictionary", dict, 180);
+
+    // Reload Dictionary List
+    await loadDictionaryList();
+}
+
+async function loadDictionaryList() {
+    // Get existing Dictionary
+    let dict = (await getDictionary("dictionary"));
+
+    // Get Dictionary List
+    let dictList = document.getElementById("dictionaryList");
+    dictList.innerHTML = "";
+
+    // Check if the String is Empty and Only has one element
+    if (dict.length === 1 && dict[0] === "") {
+        return;
+    }
+
+    // Add Inserted Word to List
+    dict.forEach(function (word) {
+        if (word !== "") {
+            dictList.innerHTML = dictList.innerHTML + "<label class='list-group-item'><span>" + word + "</span><a href='#' onclick='removeDictionary(\"" + word + "\")' class='removeDictionary'>Remove</a></label>";
+        }
+    });
+}
+
+async function removeDictionary(word) {
+    // Get existing Dictionary
+    let dict = await getDictionary("dictionary");
+
+    // Remove word from Dictionary
+    dict = dict.filter(function (value, index, arr) {
+        return value !== word;
+    });
+
+    // Update Cookie with the new Dictionary
+    await setDictionary("dictionary", dict, 180);
+
+    // Reload Dictionary List
+    await loadDictionaryList();
 }

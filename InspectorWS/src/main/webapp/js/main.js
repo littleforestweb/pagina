@@ -13,173 +13,7 @@ let myTimmer = setInterval(myTimer, 1000);
 
 // ------------------------------------- Functions ------------------------------------- //
 
-async function myTimer() {
-    // Get Iframe
-    let iframeElement = document.getElementById('mainContent');
-    let html = iframeElement.contentWindow.document.documentElement.outerHTML;
-
-    // Get siteUrl
-    let siteUrl = await getSiteUrl();
-
-    console.log(counter + " - " + html.length);
-    if (html.length <= 1000 && siteUrl !== "") {
-        if (counter === 10) {
-
-            // Get iframe element
-            let iframeElement = document.getElementById('mainContent').contentWindow.document;
-            iframeElement.open();
-            iframeElement.write("");
-            iframeElement.close();
-
-            // Set Error Message in MODAL
-            document.getElementById("modalTitle").innerHTML = "Something went wrong!";
-            document.getElementById("modalBody").innerHTML = "Failed to load <b>" + siteUrl + "</b> (Timeout)</br>";
-            document.getElementById("showModal").click();
-
-            // Remove overlay
-            await overlay("removeOverlay", "")
-
-            // Enable Actions
-            await enableDisableActions("enable");
-
-            // Stop Interval
-            clearInterval(myTimmer);
-        }
-    } else {
-        // Stop Interval
-        clearInterval(myTimmer);
-    }
-
-    counter = counter + 1
-}
-
-async function getSiteUrl() {
-    // Set siteUrl
-    const siteUrl = document.getElementById("searchURL").value;
-//    const siteUrl = "https://www.gov.uk/";
-//    const siteUrl = "https://littleforest.co.uk/";
-//    const siteUrl = "https://pplware.sapo.pt/";
-//    const siteUrl = "http://inspector.littleforest.co.uk/InspectorWS/test.html";
-
-    return siteUrl;
-}
-
-async function getRequest(url) {
-    try {
-        const res = await fetch(url);
-        if (url.includes("language") ||
-            url.includes("BrokenLinks") ||
-            url.includes("CodeSniffer") ||
-            url.includes("LanguageTool") ||
-            url.includes("Lighthouse")) {
-            return await res.json();
-        }
-        return await res.text();
-    } catch (error) {
-        return error;
-    }
-}
-
-async function overlay(action, message) {
-    if (action === "addOverlay") {
-        // Disable goBtn
-        await enableDisableActions("disable");
-
-        // Insert overlay
-        console.log("addOverlay")
-        document.getElementById("overlay").style.display = "block";
-        document.getElementById("overlayMessage").innerText = message;
-    } else if (action === "removeOverlay") {
-        // Remove overlay
-        console.log("removeOverlay")
-        document.getElementById("overlay").style.display = "none";
-
-        // Enable goBtn
-        await enableDisableActions("enable");
-    }
-}
-
-async function enableDisableActions(action) {
-    if (action === "enable") {
-        // Enable goBtn
-        document.getElementById("loadBtn").disabled = false;
-        // Enable searchURL
-        document.getElementById("searchURL").disabled = false;
-        // Enable View Switch
-        document.getElementById("PageBtn").disabled = false;
-        document.getElementById("HTMLBtn").disabled = false;
-        document.getElementById("LighthouseViewBtn").disabled = false;
-        // Enable Device View Switch
-        document.getElementById("desktopView").disabled = false;
-        document.getElementById("mobileView").disabled = false;
-        // Enable languages_list
-        document.getElementById("languages_list").disabled = false;
-        // Enable Lighthouse Btn
-        document.getElementById("lighthouse-btn").disabled = false;
-    } else {
-        // Disable goBtn
-        document.getElementById("loadBtn").disabled = true;
-        // Disable searchURL
-        document.getElementById("searchURL").disabled = true;
-        // Disable View Switch
-        document.getElementById("PageBtn").disabled = true;
-        document.getElementById("HTMLBtn").disabled = true;
-        document.getElementById("LighthouseViewBtn").disabled = true;
-        // Disable Device View Switch
-        document.getElementById("desktopView").disabled = true;
-        document.getElementById("mobileView").disabled = true;
-        // Disable languages_list
-        document.getElementById("languages_list").disabled = true;
-        // Disable Lighthouse Btn
-        document.getElementById("lighthouse-btn").disabled = true;
-    }
-}
-
-async function load() {
-    // Get siteUrl
-    let siteUrl = await getSiteUrl();
-
-    if (siteUrl === "") {
-        // Set Error Message in MODAL
-        document.getElementById("modalTitle").innerHTML = "Something went wrong!";
-        document.getElementById("modalBody").innerHTML = "Please insert a valid URL";
-        document.getElementById("showModal").click();
-    } else {
-        // Get selected Language
-        let language = document.getElementById("languages_list").value;
-
-        // Launch new Inspector
-        window.location.href = inspectorUrl + "Inspector?url=" + siteUrl + "&lang=" + language;
-    }
-}
-
-async function resetPage() {
-    // Remove overlay
-    await overlay("addOverlay", "Loading")
-
-    window.location.href = inspectorUrl;
-}
-
-async function setIframe() {
-    console.log("setIframe");
-
-    // Get siteUrl
-    let siteUrl = await getSiteUrl();
-
-    // Add overlay
-    await overlay("addOverlay", "Loading page")
-
-    // Get iframe element
-    let iframeElement = document.getElementById('mainContent');
-
-    // Set iframe src to siteUrl
-    iframeElement.src = siteUrl;
-
-    // Add EventListener on load
-    iframeElement.addEventListener("load", main);
-}
-
-async function addContentInfo() {
+async function runContent() {
     console.log("addContentInfo");
 
     // Insert overlay
@@ -203,7 +37,7 @@ async function addContentInfo() {
     await overlay("removeOverlay", "");
 }
 
-async function addLinksInfo() {
+async function runLinks() {
     console.log("addLinksInfo");
 
     // Insert overlay
@@ -249,92 +83,6 @@ async function addLinksInfo() {
     await checkBrokenLinks();
 }
 
-async function checkBrokenLinks() {
-    console.log("checkBrokenLinks");
-
-    // Insert overlay
-    await overlay("addOverlay", "Checking for Broken Links");
-
-    // Get iframe element
-    let iframeElement = document.getElementById('mainContent').contentWindow.document;
-
-    // Get htmlCode
-    let htmlCode = document.getElementById("mainCode").contentWindow.document;
-
-    // Set vars
-    let brokenLinksCount = 0;
-    let checkedLinks = [];
-    let allLinks = iframeElement.links;
-
-    for (let i = 0; i < allLinks.length; i++) {
-        let linkElem = allLinks[i];
-        let linkHref = linkElem.href;
-
-        let isVisible = linkElem.offsetParent;
-        if (isVisible !== null) {
-
-            // Check if href has already been checked
-            if (checkedLinks.includes(linkHref) !== true) {
-
-                // Add href to checkedLinks
-                checkedLinks.push(linkHref);
-
-                // Check if broken link
-                let brokenLinkServlet = inspectorUrl + "BrokenLinks?url=" + linkHref;
-                let linkJSON = await getRequest(brokenLinkServlet);
-                let linkCode = linkJSON.code;
-                let linkValid = linkJSON.valid;
-                let message = "Not Found";
-                let borderColor = "red";
-
-                // Check code status
-                if (linkCode === 404) {
-                    console.log(linkCode + " - " + linkHref);
-
-                    brokenLinksCount += 1;
-
-                    // Highlight Broken Link in HTML View
-                    linkElem.parentNode.setAttribute("style", "padding: 2px 2px; border: 4px solid " + borderColor + ";");
-
-                    // Update error color on html Code
-                    htmlCode.getElementById("htmlCode").innerHTML = htmlCode.getElementById("htmlCode").innerHTML.replaceAll(linkHref, "<span class='hoverMessage' aria-label='" + message + "' style='padding: 2px 2px; outline: 4px solid " + borderColor + ";'>" + linkHref + "</span>");
-                }
-            } else {
-                continue;
-            }
-        }
-    }
-
-    // Toggle Broken Links Section
-    document.getElementById("brokenLinks").innerText = brokenLinksCount;
-
-    // If there is no Broken Links add "Good Job!"
-    if (brokenLinksCount === 0) {
-        document.getElementById("brokenLinks-p").innerHTML = document.getElementById("brokenLinks-p").innerHTML + "<br><b>Good Job!<br>";
-    }
-
-    // Show Broken Links Message
-    document.getElementById("brokenLinks-p").hidden = false;
-
-    // Remove overlay
-    await overlay("removeOverlay", "");
-}
-
-async function replaceInText(element, pattern, replacement) {
-    for (let node of element.childNodes) {
-        switch (node.nodeType) {
-            case Node.ELEMENT_NODE:
-                replaceInText(node, pattern, replacement);
-                break;
-            case Node.TEXT_NODE:
-                node.textContent = node.textContent.replace(pattern, replacement);
-                break;
-            case Node.DOCUMENT_NODE:
-                replaceInText(node, pattern, replacement);
-        }
-    }
-}
-
 async function runLanguageTool() {
     console.log("runLanguageTool");
 
@@ -344,6 +92,9 @@ async function runLanguageTool() {
     // Get selected Language
     let langCode = document.getElementById("languages_list").value;
     console.log("Language - " + langCode);
+
+    // Get existing Dictionary
+    let dict = await getDictionary("dictionary");
 
     // Get iframe element
     let iframeElement = document.getElementById('mainContent').contentWindow.document;
@@ -384,7 +135,7 @@ async function runLanguageTool() {
                     let error = entry.context.text.substring(entry.context.offset, entry.context.offset + entry.context.length);
 
                     // Remove false-positive errors (three chars and whitespaces)
-                    if (error.length >= 3 && !(/\s/g.test(error))) {
+                    if (!(dict.includes(error)) && error.length >= 3 && !(/\s/g.test(error))) {
 
                         // Set message, replacements, color
                         let message = entry.message;
@@ -464,21 +215,6 @@ async function runLanguageTool() {
     await enableDisableActions("enable");
 }
 
-async function gotoSpellError(spellError) {
-    console.log("Goto " + spellError);
-
-    // Get iframe element
-    let iframeElement = document.getElementById("mainContent").contentWindow;
-
-    // Get htmlCode
-    let htmlCode = document.getElementById("mainCode").contentWindow;
-
-    // Scroll to spell Errors in htmlView and htmlCode
-    iframeElement.document.getElementById(spellError).scrollIntoView();
-    htmlCode.document.getElementById(spellError).scrollIntoView();
-
-}
-
 async function runLighthouse() {
     console.log("runLighthouse");
 
@@ -529,9 +265,8 @@ async function runLighthouse() {
         toggleView("lighthouseReport");
     } catch (Ex) {
         console.log(Ex);
-        document.getElementById("modalTitle").innerHTML = "Something went wrong!";
-        document.getElementById("modalBody").innerHTML = "Lighthouse was unable to reliably load the page you requested.<br>Please try again.";
-        document.getElementById("showModal").click();
+        document.getElementById("modalErrorBody").innerHTML = "Lighthouse was unable to reliably load the page you requested.<br>Please try again.";
+        document.getElementById("errorModalBtn").click();
     }
 
     // Remove overlay
@@ -552,6 +287,9 @@ async function main() {
 
     // START
     console.log("----------------------");
+
+    // Load Dictionary
+    await loadDictionaryList();
 
     // Remove Event Listener
     document.getElementById('mainContent').removeEventListener("load", main);
@@ -575,7 +313,7 @@ async function main() {
     await overlay("removeOverlay", "")
 
     // Run Spelling Report
-    // await runLanguageTool();
+    await runLanguageTool();
 
     // END
     console.log("----------------------");
