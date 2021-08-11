@@ -103,7 +103,7 @@ Author     : xhico
         <div class="modal-content">
 
             <div class="modal-header">
-                <h5 class="modal-title">Manage Dictionary</h5>
+                <h5 class="modal-title">Manage Dictionary (<span id="totalDictWords">0</span>)</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
@@ -372,8 +372,7 @@ Author     : xhico
     <% if (!(URLCode.equals("404"))) {%>
     document.getElementById("goBtn").click();
     <% } else { %>
-    document.getElementById("modalErrorBody").innerHTML = "Failed to load <b>" + siteUrl + "</b> (<%=URLCode%>)</br>Please check the URL.";
-    document.getElementById("errorModalBtn").click();
+    await setErrorModal("Failed to load <b>" + siteUrl + "</b> (<%=URLCode%>)</br>Please check the URL.");
     <% } %>
 
     <% }%>

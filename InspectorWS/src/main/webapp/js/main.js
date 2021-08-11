@@ -265,8 +265,7 @@ async function runLighthouse() {
         toggleView("lighthouseReport");
     } catch (Ex) {
         console.log(Ex);
-        document.getElementById("modalErrorBody").innerHTML = "Lighthouse was unable to reliably load the page you requested.<br>Please try again.";
-        document.getElementById("errorModalBtn").click();
+        await setErrorModal("Lighthouse was unable to reliably load the page you requested.<br>Please try again.");
     }
 
     // Remove overlay
@@ -313,7 +312,7 @@ async function main() {
     await overlay("removeOverlay", "")
 
     // Run Spelling Report
-    await runLanguageTool();
+    // await runLanguageTool();
 
     // END
     console.log("----------------------");

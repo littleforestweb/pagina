@@ -114,7 +114,7 @@ async function myTimer() {
     // Get siteUrl
     let siteUrl = await getSiteUrl();
 
-    console.log(counter + " - " + html.length);
+    // Check if HTML Content is valid
     if (html.length <= 1000 && siteUrl !== "") {
         if (counter === 10) {
 
@@ -125,8 +125,7 @@ async function myTimer() {
             iframeElement.close();
 
             // Set Error Message in MODAL
-            document.getElementById("modalErrorBody").innerHTML = "Failed to load <b>" + siteUrl + "</b> (Timeout)</br>";
-            document.getElementById("errorModalBtn").click();
+            await setErrorModal("Failed to load <b>" + siteUrl + "</b> (Timeout)");
 
             // Remove overlay
             await overlay("removeOverlay", "")
@@ -241,6 +240,11 @@ async function gotoNewPage() {
         // Launch new Inspector
         window.location.href = inspectorUrl + "Inspector?url=" + siteUrl + "&lang=" + language;
     }
+}
+
+async function setErrorModal(message) {
+    document.getElementById("modalErrorBody").innerHTML = message;
+    document.getElementById("errorModalBtn").click();
 }
 
 async function resetPage() {
@@ -358,7 +362,6 @@ async function checkBrokenLinks() {
 async function setDictionary(cname, cvalue, exdays) {
     // Create Array from cvalue string
     cvalue = cvalue.join(",");
-    console.log(cvalue);
 
     // Check if the String is Empty and Only has one element
     if (cvalue.length === 1 && cvalue[0] === "") {
@@ -378,19 +381,23 @@ async function getDictionary(cname) {
     let name = cname + "=";
     let decodedCookie = decodeURIComponent(document.cookie);
     let ca = decodedCookie.split(';');
-    let dictionary = [];
+    let dict = [];
     for (let i = 0; i < ca.length; i++) {
         let c = ca[i];
         while (c.charAt(0) === ' ') {
             c = c.substring(1);
         }
         if (c.indexOf(name) === 0) {
-            dictionary = c.substring(name.length, c.length).split(",");
+            dict = c.substring(name.length, c.length).split(",");
         }
     }
 
-    console.log(dictionary);
-    return dictionary;
+    // Remove empty string from Dictionary
+    dict = dict.filter(function (value, index, arr) {
+        return value !== "";
+    });
+
+    return dict;
 }
 
 async function addDictionary() {
@@ -400,8 +407,15 @@ async function addDictionary() {
     // Get existing Dictionary
     let dict = await getDictionary("dictionary");
 
+    // Check if word is already on Dictionary
+    if (dict.includes(word)) {
+        document.getElementById("dictionaryWord").value = "";
+        document.getElementById("dictionaryWord").placeholder = "\"" + word + "\" already on dictionary.";
+        return;
+    }
+
     // Set new Dictionary
-    if (dict === "") {
+    if (dict.length === 0) {
         dict = [word];
     } else {
         dict.push(word);
@@ -422,16 +436,20 @@ async function loadDictionaryList() {
     let dictList = document.getElementById("dictionaryList");
     dictList.innerHTML = "";
 
+    // Set number of error on modal title
+    let totalDictWords = ((dict.length === 1) ? dict.length + " word" : dict.length + " words")
+    document.getElementById("totalDictWords").innerText = totalDictWords;
+
     // Check if the String is Empty and Only has one element
-    if (dict.length === 1 && dict[0] === "") {
+    if (dict.length === 0) {
+        document.getElementById("dictionaryWord").value = "";
+        document.getElementById("dictionaryWord").placeholder = "Insert your first word.";
         return;
     }
 
     // Add Inserted Word to List
     dict.forEach(function (word) {
-        if (word !== "") {
-            dictList.innerHTML = dictList.innerHTML + "<label class='list-group-item'><span>" + word + "</span><a href='#' onclick='removeDictionary(\"" + word + "\")' class='removeDictionary'>Remove</a></label>";
-        }
+        dictList.innerHTML = dictList.innerHTML + "<label class='list-group-item'><span>" + word + "</span><a href='#' onclick='removeDictionary(\"" + word + "\")' class='removeDictionary'>Remove</a></label>";
     });
 }
 
