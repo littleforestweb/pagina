@@ -9,7 +9,7 @@ body * {
     font-family: 'Inter Regular';
 }
 
-.iframe {
+.main * {
     position: absolute;
     display: block;
     border: none;
@@ -19,11 +19,10 @@ body * {
     height: calc(100% - 50px);
 }
 
-.htmlView {
-    position: absolute;
-    margin-left: 300px;
-    width: calc(100% - 298px);
+.iframePageMobile {
+    width: 375px;
     height: calc(100% - 50px);
+    margin-left: calc((298px / 2) + (calc(100% - 298px) / 2));
 }
 
 #overlay {

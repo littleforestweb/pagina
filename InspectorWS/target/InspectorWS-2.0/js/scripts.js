@@ -100,9 +100,11 @@ function toggleDeviceView(view) {
     if (view === "Desktop") {
         document.getElementById("desktopView").classList.add("active");
         document.getElementById("mobileView").classList.remove("active");
+        document.getElementById("mainContent").classList.remove("iframePageMobile");
     } else if (view === "Mobile") {
         document.getElementById("desktopView").classList.remove("active");
         document.getElementById("mobileView").classList.add("active");
+        document.getElementById("mainContent").classList.add("iframePageMobile");
     } else {
     }
 }

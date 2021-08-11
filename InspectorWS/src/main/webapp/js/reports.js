@@ -5,8 +5,8 @@
 
 // ------------------------------------- GLOBAL VARIABLES ------------------------------------- //
 
-const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
-// const inspectorUrl = "http://localhost:8080/InspectorWS/";
+// const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
+const inspectorUrl = "http://localhost:8080/InspectorWS/";
 
 let counter = 0;
 let myTimmer = setInterval(myTimer, 1000);
@@ -403,7 +403,7 @@ async function runLanguageTool() {
             }
 
         } catch (Ex) {
-            // console.log(Ex);
+            console.log(Ex);
         }
     }
 
@@ -512,9 +512,9 @@ async function runLighthouse() {
         });
 
         // Iterate over every Category and set the Tittle and Score
-        let categories = ["performance", "accessibility", "seo", "best-practices", "pwa"];
+        let categories = ["performance", "accessibility", "best-practices", "seo", "pwa"];
         categories.forEach(cat => {
-            let catScore = lighthouseJson["categories"][cat]["score"] * 100;
+            let catScore = math.round(lighthouseJson["categories"][cat]["score"] * 100);
             let catTitle = lighthouseJson["categories"][cat]["title"];
             lighthouse_info.innerHTML += "<li>" + catTitle + " - " + catScore + " % </li > ";
         })
@@ -528,6 +528,7 @@ async function runLighthouse() {
         document.getElementById("LighthouseViewBtn").hidden = false;
         toggleView("lighthouseReport");
     } catch (Ex) {
+        console.log(Ex);
         document.getElementById("modalTitle").innerHTML = "Something went wrong!";
         document.getElementById("modalBody").innerHTML = "Lighthouse was unable to reliably load the page you requested.<br>Please try again.";
         document.getElementById("showModal").click();
@@ -538,8 +539,6 @@ async function runLighthouse() {
 }
 
 async function main() {
-
-
     // Get iframe element
     let iframeElement = document.getElementById('mainContent').contentWindow.document;
 
@@ -576,7 +575,7 @@ async function main() {
     await overlay("removeOverlay", "")
 
     // Run Spelling Report
-    await runLanguageTool();
+    // await runLanguageTool();
 
     // END
     console.log("----------------------");

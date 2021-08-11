@@ -307,17 +307,17 @@ Author     : xhico
 </div>
 <!-- END SIDEBAR -->
 
-<main>
+<main class="main">
     <!-- IFRAME -->
-    <iframe is="x-frame-bypass" sandbox="allow-same-origin allow-scripts" id="mainContent" class="iframe"></iframe>
+    <iframe is="x-frame-bypass" sandbox="allow-same-origin allow-scripts" id="mainContent"></iframe>
     <!-- END IFRAME -->
 
     <!-- CODE -->
-    <iframe hidden sandbox="allow-same-origin allow-scripts" id="mainCode" class="iframe" src="about:blank"></iframe>
+    <iframe hidden sandbox="allow-same-origin allow-scripts" id="mainCode" src="about:blank"></iframe>
     <!-- END CODE -->
 
     <!-- LIGHTHOUSE REPORT -->
-    <iframe hidden sandbox="allow-same-origin allow-scripts" id="mainLighthouse" class="iframe"></iframe>
+    <iframe hidden sandbox="allow-same-origin allow-scripts" id="mainLighthouse"></iframe>
     <!-- LIGHTHOUSE REPORT -->
 </main>
 

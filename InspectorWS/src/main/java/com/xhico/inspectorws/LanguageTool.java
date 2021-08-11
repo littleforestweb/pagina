@@ -74,6 +74,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -102,30 +103,29 @@ public class LanguageTool extends HttpServlet {
      * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setHeader("Access-Control-Allow-Origin", "*");
         response.setContentType("application/json");
 
         try (PrintWriter out = response.getWriter()) {
             try {
 
                 // Read Params
-                String content = request.getParameter("content").replace(" ", "+");
+                String content = request.getParameter("content");
                 String langCode = request.getParameter("langCode");
 
                 // Make GET Request
                 HttpURLConnection c = null;
-                URL u = new URL("http://localhost:8081/v2/check?language=" + langCode + "&text=" + content);
+                String url = "http://localhost:8081/v2/check?language=" + langCode + "&text=" + URLEncoder.encode(content, StandardCharsets.UTF_8);
+                URL u = new URL(url);
                 c = (HttpURLConnection) u.openConnection();
                 c.setRequestMethod("GET");
                 c.connect();
-                BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream(), "UTF-8"));
+                BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream(), StandardCharsets.UTF_8));
                 StringBuilder jsonOutput = new StringBuilder();
                 String l;
                 while ((l = br.readLine()) != null) {
                     jsonOutput.append(l).append("\n");
                 }
                 br.close();
-                System.out.println(jsonOutput);
 
                 // Return JSON
                 out.print(jsonOutput);
