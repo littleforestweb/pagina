@@ -107,41 +107,50 @@ function toggleDeviceView(view) {
 }
 
 async function myTimer() {
-    // Get Iframe
-    let iframeElement = document.getElementById('mainContent');
-    let html = iframeElement.contentWindow.document.documentElement.outerHTML;
-
     // Get siteUrl
     let siteUrl = await getSiteUrl();
+    if (siteUrl === "") {
+        return;
+    }
 
-    // Check if HTML Content is valid
-    if (html.length <= 1000 && siteUrl !== "") {
-        if (counter === 10) {
+    try {
+        // Get Iframe
+        let iframeElement = document.getElementById('mainContent');
+        let html = iframeElement.contentWindow.document.documentElement.outerHTML;
 
-            // Get iframe element
-            let iframeElement = document.getElementById('mainContent').contentWindow.document;
-            iframeElement.open();
-            iframeElement.write("");
-            iframeElement.close();
+        // Check if HTML Content is valid
+        if (html.length <= 1000) {
+            if (counter === 10) {
 
-            // Set Error Message in MODAL
-            await setErrorModal("Failed to load <b>" + siteUrl + "</b> (Timeout)");
+                // Get iframe element
+                iframeElement = iframeElement.contentWindow.document;
+                iframeElement.open();
+                iframeElement.write("");
+                iframeElement.close();
 
-            // Remove overlay
-            await overlay("removeOverlay", "")
+                // Set Error Message in MODAL
+                await setErrorModal("Failed to load <b>" + siteUrl + "</b> (Timeout)");
 
-            // Enable Actions
-            await enableDisableActions("enable");
+                // Remove overlay
+                await overlay("removeOverlay", "")
 
+                // Enable Actions
+                await enableDisableActions("enable");
+
+                // Stop Interval
+                clearInterval(myTimmer);
+            }
+        } else {
             // Stop Interval
             clearInterval(myTimmer);
         }
-    } else {
-        // Stop Interval
-        clearInterval(myTimmer);
+
+        // Increment counter
+        counter = counter + 1
+    } catch (Ex) {
+        // console.log(Ex);
     }
 
-    counter = counter + 1
 }
 
 async function getSiteUrl() {
@@ -186,8 +195,6 @@ async function overlay(action, message) {
 
 async function enableDisableActions(action) {
     if (action === "enable") {
-        // Enable goBtn
-        document.getElementById("loadBtn").disabled = false;
         // Enable searchURL
         document.getElementById("searchURL").disabled = false;
         // Enable View Switch
@@ -203,9 +210,9 @@ async function enableDisableActions(action) {
         document.getElementById("lighthouse-btn").disabled = false;
         // Enable Dictionary Btn
         document.getElementById("dictionaryModalBtn").disabled = false;
+        // Enable Re-Run Spelling Btn
+        document.getElementById("rerunSpelling").disabled = false;
     } else {
-        // Disable goBtn
-        document.getElementById("loadBtn").disabled = true;
         // Disable searchURL
         document.getElementById("searchURL").disabled = true;
         // Disable View Switch
@@ -221,6 +228,8 @@ async function enableDisableActions(action) {
         document.getElementById("lighthouse-btn").disabled = true;
         // Disable Dictionary Btn
         document.getElementById("dictionaryModalBtn").disabled = true;
+        // Disable Re-Run Spelling Btn
+        document.getElementById("rerunSpelling").disabled = true;
     }
 }
 
@@ -271,6 +280,30 @@ async function setIframe() {
 
     // Add EventListener on load
     iframeElement.addEventListener("load", main);
+}
+
+async function clearSpelling() {
+    console.log("clearSpelling");
+
+    // Get iframe element
+    let iframeElement = document.getElementById('mainContent').contentWindow.document;
+
+    // Get all the spellerror elems
+    let errors = iframeElement.getElementsByTagName("spellerror");
+
+    // Remove all the elems and keep the innerText
+    while (errors.length) {
+        let parent = errors[0].parentNode;
+        while (errors[0].firstChild) {
+            parent.insertBefore(errors[0].firstChild, errors[0]);
+        }
+        parent.removeChild(errors[0]);
+    }
+
+    // Clear Sidebar Spelling Section
+    document.getElementById("spelling-div").hidden = true;
+    document.getElementById("totalErrors").innerText = 0;
+    document.getElementById("spelling_errors").innerHTML = "";
 }
 
 async function gotoSpellError(spellError) {

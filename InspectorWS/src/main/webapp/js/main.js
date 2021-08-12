@@ -5,8 +5,8 @@
 
 // ------------------------------------- GLOBAL VARIABLES ------------------------------------- //
 
-// const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
-const inspectorUrl = "http://localhost:8080/InspectorWS/";
+const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
+// const inspectorUrl = "http://localhost:8080/InspectorWS/";
 
 let counter = 0;
 let myTimmer = setInterval(myTimer, 1000);
@@ -140,6 +140,7 @@ async function runLanguageTool() {
                         // Set message, replacements, color
                         let message = entry.message;
                         let replacements = entry.replacements.map(reps => reps['value']).slice(0, 5).toString().replaceAll(",", ", ");
+                        replacements = ((replacements === "") ? "None available" : replacements);
                         let color = ((message === "Possible spelling mistake found.") ? "red" : "orange");
 
                         // Add/update key error on errorsDict
@@ -193,7 +194,8 @@ async function runLanguageTool() {
 
         // Add errors to Sidebar
         let spelling_errors = document.getElementById("spelling_errors");
-        spelling_errors.innerHTML += "<li><a href=javascript:gotoSpellError('spell_" + error + "');><span class='hoverMessage'>" + error + " (" + count + "x)" + "<span class='msgPopup'>" + message + " Replacements: " + replacements + "</span></span></a></li>";
+
+        spelling_errors.innerHTML += "<li><a href=javascript:gotoSpellError('spell_" + error + "');><span class='hoverMessage'>" + error + " (" + count + "x)" + "<span class='msgPopup'>" + message + "<br> Replacements: " + replacements + "</span></span></a></li>";
     }
 
     //  Add totalErrors to GENERALINFO
@@ -312,7 +314,7 @@ async function main() {
     await overlay("removeOverlay", "")
 
     // Run Spelling Report
-    // await runLanguageTool();
+    await runLanguageTool();
 
     // END
     console.log("----------------------");

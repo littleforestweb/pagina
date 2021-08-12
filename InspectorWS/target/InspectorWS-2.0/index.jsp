@@ -131,46 +131,46 @@ Author     : xhico
                 <input id="searchURL" class="form-control col-md-6 me-2" type="search" placeholder="Check URL"
                        aria-label="Search">
                 <button type="button" id="loadBtn" onclick="gotoNewPage()"
-                        class="btn active col-md-3 btn-outline-dark me-2">Go
+                        class="btn active col-md-3  me-2">Go
                 </button>
-                <button type="button" onclick="resetPage()" class="btn active col-md-3 btn-outline-dark me-2">Clear
+                <button type="button" onclick="resetPage()" class="btn active col-md-3  me-2">Clear
                 </button>
                 <button type="button" id="goBtn" hidden onclick="setIframe()"
-                        class="btn col-md-3 btn-outline-dark me-2">setIframe
+                        class="btn col-md-3  me-2">setIframe
                 </button>
                 <button type="button" id="mainBtn" hidden onclick="main()"
-                        class="btn col-md-3 btn-outline-dark me-2">
+                        class="btn col-md-3  me-2">
                     Main
                 </button>
 
             </div>
             <%--            <ul class="navbar-nav mb-2 mb-lg-0">--%>
-            <%--                <button type="button" class="btn btn-outline-dark me-2">Comment</button>--%>
-            <%--                <button type="button" class="btn btn-outline-dark me-2">Fix</button>--%>
-            <%--                <button type="button" class="btn btn-outline-dark me-2">History</button>--%>
-            <%--                <button type="button" class="btn btn-outline-dark me-2">Crawl</button>--%>
-            <%--                <button type="button" class="btn btn-outline-dark me-2">Edit</button>--%>
-            <%--                <button type="button" class="btn btn-outline-dark me-2">Share</button>--%>
+            <%--                <button type="button" class="btn  me-2">Comment</button>--%>
+            <%--                <button type="button" class="btn  me-2">Fix</button>--%>
+            <%--                <button type="button" class="btn  me-2">History</button>--%>
+            <%--                <button type="button" class="btn  me-2">Crawl</button>--%>
+            <%--                <button type="button" class="btn  me-2">Edit</button>--%>
+            <%--                <button type="button" class="btn  me-2">Share</button>--%>
             <%--            </ul>--%>
             <div class="btn-group me-2" role="group">
                 <button type="button" id="desktopView" onclick="toggleDeviceView('Desktop')"
-                        class="active btn btn-outline-dark">
+                        class="active btn ">
                     Desktop
                 </button>
                 <button type="button" id="mobileView" onclick="toggleDeviceView('Mobile')"
-                        class="btn btn-outline-dark">
+                        class="btn ">
                     Mobile
                 </button>
             </div>
             <div class="btn-group me-2" role="group">
-                <button type="button" id="PageBtn" onclick="toggleView('Page')" class="active btn btn-outline-dark">
+                <button type="button" id="PageBtn" onclick="toggleView('Page')" class="active btn ">
                     Page
                 </button>
-                <button type="button" id="HTMLBtn" onclick="toggleView('HTML')" class="btn btn-outline-dark">
+                <button type="button" id="HTMLBtn" onclick="toggleView('HTML')" class="btn ">
                     Code
                 </button>
                 <button hidden type="button" id="LighthouseViewBtn" onclick="toggleView('lighthouseReport')"
-                        class="active btn btn-outline-dark">Lighthouse
+                        class="active btn ">Lighthouse
                 </button>
             </div>
         </div>
@@ -239,9 +239,12 @@ Author     : xhico
                 <option value=ta-IN>Tamil</option>
                 <option value=uk-UA>Ukrainian</option>
             </select>
-            <br>
-            <button type="button" id="dictionaryModalBtn" class="btn active btn-outline-dark" data-bs-toggle="modal"
+            <button type="button" id="dictionaryModalBtn" class="btn active  mt-2"
+                    data-bs-toggle="modal"
                     data-bs-target="#dictionaryModal">Manage Dictionary
+            </button>
+            <button type="button" id="rerunSpelling" onclick="clearSpelling(); runLanguageTool()"
+                    class="btn active mt-2">Re-Run
             </button>
         </div>
         <div id="spelling-div" hidden>
@@ -283,7 +286,7 @@ Author     : xhico
     <%--            <input class="form-control" placeholder="Not done">--%>
     <%--            <br>--%>
     <%--        </div>--%>
-    <%--        <button type="button" id="content-btn" class="btn btn-outline-dark" onclick="addContentInfo()">Run Content--%>
+    <%--        <button type="button" id="content-btn" class="btn " onclick="addContentInfo()">Run Content--%>
     <%--            Report--%>
     <%--        </button>--%>
     <%--        <div id="content-div" hidden>--%>
@@ -296,9 +299,8 @@ Author     : xhico
     <%--    LIGHTHOUSE--%>
     <ul id="lighthouse-section" class="sidebar-list">
         <li><b><a id="lighthouse-title" href="#">LIGHTHOUSE REPORT<i class="arrow down"></i></a></b></li>
-        <button type="button" id="lighthouse-btn" class="btn active btn-outline-dark" onclick="runLighthouse()">Run
-            Lighthouse
-            Report
+        <button type="button" id="lighthouse-btn" class="btn active " onclick="runLighthouse()">
+            Run Lighthouse Report
         </button>
         <div id="lighthouse-div" hidden>
             <li id="lighthouse-li">
@@ -310,7 +312,7 @@ Author     : xhico
     <%--    TECHNOLOGIES--%>
     <%--    <ul id="technologies-section" class="sidebar-list">--%>
     <%--        <li><b><a id="technologies-title" href="#">TECHNOLOGIES REPORT <i class="arrow down"></i></a></b></li>--%>
-    <%--        <button type="button" id="technologies-btn" class="btn btn-outline-dark" onclick="runTechnologies()">Run--%>
+    <%--        <button type="button" id="technologies-btn" class="btn " onclick="runTechnologies()">Run--%>
     <%--            Technologies Report--%>
     <%--        </button>--%>
     <%--        <div id="technologies-div" hidden>--%>
@@ -323,7 +325,7 @@ Author     : xhico
     <%--    COOKIES--%>
     <%--    <ul id="cookies-section" class="sidebar-list">--%>
     <%--        <li><b><a id="cookies-title" href="#">COOKIES REPORT <i class="arrow down"></i></a></b></li>--%>
-    <%--        <button type="button" id="cookies-btn" class="btn btn-outline-dark" onclick="runCookies()">Run Cookies Report--%>
+    <%--        <button type="button" id="cookies-btn" class="btn " onclick="runCookies()">Run Cookies Report--%>
     <%--        </button>--%>
     <%--        <div id="cookies-div" hidden>--%>
     <%--            <li id="cookies-li">--%>
@@ -335,6 +337,7 @@ Author     : xhico
 </div>
 <!-- END SIDEBAR -->
 
+<% if (!(mainURL.equals("null"))) {%>
 <main class="main">
     <!-- IFRAME -->
     <iframe is="x-frame-bypass" sandbox="allow-same-origin allow-scripts" id="mainContent"></iframe>
@@ -348,6 +351,7 @@ Author     : xhico
     <iframe hidden sandbox="allow-same-origin allow-scripts" id="mainLighthouse"></iframe>
     <!-- LIGHTHOUSE REPORT -->
 </main>
+<% }%>
 
 <!-- SCRIPTS -->
 <script src="js/findAndReplaceDOMText.js"></script>
@@ -363,6 +367,7 @@ Author     : xhico
     let siteUrl = "<%=mainURL%>";
     document.getElementById("searchURL").value = siteUrl;
 
+
     // Set Language on Languages Dropdown list
     <% if (!(mainLang.equals("null"))) {%>
     let selectLang = document.getElementById("languages_list").value = "<%=mainLang%>";
@@ -372,10 +377,15 @@ Author     : xhico
     <% if (!(URLCode.equals("404"))) {%>
     document.getElementById("goBtn").click();
     <% } else { %>
-    await setErrorModal("Failed to load <b>" + siteUrl + "</b> (<%=URLCode%>)</br>Please check the URL.");
+    setErrorModal("Failed to load <b>" + siteUrl + "</b> (<%=URLCode%>)</br>Please check the URL.");
     <% } %>
 
-    <% }%>
+    <% } else {%>
+    // Disable Actions
+    enableDisableActions("disable");
+    // Enable searchURL
+    document.getElementById("searchURL").disabled = false;
+    <% } %>
 </script>
 </body>
 </html>
