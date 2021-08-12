@@ -129,7 +129,7 @@ async function myTimer() {
                 iframeElement.close();
 
                 // Set Error Message in MODAL
-                await setErrorModal("Failed to load <b>" + siteUrl + "</b> (Timeout)");
+                await setErrorModal("", "Failed to load <b>" + siteUrl + "</b> (Timeout)");
 
                 // Remove overlay
                 await overlay("removeOverlay", "")
@@ -251,7 +251,11 @@ async function gotoNewPage() {
     }
 }
 
-async function setErrorModal(message) {
+async function setErrorModal(title, message) {
+    if (title === "") {
+        title = "Something went wrong!";
+    }
+    document.getElementById("modalErrorTitle").innerHTML = title;
     document.getElementById("modalErrorBody").innerHTML = message;
     document.getElementById("errorModalBtn").click();
 }

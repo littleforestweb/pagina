@@ -56,17 +56,20 @@ Author     : xhico
 </head>
 <body>
 <%
+    String url;
     String mainURL;
     String mainLang;
-    String URLCode;
+    String responseCode;
     try {
+        url = request.getAttribute("url").toString();
         mainURL = request.getAttribute("mainURL").toString();
         mainLang = request.getAttribute("mainLang").toString();
-        URLCode = request.getAttribute("URLCode").toString();
+        responseCode = request.getAttribute("responseCode").toString();
     } catch (Exception ex) {
+        url = "null";
         mainURL = "null";
         mainLang = "null";
-        URLCode = "null";
+        responseCode = "null";
     }
 %>
 
@@ -86,7 +89,7 @@ Author     : xhico
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalTitle">Something Went Wrong!</h5>
+                <h5 class="modal-title" id="modalErrorTitle"></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="modalErrorBody"></div>
@@ -365,21 +368,26 @@ Author     : xhico
     // If a URL Param is present auto run
     <% if (!(mainURL.equals("null"))) {%>
 
+    // Redirect
+    console.log("<%=url%> (<%=responseCode%>) redirected to <%=mainURL%>");
+    <% if (!(mainURL.equals(url))) {%>
+    setErrorModal("Information", "<b><%=url%></b> (<%=responseCode%>) redirected to <b><%=mainURL%></b>");
+    <% }%>
+
     // Set URL on search bar
     let siteUrl = "<%=mainURL%>";
     document.getElementById("searchURL").value = siteUrl;
-
 
     // Set Language on Languages Dropdown list
     <% if (!(mainLang.equals("null"))) {%>
     let selectLang = document.getElementById("languages_list").value = "<%=mainLang%>";
     <% }%>
 
-    // If a URL is 200 Run Main()
-    <% if (!(URLCode.equals("404"))) {%>
+    // If a URL is !== 404 Run Main()
+    <% if (!(responseCode.equals("404"))) {%>
     document.getElementById("goBtn").click();
     <% } else { %>
-    setErrorModal("Failed to load <b>" + siteUrl + "</b> (<%=URLCode%>)</br>Please check the URL.");
+    setErrorModal("", "Failed to load <b>" + siteUrl + "</b> (<%=responseCode%>)</br>Please check the URL.");
     <% } %>
 
     <% } else {%>

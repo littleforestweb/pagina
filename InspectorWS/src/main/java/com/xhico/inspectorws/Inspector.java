@@ -40,33 +40,37 @@ public class Inspector extends HttpServlet {
             String lang = request.getParameter("lang");
 
             // Initialize mainURL && mainLang variables
-            String mainURL;
-            String mainLang;
-            int code = -1;
+            String mainURL = "null";
+            String mainLang = "null";
+            int responseCode = 0;
 
             // Check if there is a url or not
-            if (url == null) {
-                mainURL = "null";
-                mainLang = "null";
-            } else {
+            if (!(url == null)) {
                 // Get response code
                 try {
-                    URL myURL = new URL(url);
-                    HttpURLConnection connect = (HttpURLConnection) myURL.openConnection();
-                    code = connect.getResponseCode();
-                } catch (Exception ex) {
-                    code = -1;
-                }
+                    HttpURLConnection con = (HttpURLConnection) (new URL(url).openConnection());
+                    con.setInstanceFollowRedirects(false);
+                    con.connect();
+                    responseCode = con.getResponseCode();
+                    mainURL = con.getHeaderField("Location");
+                    mainLang = lang;
 
-                // Connect to the URL
-                mainURL = url;
-                mainLang = lang;
+                } catch (Exception ex) {
+                    responseCode = -1;
+                }
             }
 
+            System.out.println("");
+            System.out.println("url - " + url);
+            System.out.println("mainURL - " + mainURL);
+            System.out.println("mainLang - " + mainLang);
+            System.out.println("responseCode - " + responseCode);
+
             // Set attributes mainURL && mainLang
+            request.setAttribute("url", url);
             request.setAttribute("mainURL", mainURL);
             request.setAttribute("mainLang", mainLang);
-            request.setAttribute("URLCode", code);
+            request.setAttribute("responseCode", responseCode);
             request.getRequestDispatcher("/index.jsp").forward(request, response);
         }
     }
