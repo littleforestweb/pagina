@@ -5,15 +5,15 @@
  */
 package com.xhico.inspectorws;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 /**
  * @author xhico
@@ -49,31 +49,13 @@ public class Inspector extends HttpServlet {
                 mainURL = "null";
                 mainLang = "null";
             } else {
-                String[] searchUrl = url.split("://");
-
-                if (url.contains("http")) {
-                    if (searchUrl[0].equals("http")) {
-                        url = "https://" + searchUrl[1];
-                    }
-                } else {
-                    url = "https://" + url;
-                }
-
-                // Get response code HTTPS
-                String[] baseURL = url.split("://");
+                // Get response code
                 try {
                     URL myURL = new URL(url);
                     HttpURLConnection connect = (HttpURLConnection) myURL.openConnection();
                     code = connect.getResponseCode();
                 } catch (Exception ex) {
-                    try {
-                        url = "http://" + baseURL[1];
-                        URL myURL = new URL(url);
-                        HttpURLConnection connect = (HttpURLConnection) myURL.openConnection();
-                        code = connect.getResponseCode();
-                    } catch (Exception ex_) {
-                        code = -1;
-                    }
+                    code = -1;
                 }
 
                 // Connect to the URL

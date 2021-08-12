@@ -17,7 +17,7 @@ Author     : xhico
     <meta name="msapplication-TileImage" content="images/lf_logo.png"/>
 
     <!-- Font-Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://kit.fontawesome.com/a88e1b9070.js" crossorigin="anonymous"></script>
 
     <%--  Bootstrap  --%>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -26,6 +26,7 @@ Author     : xhico
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
             crossorigin="anonymous"></script>
 
+    <%--  jQuery  --%>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <%--  X-Frame Bypass  --%>
@@ -115,7 +116,7 @@ Author     : xhico
                     <span class="input-group-text" id="inputGroup-sizing-default">Word</span>
                 </div>
                 <input type="text" class="form-control" id="dictionaryWord">
-                <button type="button" class="btn active" onclick="addDictionary()">Add</button>
+                <button type="button" class="btn active" onclick="addDictionary('')">Add</button>
             </div>
 
         </div>
@@ -239,11 +240,8 @@ Author     : xhico
                 <option value=ta-IN>Tamil</option>
                 <option value=uk-UA>Ukrainian</option>
             </select>
-            <button type="button" id="dictionaryModalBtn" class="btn active  mt-2"
-                    data-bs-toggle="modal"
-                    data-bs-target="#dictionaryModal">Manage Dictionary
-            </button>
-            <button type="button" id="rerunSpelling" onclick="clearSpelling(); runLanguageTool()"
+
+            <button type="button" hidden id="rerunSpelling" onclick="clearSpelling(); runLanguageTool()"
                     class="btn active mt-2">Re-Run
             </button>
         </div>
@@ -254,6 +252,10 @@ Author     : xhico
                 <ul id="spelling_errors"></ul>
             </li>
         </div>
+        <button type="button" id="dictionaryModalBtn" class="btn active  mt-2"
+                data-bs-toggle="modal"
+                data-bs-target="#dictionaryModal">Manage Dictionary
+        </button>
     </ul>
 
     <%--    LINKS--%>

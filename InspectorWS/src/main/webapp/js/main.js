@@ -5,8 +5,8 @@
 
 // ------------------------------------- GLOBAL VARIABLES ------------------------------------- //
 
-const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
-// const inspectorUrl = "http://localhost:8080/InspectorWS/";
+// const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
+const inspectorUrl = "http://localhost:8080/InspectorWS/";
 
 let counter = 0;
 let myTimmer = setInterval(myTimer, 1000);
@@ -194,8 +194,7 @@ async function runLanguageTool() {
 
         // Add errors to Sidebar
         let spelling_errors = document.getElementById("spelling_errors");
-
-        spelling_errors.innerHTML += "<li><a href=javascript:gotoSpellError('spell_" + error + "');><span class='hoverMessage'>" + error + " (" + count + "x)" + "<span class='msgPopup'>" + message + "<br> Replacements: " + replacements + "</span></span></a></li>";
+        spelling_errors.innerHTML += "<li><a href=javascript:addDictionary('" + error + "')><i class='fas fa-trash mx-2'></i></a><a href=javascript:gotoSpellError('spell_" + error + "');><span class='hoverMessage'>" + error + " (" + count + "x)" + "<span class='msgPopup'>" + message + "<br> Replacements: " + replacements + "</span></span></a></li>";
     }
 
     //  Add totalErrors to GENERALINFO

@@ -433,9 +433,13 @@ async function getDictionary(cname) {
     return dict;
 }
 
-async function addDictionary() {
-    // Get inserted word
-    let word = document.getElementById("dictionaryWord").value;
+async function addDictionary(word) {
+    console.log("addDictionary - " + word)
+
+    if (word === "") {
+        // Get inserted word
+        word = document.getElementById("dictionaryWord").value;
+    }
 
     // Get existing Dictionary
     let dict = await getDictionary("dictionary");
@@ -446,6 +450,19 @@ async function addDictionary() {
         document.getElementById("dictionaryWord").placeholder = "\"" + word + "\" already on dictionary.";
         return;
     }
+
+    // Remove from Spelling List
+    let spelling_errors = document.getElementById("spelling_errors").childNodes;
+    for (let i = 0; i < spelling_errors.length; i++) {
+        let elem = spelling_errors[i];
+        if (elem.innerText.split(" (")[0] === word) {
+            elem.remove();
+            break;
+        }
+    }
+
+    //  Update totalErrors to GENERALINFO
+    document.getElementById("totalErrors").innerText = spelling_errors.length.toString();
 
     // Set new Dictionary
     if (dict.length === 0) {
