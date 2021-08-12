@@ -313,7 +313,7 @@ async function main() {
     await overlay("removeOverlay", "")
 
     // Run Spelling Report
-    // await runLanguageTool();
+    await runLanguageTool();
 
     // END
     console.log("----------------------");

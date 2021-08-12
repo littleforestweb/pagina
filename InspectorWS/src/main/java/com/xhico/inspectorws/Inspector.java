@@ -42,21 +42,15 @@ public class Inspector extends HttpServlet {
             // Initialize mainURL && mainLang variables
             String mainURL = "null";
             String mainLang = "null";
-            int responseCode = 0;
 
             // Check if there is a url or not
             if (!(url == null)) {
                 // Get response code
                 try {
-                    HttpURLConnection con = (HttpURLConnection) (new URL(url).openConnection());
-                    con.setInstanceFollowRedirects(false);
-                    con.connect();
-                    responseCode = con.getResponseCode();
-                    mainURL = con.getHeaderField("Location");
+                    URL myURL = new URL(url);
+                    mainURL = getFinalURL(myURL).toString();
                     mainLang = lang;
-
-                } catch (Exception ex) {
-                    responseCode = -1;
+                } catch (Exception ignored) {
                 }
             }
 
@@ -64,15 +58,34 @@ public class Inspector extends HttpServlet {
             System.out.println("url - " + url);
             System.out.println("mainURL - " + mainURL);
             System.out.println("mainLang - " + mainLang);
-            System.out.println("responseCode - " + responseCode);
 
             // Set attributes mainURL && mainLang
             request.setAttribute("url", url);
             request.setAttribute("mainURL", mainURL);
             request.setAttribute("mainLang", mainLang);
-            request.setAttribute("responseCode", responseCode);
             request.getRequestDispatcher("/index.jsp").forward(request, response);
         }
+    }
+
+    public static URL getFinalURL(URL url) {
+        try {
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setInstanceFollowRedirects(false);
+            con.connect();
+            int resCode = con.getResponseCode();
+            if (resCode == HttpURLConnection.HTTP_SEE_OTHER
+                    || resCode == HttpURLConnection.HTTP_MOVED_PERM
+                    || resCode == HttpURLConnection.HTTP_MOVED_TEMP) {
+                String Location = con.getHeaderField("Location");
+                if (Location.startsWith("/")) {
+                    Location = url.getProtocol() + "://" + url.getHost() + Location;
+                }
+                return getFinalURL(new URL(Location));
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return url;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

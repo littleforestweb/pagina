@@ -59,18 +59,18 @@ Author     : xhico
     String url;
     String mainURL;
     String mainLang;
-    String responseCode;
     try {
         url = request.getAttribute("url").toString();
         mainURL = request.getAttribute("mainURL").toString();
         mainLang = request.getAttribute("mainLang").toString();
-        responseCode = request.getAttribute("responseCode").toString();
     } catch (Exception ex) {
         url = "null";
         mainURL = "null";
         mainLang = "null";
-        responseCode = "null";
     }
+    System.out.println("url - " + url);
+    System.out.println("mainURL - " + mainURL);
+    System.out.println("mainLang - " + mainLang);
 %>
 
 <!-- OVERLAY -->
@@ -369,9 +369,8 @@ Author     : xhico
     <% if (!(mainURL.equals("null"))) {%>
 
     // Redirect
-    console.log("<%=url%> (<%=responseCode%>) redirected to <%=mainURL%>");
     <% if (!(mainURL.equals(url))) {%>
-    setErrorModal("Information", "<b><%=url%></b> (<%=responseCode%>) redirected to <b><%=mainURL%></b>");
+    setErrorModal("Information", "<b><%=url%></b> redirected to <b><%=mainURL%></b>");
     <% }%>
 
     // Set URL on search bar
@@ -383,18 +382,22 @@ Author     : xhico
     let selectLang = document.getElementById("languages_list").value = "<%=mainLang%>";
     <% }%>
 
-    // If a URL is !== 404 Run Main()
-    <% if (!(responseCode.equals("404"))) {%>
     document.getElementById("goBtn").click();
-    <% } else { %>
-    setErrorModal("", "Failed to load <b>" + siteUrl + "</b> (<%=responseCode%>)</br>Please check the URL.");
-    <% } %>
 
-    <% } else {%>
+    <% } else { %>
+
     // Disable Actions
     enableDisableActions("disable");
+
     // Enable searchURL
     document.getElementById("searchURL").disabled = false;
+
+    // Check if url is Null
+    <% if (!(url.equals("null"))) {%>
+    setErrorModal("", "Failed to load <b><%=url%></b></br>Please check the URL.");
+    <% } %>
+
+
     <% } %>
 </script>
 </body>

@@ -239,9 +239,7 @@ async function gotoNewPage() {
 
     if (siteUrl === "") {
         // Set Error Message in MODAL
-        document.getElementById("modalTitle").innerHTML = "Something went wrong!";
-        document.getElementById("modalBody").innerHTML = "Please insert a valid URL";
-        document.getElementById("errorModalBtn").click();
+        await setErrorModal("", "Please insert a valid URL");
     } else {
         // Get selected Language
         let language = document.getElementById("languages_list").value;
