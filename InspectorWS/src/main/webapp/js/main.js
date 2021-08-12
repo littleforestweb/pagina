@@ -194,7 +194,7 @@ async function runLanguageTool() {
 
         // Add errors to Sidebar
         let spelling_errors = document.getElementById("spelling_errors");
-        spelling_errors.innerHTML += "<li><a href=javascript:addDictionary('" + error + "')><i class='fas fa-trash mx-2'></i></a><a href=javascript:gotoSpellError('spell_" + error + "');><span class='hoverMessage'>" + error + " (" + count + "x)" + "<span class='msgPopup'>" + message + "<br> Replacements: " + replacements + "</span></span></a></li>";
+        spelling_errors.innerHTML += "<li><a href=javascript:addDictionary('" + error + "')><i class='fas fa-plus-circle mx-2'></i></a><a href=javascript:gotoSpellError('spell_" + error + "');><span class='hoverMessage'>" + error + " (" + count + "x)" + "<span class='msgPopup'>" + message + "<br> Replacements: " + replacements + "</span></span></a></li>";
     }
 
     //  Add totalErrors to GENERALINFO

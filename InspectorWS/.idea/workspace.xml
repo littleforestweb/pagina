@@ -65,7 +65,6 @@
   </component>
   <component name="RunManager">
     <configuration name="Tomcat 9.0.14" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 9.0.14" ALTERNATIVE_JRE_ENABLED="false" nameIsGenerated="true">
-      <option name="UPDATE_ON_FRAME_DEACTIVATION" value="true" />
       <option name="UPDATING_POLICY" value="update-resources" />
       <deployment>
         <artifact name="InspectorWS:war exploded">
@@ -181,7 +180,7 @@
       <workItem from="1628586873132" duration="27865000" />
       <workItem from="1628668911792" duration="14408000" />
       <workItem from="1628687894587" duration="30434000" />
-      <workItem from="1628755439771" duration="7173000" />
+      <workItem from="1628755439771" duration="8614000" />
     </task>
     <servers />
   </component>
