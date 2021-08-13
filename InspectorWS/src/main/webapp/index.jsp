@@ -22,9 +22,7 @@ Author     : xhico
     <%--  Bootstrap  --%>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-            crossorigin="anonymous"></script>
+
 
     <%--  jQuery  --%>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -94,7 +92,7 @@ Author     : xhico
             </div>
             <div class="modal-body" id="modalErrorBody"></div>
             <div class="modal-footer">
-                <button type="button" class="btn active" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn active" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -157,18 +155,13 @@ Author     : xhico
             <%--                <button type="button" class="btn  me-2">Share</button>--%>
             <%--            </ul>--%>
             <div class="btn-group me-2" role="group">
-                <button type="button" id="desktopView" onclick="toggleDeviceView('Desktop')"
+                <button type="button" id="desktopView" onclick="toggleView('Desktop')"
                         class="active btn ">
                     Desktop
                 </button>
-                <button type="button" id="mobileView" onclick="toggleDeviceView('Mobile')"
+                <button type="button" id="mobileView" onclick="toggleView('Mobile')"
                         class="btn ">
                     Mobile
-                </button>
-            </div>
-            <div class="btn-group me-2" role="group">
-                <button type="button" id="PageBtn" onclick="toggleView('Page')" class="active btn ">
-                    Page
                 </button>
                 <button type="button" id="HTMLBtn" onclick="toggleView('HTML')" class="btn ">
                     Code
@@ -302,17 +295,17 @@ Author     : xhico
     <%--    </ul>--%>
 
     <%--    LIGHTHOUSE--%>
-    <ul id="lighthouse-section" class="sidebar-list">
-        <li><b><a id="lighthouse-title" href="#">LIGHTHOUSE REPORT<i class="arrow down"></i></a></b></li>
-        <button type="button" id="lighthouse-btn" class="btn active " onclick="runLighthouse()">
-            Run Lighthouse Report
-        </button>
-        <div id="lighthouse-div" hidden>
-            <li id="lighthouse-li">
-                <ul id="lighthouse_info"></ul>
-            </li>
-        </div>
-    </ul>
+    <%--    <ul id="lighthouse-section" class="sidebar-list">--%>
+    <%--        <li><b><a id="lighthouse-title" href="#">LIGHTHOUSE REPORT<i class="arrow down"></i></a></b></li>--%>
+    <%--        <button type="button" id="lighthouse-btn" class="btn active " onclick="runLighthouse()">--%>
+    <%--            Run Lighthouse Report--%>
+    <%--        </button>--%>
+    <%--        <div id="lighthouse-div" hidden>--%>
+    <%--            <li id="lighthouse-li">--%>
+    <%--                <ul id="lighthouse_info"></ul>--%>
+    <%--            </li>--%>
+    <%--        </div>--%>
+    <%--    </ul>--%>
 
     <%--    TECHNOLOGIES--%>
     <%--    <ul id="technologies-section" class="sidebar-list">--%>
@@ -370,16 +363,15 @@ Author     : xhico
 
     // Redirect
     <% if (!(mainURL.equals(url))) {%>
-    setErrorModal("Information", "<b><%=url%></b> redirected to <b><%=mainURL%></b>");
+    setErrorModal("Redirect found", "<b><%=url%></b><br>was redirected to<br><b><%=mainURL%></b>");
     <% }%>
 
     // Set URL on search bar
-    let siteUrl = "<%=mainURL%>";
-    document.getElementById("searchURL").value = siteUrl;
+    document.getElementById("searchURL").value = "<%=mainURL%>";
 
     // Set Language on Languages Dropdown list
     <% if (!(mainLang.equals("null"))) {%>
-    let selectLang = document.getElementById("languages_list").value = "<%=mainLang%>";
+    document.getElementById("languages_list").value = "<%=mainLang%>";
     <% }%>
 
     document.getElementById("goBtn").click();
@@ -397,8 +389,10 @@ Author     : xhico
     setErrorModal("", "Failed to load <b><%=url%></b></br>Please check the URL.");
     <% } %>
 
-
     <% } %>
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
 </body>
 </html>

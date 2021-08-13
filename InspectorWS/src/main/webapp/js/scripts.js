@@ -46,14 +46,14 @@ document.getElementById('spelling-title').addEventListener('click', () => {
 });
 
 // LIGHTHOUSE
-document.getElementById("lighthouse-li").style.display = "none";
-document.getElementById('lighthouse-title').addEventListener('click', () => {
-    if (document.getElementById("lighthouse-li").style.display === "none") {
-        document.getElementById("lighthouse-li").style.display = "block";
-    } else {
-        document.getElementById("lighthouse-li").style.display = "none";
-    }
-});
+// document.getElementById("lighthouse-li").style.display = "none";
+// document.getElementById('lighthouse-title').addEventListener('click', () => {
+//     if (document.getElementById("lighthouse-li").style.display === "none") {
+//         document.getElementById("lighthouse-li").style.display = "block";
+//     } else {
+//         document.getElementById("lighthouse-li").style.display = "none";
+//     }
+// });
 
 
 //// TECHNOLOGIES
@@ -68,40 +68,40 @@ document.getElementById('lighthouse-title').addEventListener('click', () => {
 
 
 function toggleView(view) {
-    if (view === "Page") {
-        document.getElementById("mainContent").hidden = false;
-        document.getElementById("mainCode").hidden = true;
-        document.getElementById("mainLighthouse").hidden = true;
-        document.getElementById("PageBtn").classList.add("active");
-        document.getElementById("HTMLBtn").classList.remove("active");
-        document.getElementById("LighthouseViewBtn").classList.remove("active");
-    } else if (view === "HTML") {
+    if (view === "HTML") {
         document.getElementById("mainContent").hidden = true;
         document.getElementById("mainCode").hidden = false;
         document.getElementById("mainLighthouse").hidden = true;
-        document.getElementById("PageBtn").classList.remove("active");
         document.getElementById("HTMLBtn").classList.add("active");
         document.getElementById("LighthouseViewBtn").classList.remove("active");
+        document.getElementById("mobileView").classList.remove("active");
+        document.getElementById("mainContent").classList.remove("iframePageMobile");
     } else if (view === "lighthouseReport") {
         document.getElementById("mainContent").hidden = true;
         document.getElementById("mainCode").hidden = true;
         document.getElementById("mainLighthouse").hidden = false;
-        document.getElementById("PageBtn").classList.remove("active");
         document.getElementById("HTMLBtn").classList.remove("active");
         document.getElementById("LighthouseViewBtn").classList.add("active");
-    } else {
-    }
-}
-
-function toggleDeviceView(view) {
-    if (view === "Desktop") {
-        document.getElementById("desktopView").classList.add("active");
         document.getElementById("mobileView").classList.remove("active");
-        document.getElementById("mainContent").classList.remove("iframePageMobile");
+        document.getElementById("mainContent").classList.remove("iframePageMobile")
+    } else if (view === "Desktop") {
+        document.getElementById("mainContent").hidden = false;
+        document.getElementById("mainCode").hidden = true;
+        document.getElementById("mainLighthouse").hidden = true;
+        document.getElementById("HTMLBtn").classList.remove("active");
+        document.getElementById("LighthouseViewBtn").classList.remove("active");
+        document.getElementById("mobileView").classList.remove("active");
+        document.getElementById("desktopView").classList.add("active");
+        document.getElementById("mainContent").classList.remove("iframePageMobile")
     } else if (view === "Mobile") {
-        document.getElementById("desktopView").classList.remove("active");
+        document.getElementById("mainContent").hidden = false;
+        document.getElementById("mainCode").hidden = true;
+        document.getElementById("mainLighthouse").hidden = true;
+        document.getElementById("HTMLBtn").classList.remove("active");
+        document.getElementById("LighthouseViewBtn").classList.remove("active");
         document.getElementById("mobileView").classList.add("active");
-        document.getElementById("mainContent").classList.add("iframePageMobile");
+        document.getElementById("desktopView").classList.remove("active");
+        document.getElementById("mainContent").classList.add("iframePageMobile")
     } else {
     }
 }
@@ -198,16 +198,15 @@ async function enableDisableActions(action) {
         // Enable searchURL
         document.getElementById("searchURL").disabled = false;
         // Enable View Switch
-        document.getElementById("PageBtn").disabled = false;
         document.getElementById("HTMLBtn").disabled = false;
-        document.getElementById("LighthouseViewBtn").disabled = false;
+        // document.getElementById("LighthouseViewBtn").disabled = false;
         // Enable Device View Switch
         document.getElementById("desktopView").disabled = false;
         document.getElementById("mobileView").disabled = false;
         // Enable languages_list
         document.getElementById("languages_list").disabled = false;
         // Enable Lighthouse Btn
-        document.getElementById("lighthouse-btn").disabled = false;
+        // document.getElementById("lighthouse-btn").disabled = false;
         // Enable Dictionary Btn
         document.getElementById("dictionaryModalBtn").disabled = false;
         // Enable Re-Run Spelling Btn
@@ -216,16 +215,15 @@ async function enableDisableActions(action) {
         // Disable searchURL
         document.getElementById("searchURL").disabled = true;
         // Disable View Switch
-        document.getElementById("PageBtn").disabled = true;
         document.getElementById("HTMLBtn").disabled = true;
-        document.getElementById("LighthouseViewBtn").disabled = true;
+        // document.getElementById("LighthouseViewBtn").disabled = true;
         // Disable Device View Switch
         document.getElementById("desktopView").disabled = true;
         document.getElementById("mobileView").disabled = true;
         // Disable languages_list
         document.getElementById("languages_list").disabled = true;
         // Disable Lighthouse Btn
-        document.getElementById("lighthouse-btn").disabled = true;
+        // document.getElementById("lighthouse-btn").disabled = true;
         // Disable Dictionary Btn
         document.getElementById("dictionaryModalBtn").disabled = true;
         // Disable Re-Run Spelling Btn
@@ -253,6 +251,7 @@ async function setErrorModal(title, message) {
     if (title === "") {
         title = "Something went wrong!";
     }
+    console.log(title, message);
     document.getElementById("modalErrorTitle").innerHTML = title;
     document.getElementById("modalErrorBody").innerHTML = message;
     document.getElementById("errorModalBtn").click();
