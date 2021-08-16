@@ -251,10 +251,15 @@ async function setErrorModal(title, message) {
     if (title === "") {
         title = "Something went wrong!";
     }
-    console.log(title, message);
     document.getElementById("modalErrorTitle").innerHTML = title;
     document.getElementById("modalErrorBody").innerHTML = message;
-    document.getElementById("errorModalBtn").click();
+    let checkExist = setInterval(function () {
+        let btn = document.getElementById("errorModalBtn");
+        if (btn.hidden === true && btn.innerText === "Error Modal") {
+            btn.click();
+            clearInterval(checkExist);
+        }
+    }, 100);
 }
 
 async function resetPage() {

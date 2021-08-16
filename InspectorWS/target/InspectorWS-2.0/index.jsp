@@ -19,13 +19,12 @@ Author     : xhico
     <!-- Font-Awesome -->
     <script src="https://kit.fontawesome.com/a88e1b9070.js" crossorigin="anonymous"></script>
 
+    <%--  jQuery  --%>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <%--  Bootstrap  --%>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
-
-    <%--  jQuery  --%>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <%--  X-Frame Bypass  --%>
     <script src="https://unpkg.com/@ungap/custom-elements-builtin"></script>
@@ -82,7 +81,7 @@ Author     : xhico
 <!-- END OVERLAY -->
 
 <%-- ERROR MODAL --%>
-<button type="button" id="errorModalBtn" hidden data-bs-toggle="modal" data-bs-target="#errorModal">Error Modal</button>
+<button hidden type="button" id="errorModalBtn" data-bs-toggle="modal" data-bs-target="#errorModal">Error Modal</button>
 <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -132,19 +131,12 @@ Author     : xhico
             <div class="d-flex me-auto">
                 <input id="searchURL" class="form-control col-md-6 me-2" type="search" placeholder="Check URL"
                        aria-label="Search">
-                <button type="button" id="loadBtn" onclick="gotoNewPage()"
-                        class="btn active col-md-3  me-2">Go
+                <button type="button" id="loadBtn" onclick="gotoNewPage()" class="btn active col-md-3  me-2">Go
                 </button>
                 <button type="button" onclick="resetPage()" class="btn active col-md-3  me-2">Clear
                 </button>
-                <button type="button" id="goBtn" hidden onclick="setIframe()"
-                        class="btn col-md-3  me-2">setIframe
+                <button type="button" id="goBtn" hidden onclick="setIframe()" class="btn col-md-3  me-2">setIframe
                 </button>
-                <button type="button" id="mainBtn" hidden onclick="main()"
-                        class="btn col-md-3  me-2">
-                    Main
-                </button>
-
             </div>
             <%--            <ul class="navbar-nav mb-2 mb-lg-0">--%>
             <%--                <button type="button" class="btn  me-2">Comment</button>--%>
@@ -169,6 +161,7 @@ Author     : xhico
                 <button hidden type="button" id="LighthouseViewBtn" onclick="toggleView('lighthouseReport')"
                         class="active btn ">Lighthouse
                 </button>
+
             </div>
         </div>
     </div>
@@ -372,6 +365,7 @@ Author     : xhico
     // Set Language on Languages Dropdown list
     <% if (!(mainLang.equals("null"))) {%>
     document.getElementById("languages_list").value = "<%=mainLang%>";
+
     <% }%>
 
     document.getElementById("goBtn").click();
