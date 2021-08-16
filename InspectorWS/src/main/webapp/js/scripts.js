@@ -5,7 +5,7 @@
 
 // ------------------ Toggle Sidebar Section On/Off ------------------ //
 
-//// ACCESSIBILITY
+// ACCESSIBILITY
 //document.getElementById("accessibility-li").style.display = "none";
 //document.getElementById('accessibility-title').addEventListener('click', () => {
 //    if (document.getElementById("accessibility-li").style.display === "none") {
@@ -15,7 +15,7 @@
 //    }
 //});
 
-//// CONTENT
+// CONTENT
 //document.getElementById("content-li").style.display = "none";
 //document.getElementById('content-title').addEventListener('click', () => {
 //    if (document.getElementById("content-li").style.display === "none") {
@@ -25,7 +25,7 @@
 //    }
 //});
 
-// // LINKS
+// LINKS
 // document.getElementById("links-li").style.display = "none";
 // document.getElementById('links-title').addEventListener('click', () => {
 //     if (document.getElementById("links-li").style.display === "none") {

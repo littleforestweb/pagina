@@ -183,6 +183,7 @@ Author     : xhico
         <div id="language-select-div">
             <label>Language</label>
             <select class="form-select" id="languages_list">
+                <option selected value=auto>Auto-Detect</option>
                 <option value=ar>Arabic</option>
                 <option value=ast-ES>Asturian</option>
                 <option value=be-BY>Belarusian</option>
@@ -195,7 +196,7 @@ Author     : xhico
                 <option value=nl-BE>Dutch (Belgium)</option>
                 <option value=en-AU>English (Australian)</option>
                 <option value=en-CA>English (Canadian)</option>
-                <option selected value=en-GB>English (GB)</option>
+                <option value=en-GB>English (GB)</option>
                 <option value=en-NZ>English (New Zealand)</option>
                 <option value=en-ZA>English (South African)</option>
                 <option value=en-US>English (US)</option>
@@ -365,7 +366,6 @@ Author     : xhico
     // Set Language on Languages Dropdown list
     <% if (!(mainLang.equals("null"))) {%>
     document.getElementById("languages_list").value = "<%=mainLang%>";
-
     <% }%>
 
     document.getElementById("goBtn").click();

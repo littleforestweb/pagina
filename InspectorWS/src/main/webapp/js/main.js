@@ -5,8 +5,8 @@
 
 // ------------------------------------- GLOBAL VARIABLES ------------------------------------- //
 
-const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
-// const inspectorUrl = "http://localhost:8080/InspectorWS/";
+// const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
+const inspectorUrl = "http://localhost:8080/InspectorWS/";
 
 let counter = 0;
 let myTimmer = setInterval(myTimer, 1000);
@@ -89,18 +89,36 @@ async function runLanguageTool() {
     // Insert overlay
     await overlay("addOverlay", "Running Spell Check");
 
-    // Get selected Language
-    let langCode = document.getElementById("languages_list").value;
-    console.log("Language - " + langCode);
-
-    // Get existing Dictionary
-    let dict = await getDictionary("dictionary");
-
     // Get iframe element
     let iframeElement = document.getElementById('mainContent').contentWindow.document;
 
     // Get htmlCode
     let iframeCode = document.getElementById('mainCode').contentWindow.document;
+
+    // Set Language
+    // let langValues = [];
+    // let langCode;
+    // let detectedLang = iframeElement.documentElement.lang;
+    // let options = document.getElementById('languages_list').options;
+    // for (let i = 0; i < options.length; i++) {
+    //     langValues.push(options[i].value);
+    // }
+    //
+    // if (langValues.includes(detectedLang)) {
+    //     console.log("auto")
+    //     document.getElementById("languages_list").value = detectedLang;
+    //     langCode = detectedLang;
+    // } else {
+    //     console.log("default");
+    //     document.getElementById("languages_list").value = "en-GB";
+    //     langCode = "en-GB";
+    // }
+
+    let langCode = document.getElementById("languages_list").value;
+    console.log("Language - " + langCode);
+
+    // Get existing Dictionary
+    let dict = await getDictionary("dictionary");
 
     // Set errorsDict where key => error and value => [count, color]
     let errorsDict = {};
@@ -287,6 +305,7 @@ async function main() {
 
     // START
     console.log("----------------------");
+
 
     // Load Dictionary
     await loadDictionaryList();
