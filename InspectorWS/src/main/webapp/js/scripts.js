@@ -248,11 +248,10 @@ async function gotoNewPage() {
 }
 
 async function setErrorModal(title, message) {
-    if (title === "") {
-        title = "Something went wrong!";
-    }
-    document.getElementById("modalErrorTitle").innerHTML = title;
+    let modalTitle = ((title === "") ? title : "Something went wrong!");
+    document.getElementById("modalErrorTitle").innerHTML = modalTitle;
     document.getElementById("modalErrorBody").innerHTML = message;
+
     let checkExist = setInterval(function () {
         let btn = document.getElementById("errorModalBtn");
         if (btn.hidden === true && btn.innerText === "Error Modal") {
