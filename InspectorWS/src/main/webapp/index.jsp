@@ -151,21 +151,18 @@ Author     : xhico
             <%--                <button type="button" class="btn  me-2">Share</button>--%>
             <%--            </ul>--%>
             <div class="btn-group me-2" role="group">
-                <button type="button" id="desktopView" onclick="toggleView('Desktop')"
-                        class="active btn ">
+                <button type="button" id="desktopView" onclick="toggleView('Desktop')" class="active btn ">
                     Desktop
                 </button>
-                <button type="button" id="mobileView" onclick="toggleView('Mobile')"
-                        class="btn ">
+                <button type="button" id="mobileView" onclick="toggleView('Mobile')" class="btn ">
                     Mobile
                 </button>
                 <button type="button" id="HTMLBtn" onclick="toggleView('HTML')" class="btn ">
                     Code
                 </button>
                 <button hidden type="button" id="LighthouseViewBtn" onclick="toggleView('lighthouseReport')"
-                        class="active btn ">Lighthouse
+                        class="btn ">Lighthouse
                 </button>
-
             </div>
         </div>
     </div>
