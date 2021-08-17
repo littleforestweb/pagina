@@ -46,14 +46,14 @@ document.getElementById('spelling-title').addEventListener('click', () => {
 });
 
 // LIGHTHOUSE
-// document.getElementById("lighthouse-li").style.display = "none";
-// document.getElementById('lighthouse-title').addEventListener('click', () => {
-//     if (document.getElementById("lighthouse-li").style.display === "none") {
-//         document.getElementById("lighthouse-li").style.display = "block";
-//     } else {
-//         document.getElementById("lighthouse-li").style.display = "none";
-//     }
-// });
+document.getElementById("lighthouse-li").style.display = "none";
+document.getElementById('lighthouse-title').addEventListener('click', () => {
+    if (document.getElementById("lighthouse-li").style.display === "none") {
+        document.getElementById("lighthouse-li").style.display = "block";
+    } else {
+        document.getElementById("lighthouse-li").style.display = "none";
+    }
+});
 
 
 //// TECHNOLOGIES
@@ -200,14 +200,14 @@ async function enableDisableActions(action) {
         document.getElementById("searchURL").disabled = false;
         // Enable View Switch
         document.getElementById("HTMLBtn").disabled = false;
-        // document.getElementById("LighthouseViewBtn").disabled = false;
+        document.getElementById("LighthouseViewBtn").disabled = false;
         // Enable Device View Switch
         document.getElementById("desktopView").disabled = false;
         document.getElementById("mobileView").disabled = false;
         // Enable languages_list
         document.getElementById("languages_list").disabled = false;
         // Enable Lighthouse Btn
-        // document.getElementById("lighthouse-btn").disabled = false;
+        document.getElementById("lighthouse-btn").disabled = false;
         // Enable Dictionary Btn
         document.getElementById("dictionaryModalBtn").disabled = false;
         // Enable Re-Run Spelling Btn
@@ -217,14 +217,14 @@ async function enableDisableActions(action) {
         document.getElementById("searchURL").disabled = true;
         // Disable View Switch
         document.getElementById("HTMLBtn").disabled = true;
-        // document.getElementById("LighthouseViewBtn").disabled = true;
+        document.getElementById("LighthouseViewBtn").disabled = true;
         // Disable Device View Switch
         document.getElementById("desktopView").disabled = true;
         document.getElementById("mobileView").disabled = true;
         // Disable languages_list
         document.getElementById("languages_list").disabled = true;
         // Disable Lighthouse Btn
-        // document.getElementById("lighthouse-btn").disabled = true;
+        document.getElementById("lighthouse-btn").disabled = true;
         // Disable Dictionary Btn
         document.getElementById("dictionaryModalBtn").disabled = true;
         // Disable Re-Run Spelling Btn

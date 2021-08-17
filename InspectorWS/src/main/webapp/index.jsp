@@ -293,17 +293,17 @@ Author     : xhico
     <%--    </ul>--%>
 
     <%--    LIGHTHOUSE--%>
-    <%--    <ul id="lighthouse-section" class="sidebar-list">--%>
-    <%--        <li><b><a id="lighthouse-title" href="#">LIGHTHOUSE REPORT<i class="arrow down"></i></a></b></li>--%>
-    <%--        <button type="button" id="lighthouse-btn" class="btn active " onclick="runLighthouse()">--%>
-    <%--            Run Lighthouse Report--%>
-    <%--        </button>--%>
-    <%--        <div id="lighthouse-div" hidden>--%>
-    <%--            <li id="lighthouse-li">--%>
-    <%--                <ul id="lighthouse_info"></ul>--%>
-    <%--            </li>--%>
-    <%--        </div>--%>
-    <%--    </ul>--%>
+    <ul id="lighthouse-section" class="sidebar-list">
+        <li><b><a id="lighthouse-title" href="#">LIGHTHOUSE REPORT<i class="arrow down"></i></a></b></li>
+        <button type="button" id="lighthouse-btn" class="btn active " onclick="runLighthouse()">
+            Run Lighthouse Report
+        </button>
+        <div id="lighthouse-div" hidden>
+            <li id="lighthouse-li">
+                <ul id="lighthouse_info"></ul>
+            </li>
+        </div>
+    </ul>
 
     <%--    TECHNOLOGIES--%>
     <%--    <ul id="technologies-section" class="sidebar-list">--%>

@@ -145,6 +145,7 @@ async function runLanguageTool() {
             }, function (result) {
                 return result;
             });
+            console.log(spellCheckJSON);
 
             // If there is errors
             let spellMatches = spellCheckJSON.matches;
@@ -270,11 +271,12 @@ async function runLighthouse() {
         }, function (result) {
             return result;
         });
+        console.log(lighthouseJson);
 
         // Iterate over every Category and set the Tittle and Score
         let categories = ["performance", "accessibility", "best-practices", "seo", "pwa"];
         categories.forEach(cat => {
-            let catScore = math.round(lighthouseJson["categories"][cat]["score"] * 100);
+            let catScore = lighthouseJson["categories"][cat]["score"] * 100;
             let catTitle = lighthouseJson["categories"][cat]["title"];
             lighthouse_info.innerHTML += "<li>" + catTitle + " - " + catScore + " % </li > ";
         })
