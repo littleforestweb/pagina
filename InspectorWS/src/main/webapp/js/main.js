@@ -5,8 +5,8 @@
 
 // ------------------------------------- GLOBAL VARIABLES ------------------------------------- //
 
-// const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
-const inspectorUrl = "http://localhost:8080/InspectorWS/";
+const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
+// const inspectorUrl = "http://localhost:8080/InspectorWS/";
 
 let counter = 0;
 let myTimmer = setInterval(myTimer, 1000);
@@ -17,7 +17,7 @@ async function runContent() {
     console.log("addContentInfo");
 
     // Insert overlay
-    await overlay("addOverlay", "Gathering Content");
+    await overlay("addOverlay", "Gathering Content", "");
 
     // Get iframe element
     let iframeElement = document.getElementById('mainContent').contentWindow.document;
@@ -34,14 +34,14 @@ async function runContent() {
     document.getElementById("content-keyword-div").hidden = true;
 
     // Remove overlay
-    await overlay("removeOverlay", "");
+    await overlay("removeOverlay", "", "");
 }
 
 async function runLinks() {
     console.log("addLinksInfo");
 
     // Insert overlay
-    await overlay("addOverlay", "Gathering Links");
+    await overlay("addOverlay", "Gathering Links", "");
 
     // Get siteUrl
     let siteUrl = await getSiteUrl();
@@ -78,7 +78,7 @@ async function runLinks() {
     document.getElementById("links-div").hidden = false;
 
     // Remove overlay
-    await overlay("removeOverlay", "");
+    await overlay("removeOverlay", "", "");
 
     await checkBrokenLinks();
 }
@@ -87,7 +87,7 @@ async function runLanguageTool() {
     console.log("runLanguageTool");
 
     // Insert overlay
-    await overlay("addOverlay", "Running Spell Check");
+    await overlay("addOverlay", "Running Spell Check", "");
 
     // Get iframe element
     let iframeElement = document.getElementById('mainContent').contentWindow.document;
@@ -96,25 +96,30 @@ async function runLanguageTool() {
     let iframeCode = document.getElementById('mainCode').contentWindow.document;
 
     // Set Language
-    // let langValues = [];
-    // let langCode;
-    // let detectedLang = iframeElement.documentElement.lang;
-    // let options = document.getElementById('languages_list').options;
-    // for (let i = 0; i < options.length; i++) {
-    //     langValues.push(options[i].value);
-    // }
-    //
-    // if (langValues.includes(detectedLang)) {
-    //     console.log("auto")
-    //     document.getElementById("languages_list").value = detectedLang;
-    //     langCode = detectedLang;
-    // } else {
-    //     console.log("default");
-    //     document.getElementById("languages_list").value = "en-GB";
-    //     langCode = "en-GB";
-    // }
+    let langValues = [];
+    let detectedLang = iframeElement.documentElement.lang;
+    let languages_list = document.getElementById('languages_list');
+    for (let i = 0; i < languages_list.options.length; i++) {
+        langValues.push(languages_list.options[i].value);
+    }
 
     let langCode = document.getElementById("languages_list").value;
+    if (langCode === "auto") {
+        if (langValues.includes(detectedLang)) {
+            langCode = detectedLang;
+            let valueText = languages_list.options[langValues.indexOf(langCode)].text;
+            document.getElementById("overlaySndMessage").innerHTML = "Detected Language: " + valueText + "</br>";
+        } else {
+            langCode = "en-GB";
+            let valueText = languages_list.options[langValues.indexOf(langCode)].text;
+            document.getElementById("overlaySndMessage").innerHTML = "Coundn't detect langauage.</br> Defaulting to : " + valueText + "</br>";
+        }
+    } else {
+        let valueText = languages_list.options[langValues.indexOf(langCode)].text;
+        document.getElementById("overlaySndMessage").innerHTML = "Selected language: " + valueText + "</br>";
+    }
+
+    document.getElementById("languages_list").value = langCode;
     console.log("Language - " + langCode);
 
     // Get existing Dictionary
@@ -228,7 +233,7 @@ async function runLanguageTool() {
     document.getElementById("spelling-div").hidden = false;
 
     // Remove overlay
-    await overlay("removeOverlay", "");
+    await overlay("removeOverlay", "", "");
 
     // Enable Actions
     await enableDisableActions("enable");
@@ -244,7 +249,7 @@ async function runLighthouse() {
     let lighthouse_info = document.getElementById("lighthouse_info");
 
     // Insert overlay
-    await overlay("addOverlay", "Running Lighthouse Report");
+    await overlay("addOverlay", "Running Lighthouse Report", "");
 
     // Enable Actions
     await enableDisableActions("disable");
@@ -288,7 +293,7 @@ async function runLighthouse() {
     }
 
     // Remove overlay
-    await overlay("removeOverlay", "");
+    await overlay("removeOverlay", "", "");
 }
 
 async function main() {
@@ -329,7 +334,7 @@ async function main() {
     await w3CodeColor();
 
     // Remove overlay
-    await overlay("removeOverlay", "")
+    await overlay("removeOverlay", "", "")
 
     // Run Spelling Report
     await runLanguageTool();

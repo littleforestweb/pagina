@@ -43,15 +43,14 @@ public class Inspector extends HttpServlet {
             String mainURL = "null";
             String mainLang = "null";
 
-            // Check if there is a url or not
+            // Check if URL is passed as arg
             if (!(url == null)) {
-                // Get response code
-                try {
-                    URL myURL = new URL(url);
-                    mainURL = getFinalURL(myURL).toString();
-                    mainLang = lang;
-                } catch (Exception ignored) {
-                }
+                mainURL = getFinalURL(new URL(url)).toString();
+            }
+
+            // Check if Lang is passed as arg
+            if (!(lang == null)) {
+                mainLang = lang;
             }
 
             System.out.println("");

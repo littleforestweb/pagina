@@ -58,22 +58,26 @@ Author     : xhico
     String mainLang;
     try {
         url = request.getAttribute("url").toString();
-        mainURL = request.getAttribute("mainURL").toString();
-        mainLang = request.getAttribute("mainLang").toString();
     } catch (Exception ex) {
         url = "null";
+    }
+    try {
+        mainURL = request.getAttribute("mainURL").toString();
+    } catch (Exception ex) {
         mainURL = "null";
+    }
+    try {
+        mainLang = request.getAttribute("mainLang").toString();
+    } catch (Exception ex) {
         mainLang = "null";
     }
-    System.out.println("url - " + url);
-    System.out.println("mainURL - " + mainURL);
-    System.out.println("mainLang - " + mainLang);
 %>
 
 <!-- OVERLAY -->
 <div id="overlay">
     <div id="overlay_text">
-        <span id="overlayMessage"></span><br>
+        <span id="overlayMessage"></span></br>
+        <span id="overlaySndMessage"></span>
         <div class="spinner-border"></div>
         <br>Please Wait
     </div>
@@ -365,9 +369,11 @@ Author     : xhico
 
     // Set Language on Languages Dropdown list
     <% if (!(mainLang.equals("null"))) {%>
+    console.log("<%=mainLang%>");
     document.getElementById("languages_list").value = "<%=mainLang%>";
     <% }%>
 
+    // Start Running Reports
     document.getElementById("goBtn").click();
 
     <% } else { %>

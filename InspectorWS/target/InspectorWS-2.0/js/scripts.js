@@ -132,7 +132,7 @@ async function myTimer() {
                 await setErrorModal("", "Failed to load <b>" + siteUrl + "</b> (Timeout)");
 
                 // Remove overlay
-                await overlay("removeOverlay", "")
+                await overlay("removeOverlay", "", "")
 
                 // Enable Actions
                 await enableDisableActions("enable");
@@ -174,7 +174,7 @@ async function getRequest(url) {
     }
 }
 
-async function overlay(action, message) {
+async function overlay(action, message, sndMessage) {
     if (action === "addOverlay") {
         // Disable goBtn
         await enableDisableActions("disable");
@@ -183,6 +183,7 @@ async function overlay(action, message) {
         console.log("addOverlay")
         document.getElementById("overlay").style.display = "block";
         document.getElementById("overlayMessage").innerText = message;
+        document.getElementById("overlaySndMessage").innerText = sndMessage;
     } else if (action === "removeOverlay") {
         // Remove overlay
         console.log("removeOverlay")
@@ -263,7 +264,7 @@ async function setErrorModal(title, message) {
 
 async function resetPage() {
     // Remove overlay
-    await overlay("addOverlay", "Loading")
+    await overlay("addOverlay", "Loading", "")
 
     window.location.href = inspectorUrl;
 }
@@ -275,7 +276,7 @@ async function setIframe() {
     let siteUrl = await getSiteUrl();
 
     // Add overlay
-    await overlay("addOverlay", "Loading page");
+    await overlay("addOverlay", "Loading page", "");
 
     // Get iframe element
     let iframeElement = document.getElementById('mainContent');
@@ -330,7 +331,7 @@ async function checkBrokenLinks() {
     console.log("checkBrokenLinks");
 
     // Insert overlay
-    await overlay("addOverlay", "Checking for Broken Links");
+    await overlay("addOverlay", "Checking for Broken Links", "");
 
     // Get iframe element
     let iframeElement = document.getElementById('mainContent').contentWindow.document;
@@ -394,7 +395,7 @@ async function checkBrokenLinks() {
     document.getElementById("brokenLinks-p").hidden = false;
 
     // Remove overlay
-    await overlay("removeOverlay", "");
+    await overlay("removeOverlay", "", "");
 }
 
 async function setDictionary(cname, cvalue, exdays) {
