@@ -109,10 +109,12 @@ async function runLanguageTool() {
             langCode = detectedLang;
             let valueText = languages_list.options[langValues.indexOf(langCode)].text;
             document.getElementById("overlaySndMessage").innerHTML = "Detected Language: " + valueText + "</br>";
+            document.getElementById("detectedLanguage").innerHTML = "(Auto-Detected)";
         } else {
             langCode = "en-GB";
             let valueText = languages_list.options[langValues.indexOf(langCode)].text;
             document.getElementById("overlaySndMessage").innerHTML = "Coundn't detect langauage.</br> Defaulting to : " + valueText + "</br>";
+            document.getElementById("detectedLanguage").innerHTML = "(Default)";
         }
     } else {
         let valueText = languages_list.options[langValues.indexOf(langCode)].text;
@@ -279,7 +281,7 @@ async function runLighthouse() {
             let catScore = lighthouseJson["categories"][cat]["score"] * 100;
             let catTitle = lighthouseJson["categories"][cat]["title"];
             lighthouse_info.innerHTML += "<li>" + catTitle + " - " + catScore + " % </li > ";
-        })
+        });
 
         // Toggle Lighthouse Section
         document.getElementById("mainLighthouse").src = inspectorUrl + "Lighthouse?" + "url=null" + "&cats=null" + "&view=" + lighthouseJson["htmlReport"];

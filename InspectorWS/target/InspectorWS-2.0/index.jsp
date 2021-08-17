@@ -185,7 +185,7 @@ Author     : xhico
     <ul id="spelling-section" class="sidebar-list">
         <li><b><a id="spelling-title" href="#">SPELLING REPORT <i class="arrow down"></i></a></b></li>
         <div id="language-select-div">
-            <label>Language</label>
+            <label>Language <span id="detectedLanguage"></span></label>
             <select class="form-select" id="languages_list">
                 <option selected value=auto>Auto-Detect</option>
                 <option value=ar>Arabic</option>
@@ -241,7 +241,6 @@ Author     : xhico
         </div>
         <div id="spelling-div" hidden>
             <li id="spelling-li">
-                <!--<p>Language: <span id="detectedLanguage">None</span></p>-->
                 <p id="spellErrors-p">Found <span id="totalErrors">0</span> occurrences.</p>
                 <ul id="spelling_errors"></ul>
             </li>

@@ -67,7 +67,7 @@ document.getElementById('lighthouse-title').addEventListener('click', () => {
 //});
 
 
-function toggleView(view) {
+async function toggleView(view) {
     if (view === "HTML") {
         document.getElementById("mainContent").hidden = true;
         document.getElementById("mainCode").hidden = false;
@@ -75,15 +75,7 @@ function toggleView(view) {
         document.getElementById("HTMLBtn").classList.add("active");
         document.getElementById("LighthouseViewBtn").classList.remove("active");
         document.getElementById("mobileView").classList.remove("active");
-        document.getElementById("mainContent").classList.remove("iframePageMobile");
-    } else if (view === "lighthouseReport") {
-        document.getElementById("mainContent").hidden = true;
-        document.getElementById("mainCode").hidden = true;
-        document.getElementById("mainLighthouse").hidden = false;
-        document.getElementById("HTMLBtn").classList.remove("active");
-        document.getElementById("LighthouseViewBtn").classList.add("active");
-        document.getElementById("mobileView").classList.remove("active");
-        document.getElementById("mainContent").classList.remove("iframePageMobile")
+        document.getElementById("desktopView").classList.remove("active");
     } else if (view === "Desktop") {
         document.getElementById("mainContent").hidden = false;
         document.getElementById("mainCode").hidden = true;
@@ -102,6 +94,14 @@ function toggleView(view) {
         document.getElementById("mobileView").classList.add("active");
         document.getElementById("desktopView").classList.remove("active");
         document.getElementById("mainContent").classList.add("iframePageMobile")
+    } else if (view === "lighthouseReport") {
+        document.getElementById("mainContent").hidden = true;
+        document.getElementById("mainCode").hidden = true;
+        document.getElementById("mainLighthouse").hidden = false;
+        document.getElementById("HTMLBtn").classList.remove("active");
+        document.getElementById("LighthouseViewBtn").classList.add("active");
+        document.getElementById("mobileView").classList.remove("active");
+        document.getElementById("desktopView").classList.remove("active");
     } else {
     }
 }
