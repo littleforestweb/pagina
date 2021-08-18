@@ -184,6 +184,7 @@ async function overlay(action, message, sndMessage) {
         document.getElementById("overlay").style.display = "block";
         document.getElementById("overlayMessage").innerText = message;
         document.getElementById("overlaySndMessage").innerText = sndMessage;
+        document.getElementById("overlayProgress").innerText = "";
     } else if (action === "removeOverlay") {
         // Remove overlay
         console.log("removeOverlay")
@@ -352,7 +353,7 @@ async function checkBrokenLinks() {
         let linkHref = linkElem.href;
 
         // Update secondary message on Overlay
-        document.getElementById("overlaySndMessage").innerText = "(" + i + "/" + allLinks.length + ")";
+        document.getElementById("overlayProgress").innerText = "(" + i + "/" + allLinks.length + ")";
 
         // Check if href has already been checked
         if (checkedLinks.includes(linkHref) !== true) {
@@ -401,6 +402,10 @@ async function checkBrokenLinks() {
 
     // Remove links-btn
     document.getElementById("links-btn").hidden = true;
+
+    // Toggle Links Section
+    document.getElementById("links-li").style.display = "block";
+    document.getElementById("links-div").hidden = false;
 
     // Remove overlay
     await overlay("removeOverlay", "", "");

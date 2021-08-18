@@ -77,8 +77,9 @@ Author     : xhico
     <div id="overlay_text">
         <span id="overlayMessage"></span></br>
         <span id="overlaySndMessage"></span>
+        <span id="overlayProgress"></span>
+        <br>Please Wait<br>
         <div class="spinner-border"></div>
-        <br>Please Wait
     </div>
 </div>
 <!-- END OVERLAY -->

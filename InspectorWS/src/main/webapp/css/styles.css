@@ -23,6 +23,8 @@ body * {
     width: 375px;
     height: calc(100% - 50px);
     margin-left: calc((298px / 2) + (calc(100% - 298px) / 2));
+    border-right: 2px black solid;
+    border-left: 2px black solid;
 }
 
 #overlay {
@@ -50,7 +52,7 @@ body * {
     -ms-transform: translate(-50%, -50%);
 }
 
-#overlaySndMessage {
+#overlaySndMessage, #overlayProgress {
     font-size: 30px;
 }
 

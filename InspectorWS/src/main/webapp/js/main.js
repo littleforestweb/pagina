@@ -73,9 +73,7 @@ async function runLinks() {
     document.getElementById("extLinks").innerText = extLinksCount;
     document.getElementById("intLinks").innerText = intLinksCount;
 
-    // Toggle Links Section
-    document.getElementById("links-li").style.display = "block";
-    document.getElementById("links-div").hidden = false;
+
 
     // Remove overlay
     await overlay("removeOverlay", "", "");
@@ -177,7 +175,7 @@ async function runLanguageTool() {
                         }
 
                         // Update secondary message on Overlay
-                        document.getElementById("overlaySndMessage").innerText = "Found " + Object.keys(errorsDict).length + " spelling occurrences";
+                        document.getElementById("overlayProgress").innerText = "Found " + Object.keys(errorsDict).length + " spelling occurrences";
 
                     }
                 }
