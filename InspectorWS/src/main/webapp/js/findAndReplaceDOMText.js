@@ -108,7 +108,7 @@
         // Media / Source elements:
         script: 1, style: 1, img: 1, video: 1, audio: 1, canvas: 1, svg: 1, map: 1, object: 1,
         // Input elements
-        input: 1, textarea: 1, select: 1, option: 1, optgroup: 1, button: 1
+        input: 1, textarea: 1, select: 1, option: 1, optgroup: 1, button: 1, spellerror: 1
     };
 
     exposed.NON_CONTIGUOUS_PROSE_ELEMENTS = {
@@ -271,7 +271,6 @@
 
                 var txt = [''];
                 var i = 0;
-
                 if (node = node.firstChild) do {
 
                     if (node.nodeType === Node.TEXT_NODE) {
@@ -281,11 +280,7 @@
 
                     var innerText = getText(node);
 
-                    if (
-                        forceContext &&
-                        node.nodeType === Node.ELEMENT_NODE &&
-                        (forceContext === true || forceContext(node))
-                    ) {
+                    if (forceContext && node.nodeType === Node.ELEMENT_NODE && (forceContext === true || forceContext(node))) {
                         txt[++i] = innerText;
                         txt[++i] = '';
                     } else {
@@ -425,7 +420,6 @@
                         break out;
                     }
                 }
-
             }
 
         },
@@ -511,11 +505,7 @@
                 el.id = wrapperId;
             }
 
-            replacement = doc.createTextNode(
-                this.prepareReplacementString(
-                    replacement, portion, match
-                )
-            );
+            replacement = doc.createTextNode(this.prepareReplacementString(replacement, portion, match));
 
             if (!replacement.data) {
                 return replacement;
@@ -539,7 +529,6 @@
             var followingTextNode;
 
             if (matchStartNode === matchEndNode) {
-
                 var node = matchStartNode;
 
                 if (startPortion.indexInNode > 0) {
@@ -549,10 +538,7 @@
                 }
 
                 // Create the replacement node:
-                var newNode = this.getPortionReplacementNode(
-                    endPortion,
-                    match
-                );
+                var newNode = this.getPortionReplacementNode(endPortion, match);
 
                 node.parentNode.insertBefore(newNode, node);
 

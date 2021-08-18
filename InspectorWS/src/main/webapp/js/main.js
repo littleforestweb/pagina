@@ -147,7 +147,7 @@ async function runLanguageTool() {
             }, function (result) {
                 return result;
             });
-            console.log(spellCheckJSON);
+            // console.log(spellCheckJSON);
 
             // If there is errors
             let spellMatches = spellCheckJSON.matches;
@@ -200,28 +200,44 @@ async function runLanguageTool() {
         let count = entry[1][0];
         let message = entry[1][1];
         let replacements = entry[1][2];
-        let color = entry[1][3];
-
-        // Highlight Spelling Errors on Page View
-        findAndReplaceDOMText(iframeElement.body, {
-            find: error,
-            wrap: 'spellError',
-            wrapClass: "shiny_" + color,
-            wrapId: "spell_" + error
-        })
-
-        // Highlight Spelling Errors on Code View
-        findAndReplaceDOMText(iframeCode.getElementById("htmlCode"), {
-            find: error,
-            wrap: 'spellError',
-            wrapClass: "shiny_" + color,
-            wrapId: "spell_" + error
-        })
 
         // Add errors to Sidebar
         let spelling_errors = document.getElementById("spelling_errors");
         spelling_errors.innerHTML += "<li><a href=javascript:addDictionary('" + error + "')><i class='fas fa-plus-circle mx-2'></i></a><a href=javascript:gotoSpellError('spell_" + error + "');><span class='hoverMessage'>" + error + " (" + count + "x)" + "<span class='msgPopup'>" + message + "<br> Replacements: " + replacements + "</span></span></a></li>";
     }
+
+    // Sort the array based on the length of the error
+    let sortedDict = Object.keys(errorsDict).map(function (key) {
+        return [key, errorsDict[key]];
+    }).sort(function (first, second) {
+        return second[0].length - first[0].length;
+    });
+
+    for (let i = 0; i < sortedDict.length; i++) {
+        let entry = sortedDict[i];
+        let error = entry[0];
+        let color = entry[1][3];
+        console.log(error);
+
+        // Highlight Spelling Errors on Page View
+        findAndReplaceDOMText(iframeElement.body, {
+            preset: 'prose',
+            find: error,
+            wrap: 'spellError',
+            wrapClass: "shiny_" + color,
+            wrapId: "spell_" + error
+        });
+
+        // Highlight Spelling Errors on Code View
+        findAndReplaceDOMText(iframeCode.getElementById("htmlCode"), {
+            preset: 'prose',
+            find: error,
+            wrap: 'spellError',
+            wrapClass: "shiny_" + color,
+            wrapId: "spell_" + error
+        });
+    }
+
 
     //  Add totalErrors to GENERALINFO
     document.getElementById("totalErrors").innerText = Object.keys(errorsDict).length.toString();
