@@ -249,8 +249,7 @@ async function gotoNewPage() {
 }
 
 async function setErrorModal(title, message) {
-    let modalTitle = ((title === "") ? title : "Something went wrong!");
-    document.getElementById("modalErrorTitle").innerHTML = modalTitle;
+    document.getElementById("modalErrorTitle").innerHTML = ((title !== "") ? title : "Something went wrong!");
     document.getElementById("modalErrorBody").innerHTML = message;
 
     let checkExist = setInterval(function () {

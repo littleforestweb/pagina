@@ -23,8 +23,7 @@ Author     : xhico
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <%--  Bootstrap  --%>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
     <%--  X-Frame Bypass  --%>
     <script src="https://unpkg.com/@ungap/custom-elements-builtin"></script>
@@ -112,8 +111,7 @@ Author     : xhico
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <div id="dictionaryList" class="list-group">
-            </div>
+            <div id="dictionaryList" class="list-group"></div>
 
             <div class="container input-group mb-3 mt-3">
                 <div class="input-group-prepend">
@@ -133,14 +131,10 @@ Author     : xhico
     <div class="container-fluid">
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <div class="d-flex me-auto">
-                <input id="searchURL" class="form-control col-md-6 me-2" type="search" placeholder="Check URL"
-                       aria-label="Search">
-                <button type="button" id="loadBtn" onclick="gotoNewPage()" class="btn active col-md-3  me-2">Go
-                </button>
-                <button type="button" onclick="resetPage()" class="btn active col-md-3  me-2">Clear
-                </button>
-                <button type="button" id="goBtn" hidden onclick="setIframe()" class="btn col-md-3  me-2">setIframe
-                </button>
+                <input id="searchURL" class="form-control col-md-6 me-2" type="search" placeholder="Check URL" aria-label="Search">
+                <button type="button" id="loadBtn" onclick="gotoNewPage()" class="btn active col-md-3  me-2">Go</button>
+                <button type="button" onclick="resetPage()" class="btn active col-md-3  me-2">Clear</button>
+                <button type="button" id="goBtn" hidden onclick="setIframe()" class="btn col-md-3  me-2">setIframe</button>
             </div>
             <%--            <ul class="navbar-nav mb-2 mb-lg-0">--%>
             <%--                <button type="button" class="btn  me-2">Comment</button>--%>
@@ -151,18 +145,10 @@ Author     : xhico
             <%--                <button type="button" class="btn  me-2">Share</button>--%>
             <%--            </ul>--%>
             <div class="btn-group me-2" role="group">
-                <button type="button" id="desktopView" onclick="toggleView('Desktop')" class="active btn ">
-                    Desktop
-                </button>
-                <button type="button" id="mobileView" onclick="toggleView('Mobile')" class="btn ">
-                    Mobile
-                </button>
-                <button type="button" id="HTMLBtn" onclick="toggleView('HTML')" class="btn ">
-                    Code
-                </button>
-                <button hidden type="button" id="LighthouseViewBtn" onclick="toggleView('lighthouseReport')"
-                        class="btn ">Lighthouse
-                </button>
+                <button type="button" id="desktopView" onclick="toggleView('Desktop')" class="active btn">Desktop</button>
+                <button type="button" id="mobileView" onclick="toggleView('Mobile')" class="btn">Mobile</button>
+                <button type="button" id="HTMLBtn" onclick="toggleView('HTML')" class="btn">Code</button>
+                <button hidden type="button" id="LighthouseViewBtn" onclick="toggleView('lighthouseReport')" class="btn">Lighthouse</button>
             </div>
         </div>
     </div>
@@ -173,10 +159,7 @@ Author     : xhico
 <div class="sidebar-nav bg-light">
 
     <!-- LOGO -->
-    <a href="https://littleforest.co.uk" target="_blank">
-        <img class="sidebar-logo" alt="sidebar Logo"
-             src="https://littleforest.co.uk/wp-content/uploads/2020/11/littleforest_logo.png">
-    </a>
+    <a href="https://littleforest.co.uk" target="_blank"><img class="sidebar-logo" alt="sidebar Logo" src="https://littleforest.co.uk/wp-content/uploads/2020/11/littleforest_logo.png"></a>
 
     <%--    SPELLING--%>
     <ul id="spelling-section" class="sidebar-list">
@@ -231,21 +214,17 @@ Author     : xhico
                 <option value=ta-IN>Tamil</option>
                 <option value=uk-UA>Ukrainian</option>
             </select>
-
-            <button type="button" hidden id="rerunSpelling" onclick="clearSpelling(); runLanguageTool()"
-                    class="btn active mt-2">Re-Run
-            </button>
+            <button type="button" hidden id="rerunSpelling" onclick="clearSpelling(); runLanguageTool()" class="btn active mt-2">Re-Run</button>
         </div>
+
         <div id="spelling-div" hidden>
             <li id="spelling-li">
                 <p id="spellErrors-p">Found <span id="totalErrors">0</span> occurrences.</p>
                 <ul id="spelling_errors"></ul>
             </li>
         </div>
-        <button type="button" id="dictionaryModalBtn" class="btn active  mt-2"
-                data-bs-toggle="modal"
-                data-bs-target="#dictionaryModal">Manage Dictionary
-        </button>
+
+        <button type="button" id="dictionaryModalBtn" class="btn active  mt-2" data-bs-toggle="modal" data-bs-target="#dictionaryModal">Manage Dictionary</button>
     </ul>
 
     <%--    LINKS--%>
@@ -291,9 +270,7 @@ Author     : xhico
     <%--    LIGHTHOUSE--%>
     <ul id="lighthouse-section" class="sidebar-list">
         <li><b><a id="lighthouse-title" href="#">LIGHTHOUSE REPORT<i class="arrow down"></i></a></b></li>
-        <button type="button" id="lighthouse-btn" class="btn active " onclick="runLighthouse()">
-            Run Lighthouse Report
-        </button>
+        <button type="button" id="lighthouse-btn" class="btn active " onclick="runLighthouse()">Run Lighthouse Report</button>
         <div id="lighthouse-div" hidden>
             <li id="lighthouse-li">
                 <ul id="lighthouse_info"></ul>
@@ -387,8 +364,6 @@ Author     : xhico
 
     <% } %>
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>
