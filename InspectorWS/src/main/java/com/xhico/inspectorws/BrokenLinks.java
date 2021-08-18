@@ -5,6 +5,12 @@
  */
 package com.xhico.inspectorws;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -12,6 +18,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author xhico
@@ -35,9 +45,65 @@ public class BrokenLinks extends HttpServlet {
 
             // Get url param
             String url = request.getParameter("url");
+            String mainURL = getFinalURL(new URL(url)).toString();
 
+            URL myURL = new URL(mainURL);
 
+            // Check if url is sintax valid
+            boolean valid;
+            String urlRegex = "^(http|https)://[-a-zA-Z0-9+&@#/%?=~_|,!:.;]*[-a-zA-Z0-9+@#/%=&_|]";
+            Pattern pattern = Pattern.compile(urlRegex);
+            Matcher m = pattern.matcher(url);
+            valid = m.matches();
+
+            // Connect to the URL
+            int code;
+            try {
+                HttpURLConnection connect = (HttpURLConnection) myURL.openConnection();
+                code = connect.getResponseCode();
+            } catch (Exception ex) {
+                code = -1;
+            }
+
+            // Create JSON Object with code
+            JSONObject obj = new JSONObject();
+            try {
+                obj.put("url", url);
+                obj.put("valid", valid);
+                obj.put("code", code);
+            } catch (JSONException ignored) {
+            }
+
+            // Pretty Print JSON
+            Gson gson = new Gson();
+            Gson gsonPP = new GsonBuilder().setPrettyPrinting().create();
+            JsonObject jsonObject = gson.fromJson(obj.toString(), JsonObject.class);
+            String jsonOutput = gsonPP.toJson(jsonObject);
+
+            // Return JSON Report
+            out.println(jsonOutput);
         }
+    }
+
+    public static URL getFinalURL(URL url) {
+        try {
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setInstanceFollowRedirects(false);
+            con.connect();
+            int resCode = con.getResponseCode();
+            if (resCode == HttpURLConnection.HTTP_SEE_OTHER
+                    || resCode == HttpURLConnection.HTTP_MOVED_PERM
+                    || resCode == HttpURLConnection.HTTP_MOVED_TEMP) {
+                String Location = con.getHeaderField("Location");
+                if (Location.startsWith("/")) {
+                    Location = url.getProtocol() + "://" + url.getHost() + Location;
+                }
+                return getFinalURL(new URL(Location));
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return url;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

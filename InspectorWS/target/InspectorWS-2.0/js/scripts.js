@@ -26,14 +26,14 @@
 //});
 
 // LINKS
-// document.getElementById("links-li").style.display = "none";
-// document.getElementById('links-title').addEventListener('click', () => {
-//     if (document.getElementById("links-li").style.display === "none") {
-//         document.getElementById("links-li").style.display = "block";
-//     } else {
-//         document.getElementById("links-li").style.display = "none";
-//     }
-// });
+document.getElementById("links-li").style.display = "none";
+document.getElementById('links-title').addEventListener('click', () => {
+    if (document.getElementById("links-li").style.display === "none") {
+        document.getElementById("links-li").style.display = "block";
+    } else {
+        document.getElementById("links-li").style.display = "none";
+    }
+});
 
 // SPELLING
 document.getElementById("spelling-li").style.display = "none";
@@ -208,6 +208,8 @@ async function enableDisableActions(action) {
         document.getElementById("languages_list").disabled = false;
         // Enable Lighthouse Btn
         document.getElementById("lighthouse-btn").disabled = false;
+        // Enable Links Btn
+        document.getElementById("links-btn").disabled = false;
         // Enable Dictionary Btn
         document.getElementById("dictionaryModalBtn").disabled = false;
         // Enable Re-Run Spelling Btn
@@ -225,6 +227,8 @@ async function enableDisableActions(action) {
         document.getElementById("languages_list").disabled = true;
         // Disable Lighthouse Btn
         document.getElementById("lighthouse-btn").disabled = true;
+        // Disable Links Btn
+        document.getElementById("links-btn").disabled = true;
         // Disable Dictionary Btn
         document.getElementById("dictionaryModalBtn").disabled = true;
         // Disable Re-Run Spelling Btn
@@ -347,38 +351,40 @@ async function checkBrokenLinks() {
         let linkElem = allLinks[i];
         let linkHref = linkElem.href;
 
-        let isVisible = linkElem.offsetParent;
-        if (isVisible !== null) {
+        // Update secondary message on Overlay
+        document.getElementById("overlaySndMessage").innerText = "(" + i + "/" + allLinks.length + ")";
 
-            // Check if href has already been checked
-            if (checkedLinks.includes(linkHref) !== true) {
+        // Check if href has already been checked
+        if (checkedLinks.includes(linkHref) !== true) {
 
-                // Add href to checkedLinks
-                checkedLinks.push(linkHref);
+            // Add href to checkedLinks
+            checkedLinks.push(linkHref);
 
-                // Check if broken link
-                let brokenLinkServlet = inspectorUrl + "BrokenLinks?url=" + linkHref;
-                let linkJSON = await getRequest(brokenLinkServlet);
-                let linkCode = linkJSON.code;
-                let linkValid = linkJSON.valid;
-                let message = "Not Found";
-                let borderColor = "red";
+            // Check if broken link
+            // Get SpellCheckJSON
+            let linkJSON = await $.post("/InspectorWS/BrokenLinks", {
+                url: linkHref,
+            }, function (result) {
+                return result;
+            });
 
-                // Check code status
-                if (linkCode === 404) {
-                    console.log(linkCode + " - " + linkHref);
+            let linkCode = linkJSON.code;
+            let message = "Not Found";
+            let borderColor = "red";
 
-                    brokenLinksCount += 1;
+            // Check code status
+            if (linkCode === 404) {
+                console.log(linkCode + " - " + linkHref);
 
-                    // Highlight Broken Link in HTML View
-                    linkElem.parentNode.setAttribute("style", "padding: 2px 2px; border: 4px solid " + borderColor + ";");
+                brokenLinksCount += 1;
 
-                    // Update error color on html Code
-                    htmlCode.getElementById("htmlCode").innerHTML = htmlCode.getElementById("htmlCode").innerHTML.replaceAll(linkHref, "<span class='hoverMessage' aria-label='" + message + "' style='padding: 2px 2px; outline: 4px solid " + borderColor + ";'>" + linkHref + "</span>");
-                }
-            } else {
-                continue;
+                // Highlight Broken Link in HTML View
+                linkElem.parentNode.setAttribute("style", "padding: 2px 2px; border: 4px solid " + borderColor + ";");
+
+                // Update error color on html Code
+                htmlCode.getElementById("htmlCode").innerHTML = htmlCode.getElementById("htmlCode").innerHTML.replaceAll(linkHref, "<span class='hoverMessage' aria-label='" + message + "' style='padding: 2px 2px; outline: 4px solid " + borderColor + ";'>" + linkHref + "</span>");
             }
+        } else {
         }
     }
 
@@ -392,6 +398,9 @@ async function checkBrokenLinks() {
 
     // Show Broken Links Message
     document.getElementById("brokenLinks-p").hidden = false;
+
+    // Remove links-btn
+    document.getElementById("links-btn").hidden = true;
 
     // Remove overlay
     await overlay("removeOverlay", "", "");

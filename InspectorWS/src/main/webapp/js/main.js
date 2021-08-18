@@ -176,6 +176,9 @@ async function runLanguageTool() {
                             errorsDict[error] = [1, message, replacements, color];
                         }
 
+                        // Update secondary message on Overlay
+                        document.getElementById("overlaySndMessage").innerText = "Found " + Object.keys(errorsDict).length + " spelling occurrences";
+
                     }
                 }
             }

@@ -228,17 +228,16 @@ Author     : xhico
     </ul>
 
     <%--    LINKS--%>
-    <%--    <ul id="links-section" class="sidebar-list">--%>
-    <%--        <li><b><a id="links-title" href="#">LINKS REPORT<i class="arrow down"></i></a></b></li>--%>
-    <%--        <div id="links-div" hidden>--%>
-    <%--            <li id="links-li">--%>
-    <%--                <p>Found <span id="totalLinks">0</span> link(s) (<span id="extLinks">0</span> external and <span--%>
-    <%--                        id="intLinks">0</span> internal).--%>
-    <%--                </p>--%>
-    <%--                <p id="brokenLinks-p" hidden>Found <span id="brokenLinks">0</span> broken links(s).</p>--%>
-    <%--            </li>--%>
-    <%--        </div>--%>
-    <%--    </ul>--%>
+    <ul id="links-section" class="sidebar-list">
+        <li><b><a id="links-title" href="#">LINKS REPORT<i class="arrow down"></i></a></b></li>
+        <button type="button" id="links-btn" class="btn active " onclick="runLinks()">Run Links Report</button>
+        <div id="links-div" hidden>
+            <li id="links-li">
+                <p>Found <span id="totalLinks">0</span> link(s) (<span id="extLinks">0</span> external and <span id="intLinks">0</span> internal).</p>
+                <p id="brokenLinks-p" hidden>Found <span id="brokenLinks">0</span> broken links(s).</p>
+            </li>
+        </div>
+    </ul>
 
     <%--    ACCESSIBILITY--%>
     <%--    <ul id="accessibility-section" class="sidebar-list">--%>
