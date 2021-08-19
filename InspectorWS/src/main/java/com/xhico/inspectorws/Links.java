@@ -29,8 +29,8 @@ import java.util.List;
 /**
  * @author xhico
  */
-@WebServlet(name = "Lighthouse", urlPatterns = {"/Lighthouse"})
-public class Lighthouse extends HttpServlet {
+@WebServlet(name = "Links", urlPatterns = {"/Links"})
+public class Links extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,69 +42,46 @@ public class Lighthouse extends HttpServlet {
      * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("application/json");
         PrintWriter out = response.getWriter();
 
         try {
-            // Set variables
-            String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+
+            // Get url param
             String url = request.getParameter("url");
-            String view = request.getParameter("view");
-            String device = request.getParameter("device");
-            String folderPath = "/opt/node/data/lighthouse/";
+            String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+            String folderPath = "/opt/node/data/links/";
             String baseFile = url.replaceAll("[^a-zA-Z0-9]", "") + "_" + timeStamp;
             String jsonFilePath = folderPath + baseFile + ".json";
 
-            if (!url.equals("null")) {
-                response.setContentType("application/json");
+            // Set base command
+            String siteURL = "--siteUrl=" + url;
+            String jsonPath = "--jsonPath=" + jsonFilePath;
+            List<String> base = Arrays.asList("node", "/opt/node/scrips/links.js", siteURL, jsonPath);
+            List<String> cmd = new ArrayList<>(base);
 
-                // Set base command
-                List<String> base = Arrays.asList("lighthouse", url, "--output", "json", "--output", "html", "--output-path", jsonFilePath, "--chrome-flags='--headless --no-sandbox'", "--quiet");
-                List<String> cmd = new ArrayList<>(base);
+            // Run Lighthouse Process
+            ProcessBuilder builder = new ProcessBuilder(cmd);
+            builder.redirectErrorStream(true);
+            final Process process = builder.start();
+            watch(process);
 
-                // Set Device
-                if (device.equals("desktop")) {
-                    cmd.add("--preset=desktop");
-                } else if (device.equals("mobile")) {
-                    cmd.add("--form-factor=mobile");
-                }
+            // Wait until Process is finished
+            process.waitFor();
 
-                // Run Lighthouse Process
-                ProcessBuilder builder = new ProcessBuilder(cmd);
-                builder.redirectErrorStream(true);
-                final Process process = builder.start();
-                watch(process);
+            // Reads json file && add jsonPath
+            String jsonContent = Files.readString(Paths.get(jsonFilePath));
+            Gson gson = new Gson();
+            Gson gsonPP = new GsonBuilder().setPrettyPrinting().create();
+            JsonObject jsonObject = gson.fromJson(jsonContent, JsonObject.class);
+            String jsonOutput = gsonPP.toJson(jsonObject);
 
-                // Wait until Process is finished
-                process.waitFor();
-
-                // Reads json file && add jsonPath
-                String jsonReport = folderPath + baseFile + ".report" + ".json";
-                String htmlReport = baseFile + ".report" + ".html";
-                String jsonContent = Files.readString(Paths.get(jsonReport));
-                Gson gson = new Gson();
-                Gson gsonPP = new GsonBuilder().setPrettyPrinting().create();
-                JsonObject jsonObject = gson.fromJson(jsonContent, JsonObject.class);
-                jsonObject.addProperty("htmlReport", htmlReport);
-                String jsonOutput = gsonPP.toJson(jsonObject);
-
-                // Return JSON Report
-                out.println(jsonOutput);
-            } else if (!(view.equals("null"))) {
-                response.setContentType("text/html;charset=UTF-8");
-
-                // Read HTML Report
-                String htmlContent = Files.readString(Paths.get(folderPath + view));
-
-                // Return HTML Report
-                out.println(htmlContent);
-            } else {
-                // Ups!
-                out.println("Wrong call");
-            }
+            // Return JSON Report
+            out.println(jsonOutput);
         } catch (Exception ex) {
-            // Even More Ups!
             out.println(ex);
         }
+
     }
 
     private static void watch(final Process process) {

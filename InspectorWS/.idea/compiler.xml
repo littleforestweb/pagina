@@ -9,10 +9,8 @@
         <module name="InspectorWS" />
       </profile>
     </annotationProcessing>
-  </component>
-  <component name="JavacSettings">
-    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="InspectorWS" options="-endorseddirs C:\Users\xhico\OneDrive\LittleForest\LFi\PageInspector\pagina\InspectorWS\target/endorsed" />
-    </option>
+    <bytecodeTargetLevel>
+      <module name="InspectorWS" target="11" />
+    </bytecodeTargetLevel>
   </component>
 </project>

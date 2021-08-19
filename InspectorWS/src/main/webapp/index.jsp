@@ -89,14 +89,18 @@ Author     : xhico
 <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
+
             <div class="modal-header">
                 <h5 class="modal-title" id="modalErrorTitle"></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+
             <div class="modal-body" id="modalErrorBody"></div>
+
             <div class="modal-footer">
                 <button type="button" class="btn active" data-bs-dismiss="modal">Close</button>
             </div>
+
         </div>
     </div>
 </div>
@@ -158,14 +162,6 @@ Author     : xhico
                 <button type="button" onclick="resetPage()" class="btn active col-md-3  me-2">Clear</button>
                 <button type="button" id="goBtn" hidden onclick="setIframe()" class="btn col-md-3  me-2">setIframe</button>
             </div>
-            <%--            <ul class="navbar-nav mb-2 mb-lg-0">--%>
-            <%--                <button type="button" class="btn  me-2">Comment</button>--%>
-            <%--                <button type="button" class="btn  me-2">Fix</button>--%>
-            <%--                <button type="button" class="btn  me-2">History</button>--%>
-            <%--                <button type="button" class="btn  me-2">Crawl</button>--%>
-            <%--                <button type="button" class="btn  me-2">Edit</button>--%>
-            <%--                <button type="button" class="btn  me-2">Share</button>--%>
-            <%--            </ul>--%>
             <div class="btn-group me-2" role="group">
                 <button type="button" id="desktopView" onclick="toggleView('Desktop')" class="active btn">Desktop</button>
                 <button type="button" id="mobileView" onclick="toggleView('Mobile')" class="btn">Mobile</button>
@@ -248,6 +244,17 @@ Author     : xhico
         </div>
     </ul>
 
+    <%--    LIGHTHOUSE--%>
+    <ul id="lighthouse-section" class="sidebar-list">
+        <li><b><a id="lighthouse-title" href="#">LIGHTHOUSE REPORT<i class="arrow down"></i></a></b></li>
+        <button type="button" id="lighthouse-btn" class="btn active " onclick="runLighthouse()">Run Lighthouse Report</button>
+        <div id="lighthouse-div" hidden>
+            <li id="lighthouse-li">
+                <ul id="lighthouse_info"></ul>
+            </li>
+        </div>
+    </ul>
+
     <%--    LINKS--%>
     <ul id="links-section" class="sidebar-list">
         <li><b><a id="links-title" href="#">LINKS REPORT<i class="arrow down"></i></a></b></li>
@@ -260,69 +267,6 @@ Author     : xhico
             <button hidden type="button" id="brokenLinksModalBtn" class="btn active  mt-2" data-bs-toggle="modal" data-bs-target="#brokenLinksModal">View Broken Links</button>
         </div>
     </ul>
-
-    <%--    ACCESSIBILITY--%>
-    <%--    <ul id="accessibility-section" class="sidebar-list">--%>
-    <%--        <li><b><a id="accessibility-title" href="#">ACCESSIBILITY REPORT <i class="arrow down"></i></a></b></li>--%>
-    <%--        <div id="accessibility-div" hidden>--%>
-    <%--            <li id="accessibility-li">--%>
-    <%--            </li>--%>
-    <%--        </div>--%>
-    <%--    </ul>--%>
-
-    <%--    CONTENT--%>
-    <%--    <ul id="content-section" class="sidebar-list">--%>
-    <%--        <li><b><a id="content-title" href="#">CONTENT REPORT<i class="arrow down"></i></a></b></li>--%>
-    <%--        <div id="content-keyword-div">--%>
-    <%--            <label>Keyword</label>--%>
-    <%--            <input class="form-control" placeholder="Not done">--%>
-    <%--            <br>--%>
-    <%--        </div>--%>
-    <%--        <button type="button" id="content-btn" class="btn " onclick="addContentInfo()">Run Content--%>
-    <%--            Report--%>
-    <%--        </button>--%>
-    <%--        <div id="content-div" hidden>--%>
-    <%--            <li id="content-li">--%>
-    <%--                <p>Found <span id="totalImages">0</span> image(s)</p>--%>
-    <%--            </li>--%>
-    <%--        </div>--%>
-    <%--    </ul>--%>
-
-    <%--    LIGHTHOUSE--%>
-    <ul id="lighthouse-section" class="sidebar-list">
-        <li><b><a id="lighthouse-title" href="#">LIGHTHOUSE REPORT<i class="arrow down"></i></a></b></li>
-        <button type="button" id="lighthouse-btn" class="btn active " onclick="runLighthouse()">Run Lighthouse Report</button>
-        <div id="lighthouse-div" hidden>
-            <li id="lighthouse-li">
-                <ul id="lighthouse_info"></ul>
-            </li>
-        </div>
-    </ul>
-
-    <%--    TECHNOLOGIES--%>
-    <%--    <ul id="technologies-section" class="sidebar-list">--%>
-    <%--        <li><b><a id="technologies-title" href="#">TECHNOLOGIES REPORT <i class="arrow down"></i></a></b></li>--%>
-    <%--        <button type="button" id="technologies-btn" class="btn " onclick="runTechnologies()">Run--%>
-    <%--            Technologies Report--%>
-    <%--        </button>--%>
-    <%--        <div id="technologies-div" hidden>--%>
-    <%--            <li id="technologies-li">--%>
-    <%--                <ul id="technologies_info"></ul>--%>
-    <%--            </li>--%>
-    <%--        </div>--%>
-    <%--    </ul>--%>
-
-    <%--    COOKIES--%>
-    <%--    <ul id="cookies-section" class="sidebar-list">--%>
-    <%--        <li><b><a id="cookies-title" href="#">COOKIES REPORT <i class="arrow down"></i></a></b></li>--%>
-    <%--        <button type="button" id="cookies-btn" class="btn " onclick="runCookies()">Run Cookies Report--%>
-    <%--        </button>--%>
-    <%--        <div id="cookies-div" hidden>--%>
-    <%--            <li id="cookies-li">--%>
-    <%--                <ul id="cookies_info"></ul>--%>
-    <%--            </li>--%>
-    <%--        </div>--%>
-    <%--    </ul>--%>
 
 </div>
 <!-- END SIDEBAR -->
@@ -346,8 +290,39 @@ Author     : xhico
 <!-- SCRIPTS -->
 <script src="js/findAndReplaceDOMText.js"></script>
 <script src="js/syntaxHighlighter.js"></script>
-<script src="js/scripts.js"></script>
 <script src="js/main.js"></script>
+
+<script>
+    // LINKS
+    document.getElementById("links-div").style.display = "none";
+    document.getElementById('links-title').addEventListener('click', () => {
+        if (document.getElementById("links-div").style.display === "none") {
+            document.getElementById("links-div").style.display = "block";
+        } else {
+            document.getElementById("links-div").style.display = "none";
+        }
+    });
+
+    // SPELLING
+    document.getElementById("spelling-div").style.display = "block";
+    document.getElementById('spelling-title').addEventListener('click', () => {
+        if (document.getElementById("spelling-div").style.display === "none") {
+            document.getElementById("spelling-div").style.display = "block";
+        } else {
+            document.getElementById("spelling-div").style.display = "none";
+        }
+    });
+
+    // LIGHTHOUSE
+    document.getElementById("lighthouse-div").style.display = "none";
+    document.getElementById('lighthouse-title').addEventListener('click', () => {
+        if (document.getElementById("lighthouse-div").style.display === "none") {
+            document.getElementById("lighthouse-div").style.display = "block";
+        } else {
+            document.getElementById("lighthouse-div").style.display = "none";
+        }
+    });
+</script>
 
 <script>
     // If a URL Param is present auto run
@@ -385,6 +360,7 @@ Author     : xhico
 
     <% } %>
 </script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>
