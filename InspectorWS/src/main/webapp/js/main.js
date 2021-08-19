@@ -5,8 +5,9 @@
 
 // ------------------------------------- GLOBAL VARIABLES ------------------------------------- //
 
-const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
-// const inspectorUrl = "http://localhost:8080/InspectorWS/";
+// const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS/";
+// const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS/";
+const inspectorUrl = "http://localhost:8080/InspectorWS/";
 
 let counter = 0;
 let myTimmer = setInterval(myTimer, 1000);
@@ -73,12 +74,25 @@ async function runLinks() {
     document.getElementById("extLinks").innerText = extLinksCount;
     document.getElementById("intLinks").innerText = intLinksCount;
 
+    // Check for Broken Links
+    await checkBrokenLinks();
 
+    // Add brokenLinksCount to modal
+    document.getElementById("brokenLinksCount").innerText = document.getElementById("brokenLinks").innerText + " links";
+
+    // Show Broken Links Message
+    document.getElementById("brokenLinks-p").hidden = false;
+
+    // Remove links-btn
+    document.getElementById("links-btn").hidden = true;
+
+    // Toggle Links Section
+    document.getElementById("links-div").style.display = "block";
+    document.getElementById("links-div").hidden = false;
+    document.getElementById("brokenLinksModalBtn").hidden = false;
 
     // Remove overlay
     await overlay("removeOverlay", "", "");
-
-    await checkBrokenLinks();
 }
 
 async function runLanguageTool() {
@@ -249,7 +263,7 @@ async function runLanguageTool() {
     }
 
     // Toggle Spelling Section
-    document.getElementById("spelling-li").style.display = "block";
+    document.getElementById("spelling-div").style.display = "block";
     document.getElementById("spelling-div").hidden = false;
 
     // Remove overlay
@@ -304,7 +318,7 @@ async function runLighthouse() {
         document.getElementById("mainLighthouse").src = inspectorUrl + "Lighthouse?" + "url=null" + "&cats=null" + "&view=" + lighthouseJson["htmlReport"];
         document.getElementById("lighthouse-section").removeAttribute("hidden");
         document.getElementById("lighthouse-btn").hidden = true;
-        document.getElementById("lighthouse-li").style.display = "block";
+        document.getElementById("lighthouse-div").style.display = "block";
         document.getElementById("lighthouse-div").hidden = false;
         document.getElementById("LighthouseViewBtn").hidden = false;
         toggleView("lighthouseReport");

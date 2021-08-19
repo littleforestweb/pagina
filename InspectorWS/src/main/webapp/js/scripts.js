@@ -26,32 +26,32 @@
 //});
 
 // LINKS
-document.getElementById("links-li").style.display = "none";
+document.getElementById("links-div").style.display = "none";
 document.getElementById('links-title').addEventListener('click', () => {
-    if (document.getElementById("links-li").style.display === "none") {
-        document.getElementById("links-li").style.display = "block";
+    if (document.getElementById("links-div").style.display === "none") {
+        document.getElementById("links-div").style.display = "block";
     } else {
-        document.getElementById("links-li").style.display = "none";
+        document.getElementById("links-div").style.display = "none";
     }
 });
 
 // SPELLING
-document.getElementById("spelling-li").style.display = "none";
+document.getElementById("spelling-div").style.display = "block";
 document.getElementById('spelling-title').addEventListener('click', () => {
-    if (document.getElementById("spelling-li").style.display === "none") {
-        document.getElementById("spelling-li").style.display = "block";
+    if (document.getElementById("spelling-div").style.display === "none") {
+        document.getElementById("spelling-div").style.display = "block";
     } else {
-        document.getElementById("spelling-li").style.display = "none";
+        document.getElementById("spelling-div").style.display = "none";
     }
 });
 
 // LIGHTHOUSE
-document.getElementById("lighthouse-li").style.display = "none";
+document.getElementById("lighthouse-div").style.display = "none";
 document.getElementById('lighthouse-title').addEventListener('click', () => {
-    if (document.getElementById("lighthouse-li").style.display === "none") {
-        document.getElementById("lighthouse-li").style.display = "block";
+    if (document.getElementById("lighthouse-div").style.display === "none") {
+        document.getElementById("lighthouse-div").style.display = "block";
     } else {
-        document.getElementById("lighthouse-li").style.display = "none";
+        document.getElementById("lighthouse-div").style.display = "none";
     }
 });
 
@@ -343,6 +343,8 @@ async function checkBrokenLinks() {
     // Get htmlCode
     let htmlCode = document.getElementById("mainCode").contentWindow.document;
 
+    let brokenLinksList = document.getElementById("brokenLinksList");
+
     // Set vars
     let brokenLinksCount = 0;
     let checkedLinks = [];
@@ -374,7 +376,7 @@ async function checkBrokenLinks() {
             let borderColor = "red";
 
             // Check code status
-            if (linkCode === 404) {
+            if (linkCode === 404 || linkCode === -1) {
                 console.log(linkCode + " - " + linkHref);
 
                 brokenLinksCount += 1;
@@ -384,6 +386,9 @@ async function checkBrokenLinks() {
 
                 // Update error color on html Code
                 htmlCode.getElementById("htmlCode").innerHTML = htmlCode.getElementById("htmlCode").innerHTML.replaceAll(linkHref, "<span class='hoverMessage' aria-label='" + message + "' style='padding: 2px 2px; outline: 4px solid " + borderColor + ";'>" + linkHref + "</span>");
+
+                // Add to brokenLinksList on Modal
+                brokenLinksList.innerHTML = brokenLinksList.innerHTML + "<label class='list-group-item'><a href='" + linkHref + "' target='_blank'>" + linkHref + "</a></label>";
             }
         } else {
         }
@@ -396,19 +401,6 @@ async function checkBrokenLinks() {
     if (brokenLinksCount === 0) {
         document.getElementById("brokenLinks-p").innerHTML = document.getElementById("brokenLinks-p").innerHTML + "<br><b>Good Job!<br>";
     }
-
-    // Show Broken Links Message
-    document.getElementById("brokenLinks-p").hidden = false;
-
-    // Remove links-btn
-    document.getElementById("links-btn").hidden = true;
-
-    // Toggle Links Section
-    document.getElementById("links-li").style.display = "block";
-    document.getElementById("links-div").hidden = false;
-
-    // Remove overlay
-    await overlay("removeOverlay", "", "");
 }
 
 async function setDictionary(cname, cvalue, exdays) {

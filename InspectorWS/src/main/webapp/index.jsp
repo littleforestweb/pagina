@@ -100,7 +100,7 @@ Author     : xhico
         </div>
     </div>
 </div>
-<%-- END MODAL--%>
+<%-- END ERROR MODAL--%>
 
 <%-- DICTIONARY MODAL --%>
 <div class="modal fade" id="dictionaryModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
@@ -125,7 +125,28 @@ Author     : xhico
         </div>
     </div>
 </div>
-<%-- END MODAL--%>
+<%-- END DICTIONARY MODAL--%>
+
+<%-- BROKEN lINKS MODAL --%>
+<div class="modal fade" id="brokenLinksModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Broken Links (<span id="brokenLinksCount">0</span>)</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div id="brokenLinksList" class="list-group"></div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn active" data-bs-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<%-- END BROKEN lINKS MODAL--%>
 
 <!-- TOPNAV -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -165,67 +186,66 @@ Author     : xhico
     <%--    SPELLING--%>
     <ul id="spelling-section" class="sidebar-list">
         <li><b><a id="spelling-title" href="#">SPELLING REPORT <i class="arrow down"></i></a></b></li>
-        <div id="language-select-div">
-            <label>Language <span id="detectedLanguage"></span></label>
-            <select class="form-select" id="languages_list">
-                <option selected value=auto>Auto-Detect</option>
-                <option value=ar>Arabic</option>
-                <option value=ast-ES>Asturian</option>
-                <option value=be-BY>Belarusian</option>
-                <option value=br-FR>Breton</option>
-                <option value=ca-ES>Catalan</option>
-                <option value=ca-ES-valencia>Catalan (Valencian)</option>
-                <option value=zh-CN>Chinese</option>
-                <option value=da-DK>Danish</option>
-                <option value=nl>Dutch</option>
-                <option value=nl-BE>Dutch (Belgium)</option>
-                <option value=en-AU>English (Australian)</option>
-                <option value=en-CA>English (Canadian)</option>
-                <option value=en-GB>English (GB)</option>
-                <option value=en-NZ>English (New Zealand)</option>
-                <option value=en-ZA>English (South African)</option>
-                <option value=en-US>English (US)</option>
-                <option value=eo>Esperanto</option>
-                <option value=fr>French</option>
-                <option value=gl-ES>Galician</option>
-                <option value=de-AT>German (Austria)</option>
-                <option value=de-DE>German (Germany)</option>
-                <option value=de-CH>German (Swiss)</option>
-                <option value=el-GR>Greek</option>
-                <option value=ga-IE>Irish</option>
-                <option value=it>Italian</option>
-                <option value=ja-JP>Japanese</option>
-                <option value=km-KH>Khmer</option>
-                <option value=nb>Norwegian (Bokmål)</option>
-                <option value=no>Norwegian (Bokmål)</option>
-                <option value=fa>Persian</option>
-                <option value=pl-PL>Polish</option>
-                <option value=pt-AO>Portuguese (Angola preAO)</option>
-                <option value=pt-BR>Portuguese (Brazil)</option>
-                <option value=pt-MZ>Portuguese (Moçambique preAO)</option>
-                <option value=pt-PT>Portuguese (Portugal)</option>
-                <option value=ro-RO>Romanian</option>
-                <option value=ru-RU>Russian</option>
-                <option value=sk-SK>Slovak</option>
-                <option value=sl-SI>Slovenian</option>
-                <option value=es>Spanish</option>
-                <option value=es-AR>Spanish (voseo)</option>
-                <option value=sv>Swedish</option>
-                <option value=tl-PH>Tagalog</option>
-                <option value=ta-IN>Tamil</option>
-                <option value=uk-UA>Ukrainian</option>
-            </select>
-            <button type="button" hidden id="rerunSpelling" onclick="clearSpelling(); runLanguageTool()" class="btn active mt-2">Re-Run</button>
-        </div>
-
         <div id="spelling-div" hidden>
+            <div id="language-select-div">
+                <label>Language <span id="detectedLanguage"></span></label>
+                <select class="form-select" id="languages_list">
+                    <option selected value=auto>Auto-Detect</option>
+                    <option value=ar>Arabic</option>
+                    <option value=ast-ES>Asturian</option>
+                    <option value=be-BY>Belarusian</option>
+                    <option value=br-FR>Breton</option>
+                    <option value=ca-ES>Catalan</option>
+                    <option value=ca-ES-valencia>Catalan (Valencian)</option>
+                    <option value=zh-CN>Chinese</option>
+                    <option value=da-DK>Danish</option>
+                    <option value=nl>Dutch</option>
+                    <option value=nl-BE>Dutch (Belgium)</option>
+                    <option value=en-AU>English (Australian)</option>
+                    <option value=en-CA>English (Canadian)</option>
+                    <option value=en-GB>English (GB)</option>
+                    <option value=en-NZ>English (New Zealand)</option>
+                    <option value=en-ZA>English (South African)</option>
+                    <option value=en-US>English (US)</option>
+                    <option value=eo>Esperanto</option>
+                    <option value=fr>French</option>
+                    <option value=gl-ES>Galician</option>
+                    <option value=de-AT>German (Austria)</option>
+                    <option value=de-DE>German (Germany)</option>
+                    <option value=de-CH>German (Swiss)</option>
+                    <option value=el-GR>Greek</option>
+                    <option value=ga-IE>Irish</option>
+                    <option value=it>Italian</option>
+                    <option value=ja-JP>Japanese</option>
+                    <option value=km-KH>Khmer</option>
+                    <option value=nb>Norwegian (Bokmål)</option>
+                    <option value=no>Norwegian (Bokmål)</option>
+                    <option value=fa>Persian</option>
+                    <option value=pl-PL>Polish</option>
+                    <option value=pt-AO>Portuguese (Angola preAO)</option>
+                    <option value=pt-BR>Portuguese (Brazil)</option>
+                    <option value=pt-MZ>Portuguese (Moçambique preAO)</option>
+                    <option value=pt-PT>Portuguese (Portugal)</option>
+                    <option value=ro-RO>Romanian</option>
+                    <option value=ru-RU>Russian</option>
+                    <option value=sk-SK>Slovak</option>
+                    <option value=sl-SI>Slovenian</option>
+                    <option value=es>Spanish</option>
+                    <option value=es-AR>Spanish (voseo)</option>
+                    <option value=sv>Swedish</option>
+                    <option value=tl-PH>Tagalog</option>
+                    <option value=ta-IN>Tamil</option>
+                    <option value=uk-UA>Ukrainian</option>
+                </select>
+                <button type="button" hidden id="rerunSpelling" onclick="clearSpelling(); runLanguageTool()" class="btn active mt-2">Re-Run</button>
+            </div>
+
             <li id="spelling-li">
                 <p id="spellErrors-p">Found <span id="totalErrors">0</span> occurrences.</p>
                 <ul id="spelling_errors"></ul>
             </li>
+            <button type="button" id="dictionaryModalBtn" class="btn active  mt-2" data-bs-toggle="modal" data-bs-target="#dictionaryModal">Manage Dictionary</button>
         </div>
-
-        <button type="button" id="dictionaryModalBtn" class="btn active  mt-2" data-bs-toggle="modal" data-bs-target="#dictionaryModal">Manage Dictionary</button>
     </ul>
 
     <%--    LINKS--%>
@@ -237,6 +257,7 @@ Author     : xhico
                 <p>Found <span id="totalLinks">0</span> link(s) (<span id="extLinks">0</span> external and <span id="intLinks">0</span> internal).</p>
                 <p id="brokenLinks-p" hidden>Found <span id="brokenLinks">0</span> broken links(s).</p>
             </li>
+            <button hidden type="button" id="brokenLinksModalBtn" class="btn active  mt-2" data-bs-toggle="modal" data-bs-target="#brokenLinksModal">View Broken Links</button>
         </div>
     </ul>
 
