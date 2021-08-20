@@ -115,31 +115,14 @@ Author     : xhico
             <div class="modal-header">
                 <h5 class="modal-title">Manage Dictionary</h5>
                 <div class="btn-group me-2 d-flex justify-content-center" role="group">
-                    <button type="button" class="btn active" id="dictionaryTableViewBtn" onclick="toggleSpellView('dictionaryTableDiv')">Dictionary</button>
-                    <button type="button" class="btn" id="errorsTableViewBtn" onclick="toggleSpellView('errorsTableDiv')">Errors</button>
+                    <button type="button" class="btn active" id="errorsTableViewBtn" onclick="toggleSpellView('errorsTableDiv')">Errors Found</button>
+                    <button type="button" class="btn" id="dictionaryTableViewBtn" onclick="toggleSpellView('dictionaryTableDiv')">Dictionary</button>
                 </div>
             </div>
 
             <div class="modal-body">
-                <div id="dictionaryTableDiv">
-                    <table id="dictionaryTable" class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th>Error</th>
-                            <th>Action</th>
-                        </tr>
-                        </thead>
-                        <tbody id="dictionaryTableBody"></tbody>
-                        <tfoot>
-                        <tr>
-                            <th>Error</th>
-                            <th>Action</th>
-                        </tr>
-                        </tfoot>
-                    </table>
-                </div>
-                <div hidden id="errorsTableDiv">
-                    <table id="errorsTable" class="table table-striped">
+                <div id="errorsTableDiv">
+                    <table id="errorsTable" class="table table-striped" style="text-align: center">
                         <thead>
                         <tr>
                             <th>Error</th>
@@ -161,8 +144,25 @@ Author     : xhico
                         </tfoot>
                     </table>
                 </div>
-            </div>
+                <div hidden id="dictionaryTableDiv">
+                    <table id="dictionaryTable" class="table table-striped" style="text-align: center">
+                        <thead>
+                        <tr>
+                            <th>Error</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody id="dictionaryTableBody"></tbody>
+                        <tfoot>
+                        <tr>
+                            <th>Error</th>
+                            <th>Action</th>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
 
+            </div>
         </div>
     </div>
 </div>

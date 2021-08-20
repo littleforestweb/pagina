@@ -8,8 +8,8 @@
 
 
 // const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS";
-const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
-// const inspectorUrl = "http://localhost:8080/InspectorWS";
+// const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
+const inspectorUrl = "http://localhost:8080/InspectorWS";
 const nameWS = inspectorUrl.split("/")[3] + "/";
 const languageToolPost = "/" + nameWS + "LanguageTool";
 const lighthousePost = "/" + nameWS + "Lighthouse";
@@ -309,21 +309,41 @@ async function getDictionary(cname) {
     return dict;
 }
 
-async function addDictionary(word) {
-    console.log("addDictionary - " + word);
+async function loadDictionaryList() {
+    // Get existing Dictionary
+    let dict = (await getDictionary("dictionary"));
 
-    if (word === "") {
+    // Add line to table
+    for (let i = 0; i < dict.length; i++) {
+        let error = dict[i];
+        document.getElementById("dictionaryTableBody").innerHTML += "<tr><td>" + error + "</td><td><a href='#' class='removeDictionary' onclick='removeDictionary(\"" + error + "\")'>Remove</a>" + "</td></tr>";
+    }
+
+    $('#dictionaryTable').DataTable({
+        dom: 'Blfrtip',
+        buttons: [{text: 'Export', extend: 'csv', filename: 'Dictionary'}],
+        pageLength: 10,
+        "aLengthMenu": [[10, 50, 100], [10, 50, 100]],
+        "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
+        "order": [[0, "asc"]]
+    });
+}
+
+async function addDictionary(error) {
+    console.log("addDictionary - " + error);
+
+    if (error === "") {
         // Get inserted word
-        word = document.getElementById("dictionaryWord").value;
+        error = document.getElementById("dictionaryWord").value;
     }
 
     // Get existing Dictionary
     let dict = await getDictionary("dictionary");
 
     // Check if word is already on Dictionary
-    if (dict.includes(word)) {
+    if (dict.includes(error)) {
         document.getElementById("dictionaryWord").value = "";
-        document.getElementById("dictionaryWord").placeholder = "\"" + word + "\" already on dictionary.";
+        document.getElementById("dictionaryWord").placeholder = "\"" + error + "\" already on dictionary.";
         return;
     }
 
@@ -331,7 +351,7 @@ async function addDictionary(word) {
     let spelling_errors = document.getElementById("spelling_errors").childNodes;
     for (let i = 0; i < spelling_errors.length; i++) {
         let elem = spelling_errors[i];
-        if (elem.innerText.split(" (")[0] === word) {
+        if (elem.innerText.split(" (")[0] === error) {
             elem.remove();
             break;
         }
@@ -342,56 +362,44 @@ async function addDictionary(word) {
 
     // Set new Dictionary
     if (dict.length === 0) {
-        dict = [word];
+        dict = [error];
     } else {
-        dict.push(word);
+        dict.push(error);
     }
 
     // Update Cookie with the new Dictionary
     await setDictionary("dictionary", dict, 180);
 
-    // Reload Dictionary List
-    await loadDictionaryList();
-}
+    // Add to Dictionary Table
+    document.getElementById("dictionaryTableBody").innerHTML += "<tr><td>" + error + "</td><td><a href='#' class='removeDictionary' onclick='removeDictionary(\"" + error + "\")'>Remove</a>" + "</td></tr>";
 
-async function loadDictionaryList() {
-    // Get existing Dictionary
-    let dict = (await getDictionary("dictionary"));
-
-    // Get Dictionary List
-    let dictionaryTableBody = document.getElementById("dictionaryTableBody");
-    dictionaryTableBody.innerHTML = "";
-
-    // Add line to table
-    for (let i = 0; i < dict.length; i++) {
-        let error = dict[i];
-        document.getElementById("dictionaryTableBody").innerHTML += "<tr><td>" + error + "</td><td><a href='#' onclick='removeDictionary(\"" + error + "\")'>Remove</a>" + "</td></tr>";
-    }
-
-    $('#dictionaryTable').DataTable({
-        dom: 'Blfrtip',
-        buttons: [{text: 'Export', extend: 'csv', filename: 'Dictionary'}],
-        pageLength: 10,
-        "aLengthMenu": [[10, 50, 100], [10, 50, 100]],
-        "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."}
+    // Remove row from table
+    $('#errorsTable').on('click', '.addDictionary', function () {
+        var table = $('#errorsTable').DataTable();
+        table.row($(this).parents('tr')).remove().draw();
     });
+
 }
 
-async function removeDictionary(word) {
+async function removeDictionary(error) {
+    console.log("removeDictionary - " + error);
+
     // Get existing Dictionary
     let dict = await getDictionary("dictionary");
 
     // Remove word from Dictionary
     dict = dict.filter(function (value, index, arr) {
-        return value !== word;
+        return value !== error;
     });
-
 
     // Update Cookie with the new Dictionary
     await setDictionary("dictionary", dict, 180);
 
-    // Reload Dictionary List
-    await loadDictionaryList();
+    // Remove row from table
+    $('#dictionaryTable').on('click', '.removeDictionary', function () {
+        var table = $('#dictionaryTable').DataTable();
+        table.row($(this).parents('tr')).remove().draw();
+    });
 }
 
 async function toggleSpellView(view) {
@@ -538,7 +546,7 @@ async function runLanguageTool() {
         spelling_errors.innerHTML += "<li><a href=javascript:gotoSpellError('spell_" + error + "');>" + error + " (" + count + "x)</a></li>";
 
         // Add line to table
-        document.getElementById("errorsTableBody").innerHTML += "<tr><td style='vertical-align: middle'>" + error + "</td><td style='vertical-align: middle'>" + replacements + "</td><td style='vertical-align: middle'>" + message + "</td><td style='vertical-align: middle; text-align: center'>" + count + "</td><td style='vertical-align: middle'>" + "<a href='#' onclick='addDictionary(\"" + error + "\")'>Add to Dictionary</a>" + "</td></tr>";
+        document.getElementById("errorsTableBody").innerHTML += "<tr><td style='vertical-align: middle'>" + error + "</td><td style='vertical-align: middle'>" + replacements + "</td><td style='vertical-align: middle'>" + message + "</td><td style='vertical-align: middle; text-align: center'>" + count + "</td><td style='vertical-align: middle'>" + "<a href='#' class='addDictionary' onclick='addDictionary(\"" + error + "\")'>Add to Dictionary</a>" + "</td></tr>";
     }
 
     $('#errorsTable').DataTable({
@@ -546,7 +554,8 @@ async function runLanguageTool() {
         buttons: [{text: 'Export', extend: 'csv', filename: 'Spelling Errors'}],
         pageLength: 10,
         "aLengthMenu": [[10, 50, 100], [10, 50, 100]],
-        "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."}
+        "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
+        "order": [[3, "desc"]]
     });
 
     // Sort the array based on the length of the error
