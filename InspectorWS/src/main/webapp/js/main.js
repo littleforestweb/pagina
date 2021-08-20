@@ -8,8 +8,8 @@
 
 
 // const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS";
-// const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
-const inspectorUrl = "http://localhost:8080/InspectorWS";
+const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
+// const inspectorUrl = "http://localhost:8080/InspectorWS";
 const nameWS = inspectorUrl.split("/")[3] + "/";
 const languageToolPost = "/" + nameWS + "LanguageTool";
 const lighthousePost = "/" + nameWS + "Lighthouse";
@@ -310,7 +310,7 @@ async function getDictionary(cname) {
 }
 
 async function addDictionary(word) {
-    console.log("addDictionary - " + word)
+    console.log("addDictionary - " + word);
 
     if (word === "") {
         // Get inserted word
@@ -359,23 +359,21 @@ async function loadDictionaryList() {
     let dict = (await getDictionary("dictionary"));
 
     // Get Dictionary List
-    let dictList = document.getElementById("dictionaryList");
-    dictList.innerHTML = "";
+    let dictionaryTableBody = document.getElementById("dictionaryTableBody");
+    dictionaryTableBody.innerHTML = "";
 
-    // // Set number of error on modal title
-    // let totalDictWords = ((dict.length === 1) ? dict.length + " word" : dict.length + " words")
-    // document.getElementById("totalDictWords").innerText = totalDictWords;
-
-    // Check if the String is Empty and Only has one element
-    if (dict.length === 0) {
-        document.getElementById("dictionaryWord").value = "";
-        document.getElementById("dictionaryWord").placeholder = "Insert your first word.";
-        return;
+    // Add line to table
+    for (let i = 0; i < dict.length; i++) {
+        let error = dict[i];
+        document.getElementById("dictionaryTableBody").innerHTML += "<tr><td>" + error + "</td><td><a href='#' onclick='removeDictionary(\"" + error + "\")'>Remove</a>" + "</td></tr>";
     }
 
-    // Add Inserted Word to List
-    dict.forEach(function (word) {
-        dictList.innerHTML = dictList.innerHTML + "<label class='list-group-item'><span>" + word + "</span><a href='#' onclick='removeDictionary(\"" + word + "\")' class='removeDictionary'>Remove</a></label>";
+    $('#dictionaryTable').DataTable({
+        dom: 'Blfrtip',
+        buttons: [{text: 'Export', extend: 'csv', filename: 'Dictionary'}],
+        pageLength: 10,
+        "aLengthMenu": [[10, 50, 100], [10, 50, 100]],
+        "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."}
     });
 }
 
@@ -388,6 +386,7 @@ async function removeDictionary(word) {
         return value !== word;
     });
 
+
     // Update Cookie with the new Dictionary
     await setDictionary("dictionary", dict, 180);
 
@@ -396,17 +395,16 @@ async function removeDictionary(word) {
 }
 
 async function toggleSpellView(view) {
-    if (view === "errorsList") {
-        document.getElementById("errorsListViewBtn").classList.add("active");
-        document.getElementById("dictionaryListViewBtn").classList.remove("active");
-        document.getElementById("errorsList").hidden = true;
-        document.getElementById("dictionaryList").hidden = false;
-
-    } else if (view === "dictionaryList") {
-        document.getElementById("errorsListViewBtn").classList.remove("active");
-        document.getElementById("dictionaryListViewBtn").classList.add("active");
-        document.getElementById("errorsList").hidden = false;
-        document.getElementById("dictionaryList").hidden = true;
+    if (view === "dictionaryTableDiv") {
+        document.getElementById("dictionaryTableViewBtn").classList.add("active");
+        document.getElementById("errorsTableViewBtn").classList.remove("active");
+        document.getElementById("dictionaryTableDiv").hidden = false;
+        document.getElementById("errorsTableDiv").hidden = true;
+    } else if (view === "errorsTableDiv") {
+        document.getElementById("dictionaryTableViewBtn").classList.remove("active");
+        document.getElementById("errorsTableViewBtn").classList.add("active");
+        document.getElementById("dictionaryTableDiv").hidden = true;
+        document.getElementById("errorsTableDiv").hidden = false;
     }
 }
 
@@ -537,8 +535,19 @@ async function runLanguageTool() {
 
         // Add errors to Sidebar
         let spelling_errors = document.getElementById("spelling_errors");
-        spelling_errors.innerHTML += "<li><a href=javascript:gotoSpellError('spell_" + error + "');><span class='hoverMessage'>" + error + " (" + count + "x)" + "<span class='msgPopup'>" + message + "<br> Replacements: " + replacements + "</span></span></a></li>";
+        spelling_errors.innerHTML += "<li><a href=javascript:gotoSpellError('spell_" + error + "');>" + error + " (" + count + "x)</a></li>";
+
+        // Add line to table
+        document.getElementById("errorsTableBody").innerHTML += "<tr><td style='vertical-align: middle'>" + error + "</td><td style='vertical-align: middle'>" + replacements + "</td><td style='vertical-align: middle'>" + message + "</td><td style='vertical-align: middle; text-align: center'>" + count + "</td><td style='vertical-align: middle'>" + "<a href='#' onclick='addDictionary(\"" + error + "\")'>Add to Dictionary</a>" + "</td></tr>";
     }
+
+    $('#errorsTable').DataTable({
+        dom: 'Blfrtip',
+        buttons: [{text: 'Export', extend: 'csv', filename: 'Spelling Errors'}],
+        pageLength: 10,
+        "aLengthMenu": [[10, 50, 100], [10, 50, 100]],
+        "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."}
+    });
 
     // Sort the array based on the length of the error
     let sortedDict = Object.keys(errorsDict).map(function (key) {
@@ -571,7 +580,6 @@ async function runLanguageTool() {
         });
     }
 
-
     //  Add totalErrors to GENERALINFO
     document.getElementById("totalErrors").innerText = Object.keys(errorsDict).length.toString();
 
@@ -584,7 +592,6 @@ async function runLanguageTool() {
     document.getElementById("spelling-div").style.display = "block";
     document.getElementById("spelling-div").hidden = false;
     document.getElementById("spelling-li").hidden = false;
-
 
     // Remove overlay
     await overlay("removeOverlay", "", "");

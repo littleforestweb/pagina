@@ -108,27 +108,59 @@ Author     : xhico
 <%-- END ERROR MODAL--%>
 
 <%-- DICTIONARY MODAL --%>
-<div class="modal fade" id="dictionaryModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+<div class="modal fade bd-example-modal-xl" id="dictionaryModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
 
             <div class="modal-header">
                 <h5 class="modal-title">Manage Dictionary</h5>
                 <div class="btn-group me-2 d-flex justify-content-center" role="group">
-                    <button type="button" class="active btn" id="errorsListViewBtn" onclick="toggleSpellView('errorsList')">Errors</button>
-                    <button type="button" class="btn" id="dictionaryListViewBtn" onclick="toggleSpellView('dictionaryList')">Dictionary</button>
+                    <button type="button" class="btn active" id="dictionaryTableViewBtn" onclick="toggleSpellView('dictionaryTableDiv')">Dictionary</button>
+                    <button type="button" class="btn" id="errorsTableViewBtn" onclick="toggleSpellView('errorsTableDiv')">Errors</button>
                 </div>
             </div>
 
-            <div id="errorsList" class="list-group"></div>
-            <div id="dictionaryList" class="list-group"></div>
-
-            <div class="container input-group mb-3 mt-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text" id="inputGroup-sizing-default">Word</span>
+            <div class="modal-body">
+                <div id="dictionaryTableDiv">
+                    <table id="dictionaryTable" class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Error</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody id="dictionaryTableBody"></tbody>
+                        <tfoot>
+                        <tr>
+                            <th>Error</th>
+                            <th>Action</th>
+                        </tr>
+                        </tfoot>
+                    </table>
                 </div>
-                <input type="text" class="form-control" id="dictionaryWord">
-                <button type="button" class="btn active" onclick="addDictionary('')">Add</button>
+                <div hidden id="errorsTableDiv">
+                    <table id="errorsTable" class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Error</th>
+                            <th>Replacements</th>
+                            <th>Message</th>
+                            <th>Occurrences</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody id="errorsTableBody"></tbody>
+                        <tfoot>
+                        <tr>
+                            <th>Error</th>
+                            <th>Replacements</th>
+                            <th>Message</th>
+                            <th>Occurrences</th>
+                            <th>Action</th>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
 
         </div>
@@ -146,7 +178,6 @@ Author     : xhico
                 <button type="button" class="btn-close" style="margin: 0" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <!-- Modal body -->
             <div class="modal-body">
                 <table id="linksTable" class="table table-striped">
                     <thead>
@@ -166,6 +197,7 @@ Author     : xhico
                     </tfoot>
                 </table>
             </div>
+
         </div>
     </div>
 </div>
