@@ -143,6 +143,7 @@ Author     : xhico
                     <button type="button" class="btn" id="extLinksViewBtn" onclick="toggleLinkView('extLinks')">External</button>
                     <button type="button" class="btn" id="brokenLinksViewBtn" onclick="toggleLinkView('brokenLinks')">Broken</button>
                 </div>
+                <button type="button" class="btn-close" style="margin: 0" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <div id="totalLinksList" class="list-group"></div>
@@ -189,7 +190,7 @@ Author     : xhico
     <%--    SPELLING--%>
     <ul id="spelling-section" class="sidebar-list">
         <li><b><a id="spelling-title" href="#">SPELLING REPORT <i class="arrow down"></i></a></b></li>
-        <div id="spelling-div" hidden>
+        <div id="spelling-div">
             <div id="language-select-div">
                 <label>Language <span id="detectedLanguage"></span></label>
                 <select class="form-select" id="languages_list">
@@ -243,7 +244,7 @@ Author     : xhico
                 <button type="button" hidden id="rerunSpelling" onclick="clearSpelling(); runLanguageTool()" class="btn active mt-2">Re-Run</button>
             </div>
 
-            <li id="spelling-li">
+            <li hidden id="spelling-li">
                 <p id="spellErrors-p">Found <span id="totalErrors">0</span> occurrences.</p>
                 <ul id="spelling_errors"></ul>
             </li>
@@ -300,16 +301,6 @@ Author     : xhico
 <script src="js/main.js"></script>
 
 <script>
-    // LINKS
-    document.getElementById("links-div").style.display = "none";
-    document.getElementById('links-title').addEventListener('click', () => {
-        if (document.getElementById("links-div").style.display === "none") {
-            document.getElementById("links-div").style.display = "block";
-        } else {
-            document.getElementById("links-div").style.display = "none";
-        }
-    });
-
     // SPELLING
     document.getElementById("spelling-div").style.display = "block";
     document.getElementById('spelling-title').addEventListener('click', () => {
@@ -327,6 +318,16 @@ Author     : xhico
             document.getElementById("lighthouse-div").style.display = "block";
         } else {
             document.getElementById("lighthouse-div").style.display = "none";
+        }
+    });
+
+    // LINKS
+    document.getElementById("links-div").style.display = "none";
+    document.getElementById('links-title').addEventListener('click', () => {
+        if (document.getElementById("links-div").style.display === "none") {
+            document.getElementById("links-div").style.display = "block";
+        } else {
+            document.getElementById("links-div").style.display = "none";
         }
     });
 </script>
@@ -359,6 +360,8 @@ Author     : xhico
 
     // Enable searchURL
     document.getElementById("searchURL").disabled = false;
+    document.getElementById("languages_list").disabled = false;
+    document.getElementById("dictionaryModalBtn").disabled = false;
 
     // Check if url is Null
     <% if (!(url.equals("null"))) {%>

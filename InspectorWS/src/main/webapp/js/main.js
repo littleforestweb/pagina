@@ -401,7 +401,6 @@ async function removeDictionary(word) {
 }
 
 async function toggleLinkView(view) {
-    console.log(view);
     if (view === "totalLinks") {
         document.getElementById("totalLinksViewBtn").classList.add("active");
         document.getElementById("intLinksViewBtn").classList.remove("active");
@@ -619,6 +618,8 @@ async function runLanguageTool() {
     // Toggle Spelling Section
     document.getElementById("spelling-div").style.display = "block";
     document.getElementById("spelling-div").hidden = false;
+    document.getElementById("spelling-li").hidden = false;
+
 
     // Remove overlay
     await overlay("removeOverlay", "", "");
@@ -736,6 +737,7 @@ async function runLinks() {
         });
     }
 
+    // Set Links Counters on sidebar
     document.getElementById("totalLinks").innerText = totalLinksCount;
     document.getElementById("extLinks").innerText = extLinksCount;
     document.getElementById("intLinks").innerText = intLinksCount;
