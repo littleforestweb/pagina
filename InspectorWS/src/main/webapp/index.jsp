@@ -93,7 +93,6 @@ Author     : xhico
 <!-- END OVERLAY -->
 
 <%-- ERROR MODAL --%>
-<button hidden type="button" id="errorModalBtn" data-bs-toggle="modal" data-bs-target="#errorModal">Error Modal</button>
 <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -103,11 +102,6 @@ Author     : xhico
             </div>
 
             <div class="modal-body" id="modalErrorBody"></div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn active" data-bs-dismiss="modal">Close</button>
-            </div>
-
         </div>
     </div>
 </div>
@@ -119,10 +113,14 @@ Author     : xhico
         <div class="modal-content">
 
             <div class="modal-header">
-                <h5 class="modal-title">Manage Dictionary (<span id="totalDictWords">0</span>)</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title">Manage Dictionary</h5>
+                <div class="btn-group me-2 d-flex justify-content-center" role="group">
+                    <button type="button" class="active btn" id="errorsListViewBtn" onclick="toggleSpellView('errorsList')">Errors</button>
+                    <button type="button" class="btn" id="dictionaryListViewBtn" onclick="toggleSpellView('dictionaryList')">Dictionary</button>
+                </div>
             </div>
 
+            <div id="errorsList" class="list-group"></div>
             <div id="dictionaryList" class="list-group"></div>
 
             <div class="container input-group mb-3 mt-3">
@@ -168,11 +166,6 @@ Author     : xhico
                     </tfoot>
                 </table>
             </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn active" data-bs-dismiss="modal">Close</button>
-            </div>
-
         </div>
     </div>
 </div>

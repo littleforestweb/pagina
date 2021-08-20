@@ -45,7 +45,7 @@ async function myTimer() {
                 iframeElement.close();
 
                 // Set Error Message in MODAL
-                await setErrorModal("", "Failed to load <b>" + siteUrl + "</b> (Timeout)");
+                await setErrorModal("", "Failed to load <b>" + siteUrl + "</b> (Timeout)</br>Plase check the URL.");
 
                 // Remove overlay
                 await overlay("removeOverlay", "", "")
@@ -225,14 +225,8 @@ async function toggleView(view) {
 async function setErrorModal(title, message) {
     document.getElementById("modalErrorTitle").innerHTML = ((title !== "") ? title : "Something went wrong!");
     document.getElementById("modalErrorBody").innerHTML = message;
-
-    let checkExist = setInterval(function () {
-        let btn = document.getElementById("errorModalBtn");
-        if (btn.hidden === true && btn.innerText === "Error Modal") {
-            btn.click();
-            clearInterval(checkExist);
-        }
-    }, 100);
+    var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+    errorModal.show();
 }
 
 async function clearSpelling() {
@@ -368,9 +362,9 @@ async function loadDictionaryList() {
     let dictList = document.getElementById("dictionaryList");
     dictList.innerHTML = "";
 
-    // Set number of error on modal title
-    let totalDictWords = ((dict.length === 1) ? dict.length + " word" : dict.length + " words")
-    document.getElementById("totalDictWords").innerText = totalDictWords;
+    // // Set number of error on modal title
+    // let totalDictWords = ((dict.length === 1) ? dict.length + " word" : dict.length + " words")
+    // document.getElementById("totalDictWords").innerText = totalDictWords;
 
     // Check if the String is Empty and Only has one element
     if (dict.length === 0) {
@@ -401,48 +395,18 @@ async function removeDictionary(word) {
     await loadDictionaryList();
 }
 
-async function toggleLinkView(view) {
-    if (view === "totalLinks") {
-        document.getElementById("totalLinksViewBtn").classList.add("active");
-        document.getElementById("intLinksViewBtn").classList.remove("active");
-        document.getElementById("extLinksViewBtn").classList.remove("active");
-        document.getElementById("brokenLinksViewBtn").classList.remove("active");
+async function toggleSpellView(view) {
+    if (view === "errorsList") {
+        document.getElementById("errorsListViewBtn").classList.add("active");
+        document.getElementById("dictionaryListViewBtn").classList.remove("active");
+        document.getElementById("errorsList").hidden = true;
+        document.getElementById("dictionaryList").hidden = false;
 
-        document.getElementById("totalLinksList").hidden = false;
-        document.getElementById("intLinksList").hidden = true;
-        document.getElementById("extLinksList").hidden = true;
-        document.getElementById("brokenLinksList").hidden = true;
-
-    } else if (view === "intLinks") {
-        document.getElementById("totalLinksViewBtn").classList.remove("active");
-        document.getElementById("intLinksViewBtn").classList.add("active");
-        document.getElementById("extLinksViewBtn").classList.remove("active");
-        document.getElementById("brokenLinksViewBtn").classList.remove("active");
-
-        document.getElementById("totalLinksList").hidden = true;
-        document.getElementById("intLinksList").hidden = false;
-        document.getElementById("extLinksList").hidden = true;
-        document.getElementById("brokenLinksList").hidden = true;
-    } else if (view === "extLinks") {
-        document.getElementById("totalLinksViewBtn").classList.remove("active");
-        document.getElementById("intLinksViewBtn").classList.remove("active");
-        document.getElementById("extLinksViewBtn").classList.add("active");
-        document.getElementById("brokenLinksViewBtn").classList.remove("active");
-
-        document.getElementById("totalLinksList").hidden = true;
-        document.getElementById("intLinksList").hidden = true;
-        document.getElementById("extLinksList").hidden = false;
-        document.getElementById("brokenLinksList").hidden = true;
-    } else if (view === "brokenLinks") {
-        document.getElementById("totalLinksViewBtn").classList.remove("active");
-        document.getElementById("intLinksViewBtn").classList.remove("active");
-        document.getElementById("extLinksViewBtn").classList.remove("active");
-        document.getElementById("brokenLinksViewBtn").classList.add("active");
-
-        document.getElementById("totalLinksList").hidden = true;
-        document.getElementById("intLinksList").hidden = true;
-        document.getElementById("extLinksList").hidden = true;
-        document.getElementById("brokenLinksList").hidden = false;
+    } else if (view === "dictionaryList") {
+        document.getElementById("errorsListViewBtn").classList.remove("active");
+        document.getElementById("dictionaryListViewBtn").classList.add("active");
+        document.getElementById("errorsList").hidden = false;
+        document.getElementById("dictionaryList").hidden = true;
     }
 }
 
