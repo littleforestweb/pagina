@@ -92,7 +92,6 @@ Author     : xhico
 
             <div class="modal-header">
                 <h5 class="modal-title" id="modalErrorTitle"></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <div class="modal-body" id="modalErrorBody"></div>
@@ -131,16 +130,24 @@ Author     : xhico
 </div>
 <%-- END DICTIONARY MODAL--%>
 
-<%-- BROKEN lINKS MODAL --%>
-<div class="modal fade" id="brokenLinksModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+<%-- lINKS MODAL --%>
+<div class="modal fade bd-example-modal-lg" id="linksModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
 
             <div class="modal-header">
-                <h5 class="modal-title">Broken Links (<span id="brokenLinksCount">0</span>)</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title">Links (<span id="totaLinksCount">0</span>)</h5>
+                <div class="btn-group me-2 d-flex justify-content-center" role="group">
+                    <button type="button" class="active btn">All</button>
+                    <button type="button" class="btn">Internal</button>
+                    <button type="button" class="btn">External</button>
+                    <button type="button" class="btn">Broken</button>
+                </div>
             </div>
 
+            <div hidden id="totalLinksList" class="list-group"></div>
+            <div hidden id="extLinksList" class="list-group"></div>
+            <div hidden id="intLinksList" class="list-group"></div>
             <div id="brokenLinksList" class="list-group"></div>
 
             <div class="modal-footer">
@@ -150,7 +157,7 @@ Author     : xhico
         </div>
     </div>
 </div>
-<%-- END BROKEN lINKS MODAL--%>
+<%-- END lINKS MODAL--%>
 
 <!-- TOPNAV -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -264,7 +271,7 @@ Author     : xhico
                 <p>Found <span id="totalLinks">0</span> link(s) (<span id="extLinks">0</span> external and <span id="intLinks">0</span> internal).</p>
                 <p id="brokenLinks-p" hidden>Found <span id="brokenLinks">0</span> broken links(s).</p>
             </li>
-            <button hidden type="button" id="brokenLinksModalBtn" class="btn active  mt-2" data-bs-toggle="modal" data-bs-target="#brokenLinksModal">View Broken Links</button>
+            <button hidden type="button" id="brokenLinksModalBtn" class="btn active  mt-2" data-bs-toggle="modal" data-bs-target="#linksModal">View Links</button>
         </div>
     </ul>
 

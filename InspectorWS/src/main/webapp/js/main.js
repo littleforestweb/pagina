@@ -650,20 +650,46 @@ async function runLinks() {
     }, function (result) {
         return result;
     });
-    console.log(linkJSON);
 
     // Set links counter
     let totalLinksCount = 0;
     let extLinksCount = 0;
     let intLinksCount = 0;
+    let brokenLinksCount = 0;
 
-    // Add Link information to sidebar
+    // Iterate over every link
+    let linksInfo = linkJSON["linksInfo"];
+    for (let i = 0; i < linksInfo.length; i++) {
+        Object.entries(linksInfo[i]).forEach(([key, value]) => {
+            let url = key;
+            let status = value[0];
+            let origin = value[1];
+
+            // Add totalLinksList to Modal
+            totalLinksCount += 1;
+            document.getElementById("totalLinksList").innerHTML += "<label class='list-group-item'><span>" + url + "</span></label>";
+
+            // Add url to Modal Section
+            if (origin === "external") {
+                extLinksCount += 1;
+                document.getElementById("extLinksList").innerHTML += "<label class='list-group-item'><span>" + url + "</span></label>";
+            } else if (origin === "internal") {
+                intLinksCount += 1;
+                document.getElementById("intLinksList").innerHTML += "<label class='list-group-item'><span>" + url + "</span></label>";
+            }
+            if (status === "404" || status === "-1") {
+                brokenLinksCount += 1;
+                document.getElementById("brokenLinksList").innerHTML += "<label class='list-group-item'><span>" + url + "</span></label>";
+            }
+
+        });
+    }
+
+    document.getElementById("totaLinksCount").innerText = totalLinksCount;
     document.getElementById("totalLinks").innerText = totalLinksCount;
     document.getElementById("extLinks").innerText = extLinksCount;
     document.getElementById("intLinks").innerText = intLinksCount;
-
-    // Add brokenLinksCount to modal
-    document.getElementById("brokenLinksCount").innerText = document.getElementById("brokenLinks").innerText + " links";
+    document.getElementById("brokenLinks").innerText = brokenLinksCount;
 
     // Show Broken Links Message
     document.getElementById("brokenLinks-p").hidden = false;

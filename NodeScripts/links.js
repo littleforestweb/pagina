@@ -44,7 +44,14 @@ async function main() {
 
             // Get absoule url
             let newUrl = helpers.absoluteUri(siteUrl, linkHref);
-            let status;
+            let status, origin;
+
+            // Total | Internal || External
+            if (linkHref.includes(siteUrl)) {
+                origin = "internal";
+            } else {
+                origin = "external";
+            }
 
             // Append linkHref to checkedLinks
             checkedLinks.push(newUrl);
@@ -57,7 +64,7 @@ async function main() {
                 let response = await page.goto(newUrl, {waitUntil: 'domcontentloaded', timeout: 20000});
 
                 // Get status
-                status = response.status();
+                status = response.status().toString();
             } catch (ex) {
                 // console.log("Ex - " + ex);
                 status = "-1";
@@ -67,17 +74,15 @@ async function main() {
             page.close();
 
             // Append info to jsonLinks
-            jsonLinks.push('{"' + newUrl + '": "' + status + '"}');
+            jsonLinks.push('"' + newUrl + '": [\"' + status + "\", \"" + origin + '\"]');
 
             console.log(status + " " + newUrl);
-
         }
 
         // Set full JSON String
-        let fullJSON = "{ 'links' : [";
+        let fullJSON = "{ 'linksInfo' : [";
         for (let i = 0; i < jsonLinks.length; i++) {
-            let jsonString = jsonLinks[i];
-
+            let jsonString = "{" + jsonLinks[i] + "}";
             if (i !== jsonLinks.length - 1) {
                 fullJSON = fullJSON + jsonString + ", ";
             } else {
@@ -87,6 +92,8 @@ async function main() {
 
         // Ignore the last ","
         fullJSON = fullJSON.substr(0, fullJSON.length) + "]}";
+
+        console.log(fullJSON);
 
         // Save fullJSON to file
         fs.writeFile(jsonPath, fullJSON, function (err) {
