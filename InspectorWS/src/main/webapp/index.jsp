@@ -75,10 +75,10 @@ Author     : xhico
 <!-- OVERLAY -->
 <div id="overlay">
     <div id="overlay_text">
-        <span id="overlayMessage"></span></br>
+        <span id="overlayMessage"></span>
         <span id="overlaySndMessage"></span>
         <span id="overlayProgress"></span>
-        <br>Please Wait<br>
+        Please Wait</br>
         <div class="spinner-border"></div>
     </div>
 </div>
@@ -136,19 +136,19 @@ Author     : xhico
         <div class="modal-content">
 
             <div class="modal-header">
-                <h5 class="modal-title">Links (<span id="totaLinksCount">0</span>)</h5>
+                <h5 class="modal-title">Links Overview</h5>
                 <div class="btn-group me-2 d-flex justify-content-center" role="group">
-                    <button type="button" class="active btn">All</button>
-                    <button type="button" class="btn">Internal</button>
-                    <button type="button" class="btn">External</button>
-                    <button type="button" class="btn">Broken</button>
+                    <button type="button" class="active btn" id="totalLinksViewBtn" onclick="toggleLinkView('totalLinks')">All</button>
+                    <button type="button" class="btn" id="intLinksViewBtn" onclick="toggleLinkView('intLinks')">Internal</button>
+                    <button type="button" class="btn" id="extLinksViewBtn" onclick="toggleLinkView('extLinks')">External</button>
+                    <button type="button" class="btn" id="brokenLinksViewBtn" onclick="toggleLinkView('brokenLinks')">Broken</button>
                 </div>
             </div>
 
-            <div hidden id="totalLinksList" class="list-group"></div>
-            <div hidden id="extLinksList" class="list-group"></div>
+            <div id="totalLinksList" class="list-group"></div>
             <div hidden id="intLinksList" class="list-group"></div>
-            <div id="brokenLinksList" class="list-group"></div>
+            <div hidden id="extLinksList" class="list-group"></div>
+            <div hidden id="brokenLinksList" class="list-group"></div>
 
             <div class="modal-footer">
                 <button type="button" class="btn active" data-bs-dismiss="modal">Close</button>
@@ -271,7 +271,7 @@ Author     : xhico
                 <p>Found <span id="totalLinks">0</span> link(s) (<span id="extLinks">0</span> external and <span id="intLinks">0</span> internal).</p>
                 <p id="brokenLinks-p" hidden>Found <span id="brokenLinks">0</span> broken links(s).</p>
             </li>
-            <button hidden type="button" id="brokenLinksModalBtn" class="btn active  mt-2" data-bs-toggle="modal" data-bs-target="#linksModal">View Links</button>
+            <button hidden type="button" id="linksModalBtn" class="btn active  mt-2" data-bs-toggle="modal" data-bs-target="#linksModal">View Links Overview</button>
         </div>
     </ul>
 

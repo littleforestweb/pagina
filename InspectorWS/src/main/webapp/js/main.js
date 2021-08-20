@@ -100,8 +100,8 @@ async function overlay(action, message, sndMessage) {
         // Insert overlay
         console.log("addOverlay")
         document.getElementById("overlay").style.display = "block";
-        document.getElementById("overlayMessage").innerText = message;
-        document.getElementById("overlaySndMessage").innerText = sndMessage;
+        document.getElementById("overlayMessage").innerHTML = message;
+        document.getElementById("overlaySndMessage").innerHTML = sndMessage + "</br>";
         document.getElementById("overlayProgress").innerText = "";
     } else if (action === "removeOverlay") {
         // Remove overlay
@@ -131,6 +131,8 @@ async function enableDisableActions(action) {
         document.getElementById("links-btn").disabled = false;
         // Enable Dictionary Btn
         document.getElementById("dictionaryModalBtn").disabled = false;
+        // Enable Links Btn
+        document.getElementById("linksModalBtn").disabled = false;
         // Enable Re-Run Spelling Btn
         document.getElementById("rerunSpelling").disabled = false;
     } else {
@@ -150,6 +152,8 @@ async function enableDisableActions(action) {
         document.getElementById("links-btn").disabled = true;
         // Disable Dictionary Btn
         document.getElementById("dictionaryModalBtn").disabled = true;
+        // Enable Links Btn
+        document.getElementById("linksModalBtn").disabled = true;
         // Disable Re-Run Spelling Btn
         document.getElementById("rerunSpelling").disabled = true;
     }
@@ -396,6 +400,52 @@ async function removeDictionary(word) {
     await loadDictionaryList();
 }
 
+async function toggleLinkView(view) {
+    console.log(view);
+    if (view === "totalLinks") {
+        document.getElementById("totalLinksViewBtn").classList.add("active");
+        document.getElementById("intLinksViewBtn").classList.remove("active");
+        document.getElementById("extLinksViewBtn").classList.remove("active");
+        document.getElementById("brokenLinksViewBtn").classList.remove("active");
+
+        document.getElementById("totalLinksList").hidden = false;
+        document.getElementById("intLinksList").hidden = true;
+        document.getElementById("extLinksList").hidden = true;
+        document.getElementById("brokenLinksList").hidden = true;
+
+    } else if (view === "intLinks") {
+        document.getElementById("totalLinksViewBtn").classList.remove("active");
+        document.getElementById("intLinksViewBtn").classList.add("active");
+        document.getElementById("extLinksViewBtn").classList.remove("active");
+        document.getElementById("brokenLinksViewBtn").classList.remove("active");
+
+        document.getElementById("totalLinksList").hidden = true;
+        document.getElementById("intLinksList").hidden = false;
+        document.getElementById("extLinksList").hidden = true;
+        document.getElementById("brokenLinksList").hidden = true;
+    } else if (view === "extLinks") {
+        document.getElementById("totalLinksViewBtn").classList.remove("active");
+        document.getElementById("intLinksViewBtn").classList.remove("active");
+        document.getElementById("extLinksViewBtn").classList.add("active");
+        document.getElementById("brokenLinksViewBtn").classList.remove("active");
+
+        document.getElementById("totalLinksList").hidden = true;
+        document.getElementById("intLinksList").hidden = true;
+        document.getElementById("extLinksList").hidden = false;
+        document.getElementById("brokenLinksList").hidden = true;
+    } else if (view === "brokenLinks") {
+        document.getElementById("totalLinksViewBtn").classList.remove("active");
+        document.getElementById("intLinksViewBtn").classList.remove("active");
+        document.getElementById("extLinksViewBtn").classList.remove("active");
+        document.getElementById("brokenLinksViewBtn").classList.add("active");
+
+        document.getElementById("totalLinksList").hidden = true;
+        document.getElementById("intLinksList").hidden = true;
+        document.getElementById("extLinksList").hidden = true;
+        document.getElementById("brokenLinksList").hidden = false;
+    }
+}
+
 
 // ------------------------------------- MAIN FUNCTIONS ------------------------------------- //
 
@@ -425,17 +475,17 @@ async function runLanguageTool() {
         if (langValues.includes(detectedLang)) {
             langCode = detectedLang;
             let valueText = languages_list.options[langValues.indexOf(langCode)].text;
-            document.getElementById("overlaySndMessage").innerHTML = "Detected Language: " + valueText + "</br>";
+            document.getElementById("overlaySndMessage").innerHTML = "</br>Detected Language: " + valueText + "</br>";
             document.getElementById("detectedLanguage").innerHTML = "(Auto-Detected)";
         } else {
             langCode = "en-GB";
             let valueText = languages_list.options[langValues.indexOf(langCode)].text;
-            document.getElementById("overlaySndMessage").innerHTML = "Couldn't detect langauage.</br> Defaulting to : " + valueText + "</br>";
+            document.getElementById("overlaySndMessage").innerHTML = "</br>Couldn't detect langauage.</br> Defaulting to : " + valueText + "</br>";
             document.getElementById("detectedLanguage").innerHTML = "(Default)";
         }
     } else {
         let valueText = languages_list.options[langValues.indexOf(langCode)].text;
-        document.getElementById("overlaySndMessage").innerHTML = "Selected language: " + valueText + "</br>";
+        document.getElementById("overlaySndMessage").innerHTML = "</br>Selected language: " + valueText + "</br>";
     }
 
     document.getElementById("languages_list").value = langCode;
@@ -501,7 +551,7 @@ async function runLanguageTool() {
         }
 
         // Update secondary message on Overlay
-        document.getElementById("overlayProgress").innerText = "Found " + Object.keys(errorsDict).length + " spelling occurrences";
+        document.getElementById("overlayProgress").innerHTML = "Found " + Object.keys(errorsDict).length + " spelling occurrences </br>";
 
     }
 
@@ -667,25 +717,24 @@ async function runLinks() {
 
             // Add totalLinksList to Modal
             totalLinksCount += 1;
-            document.getElementById("totalLinksList").innerHTML += "<label class='list-group-item'><span>" + url + "</span></label>";
+            document.getElementById("totalLinksList").innerHTML += "<label class='list-group-item'><a target='_blank' href='" + url + "'>" + url + "</a></label>";
 
             // Add url to Modal Section
             if (origin === "external") {
                 extLinksCount += 1;
-                document.getElementById("extLinksList").innerHTML += "<label class='list-group-item'><span>" + url + "</span></label>";
+                document.getElementById("extLinksList").innerHTML += "<label class='list-group-item'><a target='_blank' href='" + url + "'>" + url + "</a></label>";
             } else if (origin === "internal") {
                 intLinksCount += 1;
-                document.getElementById("intLinksList").innerHTML += "<label class='list-group-item'><span>" + url + "</span></label>";
+                document.getElementById("intLinksList").innerHTML += "<label class='list-group-item'><a target='_blank' href='" + url + "'>" + url + "</a></label>";
             }
             if (status === "404" || status === "-1") {
                 brokenLinksCount += 1;
-                document.getElementById("brokenLinksList").innerHTML += "<label class='list-group-item'><span>" + url + "</span></label>";
+                document.getElementById("brokenLinksList").innerHTML += "<label class='list-group-item'><a target='_blank' href='" + url + "'>" + url + "</a></label>";
             }
 
         });
     }
 
-    document.getElementById("totaLinksCount").innerText = totalLinksCount;
     document.getElementById("totalLinks").innerText = totalLinksCount;
     document.getElementById("extLinks").innerText = extLinksCount;
     document.getElementById("intLinks").innerText = intLinksCount;
@@ -700,7 +749,7 @@ async function runLinks() {
     // Toggle Links Section
     document.getElementById("links-div").style.display = "block";
     document.getElementById("links-div").hidden = false;
-    document.getElementById("brokenLinksModalBtn").hidden = false;
+    document.getElementById("linksModalBtn").hidden = false;
 
     // Remove overlay
     await overlay("removeOverlay", "", "");
@@ -747,7 +796,7 @@ async function main() {
     await overlay("removeOverlay", "", "")
 
     // Run Spelling Report
-    // await runLanguageTool();
+    await runLanguageTool();
 
     // END
     console.log("----------------------");
