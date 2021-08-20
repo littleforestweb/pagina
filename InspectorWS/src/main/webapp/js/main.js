@@ -100,7 +100,7 @@ async function overlay(action, message, sndMessage) {
         // Insert overlay
         console.log("addOverlay")
         document.getElementById("overlay").style.display = "block";
-        document.getElementById("overlayMessage").innerHTML = message;
+        document.getElementById("overlayMessage").innerText = message;
         document.getElementById("overlaySndMessage").innerHTML = sndMessage + "</br>";
         document.getElementById("overlayProgress").innerText = "";
     } else if (action === "removeOverlay") {
@@ -796,7 +796,7 @@ async function main() {
     await overlay("removeOverlay", "", "")
 
     // Run Spelling Report
-    await runLanguageTool();
+    // await runLanguageTool();
 
     // END
     console.log("----------------------");

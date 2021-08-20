@@ -46,8 +46,10 @@ async function main() {
             let newUrl = helpers.absoluteUri(siteUrl, linkHref);
             let status, origin;
 
-            // Total | Internal || External
-            if (linkHref.includes(siteUrl)) {
+            // Internal || External
+            let domain = (new URL(siteUrl));
+            let baseUrl = domain.protocol + "//" + domain.hostname;
+            if (linkHref.includes(baseUrl)) {
                 origin = "internal";
             } else {
                 origin = "external";
@@ -76,7 +78,7 @@ async function main() {
             // Append info to jsonLinks
             jsonLinks.push('"' + newUrl + '": [\"' + status + "\", \"" + origin + '\"]');
 
-            console.log(status + " " + newUrl);
+            console.log(newUrl + " " + status + " " + origin);
         }
 
         // Set full JSON String
@@ -92,8 +94,6 @@ async function main() {
 
         // Ignore the last ","
         fullJSON = fullJSON.substr(0, fullJSON.length) + "]}";
-
-        console.log(fullJSON);
 
         // Save fullJSON to file
         fs.writeFile(jsonPath, fullJSON, function (err) {
