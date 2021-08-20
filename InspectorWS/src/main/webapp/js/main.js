@@ -8,13 +8,12 @@
 
 
 // const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS";
-// const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
-const inspectorUrl = "http://localhost:8080/InspectorWS";
+const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
+// const inspectorUrl = "http://localhost:8080/InspectorWS";
 const nameWS = inspectorUrl.split("/")[3] + "/";
 const languageToolPost = "/" + nameWS + "LanguageTool";
 const lighthousePost = "/" + nameWS + "Lighthouse";
 const linksPost = "/" + nameWS + "Links";
-
 let counter = 0;
 let myTimmer = setInterval(myTimer, 1000);
 
@@ -228,6 +227,9 @@ async function setErrorModal(title, message) {
     var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
     errorModal.show();
 }
+
+
+// ------------------------------------- SPELLING REPORT ------------------------------------- //
 
 async function clearSpelling() {
     console.log("clearSpelling");
@@ -496,21 +498,20 @@ async function runLanguageTool() {
 
                     // Set error
                     let error = entry.context.text.substring(entry.context.offset, entry.context.offset + entry.context.length);
+                    let message = entry.message;
 
                     // Remove false-positive errors (three chars and whitespaces)
-                    if (!(dict.includes(error)) && error.length >= 3 && !(/\s/g.test(error))) {
+                    if (!(dict.includes(error)) && error.length >= 3 && !(/\s/g.test(error)) && message === "Possible spelling mistake found.") {
 
                         // Set message, replacements, color
-                        let message = entry.message;
                         let replacements = entry.replacements.map(reps => reps['value']).slice(0, 5).toString().replaceAll(",", ", ");
                         replacements = ((replacements === "") ? "None available" : replacements);
-                        let color = ((message === "Possible spelling mistake found.") ? "red" : "orange");
 
                         // Add/update key error on errorsDict
                         if (error in errorsDict) {
                             errorsDict[error][0] = errorsDict[error][0] + 1;
                         } else {
-                            errorsDict[error] = [1, message, replacements, color];
+                            errorsDict[error] = [1, message, replacements];
                         }
                     }
                 }
@@ -568,14 +569,13 @@ async function runLanguageTool() {
     for (let i = 0; i < sortedDict.length; i++) {
         let entry = sortedDict[i];
         let error = entry[0];
-        let color = entry[1][3];
 
         // Highlight Spelling Errors on Page View
         findAndReplaceDOMText(iframeElement.body, {
             preset: 'prose',
             find: error,
             wrap: 'spellError',
-            wrapClass: "shiny_" + color,
+            wrapClass: "shiny_red",
             wrapId: "spell_" + error
         });
 
@@ -584,7 +584,7 @@ async function runLanguageTool() {
             preset: 'prose',
             find: error,
             wrap: 'spellError',
-            wrapClass: "shiny_" + color,
+            wrapClass: "shiny_red",
             wrapId: "spell_" + error
         });
     }

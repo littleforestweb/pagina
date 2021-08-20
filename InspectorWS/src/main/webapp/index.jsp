@@ -113,7 +113,7 @@ Author     : xhico
         <div class="modal-content">
 
             <div class="modal-header">
-                <h5 class="modal-title">Manage Dictionary</h5>
+                <h5 class="modal-title">Spelling Overview</h5>
                 <div class="btn-group me-2 d-flex justify-content-center" role="group">
                     <button type="button" class="btn active" id="errorsTableViewBtn" onclick="toggleSpellView('errorsTableDiv')">Errors Found</button>
                     <button type="button" class="btn" id="dictionaryTableViewBtn" onclick="toggleSpellView('dictionaryTableDiv')">Dictionary</button>
@@ -180,7 +180,7 @@ Author     : xhico
 
             <div class="modal-body">
                 <table id="linksTable" class="table table-striped">
-                    <thead>
+                    <thead style="text-align: center">
                     <tr>
                         <th>URL</th>
                         <th>Origin</th>
@@ -188,7 +188,7 @@ Author     : xhico
                     </tr>
                     </thead>
                     <tbody id="linksTableBody"></tbody>
-                    <tfoot>
+                    <tfoot style="text-align: center">
                     <tr>
                         <th>URL</th>
                         <th>Origin</th>
@@ -291,7 +291,7 @@ Author     : xhico
                 <p id="spellErrors-p">Found <span id="totalErrors">0</span> occurrences.</p>
                 <ul id="spelling_errors"></ul>
             </li>
-            <button type="button" id="dictionaryModalBtn" class="btn active  mt-2" data-bs-toggle="modal" data-bs-target="#dictionaryModal">Manage Dictionary</button>
+            <button type="button" id="dictionaryModalBtn" class="btn active  mt-2" data-bs-toggle="modal" data-bs-target="#dictionaryModal">View Spelling Overview</button>
         </div>
     </ul>
 
