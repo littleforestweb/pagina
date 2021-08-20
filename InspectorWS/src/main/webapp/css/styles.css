@@ -208,3 +208,32 @@ span.hoverMessage:hover .msgPopup {
 .removeDictionary {
     float: right;
 }
+
+/*
+--------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------
+*/
+
+.pagination .page-link {
+    color: black;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #166713;
+    color: black;
+}
+
+div.dataTables_wrapper div.dataTables_length {
+    width: 25%;
+    float: left;
+}
+
+div.dataTables_wrapper div.dataTables_filter {
+    width: 25%;
+    float: right;
+}
+
+div.dt-buttons {
+    float: right;
+    padding-left: 10px;
+}

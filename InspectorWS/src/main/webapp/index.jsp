@@ -22,6 +22,14 @@ Author     : xhico
     <%--  jQuery  --%>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
+    <%--  Datatables  --%>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+    <link href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css" rel="stylesheet">
+
     <%--  Bootstrap  --%>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
@@ -131,25 +139,35 @@ Author     : xhico
 <%-- END DICTIONARY MODAL--%>
 
 <%-- lINKS MODAL --%>
-<div class="modal fade bd-example-modal-lg" id="linksModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+<div class="modal fade bd-example-modal-xl" id="linksModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
 
             <div class="modal-header">
                 <h5 class="modal-title">Links Overview</h5>
-                <div class="btn-group me-2 d-flex justify-content-center" role="group">
-                    <button type="button" class="active btn" id="totalLinksViewBtn" onclick="toggleLinkView('totalLinks')">All</button>
-                    <button type="button" class="btn" id="intLinksViewBtn" onclick="toggleLinkView('intLinks')">Internal</button>
-                    <button type="button" class="btn" id="extLinksViewBtn" onclick="toggleLinkView('extLinks')">External</button>
-                    <button type="button" class="btn" id="brokenLinksViewBtn" onclick="toggleLinkView('brokenLinks')">Broken</button>
-                </div>
                 <button type="button" class="btn-close" style="margin: 0" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <div id="totalLinksList" class="list-group"></div>
-            <div hidden id="intLinksList" class="list-group"></div>
-            <div hidden id="extLinksList" class="list-group"></div>
-            <div hidden id="brokenLinksList" class="list-group"></div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <table id="linksTable" class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>URL</th>
+                        <th>Origin</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody id="linksTableBody"></tbody>
+                    <tfoot>
+                    <tr>
+                        <th>URL</th>
+                        <th>Origin</th>
+                        <th>Status</th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn active" data-bs-dismiss="modal">Close</button>

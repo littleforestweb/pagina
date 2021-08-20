@@ -31,9 +31,9 @@ async function main() {
         await page.goto(siteUrl, {waitUntil: 'domcontentloaded', timeout: 20000});
 
         // Find links present on this page
-        let links = await page.evaluate(() => {
+        let links = [...new Set(await page.evaluate(() => {
             return Array.from(document.querySelectorAll('a')).map((val) => val.href);
-        });
+        }))];
 
         // CLose page
         page.close();
@@ -49,7 +49,7 @@ async function main() {
             // Internal || External
             let domain = (new URL(siteUrl));
             let baseUrl = domain.protocol + "//" + domain.hostname;
-            let origin = ((linkHref.includes(baseUrl)) ? "internal" : "external")
+            let origin = ((linkHref.includes(baseUrl)) ? "Internal" : "External")
 
             // Append linkHref to checkedLinks
             checkedLinks.push(newUrl);
@@ -65,7 +65,7 @@ async function main() {
                 status = response.status().toString();
             } catch (ex) {
                 // console.log("Ex - " + ex);
-                status = "-1";
+                status = "404";
             }
 
             // Close page

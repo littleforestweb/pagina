@@ -3,12 +3,13 @@
  Author     : xhico
  */
 
+
 // ------------------------------------- GLOBAL VARIABLES ------------------------------------- //
 
 
 // const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS";
-const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
-// const inspectorUrl = "http://localhost:8080/InspectorWS";
+// const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
+const inspectorUrl = "http://localhost:8080/InspectorWS";
 const nameWS = inspectorUrl.split("/")[3] + "/";
 const languageToolPost = "/" + nameWS + "LanguageTool";
 const lighthousePost = "/" + nameWS + "Lighthouse";
@@ -572,7 +573,7 @@ async function runLanguageTool() {
 
         // Add errors to Sidebar
         let spelling_errors = document.getElementById("spelling_errors");
-        spelling_errors.innerHTML += "<li><a href=javascript:addDictionary('" + error + "')><i class='fas fa-plus-circle mx-2'></i></a><a href=javascript:gotoSpellError('spell_" + error + "');><span class='hoverMessage'>" + error + " (" + count + "x)" + "<span class='msgPopup'>" + message + "<br> Replacements: " + replacements + "</span></span></a></li>";
+        spelling_errors.innerHTML += "<li><a href=javascript:gotoSpellError('spell_" + error + "');><span class='hoverMessage'>" + error + " (" + count + "x)" + "<span class='msgPopup'>" + message + "<br> Replacements: " + replacements + "</span></span></a></li>";
     }
 
     // Sort the array based on the length of the error
@@ -695,18 +696,18 @@ async function runLinks() {
     // Get siteUrl
     let siteUrl = await getSiteUrl();
 
+    // Set links counter
+    let totalLinksCount = 0;
+    let extLinksCount = 0;
+    let intLinksCount = 0;
+    let brokenLinksCount = 0;
+
     // Check if broken link
     let linkJSON = await $.post(linksPost, {
         url: siteUrl,
     }, function (result) {
         return result;
     });
-
-    // Set links counter
-    let totalLinksCount = 0;
-    let extLinksCount = 0;
-    let intLinksCount = 0;
-    let brokenLinksCount = 0;
 
     // Iterate over every link
     let linksInfo = linkJSON["linksInfo"];
@@ -715,27 +716,34 @@ async function runLinks() {
             let url = key;
             let status = value[0];
             let origin = value[1];
-            let urlString = url.length > 90 ? url.substring(0, 90) + "..." : url;
+            // url = url.length > 100 ? url.substring(0, 100) + "..." : url;
 
-            // Add totalLinksList to Modal
+            // Set links counters
             totalLinksCount += 1;
-            document.getElementById("totalLinksList").innerHTML += "<label class='list-group-item'><a target='_blank' href='" + url + "'>" + urlString + "</a></label>";
-
-            // Add url to Modal Section
-            if (origin === "external") {
+            if (origin === "External") {
                 extLinksCount += 1;
-                document.getElementById("extLinksList").innerHTML += "<label class='list-group-item'><a target='_blank' href='" + url + "'>" + urlString + "</a></label>";
-            } else if (origin === "internal") {
+            } else if (origin === "Internal") {
                 intLinksCount += 1;
-                document.getElementById("intLinksList").innerHTML += "<label class='list-group-item'><a target='_blank' href='" + url + "'>" + urlString + "</a></label>";
             }
+            let statusColor = "green";
             if (status === "404" || status === "-1") {
                 brokenLinksCount += 1;
-                document.getElementById("brokenLinksList").innerHTML += "<label class='list-group-item'><a target='_blank' href='" + url + "'>" + urlString + "</a></label>";
+                statusColor = "red";
             }
+
+            // Add line to table
+            document.getElementById("linksTableBody").innerHTML += "<tr><td><a target='_blank' href='" + url + "'>" + url + "</a></td><td style='white-space:normal; text-align: center;'>" + origin + "</td><td style='text-align: center;'><span style='padding: 4px; background-color: " + statusColor + ";'>" + status + "</span></td></tr>";
 
         });
     }
+
+    $('#linksTable').DataTable({
+        dom: 'Blfrtip',
+        buttons: [{text: 'Export', extend: 'csv', filename: 'Links Report'}],
+        pageLength: 10,
+        "aLengthMenu": [[10, 50, 100], [10, 50, 100]],
+        "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."}
+    });
 
     // Set Links Counters on sidebar
     document.getElementById("totalLinks").innerText = totalLinksCount;
