@@ -714,22 +714,23 @@ async function runLinks() {
             let url = key;
             let status = value[0];
             let origin = value[1];
+            let urlString = url.length > 90 ? url.substring(0, 90) + "..." : url;
 
             // Add totalLinksList to Modal
             totalLinksCount += 1;
-            document.getElementById("totalLinksList").innerHTML += "<label class='list-group-item'><a target='_blank' href='" + url + "'>" + url + "</a></label>";
+            document.getElementById("totalLinksList").innerHTML += "<label class='list-group-item'><a target='_blank' href='" + url + "'>" + urlString + "</a></label>";
 
             // Add url to Modal Section
             if (origin === "external") {
                 extLinksCount += 1;
-                document.getElementById("extLinksList").innerHTML += "<label class='list-group-item'><a target='_blank' href='" + url + "'>" + url + "</a></label>";
+                document.getElementById("extLinksList").innerHTML += "<label class='list-group-item'><a target='_blank' href='" + url + "'>" + urlString + "</a></label>";
             } else if (origin === "internal") {
                 intLinksCount += 1;
-                document.getElementById("intLinksList").innerHTML += "<label class='list-group-item'><a target='_blank' href='" + url + "'>" + url + "</a></label>";
+                document.getElementById("intLinksList").innerHTML += "<label class='list-group-item'><a target='_blank' href='" + url + "'>" + urlString + "</a></label>";
             }
             if (status === "404" || status === "-1") {
                 brokenLinksCount += 1;
-                document.getElementById("brokenLinksList").innerHTML += "<label class='list-group-item'><a target='_blank' href='" + url + "'>" + url + "</a></label>";
+                document.getElementById("brokenLinksList").innerHTML += "<label class='list-group-item'><a target='_blank' href='" + url + "'>" + urlString + "</a></label>";
             }
 
         });

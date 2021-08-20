@@ -44,16 +44,12 @@ async function main() {
 
             // Get absoule url
             let newUrl = helpers.absoluteUri(siteUrl, linkHref);
-            let status, origin;
+            let status;
 
             // Internal || External
             let domain = (new URL(siteUrl));
             let baseUrl = domain.protocol + "//" + domain.hostname;
-            if (linkHref.includes(baseUrl)) {
-                origin = "internal";
-            } else {
-                origin = "external";
-            }
+            let origin = ((linkHref.includes(baseUrl)) ? "internal" : "external")
 
             // Append linkHref to checkedLinks
             checkedLinks.push(newUrl);
