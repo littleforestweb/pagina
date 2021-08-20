@@ -663,7 +663,7 @@ async function runLighthouse() {
         // Iterate over every Category and set the Tittle and Score
         let categories = ["performance", "accessibility", "best-practices", "seo", "pwa"];
         categories.forEach(cat => {
-            let catScore = lighthouseJson["categories"][cat]["score"] * 100;
+            let catScore = Math.round(lighthouseJson["categories"][cat]["score"] * 100);
             let catTitle = lighthouseJson["categories"][cat]["title"];
             lighthouse_info.innerHTML += "<li>" + catTitle + " - " + catScore + " % </li > ";
         });
@@ -797,7 +797,7 @@ async function main() {
     await overlay("removeOverlay", "", "")
 
     // Run Spelling Report
-    // await runLanguageTool();
+    await runLanguageTool();
 
     // END
     console.log("----------------------");
