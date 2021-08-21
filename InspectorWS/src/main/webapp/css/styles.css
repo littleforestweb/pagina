@@ -207,9 +207,24 @@ span.hoverMessage:hover .msgPopup {
 
 table {
     width: 100%;
-    text-align: center;
 }
 
+.truncate {
+    max-width: 40px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.link404 {
+    background-color: red;
+    padding: 4px;
+}
+
+.link200 {
+    background-color: green;
+    padding: 4px;
+}
 
 .pagination .page-link {
     color: black;

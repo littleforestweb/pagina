@@ -132,7 +132,7 @@ Author     : xhico
                             <th>Action</th>
                         </tr>
                         </thead>
-                        <tbody id="errorsTableBody"></tbody>
+                        <tbody></tbody>
                         <tfoot>
                         <tr>
                             <th>Error</th>
@@ -145,14 +145,14 @@ Author     : xhico
                     </table>
                 </div>
                 <div hidden id="dictionaryTableDiv">
-                    <table id="dictionaryTable" class="table table-striped">
+                    <table id="dictionaryTable" class="table table-striped spellingTable">
                         <thead>
                         <tr>
                             <th>Error</th>
                             <th>Action</th>
                         </tr>
                         </thead>
-                        <tbody id="dictionaryTableBody"></tbody>
+                        <tbody></tbody>
                         <tfoot>
                         <tr>
                             <th>Error</th>
@@ -175,12 +175,11 @@ Author     : xhico
 
             <div class="modal-header">
                 <h5 class="modal-title">Links Overview</h5>
-                <button type="button" class="btn-close" style="margin: 0" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <div class="modal-body">
                 <table id="linksTable" class="table table-striped">
-                    <thead style="text-align: center">
+                    <thead>
                     <tr>
                         <th>URL</th>
                         <th>Origin</th>
@@ -188,7 +187,7 @@ Author     : xhico
                     </tr>
                     </thead>
                     <tbody id="linksTableBody"></tbody>
-                    <tfoot style="text-align: center">
+                    <tfoot>
                     <tr>
                         <th>URL</th>
                         <th>Origin</th>

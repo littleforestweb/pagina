@@ -8,8 +8,8 @@
 
 
 // const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS";
-// const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
-const inspectorUrl = "http://localhost:8080/InspectorWS";
+const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
+// const inspectorUrl = "http://localhost:8080/InspectorWS";
 const nameWS = inspectorUrl.split("/")[3] + "/";
 const languageToolPost = "/" + nameWS + "LanguageTool";
 const lighthousePost = "/" + nameWS + "Lighthouse";
@@ -280,8 +280,10 @@ async function loadDictionaryList() {
     // Set dataset
     if (dict.length !== 0) {
         dict.forEach(function (error) {
-            dataset.push([error]);
+            dataset.push([error, error]);
         });
+    } else {
+        dataset.push([]);
     }
 
     // Initialize Dictionary Table
@@ -322,7 +324,8 @@ async function addDictionary(row) {
     });
 
     // Add to Dictionary Table
-    $('#dictionaryTable').DataTable().row.add([error, error]).draw(false);
+    let dictionaryTable = $('#dictionaryTable').DataTable();
+    dictionaryTable.row.add(["<span>" + error + "</span>", error]).draw(false);
 
     // Remove from Spelling List
     let spelling_errors = document.getElementById("spelling-errors").childNodes;
@@ -351,8 +354,11 @@ async function addDictionary(row) {
     await setDictionary("dictionary", dict, 180);
 }
 
-async function removeDictionary(error) {
-    console.log("removeDictionary - " + error);
+async function removeDictionary(row) {
+    console.log("removeDictionary - " + row);
+
+    // Get error from row
+    let error = row.split(",")[0];
 
     // Get existing Dictionary
     let dict = await getDictionary("dictionary");
@@ -561,22 +567,22 @@ async function runLanguageTool() {
         "autoWidth": false,
         "columnDefs": [
             {
-                "width": "15%", "targets": 0, "render": function (data, type, row) {
+                "width": "20%", "targets": 0, "render": function (data, type, row) {
                     return "<span>" + data + "</span>";
                 },
             },
             {
-                "width": "30%", "targets": 1, "render": function (data, type, row) {
+                "width": "25%", "targets": 1, "render": function (data, type, row) {
                     return "<span>" + data + "</span>";
                 },
             },
             {
-                "width": "30%", "targets": 2, "render": function (data, type, row) {
+                "width": "25%", "targets": 2, "render": function (data, type, row) {
                     return "<span>" + data + "</span>";
                 },
             },
             {
-                "width": "10%", "targets": 3, "render": function (data, type, row) {
+                "width": "15%", "targets": 3, "render": function (data, type, row) {
                     return "<span>" + data + "</span>";
                 },
             },
@@ -717,11 +723,15 @@ async function runLinks() {
 
     // Iterate over every link
     let linksInfo = linkJSON["linksInfo"];
+    let dataset = [];
     for (let i = 0; i < linksInfo.length; i++) {
         Object.entries(linksInfo[i]).forEach(([key, value]) => {
             let url = key;
             let status = value[0];
             let origin = value[1];
+
+            // Add to dataset
+            dataset.push([url, status, origin]);
 
             // Set links counters
             totalLinksCount += 1;
@@ -730,29 +740,40 @@ async function runLinks() {
             } else if (origin === "Internal") {
                 intLinksCount += 1;
             }
-            let statusColor = "green";
             if (status === "404" || status === "-1") {
                 brokenLinksCount += 1;
-                statusColor = "red";
             }
-
-            // Add line to table
-            document.getElementById("linksTableBody").innerHTML += "<tr><td><a target='_blank' href='" + url + "'>" + url + "</a></td><td style='white-space:normal; text-align: center;'>" + origin + "</td><td style='text-align: center;'><span style='padding: 4px; background-color: " + statusColor + ";'>" + status + "</span></td></tr>";
 
         });
     }
 
+    // Initialize Errors Table
     $('#linksTable').DataTable({
         dom: 'Blfrtip',
         buttons: [{text: 'Export', extend: 'csv', filename: 'Links Report'}],
         pageLength: 10,
         "aLengthMenu": [[10, 50, 100], [10, 50, 100]],
         "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
-        "bAutoWidth": false,
-        "aoColumns": [
-            {"sWidth": "70%"},
-            {"sWidth": "15%"},
-            {"sWidth": "15%"}
+        "order": [[0, "asc"]],
+        data: dataset,
+        "autoWidth": false,
+        "columnDefs": [
+            {
+                "width": "40%", "className": "truncate", "targets": 0, "render": function (data, type, row) {
+                    return "<a target='_blank' href='" + data + "'>" + data + "</a>";
+                },
+            },
+            {
+                "width": "20%", "targets": 1, "render": function (data, type, row) {
+                    let colorClass = ((data === "200") ? "link200" : "link404")
+                    return "<span class='" + colorClass + "'>" + data + "</span>";
+                },
+            },
+            {
+                "width": "20%", "targets": 2, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            }
         ]
     });
 
@@ -889,7 +910,7 @@ async function main() {
     await overlay("removeOverlay", "", "")
 
     // Run Spelling Report
-    await runLanguageTool();
+    // await runLanguageTool();
 
     // END
     console.log("----------------------");
