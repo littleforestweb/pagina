@@ -219,15 +219,15 @@ Author     : xhico
             <div class="modal-body">
                 <div id="snifferErrorsTableDiv">
                     <table id="snifferErrorsTable" class="table table-striped">
-                        <thead style="text-align: center">
+                        <thead>
                         <tr>
                             <th>Guideline</th>
                             <th>Message</th>
                             <th>Tag</th>
                         </tr>
                         </thead>
-                        <tbody id="snifferErrorsTableBody"></tbody>
-                        <tfoot style="text-align: center">
+                        <tbody></tbody>
+                        <tfoot>
                         <tr>
                             <th>Guideline</th>
                             <th>Message</th>
@@ -238,15 +238,15 @@ Author     : xhico
                 </div>
                 <div hidden id="snifferNoticesTableDiv">
                     <table id="snifferNoticesTable" class="table table-striped">
-                        <thead style="text-align: center">
+                        <thead>
                         <tr>
                             <th>Guideline</th>
                             <th>Message</th>
                             <th>Tag</th>
                         </tr>
                         </thead>
-                        <tbody id="snifferNoticesTableBody"></tbody>
-                        <tfoot style="text-align: center">
+                        <tbody></tbody>
+                        <tfoot>
                         <tr>
                             <th>Guideline</th>
                             <th>Message</th>
@@ -257,15 +257,15 @@ Author     : xhico
                 </div>
                 <div hidden id="snifferWarningsTableDiv">
                     <table id="snifferWarningsTable" class="table table-striped">
-                        <thead style="text-align: center">
+                        <thead>
                         <tr>
                             <th>Guideline</th>
                             <th>Message</th>
                             <th>Tag</th>
                         </tr>
                         </thead>
-                        <tbody id="snifferWarningsTableBody"></tbody>
-                        <tfoot style="text-align: center">
+                        <tbody></tbody>
+                        <tfoot>
                         <tr>
                             <th>Guideline</th>
                             <th>Message</th>

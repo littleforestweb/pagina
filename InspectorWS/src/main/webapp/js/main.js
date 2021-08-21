@@ -819,6 +819,9 @@ async function runAccessibility() {
 
     // Iterate over all 3 Categories
     let snifferCategories = ["Errors", "Notices", "Warnings"];
+    let errorsDataset = [];
+    let noticesDataset = [];
+    let warningsDataset = [];
 
     // Iterate over every entry on the categorie
     for (let i = 0; i < snifferCategories.length; i++) {
@@ -835,27 +838,105 @@ async function runAccessibility() {
             let tag = ((entry["Tag"] !== "null") ? entry["Tag"] : "N/A");
             let code = ((entry["Code"] !== "null") ? entry["Code"] : "N/A");
 
-            // Add line to table
-            document.getElementById("sniffer" + categorie + "TableBody").innerHTML += "<tr><td>" + guideline + "</td><td>" + message + "</td><td style='text-align: center'>" + tag + "</td></tr>";
+            if (categorie === "Errors") {
+                errorsDataset.push([guideline, message, tag]);
+            } else if (categorie === "Notices") {
+                noticesDataset.push([guideline, message, tag]);
+            } else if (categorie === "Warnings") {
+                warningsDataset.push([guideline, message, tag]);
+            }
         }
-
-        $("#sniffer" + categorie + "Table").DataTable({
-            dom: 'Blfrtip',
-            buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility ' + categorie + ' Report'}],
-            pageLength: 5,
-            "aLengthMenu": [[5, 10, 50], [5, 10, 50]],
-            "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
-            "bAutoWidth": false,
-            "aoColumns": [
-                {"sWidth": "15%"},
-                {"sWidth": "70%"},
-                {"sWidth": "15%"}
-            ]
-        });
 
         // Set Accessibility Counter on sidebar
         document.getElementById("accessibility-" + categorie).innerText = snifferCategorie.length;
     }
+
+    // Initialize Errors Table
+    $('#snifferErrorsTable').DataTable({
+        dom: 'Blfrtip',
+        buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Errors Report'}],
+        pageLength: 10,
+        "aLengthMenu": [[10, 50, 100], [10, 50, 100]],
+        "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
+        "order": [[0, "asc"]],
+        data: errorsDataset,
+        "autoWidth": false,
+        "columnDefs": [
+            {
+                "width": "30%", "targets": 0, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            },
+            {
+                "width": "60%", "targets": 1, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            },
+            {
+                "width": "10%", "targets": 2, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            }
+        ]
+    });
+
+    // Initialize Errors Table
+    $('#snifferNoticesTable').DataTable({
+        dom: 'Blfrtip',
+        buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Notices Report'}],
+        pageLength: 10,
+        "aLengthMenu": [[10, 50, 100], [10, 50, 100]],
+        "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
+        "order": [[0, "asc"]],
+        data: noticesDataset,
+        "autoWidth": false,
+        "columnDefs": [
+            {
+                "width": "30%", "targets": 0, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            },
+            {
+                "width": "60%", "targets": 1, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            },
+            {
+                "width": "10%", "targets": 2, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            }
+        ]
+    });
+
+    // Initialize Errors Table
+    $('#snifferWarningsTable').DataTable({
+        dom: 'Blfrtip',
+        buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Warnings Report'}],
+        pageLength: 10,
+        "aLengthMenu": [[10, 50, 100], [10, 50, 100]],
+        "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
+        "order": [[0, "asc"]],
+        data: warningsDataset,
+        "autoWidth": false,
+        "columnDefs": [
+            {
+                "width": "30%", "targets": 0, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            },
+            {
+                "width": "60%", "targets": 1, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            },
+            {
+                "width": "10%", "targets": 2, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            }
+        ]
+    });
 
     // Toggle Accessibility Section
     document.getElementById("accessibility-info").hidden = false;
