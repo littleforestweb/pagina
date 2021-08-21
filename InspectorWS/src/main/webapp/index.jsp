@@ -108,7 +108,7 @@ Author     : xhico
 <%-- END ERROR MODAL--%>
 
 <%-- DICTIONARY MODAL --%>
-<div class="modal fade bd-example-modal-xl" id="dictionaryModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+<div class="modal fade bd-example-modal-xl" id="dictionary-modal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
 
@@ -310,118 +310,119 @@ Author     : xhico
     <a href="https://littleforest.co.uk" target="_blank"><img class="sidebar-logo" alt="sidebar Logo" src="https://littleforest.co.uk/wp-content/uploads/2020/11/littleforest_logo.png"></a>
 
     <%--    SPELLING--%>
-    <ul id="spelling-section" class="sidebar-list">
-        <li><b><a id="spelling-title" href="#">SPELLING REPORT <i class="arrow down"></i></a></b></li>
-        <div id="spelling-div">
-            <div id="language-select-div">
-                <label>Language <span id="detectedLanguage"></span></label>
-                <select class="form-select" id="languages_list">
-                    <option selected value=auto>Auto-Detect</option>
-                    <option value=ar>Arabic</option>
-                    <option value=ast-ES>Asturian</option>
-                    <option value=be-BY>Belarusian</option>
-                    <option value=br-FR>Breton</option>
-                    <option value=ca-ES>Catalan</option>
-                    <option value=ca-ES-valencia>Catalan (Valencian)</option>
-                    <option value=zh-CN>Chinese</option>
-                    <option value=da-DK>Danish</option>
-                    <option value=nl>Dutch</option>
-                    <option value=nl-BE>Dutch (Belgium)</option>
-                    <option value=en-AU>English (Australian)</option>
-                    <option value=en-CA>English (Canadian)</option>
-                    <option value=en-GB>English (GB)</option>
-                    <option value=en-NZ>English (New Zealand)</option>
-                    <option value=en-ZA>English (South African)</option>
-                    <option value=en-US>English (US)</option>
-                    <option value=eo>Esperanto</option>
-                    <option value=fr>French</option>
-                    <option value=gl-ES>Galician</option>
-                    <option value=de-AT>German (Austria)</option>
-                    <option value=de-DE>German (Germany)</option>
-                    <option value=de-CH>German (Swiss)</option>
-                    <option value=el-GR>Greek</option>
-                    <option value=ga-IE>Irish</option>
-                    <option value=it>Italian</option>
-                    <option value=ja-JP>Japanese</option>
-                    <option value=km-KH>Khmer</option>
-                    <option value=nb>Norwegian (Bokmål)</option>
-                    <option value=no>Norwegian (Bokmål)</option>
-                    <option value=fa>Persian</option>
-                    <option value=pl-PL>Polish</option>
-                    <option value=pt-AO>Portuguese (Angola preAO)</option>
-                    <option value=pt-BR>Portuguese (Brazil)</option>
-                    <option value=pt-MZ>Portuguese (Moçambique preAO)</option>
-                    <option value=pt-PT>Portuguese (Portugal)</option>
-                    <option value=ro-RO>Romanian</option>
-                    <option value=ru-RU>Russian</option>
-                    <option value=sk-SK>Slovak</option>
-                    <option value=sl-SI>Slovenian</option>
-                    <option value=es>Spanish</option>
-                    <option value=es-AR>Spanish (voseo)</option>
-                    <option value=sv>Swedish</option>
-                    <option value=tl-PH>Tagalog</option>
-                    <option value=ta-IN>Tamil</option>
-                    <option value=uk-UA>Ukrainian</option>
-                </select>
-                <button type="button" hidden id="rerunSpelling" onclick="clearSpelling(); runLanguageTool()" class="btn active mt-2">Re-Run</button>
+    <ul class="sidebar-list">
+        <li><b><a href="#" onclick="toggleSidebar('spelling')">SPELLING REPORT <i class="arrow down"></i></a></b></li>
+        <div id="spelling-main">
+            <label>Language <span id="detectedLanguage"></span></label>
+            <select class="form-select" id="languages-list">
+                <option selected value=auto>Auto-Detect</option>
+                <option value=ar>Arabic</option>
+                <option value=ast-ES>Asturian</option>
+                <option value=be-BY>Belarusian</option>
+                <option value=br-FR>Breton</option>
+                <option value=ca-ES>Catalan</option>
+                <option value=ca-ES-valencia>Catalan (Valencian)</option>
+                <option value=zh-CN>Chinese</option>
+                <option value=da-DK>Danish</option>
+                <option value=nl>Dutch</option>
+                <option value=nl-BE>Dutch (Belgium)</option>
+                <option value=en-AU>English (Australian)</option>
+                <option value=en-CA>English (Canadian)</option>
+                <option value=en-GB>English (GB)</option>
+                <option value=en-NZ>English (New Zealand)</option>
+                <option value=en-ZA>English (South African)</option>
+                <option value=en-US>English (US)</option>
+                <option value=eo>Esperanto</option>
+                <option value=fr>French</option>
+                <option value=gl-ES>Galician</option>
+                <option value=de-AT>German (Austria)</option>
+                <option value=de-DE>German (Germany)</option>
+                <option value=de-CH>German (Swiss)</option>
+                <option value=el-GR>Greek</option>
+                <option value=ga-IE>Irish</option>
+                <option value=it>Italian</option>
+                <option value=ja-JP>Japanese</option>
+                <option value=km-KH>Khmer</option>
+                <option value=nb>Norwegian (Bokmål)</option>
+                <option value=no>Norwegian (Bokmål)</option>
+                <option value=fa>Persian</option>
+                <option value=pl-PL>Polish</option>
+                <option value=pt-AO>Portuguese (Angola preAO)</option>
+                <option value=pt-BR>Portuguese (Brazil)</option>
+                <option value=pt-MZ>Portuguese (Moçambique preAO)</option>
+                <option value=pt-PT>Portuguese (Portugal)</option>
+                <option value=ro-RO>Romanian</option>
+                <option value=ru-RU>Russian</option>
+                <option value=sk-SK>Slovak</option>
+                <option value=sl-SI>Slovenian</option>
+                <option value=es>Spanish</option>
+                <option value=es-AR>Spanish (voseo)</option>
+                <option value=sv>Swedish</option>
+                <option value=tl-PH>Tagalog</option>
+                <option value=ta-IN>Tamil</option>
+                <option value=uk-UA>Ukrainian</option>
+            </select>
+            <button type="button" id="spelling-btn" onclick="runLanguageTool()" class="btn active mt-2">Run Spelling Report</button>
+
+            <div hidden id="spelling-info" class="mt-2">
+                <p id="spelling-total-p">Found <span id="spelling-total-errors">0</span> occurrences.</p>
+                <ul id="spelling-errors"></ul>
+                <button type="button" id="dict-modal-btn" class="btn active mt-2" data-bs-toggle="modal" data-bs-target="#dictionary-modal">View Spelling Overview</button>
             </div>
 
-            <li hidden id="spelling-li">
-                <p id="spellErrors-p">Found <span id="totalErrors">0</span> occurrences.</p>
-                <ul id="spelling_errors"></ul>
-            </li>
-            <button type="button" id="dictionaryModalBtn" class="btn active  mt-2" data-bs-toggle="modal" data-bs-target="#dictionaryModal">View Spelling Overview</button>
         </div>
     </ul>
 
     <%--    LIGHTHOUSE--%>
-    <ul id="lighthouse-section" class="sidebar-list">
-        <li><b><a id="lighthouse-title" href="#">LIGHTHOUSE REPORT<i class="arrow down"></i></a></b></li>
-        <button type="button" id="lighthouse-btn" class="btn active " onclick="runLighthouse()">Run Lighthouse Report</button>
-        <div id="lighthouse-div" hidden>
-            <li id="lighthouse-li">
-                <ul id="lighthouse_info"></ul>
-            </li>
+    <ul class="sidebar-list">
+        <li><b><a href="#" onclick="toggleSidebar('lighthouse')">LIGHTHOUSE REPORT<i class="arrow down"></i></a></b></li>
+        <div id="lighthouse-main">
+            <button type="button" id="lighthouse-btn" class="btn active" onclick="runLighthouse()">Run Lighthouse Report</button>
+
+            <div id="lighthouse-info" hidden>
+                <ul id="lighthouse-categories"></ul>
+            </div>
         </div>
     </ul>
 
     <%--    LINKS--%>
-    <ul id="links-section" class="sidebar-list">
-        <li><b><a id="links-title" href="#">LINKS REPORT<i class="arrow down"></i></a></b></li>
-        <button type="button" id="links-btn" class="btn active " onclick="runLinks()">Run Links Report</button>
-        <div id="links-div" hidden>
-            <li id="links-li">
-                <p>Found <span id="totalLinks">0</span> link(s) (<span id="extLinks">0</span> external and <span id="intLinks">0</span> internal).</p>
-                <p id="brokenLinks-p" hidden>Found <span id="brokenLinks">0</span> broken links(s).</p>
-            </li>
-            <button hidden type="button" id="linksModalBtn" class="btn active mt-2" data-bs-toggle="modal" data-bs-target="#linksModal">View Links Overview</button>
+    <ul class="sidebar-list">
+        <li><b><a href="#" onclick="toggleSidebar('links')">LINKS REPORT<i class="arrow down"></i></a></b></li>
+        <div id="links-main">
+            <button type="button" id="links-btn" class="btn active" onclick="runLinks()">Run Links Report</button>
+
+            <div id="links-info" hidden>
+                <p>Found <span id="links-total">0</span> link(s) (<span id="links-ext">0</span> external and <span id="links-int">0</span> internal).</p>
+                <p id="links-broken-p" hidden>Found <span id="links-broken">0</span> broken links(s).</p>
+            </div>
+            <button hidden type="button" id="links-modal-btn" class="btn active mt-2" data-bs-toggle="modal" data-bs-target="#linksModal">View Links Overview</button>
         </div>
     </ul>
 
     <%--    ACCESSIBILITY--%>
-    <ul id="accessibility-section" class="sidebar-list">
-        <li><b><a id="accessibility-title" href="#">ACCESSIBILITY REPORT<i class="arrow down"></i></a></b></li>
-        <label>WCAG Level</label>
-        <select class="form-select" id="WCAG_level_list">
-            <option value=WCAG2A>WCAG2A</option>
-            <option selected value=WCAG2AA>WCAG2AA</option>
-            <option value=WCAG2AAA>WCAG2AAA</option>
-        </select>
-        <button type="button" id="accessibility-btn" class="btn active mt-2" onclick="runAccessibility()">Run Accessibility Report</button>
-        <div id="accessibility-div" hidden>
-            <li id="accessibility-li">
-                <p>Found <span id="snifferErrors">0</span> Errors</p>
-                <p>Found <span id="snifferNotices">0</span> Notices</p>
-                <p>Found <span id="snifferWarnings">0</span> Warnings</p>
-            </li>
-            <button type="button" id="accessibilityModalBtn" class="btn active mt-2" data-bs-toggle="modal" data-bs-target="#accessibilityModal">View Accessibility Overview</button>
+    <ul class="sidebar-list">
+        <li><b><a href="#" onclick="toggleSidebar('accessibility')">ACCESSIBILITY REPORT<i class="arrow down"></i></a></b></li>
+        <div id="accessibility-main">
+            <label id="wcag-level-label">WCAG Level</label>
+            <select class="form-select" id="WCAG-level-list">
+                <option value=WCAG2A>WCAG2A</option>
+                <option selected value=WCAG2AA>WCAG2AA</option>
+                <option value=WCAG2AAA>WCAG2AAA</option>
+            </select>
+            <button type="button" id="accessibility-btn" class="btn active mt-2" onclick="runAccessibility()">Run Accessibility Report</button>
+
+            <div hidden id="accessibility-info" class="mt-2">
+                <p>Found <span id="accessibility-Errors">0</span> Errors</p>
+                <p>Found <span id="accessibility-Notices">0</span> Notices</p>
+                <p>Found <span id="accessibility-Warnings">0</span> Warnings</p>
+            </div>
+            <button hidden type="button" id="accessibility-modal-btn" class="btn active mt-2" data-bs-toggle="modal" data-bs-target="#accessibilityModal">View Accessibility Overview</button>
         </div>
     </ul>
-
 </div>
 <%-- END SIDEBAR --%>
 
-<%-- LOAD PAGE --%>
+<%-- MAIN CONTENT --%>
 <% if (!(mainURL.equals("null"))) {%>
 <main class="main">
     <%--    MAIN CONTENT--%>
@@ -444,51 +445,9 @@ Author     : xhico
 <script src="js/syntaxHighlighter.js"></script>
 <script src="js/main.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<%-- END SCRIPTS --%>
 
-<%-- TOGGLE SIDEBAR SECTIONS --%>
-<script>
-    // SPELLING
-    document.getElementById("spelling-div").style.display = "block";
-    document.getElementById('spelling-title').addEventListener('click', () => {
-        if (document.getElementById("spelling-div").style.display === "none") {
-            document.getElementById("spelling-div").style.display = "block";
-        } else {
-            document.getElementById("spelling-div").style.display = "none";
-        }
-    });
-
-    // LIGHTHOUSE
-    document.getElementById("lighthouse-div").style.display = "none";
-    document.getElementById('lighthouse-title').addEventListener('click', () => {
-        if (document.getElementById("lighthouse-div").style.display === "none") {
-            document.getElementById("lighthouse-div").style.display = "block";
-        } else {
-            document.getElementById("lighthouse-div").style.display = "none";
-        }
-    });
-
-    // LINKS
-    document.getElementById("links-div").style.display = "none";
-    document.getElementById('links-title').addEventListener('click', () => {
-        if (document.getElementById("links-div").style.display === "none") {
-            document.getElementById("links-div").style.display = "block";
-        } else {
-            document.getElementById("links-div").style.display = "none";
-        }
-    });
-
-    // ACCESSIBILITY
-    document.getElementById("accessibility-div").style.display = "none";
-    document.getElementById('accessibility-title').addEventListener('click', () => {
-        if (document.getElementById("accessibility-div").style.display === "none") {
-            document.getElementById("accessibility-div").style.display = "block";
-        } else {
-            document.getElementById("accessibility-div").style.display = "none";
-        }
-    });
-</script>
-
-<%--  --%>
+<%-- LOAD PAGE  --%>
 <script>
     // If a URL Param is present auto run
     <% if (!(mainURL.equals("null"))) {%>
@@ -504,7 +463,7 @@ Author     : xhico
     // Set Language on Languages Dropdown list
     <% if (!(mainLang.equals("null"))) {%>
     console.log("<%=mainLang%>");
-    document.getElementById("languages_list").value = "<%=mainLang%>";
+    document.getElementById("languages-list").value = "<%=mainLang%>";
     <% }%>
 
     // Start Running Reports
@@ -517,7 +476,7 @@ Author     : xhico
 
     // Enable searchURL
     document.getElementById("searchURL").disabled = false;
-    document.getElementById("languages_list").disabled = false;
+    document.getElementById("languages-list").disabled = false;
     document.getElementById("dictionaryModalBtn").disabled = false;
 
     // Check if url is Null
@@ -527,7 +486,7 @@ Author     : xhico
 
     <% } %>
 </script>
-
+<%-- END LOAD PAGE  --%>
 
 </body>
 </html>

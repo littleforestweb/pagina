@@ -146,9 +146,9 @@ public class Accessibility extends HttpServlet {
             }
 
             // Add each JSONArray to main JSONObject
+            mainObj.put("Errors", jaErrors);
             mainObj.put("Notices", jaNotices);
             mainObj.put("Warnings", jaWarnings);
-            mainObj.put("Errors", jaErrors);
 
             // Pretty Print JSON
             Gson gson = new Gson();

@@ -117,8 +117,8 @@ async function overlay(action, message, sndMessage) {
 async function enableDisableActions(action) {
 
     // Set all elemId
-    let elemId = ["searchURL", "HTMLBtn", "LighthouseViewBtn", "desktopView", "mobileView", "languages_list",
-        "lighthouse-btn", "links-btn", "dictionaryModalBtn", "linksModalBtn", "accessibility-btn", "rerunSpelling", "accessibilityModalBtn"];
+    let elemId = ["searchURL", "HTMLBtn", "LighthouseViewBtn", "desktopView", "mobileView", "languages-list", "spelling-btn", "dict-modal-btn",
+        "lighthouse-btn", "links-btn", "links-modal-btn", "accessibility-btn", "accessibility-modal-btn"];
 
     // Set disabled status
     elemId.forEach(function (id) {
@@ -142,7 +142,7 @@ async function gotoNewPage() {
         await setErrorModal("", "Please insert a valid URL");
     } else {
         // Get selected Language
-        let language = document.getElementById("languages_list").value;
+        let language = document.getElementById("languages-list").value;
 
         // Launch new Inspector
         window.location.href = inspectorUrl + "/Inspector?url=" + siteUrl + "&lang=" + language;
@@ -195,33 +195,26 @@ async function setErrorModal(title, message) {
     errorModal.show();
 }
 
+async function toggleSidebar(section) {
+    console.log(section);
+
+    if (section === "spelling") {
+        let spellingDiv = document.getElementById("spelling-main");
+        spellingDiv.hidden = !spellingDiv.hidden;
+    } else if (section === "lighthouse") {
+        let lighthouseDiv = document.getElementById("lighthouse-main");
+        lighthouseDiv.hidden = !lighthouseDiv.hidden;
+    } else if (section === "links") {
+        let linksDiv = document.getElementById("links-main");
+        linksDiv.hidden = !linksDiv.hidden;
+    } else if (section === "accessibility") {
+        let accessibilityDiv = document.getElementById("accessibility-main");
+        accessibilityDiv.hidden = !accessibilityDiv.hidden;
+    }
+}
 
 // ------------------------------------- SPELLING REPORT ------------------------------------- //
 
-
-async function clearSpelling() {
-    console.log("clearSpelling");
-
-    // Get iframe element
-    let iframeElement = document.getElementById('mainContent').contentWindow.document;
-
-    // Get all the spellerror elems
-    let errors = iframeElement.getElementsByTagName("spellerror");
-
-    // Remove all the elems and keep the innerText
-    while (errors.length) {
-        let parent = errors[0].parentNode;
-        while (errors[0].firstChild) {
-            parent.insertBefore(errors[0].firstChild, errors[0]);
-        }
-        parent.removeChild(errors[0]);
-    }
-
-    // Clear Sidebar Spelling Section
-    document.getElementById("spelling-div").hidden = true;
-    document.getElementById("totalErrors").innerText = 0;
-    document.getElementById("spelling_errors").innerHTML = "";
-}
 
 async function gotoSpellError(spellError) {
     console.log("Goto " + spellError);
@@ -434,12 +427,12 @@ async function runLanguageTool() {
     // Set Language
     let langValues = [];
     let detectedLang = iframeElement.documentElement.lang;
-    let languages_list = document.getElementById('languages_list');
+    let languages_list = document.getElementById('languages-list');
     for (let i = 0; i < languages_list.options.length; i++) {
         langValues.push(languages_list.options[i].value);
     }
 
-    let langCode = document.getElementById("languages_list").value;
+    let langCode = document.getElementById("languages-list").value;
     if (langCode === "auto") {
         if (langValues.includes(detectedLang)) {
             langCode = detectedLang;
@@ -457,7 +450,7 @@ async function runLanguageTool() {
         document.getElementById("overlaySndMessage").innerHTML = "</br>Selected language: " + valueText + "</br>";
     }
 
-    document.getElementById("languages_list").value = langCode;
+    document.getElementById("languages-list").value = langCode;
     console.log("Language - " + langCode);
 
     // Get existing Dictionary
@@ -540,7 +533,7 @@ async function runLanguageTool() {
         let replacements = entry[1][2];
 
         // Add errors to Sidebar
-        let spelling_errors = document.getElementById("spelling_errors");
+        let spelling_errors = document.getElementById("spelling-errors");
         spelling_errors.innerHTML += "<li><a href=javascript:gotoSpellError('spell_" + error + "');>" + error + " (" + count + "x)</a></li>";
 
         // Add line to table
@@ -587,17 +580,16 @@ async function runLanguageTool() {
     }
 
     //  Add totalErrors to GENERALINFO
-    document.getElementById("totalErrors").innerText = Object.keys(errorsDict).length.toString();
+    document.getElementById("spelling-total-errors").innerText = Object.keys(errorsDict).length.toString();
 
     // If there is no spell errors add "Good Job!"
     if (Object.keys(errorsDict).length === 0) {
-        document.getElementById("spellErrors-p").innerHTML = document.getElementById("spellErrors-p").innerHTML + "<br><b>Good Job!<br>"
+        document.getElementById("spelling-total-p").innerHTML = document.getElementById("spelling-total-p").innerHTML + "<br><b>Good Job!<br>"
     }
 
     // Toggle Spelling Section
-    document.getElementById("spelling-div").style.display = "block";
-    document.getElementById("spelling-div").hidden = false;
-    document.getElementById("spelling-li").hidden = false;
+    document.getElementById("spelling-btn").hidden = true;
+    document.getElementById("spelling-info").hidden = false;
 
     // Remove overlay
     await overlay("removeOverlay", "", "");
@@ -613,7 +605,7 @@ async function runLighthouse() {
     let siteUrl = await getSiteUrl();
 
     // Check if at least one categories is selected
-    let lighthouse_info = document.getElementById("lighthouse_info");
+    let lighthouse_info = document.getElementById("lighthouse-info");
 
     // Insert overlay
     await overlay("addOverlay", "Running Lighthouse Report", "");
@@ -649,10 +641,8 @@ async function runLighthouse() {
 
         // Toggle Lighthouse Section
         document.getElementById("mainLighthouse").src = inspectorUrl + "/Lighthouse?" + "url=null" + "&cats=null" + "&view=" + lighthouseJson["htmlReport"];
-        document.getElementById("lighthouse-section").removeAttribute("hidden");
         document.getElementById("lighthouse-btn").hidden = true;
-        document.getElementById("lighthouse-div").style.display = "block";
-        document.getElementById("lighthouse-div").hidden = false;
+        document.getElementById("lighthouse-info").hidden = false;
         document.getElementById("LighthouseViewBtn").hidden = false;
         toggleView("lighthouseReport");
     } catch (Ex) {
@@ -728,21 +718,20 @@ async function runLinks() {
     });
 
     // Set Links Counters on sidebar
-    document.getElementById("totalLinks").innerText = totalLinksCount;
-    document.getElementById("extLinks").innerText = extLinksCount;
-    document.getElementById("intLinks").innerText = intLinksCount;
-    document.getElementById("brokenLinks").innerText = brokenLinksCount;
+    document.getElementById("links-total").innerText = totalLinksCount;
+    document.getElementById("links-ext").innerText = extLinksCount;
+    document.getElementById("links-int").innerText = intLinksCount;
+    document.getElementById("links-broken").innerText = brokenLinksCount;
 
     // Show Broken Links Message
-    document.getElementById("brokenLinks-p").hidden = false;
+    document.getElementById("links-broken-p").hidden = false;
 
     // Remove links-btn
     document.getElementById("links-btn").hidden = true;
 
     // Toggle Links Section
-    document.getElementById("links-div").style.display = "block";
-    document.getElementById("links-div").hidden = false;
-    document.getElementById("linksModalBtn").hidden = false;
+    document.getElementById("links-info").hidden = false;
+    document.getElementById("links-modal-btn").hidden = false;
 
     // Remove overlay
     await overlay("removeOverlay", "", "");
@@ -758,7 +747,7 @@ async function runAccessibility() {
     let siteUrl = await getSiteUrl();
 
     // Get WCAG Level
-    let WCAGLevel = document.getElementById("WCAG_level_list").value;
+    let WCAGLevel = document.getElementById("WCAG-level-list").value;
 
     // Get accessibilityJSON
     let accessibilityJSON = await $.post(accessibilityPost, {
@@ -805,16 +794,15 @@ async function runAccessibility() {
         });
 
         // Set Accessibility Counter on sidebar
-        document.getElementById("sniffer" + categorie).innerText = snifferCategorie.length;
+        document.getElementById("accessibility-" + categorie).innerText = snifferCategorie.length;
     }
 
-
-    // Remove accessibility-btn
-    document.getElementById("accessibility-btn").hidden = true;
-
     // Toggle Accessibility Section
-    document.getElementById("accessibility-div").style.display = "block";
-    document.getElementById("accessibility-div").hidden = false;
+    document.getElementById("accessibility-info").hidden = false;
+    document.getElementById("accessibility-btn").hidden = true;
+    document.getElementById("WCAG-level-list").hidden = true;
+    document.getElementById("accessibility-modal-btn").hidden = false;
+    document.getElementById("wcag-level-label").innerText += " - " + WCAGLevel;
 
     // Remove overlay
     await overlay("removeOverlay", "", "");
@@ -861,7 +849,7 @@ async function main() {
     await overlay("removeOverlay", "", "")
 
     // Run Spelling Report
-    await runLanguageTool();
+    // await runLanguageTool();
 
     // END
     console.log("----------------------");
