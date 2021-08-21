@@ -8,8 +8,8 @@
 
 
 // const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS";
-const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
-// const inspectorUrl = "http://localhost:8080/InspectorWS";
+// const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
+const inspectorUrl = "http://localhost:8080/InspectorWS";
 const nameWS = inspectorUrl.split("/")[3] + "/";
 const languageToolPost = "/" + nameWS + "LanguageTool";
 const lighthousePost = "/" + nameWS + "Lighthouse";
@@ -282,8 +282,6 @@ async function loadDictionaryList() {
         dict.forEach(function (error) {
             dataset.push([error, error]);
         });
-    } else {
-        dataset.push([]);
     }
 
     // Initialize Dictionary Table
@@ -339,6 +337,16 @@ async function addDictionary(row) {
 
     //  Update totalErrors to GENERALINFO
     document.getElementById("spelling-total-errors").innerText = spelling_errors.length.toString();
+
+    // Remove spellError from iframe and htmlCode
+    let iframeElement = document.getElementById('mainContent').contentWindow.document;
+    let iframeCode = document.getElementById('mainCode').contentWindow.document;
+    let spellErrors = [...iframeElement.querySelectorAll("spellerror"), ...iframeCode.querySelectorAll("spellerror")];
+    spellErrors.forEach(function (elem) {
+        let parent = elem.parentNode;
+        while (elem.firstChild) parent.insertBefore(elem.firstChild, elem);
+        parent.removeChild(elem);
+    });
 
     // Get existing Dictionary
     let dict = await getDictionary("dictionary");
@@ -510,13 +518,10 @@ async function runLanguageTool() {
                         let replacements = entry.replacements.map(reps => reps['value']).slice(0, 5).toString().replaceAll(",", ", ");
                         replacements = ((replacements === "") ? "None available" : replacements);
 
-                        // Add/update key error on errorsDict
-                        if (error in errorsDict) {
-                            errorsDict[error][0] = errorsDict[error][0] + 1;
-                        } else {
-                            errorsDict[error] = [1, message, replacements];
+                        // Add key error on errorsDict
+                        if (!(error in errorsDict)) {
+                            errorsDict[error] = [message, replacements];
                         }
-
                     }
                 }
             }
@@ -527,8 +532,52 @@ async function runLanguageTool() {
 
         // Update secondary message on Overlay
         document.getElementById("overlayProgress").innerHTML = "Found " + Object.keys(errorsDict).length + " spelling occurrences </br>";
-
     }
+
+    // Sort the array based on the length of the error
+    let sortedDict = Object.keys(errorsDict).map(function (key) {
+        return [key, errorsDict[key]];
+    }).sort(function (first, second) {
+        return second[0].length - first[0].length;
+    });
+
+    for (let i = 0; i < sortedDict.length; i++) {
+        let entry = sortedDict[i];
+        let error = entry[0];
+
+        // Highlight Spelling Errors on Page View
+        findAndReplaceDOMText(iframeElement.body, {
+            preset: 'prose',
+            find: error,
+            wrap: 'spellerror',
+            wrapClass: "shiny_red",
+            wrapId: "spell_" + error
+        });
+
+        // Highlight Spelling Errors on Code View
+        findAndReplaceDOMText(iframeCode.getElementById("htmlCode"), {
+            preset: 'prose',
+            find: error,
+            wrap: 'spellerror',
+            wrapClass: "shiny_red",
+            wrapId: "spell_" + error
+        });
+    }
+
+    // Count how many spellerror per error
+    Object.keys(errorsDict).forEach(function (entry) {
+        let key = entry;
+        let value = errorsDict[entry];
+        let count = 0;
+        let spellErrors = iframeElement.querySelectorAll("spellerror");
+        for (let i = 0; i < spellErrors.length; i++) {
+            let entry = spellErrors[i];
+            if (entry.innerText === key) {
+                count += 1;
+            }
+        }
+        errorsDict[key] = [count, value[0], value[1]];
+    });
 
     // Sort the array based on the count element
     let items = Object.keys(errorsDict).map(function (key) {
@@ -536,7 +585,6 @@ async function runLanguageTool() {
     }).sort(function (first, second) {
         return second[1][0] - first[1][0];
     });
-
 
     let dataset = [];
     // Highlight Spelling Errors on Page and Code View
@@ -548,7 +596,8 @@ async function runLanguageTool() {
         let message = entry[1][1];
         let replacements = entry[1][2];
 
-        dataset.push([error, replacements, message, count, "Remove"]);
+        // Add to dataset
+        dataset.push([error, replacements, message, count]);
 
         // Add errors to Sidebar
         let spelling_errors = document.getElementById("spelling-errors");
@@ -593,36 +642,6 @@ async function runLanguageTool() {
             }
         ]
     });
-
-    // Sort the array based on the length of the error
-    let sortedDict = Object.keys(errorsDict).map(function (key) {
-        return [key, errorsDict[key]];
-    }).sort(function (first, second) {
-        return second[0].length - first[0].length;
-    });
-
-    for (let i = 0; i < sortedDict.length; i++) {
-        let entry = sortedDict[i];
-        let error = entry[0];
-
-        // Highlight Spelling Errors on Page View
-        findAndReplaceDOMText(iframeElement.body, {
-            preset: 'prose',
-            find: error,
-            wrap: 'spellError',
-            wrapClass: "shiny_red",
-            wrapId: "spell_" + error
-        });
-
-        // Highlight Spelling Errors on Code View
-        findAndReplaceDOMText(iframeCode.getElementById("htmlCode"), {
-            preset: 'prose',
-            find: error,
-            wrap: 'spellError',
-            wrapClass: "shiny_red",
-            wrapId: "spell_" + error
-        });
-    }
 
     //  Add totalErrors to GENERALINFO
     document.getElementById("spelling-total-errors").innerText = Object.keys(errorsDict).length.toString();
@@ -991,7 +1010,7 @@ async function main() {
     await overlay("removeOverlay", "", "")
 
     // Run Spelling Report
-    // await runLanguageTool();
+    await runLanguageTool();
 
     // END
     console.log("----------------------");

@@ -3,15 +3,15 @@
     Author     : xhico
 */
 
-spellError {
+spellerror {
     font-weight: bold;
     padding: 4px;
 }
 
-spellError.shiny_red {
+spellerror.shiny_red {
     background-color: red;
 }
 
-spellError.shiny_orange {
+spellerror.shiny_orange {
     background-color: orange;
 }
