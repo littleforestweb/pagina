@@ -205,6 +205,11 @@ span.hoverMessage:hover .msgPopup {
 --------------------------------------------------------------------------------------------------------------------------------------
 */
 
+table {
+    width: 100%;
+    text-align: center;
+}
+
 
 .pagination .page-link {
     color: black;

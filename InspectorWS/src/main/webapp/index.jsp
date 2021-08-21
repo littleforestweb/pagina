@@ -122,7 +122,7 @@ Author     : xhico
 
             <div class="modal-body">
                 <div id="errorsTableDiv">
-                    <table id="errorsTable" class="table table-striped" style="text-align: center">
+                    <table id="errorsTable" class="table table-striped">
                         <thead>
                         <tr>
                             <th>Error</th>
@@ -145,7 +145,7 @@ Author     : xhico
                     </table>
                 </div>
                 <div hidden id="dictionaryTableDiv">
-                    <table id="dictionaryTable" class="table table-striped" style="text-align: center">
+                    <table id="dictionaryTable" class="table table-striped">
                         <thead>
                         <tr>
                             <th>Error</th>
@@ -160,14 +160,6 @@ Author     : xhico
                         </tr>
                         </tfoot>
                     </table>
-
-<%--                    <div class="modal-footer container input-group mb-3 mt-3">--%>
-<%--                        <div class="input-group-prepend">--%>
-<%--                            <span class="input-group-text" id="inputGroup-sizing-default">Word</span>--%>
-<%--                        </div>--%>
-<%--                        <input type="text" class="form-control" id="dictionaryWord">--%>
-<%--                        <button type="button" class="btn active" onclick="addDictionary('')">Add</button>--%>
-<%--                    </div>--%>
                 </div>
 
             </div>
