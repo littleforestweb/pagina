@@ -4,7 +4,7 @@
  */
 
 
-// ------------------------------------- Initialize ------------------------------------- //
+// ------------------------------------- GLOBAL VARIABLES ------------------------------------- //
 
 
 const puppeteer = require('puppeteer-core');
@@ -13,11 +13,23 @@ const fs = require('fs');
 let browser, page, siteUrl, jsonPath;
 
 
-// ------------------------------------- Functions ------------------------------------- //
+// ------------------------------------- MAIN ------------------------------------- //
 
 
 async function main() {
-    console.log("----------------------");
+
+    // Set Puppeteer args
+    args = ['--no-treekill',
+        '--disable-gpu',
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-infobars',
+        '--window-position=0,0',
+        '--ignore-certificate-errors',
+        '--ignore-certificate-errors-spki-list'];
+
+    // Set browser
+    browser = await puppeteer.launch({executablePath: '/usr/bin/google-chrome', ignoreHTTPSErrors: true, headless: true, args: args});
 
     try {
 
@@ -103,33 +115,12 @@ async function main() {
         console.error("ERROR - " + error);
     }
 
-    console.log("----------------------");
-}
-
-async function init() {
-
-    // Set Puppeteer args
-    args = ['--no-treekill',
-        '--disable-gpu',
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-infobars',
-        '--window-position=0,0',
-        '--ignore-certificate-errors',
-        '--ignore-certificate-errors-spki-list'];
-
-    // Set browser
-    browser = await puppeteer.launch({executablePath: '/usr/bin/google-chrome', ignoreHTTPSErrors: true, headless: true, args: args});
-
-    // Run main
-    await main();
-
     // Close browser
     await browser.close();
 }
 
 
-// ------------------------------------- Initialize ------------------------------------- //
+// ------------------------------------- INITIALIZE ------------------------------------- //
 
 (async () => {
     // Get cmd args; Get only non system arguments
@@ -157,7 +148,7 @@ async function init() {
     if (siteUrl === "" || jsonPath === "") {
         console.log("NO siteUrl or jsonPath")
     } else {
-        await init();
+        await main();
     }
 
 })();

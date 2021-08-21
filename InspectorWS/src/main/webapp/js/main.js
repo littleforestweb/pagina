@@ -191,7 +191,7 @@ async function toggleView(view) {
 async function setErrorModal(title, message) {
     document.getElementById("modalErrorTitle").innerHTML = ((title !== "") ? title : "Something went wrong!");
     document.getElementById("modalErrorBody").innerHTML = message;
-    var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+    let errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
     errorModal.show();
 }
 
@@ -718,7 +718,13 @@ async function runLinks() {
         buttons: [{text: 'Export', extend: 'csv', filename: 'Links Report'}],
         pageLength: 10,
         "aLengthMenu": [[10, 50, 100], [10, 50, 100]],
-        "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."}
+        "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
+        "bAutoWidth": false,
+        "aoColumns": [
+            {"sWidth": "70%"},
+            {"sWidth": "15%"},
+            {"sWidth": "15%"}
+        ]
     });
 
     // Set Links Counters on sidebar
@@ -751,100 +757,57 @@ async function runAccessibility() {
     // Get siteUrl
     let siteUrl = await getSiteUrl();
 
+    // Get WCAG Level
+    let WCAGLevel = document.getElementById("WCAG_level_list").value;
+
     // Get accessibilityJSON
     let accessibilityJSON = await $.post(accessibilityPost, {
         url: siteUrl,
+        level: WCAGLevel
     }, function (result) {
         return result;
     });
 
-    // Get Errors, Notices, Warnings
-    let snifferErrors = accessibilityJSON["Errors"];
-    let snifferNotices = accessibilityJSON["Notices"];
-    let snifferWarnings = accessibilityJSON["Warnings"];
+    // Iterate over all 3 Categories
+    let snifferCategories = ["Errors", "Notices", "Warnings"];
 
-    // Add entry to snifferErrorsTableBody
-    for (let i = 0; i < snifferErrors.length; i++) {
-        let entry = snifferErrors[i];
-        let guideline = ((entry["Guideline"] !== "null") ? entry["Guideline"].replace("WCAG2AA.", "") : "N/A");
-        let message = ((entry["Message"] !== "null") ? entry["Message"] : "N/A");
-        let tag = ((entry["Tag"] !== "null") ? entry["Tag"] : "N/A");
-        let code = ((entry["Code"] !== "null") ? entry["Code"] : "N/A");
+    // Iterate over every entry on the categorie
+    for (let i = 0; i < snifferCategories.length; i++) {
+        let categorie = snifferCategories[i];
 
-        // Add line to table
-        document.getElementById("snifferErrorsTableBody").innerHTML += "<tr><td>" + guideline + "</td><td>" + message + "</td><td>" + tag + "</td></tr>";
+        // Get Categorie JSON
+        let snifferCategorie = accessibilityJSON[categorie];
+
+        // Add entry to Table
+        for (let j = 0; j < snifferCategorie.length; j++) {
+            let entry = snifferCategorie[j];
+            let guideline = ((entry["Guideline"] !== "null") ? entry["Guideline"].replaceAll(".", " ") : "N/A");
+            let message = ((entry["Message"] !== "null") ? entry["Message"] : "N/A");
+            let tag = ((entry["Tag"] !== "null") ? entry["Tag"] : "N/A");
+            let code = ((entry["Code"] !== "null") ? entry["Code"] : "N/A");
+
+            // Add line to table
+            document.getElementById("sniffer" + categorie + "TableBody").innerHTML += "<tr><td>" + guideline + "</td><td>" + message + "</td><td style='text-align: center'>" + tag + "</td></tr>";
+        }
+
+        $("#sniffer" + categorie + "Table").DataTable({
+            dom: 'Blfrtip',
+            buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility ' + categorie + ' Report'}],
+            pageLength: 5,
+            "aLengthMenu": [[5, 10, 50], [5, 10, 50]],
+            "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
+            "bAutoWidth": false,
+            "aoColumns": [
+                {"sWidth": "15%"},
+                {"sWidth": "70%"},
+                {"sWidth": "15%"}
+            ]
+        });
+
+        // Set Accessibility Counter on sidebar
+        document.getElementById("sniffer" + categorie).innerText = snifferCategorie.length;
     }
 
-    // Add entry to snifferNoticesTableBody
-    for (let i = 0; i < snifferNotices.length; i++) {
-        let entry = snifferNotices[i];
-        let guideline = ((entry["Guideline"] !== "null") ? entry["Guideline"].replace("WCAG2AA.", "") : "N/A");
-        let message = ((entry["Message"] !== "null") ? entry["Message"] : "N/A");
-        let tag = ((entry["Tag"] !== "null") ? entry["Tag"] : "N/A");
-        let code = ((entry["Code"] !== "null") ? entry["Code"] : "N/A");
-
-        // Add line to table
-        document.getElementById("snifferNoticesTableBody").innerHTML += "<tr><td>" + guideline + "</td><td>" + message + "</td><td>" + tag + "</td></tr>";
-    }
-
-    // Add entry to snifferWarningsTableBody
-    for (let i = 0; i < snifferWarnings.length; i++) {
-        let entry = snifferWarnings[i];
-        let guideline = ((entry["Guideline"] !== "null") ? entry["Guideline"].replace("WCAG2AA.", "") : "N/A");
-        let message = ((entry["Message"] !== "null") ? entry["Message"] : "N/A");
-        let tag = ((entry["Tag"] !== "null") ? entry["Tag"] : "N/A");
-        let code = ((entry["Code"] !== "null") ? entry["Code"] : "N/A");
-
-        // Add line to table
-        document.getElementById("snifferWarningsTableBody").innerHTML += "<tr><td>" + guideline + "</td><td>" + message + "</td><td>" + tag + "</td></tr>";
-    }
-
-    $('#snifferErrorsTable').DataTable({
-        dom: 'Blfrtip',
-        buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Errors Report'}],
-        pageLength: 10,
-        "aLengthMenu": [[10, 50, 100], [10, 50, 100]],
-        "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
-        "bAutoWidth": false,
-        "aoColumns": [
-            {"sWidth": "15%"},
-            {"sWidth": "70%"},
-            {"sWidth": "15%"}
-        ]
-    });
-
-    $('#snifferNoticesTable').DataTable({
-        dom: 'Blfrtip',
-        buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Notices Report'}],
-        pageLength: 10,
-        "aLengthMenu": [[10, 50, 100], [10, 50, 100]],
-        "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
-        "bAutoWidth": false,
-        "aoColumns": [
-            {"sWidth": "15%"},
-            {"sWidth": "70%"},
-            {"sWidth": "15%"}
-        ]
-    });
-
-    $('#snifferWarningsTable').DataTable({
-        dom: 'Blfrtip',
-        buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Warnings Report'}],
-        pageLength: 10,
-        "aLengthMenu": [[10, 50, 100], [10, 50, 100]],
-        "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
-        "bAutoWidth": false,
-        "aoColumns": [
-            {"sWidth": "15%"},
-            {"sWidth": "70%"},
-            {"sWidth": "15%"}
-        ]
-    });
-
-    // Set Accessibility Counters on sidebar
-    document.getElementById("snifferErrors").innerText = snifferErrors.length;
-    document.getElementById("snifferNotices").innerText = snifferNotices.length;
-    document.getElementById("snifferWarnings").innerText = snifferWarnings.length;
 
     // Remove accessibility-btn
     document.getElementById("accessibility-btn").hidden = true;
@@ -898,7 +861,7 @@ async function main() {
     await overlay("removeOverlay", "", "")
 
     // Run Spelling Report
-    // await runLanguageTool();
+    await runLanguageTool();
 
     // END
     console.log("----------------------");

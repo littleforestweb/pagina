@@ -48,6 +48,7 @@ public class Accessibility extends HttpServlet {
 
             // Get url param
             String url = request.getParameter("url");
+            String level = request.getParameter("level");
             String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
             String folderPath = "/opt/node/data/codesniffer/";
             String baseFile = url.replaceAll("[^a-zA-Z0-9]", "") + "_" + timeStamp;
@@ -56,7 +57,8 @@ public class Accessibility extends HttpServlet {
             // Set base command
             String siteURL = "--siteUrl=" + url;
             String jsonPath = "--jsonPath=" + jsonFilePath;
-            List<String> base = Arrays.asList("node", "/opt/node/scripts/HTML_CodeSniffer.js", siteURL, jsonPath);
+            String WCAGLevel = "--level=" + level;
+            List<String> base = Arrays.asList("node", "/opt/node/scripts/HTML_CodeSniffer.js", siteURL, jsonPath, WCAGLevel);
             List<String> cmd = new ArrayList<>(base);
 
             // Run Lighthouse Process
@@ -67,7 +69,6 @@ public class Accessibility extends HttpServlet {
 
             // Wait until Process is finished
             process.waitFor();
-
 
             // Get File Contents
             ArrayList<String> fileContent = getFileContent(jsonFilePath);

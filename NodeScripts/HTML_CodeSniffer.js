@@ -1,11 +1,14 @@
+// ------------------------------------- GLOBAL VARIABLES ------------------------------------- //
+
+
 const puppeteer = require('puppeteer-core');
 const fs = require('fs');
-
-// Replace with the path to the chrome executable in your file system. This one assumes MacOSX.
-const executablePath = '/usr/bin/google-chrome';
-
-let siteUrl
+let siteUrl, jsonPath, level;
 let reportInfo = "";
+
+
+// ------------------------------------- MAIN ------------------------------------- //
+
 
 async function main() {
 
@@ -32,9 +35,9 @@ async function main() {
 
     await page.addScriptTag({path: '/opt/node/scripts/node_modules/html_codesniffer/build/HTMLCS.js'});
 
-    await page.evaluate(function () {
-        HTMLCS_RUNNER.run('WCAG2AA');
-    });
+    await page.evaluate(function (level) {
+        HTMLCS_RUNNER.run(level);
+    }, level);
 
     await browser.close();
 
@@ -47,10 +50,12 @@ async function main() {
     });
 }
 
-// ------------------------------------- Initialize ------------------------------------- //
+
+// ------------------------------------- INITIALIZE ------------------------------------- //
+
 
 (async () => {
-    // Get cmd args; Get only non system arguments
+// Get cmd args; Get only non system arguments
     process.argv.forEach(function (val, index, array) {
         if (index > 1 && val.startsWith("--")) {
 
@@ -65,17 +70,18 @@ async function main() {
                     siteUrl = value;
                 } else if (name === "--jsonPath") {
                     jsonPath = value;
+                } else if (name === "--level") {
+                    level = value;
                 }
             }
-
         }
     });
 
-    // Init
-    if (siteUrl === "" || jsonPath === "") {
-        console.log("NO siteUrl or jsonPath")
+    if (siteUrl === "" || jsonPath === "" || level === "") {
+        console.log("NO siteUrl or jsonPath or level")
     } else {
-        await main();
+        main();
     }
-
 })();
+
+

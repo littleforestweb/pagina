@@ -53,6 +53,8 @@ public class Lighthouse extends HttpServlet {
             String folderPath = "/opt/node/data/lighthouse/";
             String baseFile = url.replaceAll("[^a-zA-Z0-9]", "") + "_" + timeStamp;
             String jsonFilePath = folderPath + baseFile + ".json";
+            String jsonReport = folderPath + baseFile + ".report" + ".json";
+            String htmlReport = baseFile + ".report" + ".html";
 
             if (!url.equals("null")) {
                 response.setContentType("application/json");
@@ -77,9 +79,7 @@ public class Lighthouse extends HttpServlet {
                 // Wait until Process is finished
                 process.waitFor();
 
-                // Reads json file && add jsonPath
-                String jsonReport = folderPath + baseFile + ".report" + ".json";
-                String htmlReport = baseFile + ".report" + ".html";
+                // Reads json file && add htmlReport
                 String jsonContent = Files.readString(Paths.get(jsonReport));
                 Gson gson = new Gson();
                 Gson gsonPP = new GsonBuilder().setPrettyPrinting().create();

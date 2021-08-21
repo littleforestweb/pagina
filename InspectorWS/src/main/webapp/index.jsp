@@ -10,16 +10,16 @@ Author     : xhico
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-    <!-- Favicon -->
+    <%--    Favicon --%>
     <link rel="icon" href="images/lf_logo-100x100.png" sizes="32x32"/>
     <link rel="icon" href="images/lf_logo.png" sizes="192x192"/>
     <link rel="apple-touch-icon" href="images/lf_logo.png"/>
     <meta name="msapplication-TileImage" content="images/lf_logo.png"/>
 
-    <!-- Font-Awesome -->
+    <%--    Font-Awesome --%>
     <script src="https://kit.fontawesome.com/a88e1b9070.js" crossorigin="anonymous"></script>
 
-    <%--  jQuery  --%>
+    <%--    jQuery --%>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <%--  Datatables  --%>
@@ -80,7 +80,7 @@ Author     : xhico
     }
 %>
 
-<!-- OVERLAY -->
+<%-- OVERLAY --%>
 <div id="overlay">
     <div id="overlay_text">
         <span id="overlayMessage"></span>
@@ -90,7 +90,7 @@ Author     : xhico
         <div class="spinner-border"></div>
     </div>
 </div>
-<!-- END OVERLAY -->
+<%-- END OVERLAY --%>
 
 <%-- ERROR MODAL --%>
 <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
@@ -282,7 +282,7 @@ Author     : xhico
 </div>
 <%-- END ACCESSIBILITY MODAL--%>
 
-<!-- TOPNAV -->
+<%-- TOPNAV --%>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -301,12 +301,12 @@ Author     : xhico
         </div>
     </div>
 </nav>
-<!-- END TOPNAV -->
+<%-- END TOPNAV- -%>
 
-<!-- SIDEBAR -->
+<%-- SIDEBAR --%>
 <div class="sidebar-nav bg-light">
 
-    <!-- LOGO -->
+    <%--    LOGO--%>
     <a href="https://littleforest.co.uk" target="_blank"><img class="sidebar-logo" alt="sidebar Logo" src="https://littleforest.co.uk/wp-content/uploads/2020/11/littleforest_logo.png"></a>
 
     <%--    SPELLING--%>
@@ -401,7 +401,13 @@ Author     : xhico
     <%--    ACCESSIBILITY--%>
     <ul id="accessibility-section" class="sidebar-list">
         <li><b><a id="accessibility-title" href="#">ACCESSIBILITY REPORT<i class="arrow down"></i></a></b></li>
-        <button type="button" id="accessibility-btn" class="btn active " onclick="runAccessibility()">Run Accessibility Report</button>
+        <label>WCAG Level</label>
+        <select class="form-select" id="WCAG_level_list">
+            <option value=WCAG2A>WCAG2A</option>
+            <option selected value=WCAG2AA>WCAG2AA</option>
+            <option value=WCAG2AAA>WCAG2AAA</option>
+        </select>
+        <button type="button" id="accessibility-btn" class="btn active mt-2" onclick="runAccessibility()">Run Accessibility Report</button>
         <div id="accessibility-div" hidden>
             <li id="accessibility-li">
                 <p>Found <span id="snifferErrors">0</span> Errors</p>
@@ -413,29 +419,33 @@ Author     : xhico
     </ul>
 
 </div>
-<!-- END SIDEBAR -->
+<%-- END SIDEBAR --%>
 
+<%-- LOAD PAGE --%>
 <% if (!(mainURL.equals("null"))) {%>
 <main class="main">
-    <!-- IFRAME -->
-    <iframe is="x-frame-bypass" sandbox="allow-same-origin allow-scripts" id="mainContent"></iframe>
-    <!-- END IFRAME -->
+    <%--    MAIN CONTENT--%>
+    <iframe is="x-frame-bypass" id="mainContent"></iframe>
+    <%--    END MAIN CONTENT--%>
 
-    <!-- CODE -->
-    <iframe hidden sandbox="allow-same-origin allow-scripts" id="mainCode" src="about:blank"></iframe>
-    <!-- END CODE -->
+    <%--    CODE--%>
+    <iframe hidden id="mainCode" src="about:blank"></iframe>
+    <%--    END CODE--%>
 
-    <!-- LIGHTHOUSE REPORT -->
-    <iframe hidden sandbox="allow-same-origin allow-scripts" id="mainLighthouse"></iframe>
-    <!-- LIGHTHOUSE REPORT -->
+    <%--    LIGHTHOUSE REPORT--%>
+    <iframe hidden id="mainLighthouse"></iframe>
+    <%--    END LIGHTHOUSE --%>
 </main>
 <% }%>
+<%-- END LOAD PAGE --%>
 
-<!-- SCRIPTS -->
+<%-- SCRIPTS --%>
 <script src="js/findAndReplaceDOMText.js"></script>
 <script src="js/syntaxHighlighter.js"></script>
 <script src="js/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
+<%-- TOGGLE SIDEBAR SECTIONS --%>
 <script>
     // SPELLING
     document.getElementById("spelling-div").style.display = "block";
@@ -478,13 +488,14 @@ Author     : xhico
     });
 </script>
 
+<%--  --%>
 <script>
     // If a URL Param is present auto run
     <% if (!(mainURL.equals("null"))) {%>
 
     // Redirect
     <% if (!(mainURL.equals(url))) {%>
-    setErrorModal("Redirect found", "<b><%=url%></b><br>was redirected to<br><b><%=mainURL%></b>");
+    setErrorModal("Redirect found", "<b><%=url%></b> was redirected to <b><%=mainURL%></b>");
     <% }%>
 
     // Set URL on search bar
@@ -517,6 +528,6 @@ Author     : xhico
     <% } %>
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
 </body>
 </html>
