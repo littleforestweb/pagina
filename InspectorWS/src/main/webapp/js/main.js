@@ -8,8 +8,8 @@
 
 
 // const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS";
-const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
-// const inspectorUrl = "http://localhost:8080/InspectorWS";
+// const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
+const inspectorUrl = "http://localhost:8080/InspectorWS";
 const nameWS = inspectorUrl.split("/")[3] + "/";
 const languageToolPost = "/" + nameWS + "LanguageTool";
 const lighthousePost = "/" + nameWS + "Lighthouse";
@@ -311,7 +311,7 @@ async function addDictionary(error) {
     }
 
     // Remove from Spelling List
-    let spelling_errors = document.getElementById("spelling_errors").childNodes;
+    let spelling_errors = document.getElementById("spelling-errors").childNodes;
     for (let i = 0; i < spelling_errors.length; i++) {
         let elem = spelling_errors[i];
         if (elem.innerText.split(" (")[0] === error) {
@@ -321,7 +321,7 @@ async function addDictionary(error) {
     }
 
     //  Update totalErrors to GENERALINFO
-    document.getElementById("totalErrors").innerText = spelling_errors.length.toString();
+    document.getElementById("spelling-total-errors").innerText = spelling_errors.length.toString();
 
     // Set new Dictionary
     if (dict.length === 0) {
@@ -336,12 +336,10 @@ async function addDictionary(error) {
     // Add to Dictionary Table
     document.getElementById("dictionaryTableBody").innerHTML += "<tr><td>" + error + "</td><td><a href='#' class='removeDictionary' onclick='removeDictionary(\"" + error + "\")'>Remove</a>" + "</td></tr>";
 
-    // Remove row from table
-    $('#errorsTable').on('click', '.addDictionary', function () {
-        var table = $('#errorsTable').DataTable();
+    var table = $('#errorsTable').DataTable();
+    $('#errorsTable tbody').on('click', '.addDictionary', function () {
         table.row($(this).parents('tr')).remove().draw();
     });
-
 }
 
 async function removeDictionary(error) {
@@ -358,9 +356,8 @@ async function removeDictionary(error) {
     // Update Cookie with the new Dictionary
     await setDictionary("dictionary", dict, 180);
 
-    // Remove row from table
-    $('#dictionaryTable').on('click', '.removeDictionary', function () {
-        var table = $('#dictionaryTable').DataTable();
+    var table = $('#dictionaryTable').DataTable();
+    $('#dictionaryTable tbody').on('click', '.removeDictionary', function () {
         table.row($(this).parents('tr')).remove().draw();
     });
 }
@@ -804,6 +801,7 @@ async function runAccessibility() {
     document.getElementById("accessibility-modal-btn").hidden = false;
     document.getElementById("wcag-level-label").innerText += " - " + WCAGLevel;
 
+
     // Remove overlay
     await overlay("removeOverlay", "", "");
 }
@@ -849,7 +847,7 @@ async function main() {
     await overlay("removeOverlay", "", "")
 
     // Run Spelling Report
-    // await runLanguageTool();
+    await runLanguageTool();
 
     // END
     console.log("----------------------");

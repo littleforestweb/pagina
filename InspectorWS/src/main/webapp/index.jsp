@@ -160,6 +160,14 @@ Author     : xhico
                         </tr>
                         </tfoot>
                     </table>
+
+<%--                    <div class="modal-footer container input-group mb-3 mt-3">--%>
+<%--                        <div class="input-group-prepend">--%>
+<%--                            <span class="input-group-text" id="inputGroup-sizing-default">Word</span>--%>
+<%--                        </div>--%>
+<%--                        <input type="text" class="form-control" id="dictionaryWord">--%>
+<%--                        <button type="button" class="btn active" onclick="addDictionary('')">Add</button>--%>
+<%--                    </div>--%>
                 </div>
 
             </div>
@@ -367,7 +375,7 @@ Author     : xhico
             <div hidden id="spelling-info" class="mt-2">
                 <p id="spelling-total-p">Found <span id="spelling-total-errors">0</span> occurrences.</p>
                 <ul id="spelling-errors"></ul>
-                <button type="button" id="dict-modal-btn" class="btn active mt-2" data-bs-toggle="modal" data-bs-target="#dictionary-modal">View Spelling Overview</button>
+                <button type="button" id="dict-modal-btn" class="btn active" data-bs-toggle="modal" data-bs-target="#dictionary-modal">View Spelling Overview</button>
             </div>
 
         </div>
@@ -409,14 +417,14 @@ Author     : xhico
                 <option selected value=WCAG2AA>WCAG2AA</option>
                 <option value=WCAG2AAA>WCAG2AAA</option>
             </select>
-            <button type="button" id="accessibility-btn" class="btn active mt-2" onclick="runAccessibility()">Run Accessibility Report</button>
+            <button type="button" id="accessibility-btn" class="btn active mt-2 mb-2" onclick="runAccessibility()">Run Accessibility Report</button>
 
             <div hidden id="accessibility-info" class="mt-2">
                 <p>Found <span id="accessibility-Errors">0</span> Errors</p>
                 <p>Found <span id="accessibility-Notices">0</span> Notices</p>
                 <p>Found <span id="accessibility-Warnings">0</span> Warnings</p>
             </div>
-            <button hidden type="button" id="accessibility-modal-btn" class="btn active mt-2" data-bs-toggle="modal" data-bs-target="#accessibilityModal">View Accessibility Overview</button>
+            <button hidden type="button" id="accessibility-modal-btn" class="btn active" data-bs-toggle="modal" data-bs-target="#accessibilityModal">View Accessibility Overview</button>
         </div>
     </ul>
 </div>
