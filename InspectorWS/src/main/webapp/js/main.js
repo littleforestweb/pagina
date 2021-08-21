@@ -8,8 +8,8 @@
 
 
 // const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS";
-// const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
-const inspectorUrl = "http://localhost:8080/InspectorWS";
+const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
+// const inspectorUrl = "http://localhost:8080/InspectorWS";
 const nameWS = inspectorUrl.split("/")[3] + "/";
 const languageToolPost = "/" + nameWS + "LanguageTool";
 const lighthousePost = "/" + nameWS + "Lighthouse";
@@ -343,9 +343,12 @@ async function addDictionary(row) {
     let iframeCode = document.getElementById('mainCode').contentWindow.document;
     let spellErrors = [...iframeElement.querySelectorAll("spellerror"), ...iframeCode.querySelectorAll("spellerror")];
     spellErrors.forEach(function (elem) {
-        let parent = elem.parentNode;
-        while (elem.firstChild) parent.insertBefore(elem.firstChild, elem);
-        parent.removeChild(elem);
+        if (elem.innerText === error) {
+            let parent = elem.parentNode;
+            while (elem.firstChild) parent.insertBefore(elem.firstChild, elem);
+            parent.removeChild(elem);
+        }
+
     });
 
     // Get existing Dictionary
