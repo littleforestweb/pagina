@@ -57,7 +57,7 @@ public class Links extends HttpServlet {
             // Set base command
             String siteURL = "--siteUrl=" + url;
             String jsonPath = "--jsonPath=" + jsonFilePath;
-            List<String> base = Arrays.asList("node", "/opt/node/scrips/links.js", siteURL, jsonPath);
+            List<String> base = Arrays.asList("node", "/opt/node/scripts/Links.js", siteURL, jsonPath);
             List<String> cmd = new ArrayList<>(base);
 
             // Run Lighthouse Process

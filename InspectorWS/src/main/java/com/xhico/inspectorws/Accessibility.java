@@ -17,8 +17,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,8 +28,8 @@ import java.util.regex.Pattern;
 /**
  * @author xhico
  */
-@WebServlet(name = "CodeSniffer", urlPatterns = {"/CodeSniffer"})
-public class CodeSniffer extends HttpServlet {
+@WebServlet(name = "Accessibility", urlPatterns = {"/Accessibility"})
+public class Accessibility extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,8 +45,32 @@ public class CodeSniffer extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
+
+            // Get url param
+            String url = request.getParameter("url");
+            String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+            String folderPath = "/opt/node/data/codesniffer/";
+            String baseFile = url.replaceAll("[^a-zA-Z0-9]", "") + "_" + timeStamp;
+            String jsonFilePath = folderPath + baseFile + ".json";
+
+            // Set base command
+            String siteURL = "--siteUrl=" + url;
+            String jsonPath = "--jsonPath=" + jsonFilePath;
+            List<String> base = Arrays.asList("node", "/opt/node/scripts/HTML_CodeSniffer.js", siteURL, jsonPath);
+            List<String> cmd = new ArrayList<>(base);
+
+            // Run Lighthouse Process
+            ProcessBuilder builder = new ProcessBuilder(cmd);
+            builder.redirectErrorStream(true);
+            final Process process = builder.start();
+            watch(process);
+
+            // Wait until Process is finished
+            process.waitFor();
+
+
             // Get File Contents
-            ArrayList<String> fileContent = getFileContent("HTML_CodeSniffer.txt");
+            ArrayList<String> fileContent = getFileContent(jsonFilePath);
 
             // Initialize JSONObject and JSONArrays
             JSONObject mainObj = new JSONObject();
@@ -130,6 +156,7 @@ public class CodeSniffer extends HttpServlet {
             String jsonOutput = gsonPP.toJson(jsonObject);
 
             // Return JSON Report
+            System.out.println(jsonOutput);
             out.println(jsonOutput);
 
         } catch (Exception ex) {
@@ -137,17 +164,30 @@ public class CodeSniffer extends HttpServlet {
         }
     }
 
-    public static ArrayList<String> getFileContent(String fileName) throws FileNotFoundException, IOException {
+    public static ArrayList<String> getFileContent(String filePath) throws FileNotFoundException, IOException {
         ArrayList<String> result = new ArrayList<>();
-        String fileFolder = "/root/codesniffer/";
-        String filePath = fileFolder + fileName;
-
         BufferedReader br = new BufferedReader(new FileReader(filePath));
         while (br.ready()) {
             result.add(br.readLine());
         }
 
         return result;
+    }
+
+    private static void watch(final Process process) {
+        new Thread() {
+            public void run() {
+                BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                String line = null;
+                try {
+                    while ((line = input.readLine()) != null) {
+                        System.out.println(line);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

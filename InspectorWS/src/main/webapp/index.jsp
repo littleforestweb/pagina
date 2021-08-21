@@ -319,6 +319,15 @@ Author     : xhico
         </div>
     </ul>
 
+    <%--    ACCESSIBILITY--%>
+    <ul id="accessibility-section" class="sidebar-list">
+        <li><b><a id="accessibility-title" href="#">ACCESSIBILITY REPORT<i class="arrow down"></i></a></b></li>
+        <button type="button" id="accessibility-btn" class="btn active " onclick="runAccessibility()">Run Accessibility Report</button>
+        <div id="accessibility-div" hidden>
+            <li id="accessibility-li"></li>
+        </div>
+    </ul>
+
 </div>
 <!-- END SIDEBAR -->
 

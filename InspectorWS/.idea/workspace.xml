@@ -32,7 +32,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="ToolWindowServices.ShowToolbar" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../NodeScripts/links.js" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../NodeScripts/Links.js" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -142,7 +142,7 @@
       <updated>1629405005469</updated>
       <workItem from="1629405006595" duration="4803000" />
       <workItem from="1629413134890" duration="13041000" />
-      <workItem from="1629446840072" duration="44863000" />
+      <workItem from="1629446840072" duration="47868000" />
     </task>
     <servers />
   </component>

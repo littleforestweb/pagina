@@ -14,6 +14,7 @@ const nameWS = inspectorUrl.split("/")[3] + "/";
 const languageToolPost = "/" + nameWS + "LanguageTool";
 const lighthousePost = "/" + nameWS + "Lighthouse";
 const linksPost = "/" + nameWS + "Links";
+const accessibilityPost = "/" + nameWS + "Accessibility";
 let counter = 0;
 let myTimmer = setInterval(myTimer, 1000);
 
@@ -746,6 +747,28 @@ async function runLinks() {
     await overlay("removeOverlay", "", "");
 }
 
+async function runAccessibility() {
+    console.log("runAccessibility");
+
+    // Insert overlay
+    await overlay("addOverlay", "Running Accessibility Report", "");
+
+    // Get siteUrl
+    let siteUrl = await getSiteUrl();
+
+    // Check if broken link
+    let accessibilityJSON = await $.post(accessibilityPost, {
+        url: siteUrl,
+    }, function (result) {
+        return result;
+    });
+
+    console.log(accessibilityJSON);
+
+    // Remove overlay
+    await overlay("removeOverlay", "", "");
+}
+
 async function main() {
     // Get iframe element
     let iframeElement = document.getElementById('mainContent').contentWindow.document;
@@ -787,7 +810,7 @@ async function main() {
     await overlay("removeOverlay", "", "")
 
     // Run Spelling Report
-    await runLanguageTool();
+    // await runLanguageTool();
 
     // END
     console.log("----------------------");
