@@ -203,6 +203,85 @@ Author     : xhico
 </div>
 <%-- END lINKS MODAL--%>
 
+<%-- ACCESSIBILITY MODAL --%>
+<div class="modal fade bd-example-modal-xl" id="accessibilityModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Accessibility Overview</h5>
+                <div class="btn-group me-2 d-flex justify-content-center" role="group">
+                    <button type="button" class="btn active" id="snifferErrorsTableViewBtn" onclick="toggleAccessibilityView('snifferErrorsTableDiv')">Errors</button>
+                    <button type="button" class="btn" id="snifferNoticesTableViewBtn" onclick="toggleAccessibilityView('snifferNoticesTableDiv')">Notices</button>
+                    <button type="button" class="btn" id="snifferWarningsTableViewBtn" onclick="toggleAccessibilityView('snifferWarningsTableDiv')">Warnings</button>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <div id="snifferErrorsTableDiv">
+                    <table id="snifferErrorsTable" class="table table-striped">
+                        <thead style="text-align: center">
+                        <tr>
+                            <th>Guideline</th>
+                            <th>Message</th>
+                            <th>Tag</th>
+                        </tr>
+                        </thead>
+                        <tbody id="snifferErrorsTableBody"></tbody>
+                        <tfoot style="text-align: center">
+                        <tr>
+                            <th>Guideline</th>
+                            <th>Message</th>
+                            <th>Tag</th>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div hidden id="snifferNoticesTableDiv">
+                    <table id="snifferNoticesTable" class="table table-striped">
+                        <thead style="text-align: center">
+                        <tr>
+                            <th>Guideline</th>
+                            <th>Message</th>
+                            <th>Tag</th>
+                        </tr>
+                        </thead>
+                        <tbody id="snifferNoticesTableBody"></tbody>
+                        <tfoot style="text-align: center">
+                        <tr>
+                            <th>Guideline</th>
+                            <th>Message</th>
+                            <th>Tag</th>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div hidden id="snifferWarningsTableDiv">
+                    <table id="snifferWarningsTable" class="table table-striped">
+                        <thead style="text-align: center">
+                        <tr>
+                            <th>Guideline</th>
+                            <th>Message</th>
+                            <th>Tag</th>
+                        </tr>
+                        </thead>
+                        <tbody id="snifferWarningsTableBody"></tbody>
+                        <tfoot style="text-align: center">
+                        <tr>
+                            <th>Guideline</th>
+                            <th>Message</th>
+                            <th>Tag</th>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<%-- END ACCESSIBILITY MODAL--%>
+
 <!-- TOPNAV -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
@@ -315,7 +394,7 @@ Author     : xhico
                 <p>Found <span id="totalLinks">0</span> link(s) (<span id="extLinks">0</span> external and <span id="intLinks">0</span> internal).</p>
                 <p id="brokenLinks-p" hidden>Found <span id="brokenLinks">0</span> broken links(s).</p>
             </li>
-            <button hidden type="button" id="linksModalBtn" class="btn active  mt-2" data-bs-toggle="modal" data-bs-target="#linksModal">View Links Overview</button>
+            <button hidden type="button" id="linksModalBtn" class="btn active mt-2" data-bs-toggle="modal" data-bs-target="#linksModal">View Links Overview</button>
         </div>
     </ul>
 
@@ -324,7 +403,12 @@ Author     : xhico
         <li><b><a id="accessibility-title" href="#">ACCESSIBILITY REPORT<i class="arrow down"></i></a></b></li>
         <button type="button" id="accessibility-btn" class="btn active " onclick="runAccessibility()">Run Accessibility Report</button>
         <div id="accessibility-div" hidden>
-            <li id="accessibility-li"></li>
+            <li id="accessibility-li">
+                <p>Found <span id="snifferErrors">0</span> Errors</p>
+                <p>Found <span id="snifferNotices">0</span> Notices</p>
+                <p>Found <span id="snifferWarnings">0</span> Warnings</p>
+            </li>
+            <button type="button" id="accessibilityModalBtn" class="btn active mt-2" data-bs-toggle="modal" data-bs-target="#accessibilityModal">View Accessibility Overview</button>
         </div>
     </ul>
 
@@ -380,6 +464,16 @@ Author     : xhico
             document.getElementById("links-div").style.display = "block";
         } else {
             document.getElementById("links-div").style.display = "none";
+        }
+    });
+
+    // ACCESSIBILITY
+    document.getElementById("accessibility-div").style.display = "none";
+    document.getElementById('accessibility-title').addEventListener('click', () => {
+        if (document.getElementById("accessibility-div").style.display === "none") {
+            document.getElementById("accessibility-div").style.display = "block";
+        } else {
+            document.getElementById("accessibility-div").style.display = "none";
         }
     });
 </script>

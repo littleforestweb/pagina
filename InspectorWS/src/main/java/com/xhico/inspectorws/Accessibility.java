@@ -145,7 +145,7 @@ public class Accessibility extends HttpServlet {
             }
 
             // Add each JSONArray to main JSONObject
-            mainObj.put("Noticies", jaNotices);
+            mainObj.put("Notices", jaNotices);
             mainObj.put("Warnings", jaWarnings);
             mainObj.put("Errors", jaErrors);
 

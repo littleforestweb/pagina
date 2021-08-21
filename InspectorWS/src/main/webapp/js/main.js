@@ -115,49 +115,15 @@ async function overlay(action, message, sndMessage) {
 }
 
 async function enableDisableActions(action) {
-    if (action === "enable") {
-        // Enable searchURL
-        document.getElementById("searchURL").disabled = false;
-        // Enable View Switch
-        document.getElementById("HTMLBtn").disabled = false;
-        document.getElementById("LighthouseViewBtn").disabled = false;
-        // Enable Device View Switch
-        document.getElementById("desktopView").disabled = false;
-        document.getElementById("mobileView").disabled = false;
-        // Enable languages_list
-        document.getElementById("languages_list").disabled = false;
-        // Enable Lighthouse Btn
-        document.getElementById("lighthouse-btn").disabled = false;
-        // Enable Links Btn
-        document.getElementById("links-btn").disabled = false;
-        // Enable Dictionary Btn
-        document.getElementById("dictionaryModalBtn").disabled = false;
-        // Enable Links Btn
-        document.getElementById("linksModalBtn").disabled = false;
-        // Enable Re-Run Spelling Btn
-        document.getElementById("rerunSpelling").disabled = false;
-    } else {
-        // Disable searchURL
-        document.getElementById("searchURL").disabled = true;
-        // Disable View Switch
-        document.getElementById("HTMLBtn").disabled = true;
-        document.getElementById("LighthouseViewBtn").disabled = true;
-        // Disable Device View Switch
-        document.getElementById("desktopView").disabled = true;
-        document.getElementById("mobileView").disabled = true;
-        // Disable languages_list
-        document.getElementById("languages_list").disabled = true;
-        // Disable Lighthouse Btn
-        document.getElementById("lighthouse-btn").disabled = true;
-        // Disable Links Btn
-        document.getElementById("links-btn").disabled = true;
-        // Disable Dictionary Btn
-        document.getElementById("dictionaryModalBtn").disabled = true;
-        // Enable Links Btn
-        document.getElementById("linksModalBtn").disabled = true;
-        // Disable Re-Run Spelling Btn
-        document.getElementById("rerunSpelling").disabled = true;
-    }
+
+    // Set all elemId
+    let elemId = ["searchURL", "HTMLBtn", "LighthouseViewBtn", "desktopView", "mobileView", "languages_list",
+        "lighthouse-btn", "links-btn", "dictionaryModalBtn", "linksModalBtn", "accessibility-btn", "rerunSpelling", "accessibilityModalBtn"];
+
+    // Set disabled status
+    elemId.forEach(function (id) {
+        document.getElementById(id).disabled = action !== "enable";
+    });
 }
 
 async function resetPage() {
@@ -231,6 +197,7 @@ async function setErrorModal(title, message) {
 
 
 // ------------------------------------- SPELLING REPORT ------------------------------------- //
+
 
 async function clearSpelling() {
     console.log("clearSpelling");
@@ -416,6 +383,35 @@ async function toggleSpellView(view) {
         document.getElementById("errorsTableViewBtn").classList.add("active");
         document.getElementById("dictionaryTableDiv").hidden = true;
         document.getElementById("errorsTableDiv").hidden = false;
+    }
+}
+
+
+// ------------------------------------- ACCESSIBILITY REPORT ------------------------------------- //
+
+
+async function toggleAccessibilityView(view) {
+    if (view === "snifferErrorsTableDiv") {
+        document.getElementById("snifferErrorsTableViewBtn").classList.add("active");
+        document.getElementById("snifferNoticesTableViewBtn").classList.remove("active");
+        document.getElementById("snifferWarningsTableViewBtn").classList.remove("active");
+        document.getElementById("snifferErrorsTableDiv").hidden = false;
+        document.getElementById("snifferNoticesTableDiv").hidden = true;
+        document.getElementById("snifferWarningsTableDiv").hidden = true;
+    } else if (view === "snifferNoticesTableDiv") {
+        document.getElementById("snifferErrorsTableViewBtn").classList.remove("active");
+        document.getElementById("snifferNoticesTableViewBtn").classList.add("active");
+        document.getElementById("snifferWarningsTableViewBtn").classList.remove("active");
+        document.getElementById("snifferErrorsTableDiv").hidden = true;
+        document.getElementById("snifferNoticesTableDiv").hidden = false;
+        document.getElementById("snifferWarningsTableDiv").hidden = true;
+    } else if (view === "snifferWarningsTableDiv") {
+        document.getElementById("snifferErrorsTableViewBtn").classList.remove("active");
+        document.getElementById("snifferNoticesTableViewBtn").classList.remove("active");
+        document.getElementById("snifferWarningsTableViewBtn").classList.add("active");
+        document.getElementById("snifferErrorsTableDiv").hidden = true;
+        document.getElementById("snifferNoticesTableDiv").hidden = true;
+        document.getElementById("snifferWarningsTableDiv").hidden = false;
     }
 }
 
@@ -697,7 +693,6 @@ async function runLinks() {
             let url = key;
             let status = value[0];
             let origin = value[1];
-            // url = url.length > 100 ? url.substring(0, 100) + "..." : url;
 
             // Set links counters
             totalLinksCount += 1;
@@ -756,14 +751,107 @@ async function runAccessibility() {
     // Get siteUrl
     let siteUrl = await getSiteUrl();
 
-    // Check if broken link
+    // Get accessibilityJSON
     let accessibilityJSON = await $.post(accessibilityPost, {
         url: siteUrl,
     }, function (result) {
         return result;
     });
 
-    console.log(accessibilityJSON);
+    // Get Errors, Notices, Warnings
+    let snifferErrors = accessibilityJSON["Errors"];
+    let snifferNotices = accessibilityJSON["Notices"];
+    let snifferWarnings = accessibilityJSON["Warnings"];
+
+    // Add entry to snifferErrorsTableBody
+    for (let i = 0; i < snifferErrors.length; i++) {
+        let entry = snifferErrors[i];
+        let guideline = ((entry["Guideline"] !== "null") ? entry["Guideline"].replace("WCAG2AA.", "") : "N/A");
+        let message = ((entry["Message"] !== "null") ? entry["Message"] : "N/A");
+        let tag = ((entry["Tag"] !== "null") ? entry["Tag"] : "N/A");
+        let code = ((entry["Code"] !== "null") ? entry["Code"] : "N/A");
+
+        // Add line to table
+        document.getElementById("snifferErrorsTableBody").innerHTML += "<tr><td>" + guideline + "</td><td>" + message + "</td><td>" + tag + "</td></tr>";
+    }
+
+    // Add entry to snifferNoticesTableBody
+    for (let i = 0; i < snifferNotices.length; i++) {
+        let entry = snifferNotices[i];
+        let guideline = ((entry["Guideline"] !== "null") ? entry["Guideline"].replace("WCAG2AA.", "") : "N/A");
+        let message = ((entry["Message"] !== "null") ? entry["Message"] : "N/A");
+        let tag = ((entry["Tag"] !== "null") ? entry["Tag"] : "N/A");
+        let code = ((entry["Code"] !== "null") ? entry["Code"] : "N/A");
+
+        // Add line to table
+        document.getElementById("snifferNoticesTableBody").innerHTML += "<tr><td>" + guideline + "</td><td>" + message + "</td><td>" + tag + "</td></tr>";
+    }
+
+    // Add entry to snifferWarningsTableBody
+    for (let i = 0; i < snifferWarnings.length; i++) {
+        let entry = snifferWarnings[i];
+        let guideline = ((entry["Guideline"] !== "null") ? entry["Guideline"].replace("WCAG2AA.", "") : "N/A");
+        let message = ((entry["Message"] !== "null") ? entry["Message"] : "N/A");
+        let tag = ((entry["Tag"] !== "null") ? entry["Tag"] : "N/A");
+        let code = ((entry["Code"] !== "null") ? entry["Code"] : "N/A");
+
+        // Add line to table
+        document.getElementById("snifferWarningsTableBody").innerHTML += "<tr><td>" + guideline + "</td><td>" + message + "</td><td>" + tag + "</td></tr>";
+    }
+
+    $('#snifferErrorsTable').DataTable({
+        dom: 'Blfrtip',
+        buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Errors Report'}],
+        pageLength: 10,
+        "aLengthMenu": [[10, 50, 100], [10, 50, 100]],
+        "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
+        "bAutoWidth": false,
+        "aoColumns": [
+            {"sWidth": "15%"},
+            {"sWidth": "70%"},
+            {"sWidth": "15%"}
+        ]
+    });
+
+    $('#snifferNoticesTable').DataTable({
+        dom: 'Blfrtip',
+        buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Notices Report'}],
+        pageLength: 10,
+        "aLengthMenu": [[10, 50, 100], [10, 50, 100]],
+        "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
+        "bAutoWidth": false,
+        "aoColumns": [
+            {"sWidth": "15%"},
+            {"sWidth": "70%"},
+            {"sWidth": "15%"}
+        ]
+    });
+
+    $('#snifferWarningsTable').DataTable({
+        dom: 'Blfrtip',
+        buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Warnings Report'}],
+        pageLength: 10,
+        "aLengthMenu": [[10, 50, 100], [10, 50, 100]],
+        "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
+        "bAutoWidth": false,
+        "aoColumns": [
+            {"sWidth": "15%"},
+            {"sWidth": "70%"},
+            {"sWidth": "15%"}
+        ]
+    });
+
+    // Set Accessibility Counters on sidebar
+    document.getElementById("snifferErrors").innerText = snifferErrors.length;
+    document.getElementById("snifferNotices").innerText = snifferNotices.length;
+    document.getElementById("snifferWarnings").innerText = snifferWarnings.length;
+
+    // Remove accessibility-btn
+    document.getElementById("accessibility-btn").hidden = true;
+
+    // Toggle Accessibility Section
+    document.getElementById("accessibility-div").style.display = "block";
+    document.getElementById("accessibility-div").hidden = false;
 
     // Remove overlay
     await overlay("removeOverlay", "", "");
