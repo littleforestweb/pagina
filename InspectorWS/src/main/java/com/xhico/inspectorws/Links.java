@@ -50,14 +50,14 @@ public class Links extends HttpServlet {
             // Get url param
             String url = request.getParameter("url");
             String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-            String folderPath = "/opt/node/data/links/";
+            String folderPath = "/opt/node/links/data/";
             String baseFile = url.replaceAll("[^a-zA-Z0-9]", "") + "_" + timeStamp;
             String jsonFilePath = folderPath + baseFile + ".json";
 
             // Set base command
             String siteURL = "--siteUrl=" + url;
             String jsonPath = "--jsonPath=" + jsonFilePath;
-            List<String> base = Arrays.asList("node", "/opt/node/scripts/Links.js", siteURL, jsonPath);
+            List<String> base = Arrays.asList("node", "/opt/node/links/Links.js", siteURL, jsonPath);
             List<String> cmd = new ArrayList<>(base);
 
             // Run Lighthouse Process

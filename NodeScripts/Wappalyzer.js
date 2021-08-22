@@ -1,5 +1,5 @@
 /*
- Created on : 22 Ago 2021, 15:03:55
+ Created on : 22 Ago 2021, 22:36:54
  Author     : xhico
  */
 
@@ -7,41 +7,30 @@
 // ------------------------------------- GLOBAL VARIABLES ------------------------------------- //
 
 
-const puppeteer = require('puppeteer-core');
+const Wappalyzer = require('wappalyzer');
 const fs = require('fs');
-let browser, page, siteUrl, jsonPath;
+let siteUrl, jsonPath, resultsJSON;
+const wappalyzer = new Wappalyzer();
 
 
 // ------------------------------------- MAIN ------------------------------------- //
 
 
 async function main() {
+    try {
+        await wappalyzer.init();
+        const site = await wappalyzer.open(siteUrl);
+        const results = await site.analyze();
+        resultsJSON = JSON.stringify(results);
 
-    // Set Puppeteer args
-    args = ['--no-treekill',
-        '--disable-gpu',
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-infobars',
-        '--window-position=0,0',
-        '--ignore-certificate-errors',
-        '--ignore-certificate-errors-spki-list'];
+    } catch (error) {
+        console.error(error);
+    }
 
-    // Set browser
-    browser = await puppeteer.launch({executablePath: '/usr/bin/google-chrome', ignoreHTTPSErrors: true, headless: true, args: args});
-
-    // Load page
-    const page = await browser.newPage();
-    await page.goto(siteUrl);
-
-    // Get Cookies
-    const cookies = await page.cookies();
-
-    // Close browser
-    await browser.close();
+    await wappalyzer.destroy();
 
     // Save reportInfo to file
-    fs.writeFile(jsonPath, "{ \"Cookies\" : " + JSON.stringify(cookies) + "}", function (err) {
+    fs.writeFile(jsonPath, "{ \"Wappalyzer\" : " + resultsJSON + "}", function (err) {
         if (err) {
             return console.log(err);
         }

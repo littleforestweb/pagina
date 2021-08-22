@@ -49,44 +49,54 @@ async function main() {
             return Array.from(document.querySelectorAll('a')).map((val) => val.href);
         }))];
 
-        // CLose page
+        // Close page
         page.close();
 
         // Iterate every link
         for (let i = 0; i < links.length; i++) {
             let linkHref = links[i];
 
-            // Get absoule url
-            let newUrl = helpers.absoluteUri(siteUrl, linkHref);
-            let status, redirectStatus = "";
+            // Check if link has already been checked
+            if (!(checkedLinks.includes(linkHref))) {
 
-            // Internal || External
-            let domain = (new URL(siteUrl));
-            let baseUrl = domain.protocol + "//" + domain.hostname;
-            let origin = ((linkHref.includes(baseUrl)) ? "Internal" : "External");
+                // Append linkHref to checkedLinks
+                checkedLinks.push(linkHref);
 
-            // Append linkHref to checkedLinks
-            checkedLinks.push(newUrl);
+                // Get absoule url
+                let newUrl = helpers.absoluteUri(siteUrl, linkHref);
+                let status, redirectStatus = "";
 
-            // Get status code
-            try {
-                status = '' + await urlStatusCode(newUrl);
-            } catch (error) {
-                status = "999";
+                // Internal || External
+                let domain = (new URL(siteUrl));
+                let baseUrl = domain.protocol + "//" + domain.hostname;
+                let origin = ((linkHref.includes(baseUrl)) ? "Internal" : "External");
+
+
+                // Get status code
+                try {
+                    status = '' + await urlStatusCode(newUrl);
+                } catch (error) {
+                    status = "999";
+                }
+
+                // Get Redirected UrL
+                if (status.includes("30")) {
+                    page = await browser.newPage();
+                    await page.goto(newUrl, {waitUntil: 'domcontentloaded', timeout: 20000});
+                    let redirectUrl = page.url();
+                    redirectStatus = '' + await urlStatusCode(redirectUrl);
+                    status = status + "," + redirectStatus;
+                    page.close();
+                }
+
+                // Append info to jsonLinks
+                jsonLinks.push('"' + newUrl + '": [\"' + status + "\", \"" + origin + '\"]');
             }
 
-            // Get Redirected UrL
-            if (status.includes("30")) {
-                page = await browser.newPage();
-                await page.goto(newUrl, {waitUntil: 'domcontentloaded', timeout: 20000});
-                let redirectUrl = page.url();
-                redirectStatus = '' + await urlStatusCode(redirectUrl);
-                status = status + "," + redirectStatus;
-            }
-
-            // Append info to jsonLinks
-            jsonLinks.push('"' + newUrl + '": [\"' + status + "\", \"" + origin + '\"]');
         }
+
+        // Close browser
+        await browser.close();
 
         // Set full JSON String
         let fullJSON = "{ 'linksInfo' : [";

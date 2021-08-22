@@ -39,7 +39,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="ToolWindowServices.ShowToolbar" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../NodeScripts/YoastSEO_Worker.js" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../NodeScripts/Cookies.js" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -152,7 +152,8 @@
       <workItem from="1629446840072" duration="53148000" />
       <workItem from="1629548309658" duration="47456000" />
       <workItem from="1629597705767" duration="1112000" />
-      <workItem from="1629635300703" duration="12702000" />
+      <workItem from="1629635300703" duration="16116000" />
+      <workItem from="1629656288578" duration="12695000" />
     </task>
     <servers />
   </component>

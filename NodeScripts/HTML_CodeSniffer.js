@@ -43,12 +43,12 @@ async function main() {
     await page.goto(siteUrl);
 
     // Run report
-    await page.addScriptTag({path: '/opt/node/scripts/node_modules/html_codesniffer/build/HTMLCS.js'});
+    await page.addScriptTag({path: '/opt/node/codesniffer/node_modules/html_codesniffer/build/HTMLCS.js'});
     await page.evaluate(function (level) {
         HTMLCS_RUNNER.run(level);
     }, level);
 
-    // Cloase browser
+    // Close browser
     await browser.close();
 
     // Save reportInfo to file

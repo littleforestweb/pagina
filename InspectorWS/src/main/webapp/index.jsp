@@ -183,16 +183,16 @@ Author     : xhico
                     <thead>
                     <tr>
                         <th>URL</th>
-                        <th>Origin</th>
                         <th>Status</th>
+                        <th>Origin</th>
                     </tr>
                     </thead>
                     <tbody id="linksTableBody"></tbody>
                     <tfoot>
                     <tr>
                         <th>URL</th>
-                        <th>Origin</th>
                         <th>Status</th>
+                        <th>Origin</th>
                     </tr>
                     </tfoot>
                 </table>
@@ -324,6 +324,44 @@ Author     : xhico
 </div>
 <%-- END COOKIES MODAL--%>
 
+<%-- TECHNOLOGIES MODAL --%>
+<div class="modal fade bd-example-modal-xl" id="technologiesModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Technologies Overview</h5>
+            </div>
+
+            <div class="modal-body">
+                <div id="technologiesTableDiv">
+                    <table id="technologiesTable" class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Website</th>
+                            <th>Categories</th>
+                            <th>Confidence</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot>
+                        <tr>
+                            <th>Name</th>
+                            <th>Website</th>
+                            <th>Categories</th>
+                            <th>Confidence</th>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<%-- END TECHNOLOGIES MODAL--%>
+
 <%-- TOPNAV --%>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
@@ -409,7 +447,7 @@ Author     : xhico
             <div hidden id="spelling-info" class="mt-2">
                 <p id="spelling-total-p">Found <span id="spelling-total-errors">0</span> occurrences.</p>
                 <ul id="spelling-errors"></ul>
-                <button type="button" id="dict-modal-btn" class="btn active" data-bs-toggle="modal" data-bs-target="#dictionary-modal">View Spelling Overview</button>
+                <button type="button" id="dict-modal-btn" class="btn active" data-bs-toggle="modal" data-bs-target="#dictionary-modal">View Overview</button>
             </div>
 
         </div>
@@ -437,7 +475,7 @@ Author     : xhico
                 <p>Found <span id="links-total">0</span> link(s) (<span id="links-ext">0</span> external and <span id="links-int">0</span> internal).</p>
                 <p id="links-broken-p" hidden>Found <span id="links-broken">0</span> broken links(s).</p>
             </div>
-            <button hidden type="button" id="links-modal-btn" class="btn active mt-2" data-bs-toggle="modal" data-bs-target="#linksModal">View Links Overview</button>
+            <button hidden type="button" id="links-modal-btn" class="btn active mt-2" data-bs-toggle="modal" data-bs-target="#linksModal">View Overview</button>
         </div>
     </ul>
 
@@ -458,7 +496,7 @@ Author     : xhico
                 <p>Found <span id="accessibility-Notices">0</span> Notices</p>
                 <p>Found <span id="accessibility-Warnings">0</span> Warnings</p>
             </div>
-            <button hidden type="button" id="accessibility-modal-btn" class="btn active" data-bs-toggle="modal" data-bs-target="#accessibilityModal">View Accessibility Overview</button>
+            <button hidden type="button" id="accessibility-modal-btn" class="btn active" data-bs-toggle="modal" data-bs-target="#accessibilityModal">View Overview</button>
         </div>
     </ul>
 
@@ -471,7 +509,21 @@ Author     : xhico
             <div id="cookies-info" hidden>
                 <p>Found <span id="cookies-total">0</span> cookies</p>
             </div>
-            <button hidden type="button" id="cookies-modal-btn" class="btn active mt-2" data-bs-toggle="modal" data-bs-target="#cookiesModal">View Cookies Overview</button>
+            <button hidden type="button" id="cookies-modal-btn" class="btn active mt-2" data-bs-toggle="modal" data-bs-target="#cookiesModal">View Overview</button>
+        </div>
+    </ul>
+
+    <%--    TECHNOLOGIES--%>
+    <ul class="sidebar-list">
+        <li><b><a href="#" onclick="toggleSidebar('technologies')">TECHNOLOGIES REPORT<i class="arrow down"></i></a></b></li>
+        <div id="technologies-main">
+            <button type="button" id="technologies-btn" class="btn active" onclick="runTechnologies()">Run Technologies Report</button>
+
+            <div id="technologies-info" hidden>
+                <p>Found <span id="technologies-total">0</span> Technologies</p>
+                <ul id="technologies-name"></ul>
+            </div>
+            <button hidden type="button" id="technologies-modal-btn" class="btn active mt-2" data-bs-toggle="modal" data-bs-target="#technologiesModal">View Overview</button>
         </div>
     </ul>
 </div>
