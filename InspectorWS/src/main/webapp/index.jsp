@@ -114,7 +114,7 @@ Author     : xhico
 
             <div class="modal-header">
                 <h5 class="modal-title">Spelling Overview</h5>
-                <button type="button" class="btn active" onclick="clearSpelling('')">Re-run Spelling</button>
+                <button type="button" class="btn active" onclick="rerunSpelling('')">Re-run Spelling</button>
                 <div class="btn-group me-2 d-flex justify-content-center" role="group">
                     <button type="button" class="btn active" id="errorsTableViewBtn" onclick="toggleSpellView('errorsTableDiv')">Errors Found</button>
                     <button type="button" class="btn" id="dictionaryTableViewBtn" onclick="toggleSpellView('dictionaryTableDiv')">Dictionary</button>
@@ -282,6 +282,48 @@ Author     : xhico
 </div>
 <%-- END ACCESSIBILITY MODAL--%>
 
+<%-- COOKIES MODAL --%>
+<div class="modal fade bd-example-modal-xl" id="cookiesModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Cookies Overview</h5>
+            </div>
+
+            <div class="modal-body">
+                <div id="cookiesTableDiv">
+                    <table id="cookiesTable" class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Domain</th>
+                            <th>Expires</th>
+                            <th>Http Only</th>
+                            <th>Secure</th>
+                            <th>Source Port</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot>
+                        <tr>
+                            <th>Name</th>
+                            <th>Domain</th>
+                            <th>Expires</th>
+                            <th>Http Only</th>
+                            <th>Secure</th>
+                            <th>Source Port</th>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<%-- END COOKIES MODAL--%>
+
 <%-- TOPNAV --%>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
@@ -417,6 +459,19 @@ Author     : xhico
                 <p>Found <span id="accessibility-Warnings">0</span> Warnings</p>
             </div>
             <button hidden type="button" id="accessibility-modal-btn" class="btn active" data-bs-toggle="modal" data-bs-target="#accessibilityModal">View Accessibility Overview</button>
+        </div>
+    </ul>
+
+    <%--    COOKIES--%>
+    <ul class="sidebar-list">
+        <li><b><a href="#" onclick="toggleSidebar('cookies')">COOKIES REPORT<i class="arrow down"></i></a></b></li>
+        <div id="cookies-main">
+            <button type="button" id="cookies-btn" class="btn active" onclick="runCookies()">Run Cookies Report</button>
+
+            <div id="cookies-info" hidden>
+                <p>Found <span id="cookies-total">0</span> cookies</p>
+            </div>
+            <button hidden type="button" id="cookies-modal-btn" class="btn active mt-2" data-bs-toggle="modal" data-bs-target="#cookiesModal">View Cookies Overview</button>
         </div>
     </ul>
 </div>

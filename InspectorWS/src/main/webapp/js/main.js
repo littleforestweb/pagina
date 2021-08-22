@@ -8,13 +8,14 @@
 
 
 // const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS";
-// const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
-const inspectorUrl = "http://localhost:8080/InspectorWS";
+const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
+// const inspectorUrl = "http://localhost:8080/InspectorWS";
 const nameWS = inspectorUrl.split("/")[3] + "/";
 const languageToolPost = "/" + nameWS + "LanguageTool";
 const lighthousePost = "/" + nameWS + "Lighthouse";
 const linksPost = "/" + nameWS + "Links";
 const accessibilityPost = "/" + nameWS + "Accessibility";
+const cookiesPost = "/" + nameWS + "Cookies";
 let counter = 0;
 let myTimmer = setInterval(myTimer, 1000);
 
@@ -118,7 +119,7 @@ async function enableDisableActions(action) {
 
     // Set all elemId
     let elemId = ["searchURL", "HTMLBtn", "LighthouseViewBtn", "desktopView", "mobileView", "languages-list", "spelling-btn", "dict-modal-btn",
-        "lighthouse-btn", "links-btn", "links-modal-btn", "accessibility-btn", "accessibility-modal-btn"];
+        "lighthouse-btn", "links-btn", "links-modal-btn", "accessibility-btn", "accessibility-modal-btn", "cookies-btn", "cookies-modal-btn"];
 
     // Set disabled status
     elemId.forEach(function (id) {
@@ -210,6 +211,9 @@ async function toggleSidebar(section) {
     } else if (section === "accessibility") {
         let accessibilityDiv = document.getElementById("accessibility-main");
         accessibilityDiv.hidden = !accessibilityDiv.hidden;
+    } else if (section === "cookies") {
+        let cookiesDiv = document.getElementById("cookies-main");
+        cookiesDiv.hidden = !cookiesDiv.hidden;
     }
 }
 
@@ -403,7 +407,7 @@ async function toggleSpellView(view) {
     }
 }
 
-async function clearSpelling() {
+async function rerunSpelling() {
     // Remove errors from Spelling List
     document.getElementById("spelling-errors").innerHTML = "";
 
@@ -1013,6 +1017,91 @@ async function runAccessibility() {
     await overlay("removeOverlay", "", "");
 }
 
+async function runCookies() {
+    console.log("runCookies");
+
+    // Insert overlay
+    await overlay("addOverlay", "Running Cookies Report", "");
+
+    // Get siteUrl
+    let siteUrl = await getSiteUrl();
+
+    // Get cookiesJSON
+    let cookiesJSON = await $.post(cookiesPost, {
+        url: siteUrl,
+    }, function (result) {
+        return result;
+    });
+
+    let dataset = [];
+    cookiesJSON = cookiesJSON["Cookies"];
+    for (let i = 0; i < cookiesJSON.length; i++) {
+        let entry = cookiesJSON[i];
+        let name = entry["name"];
+        let domain = entry["domain"];
+        let expires = new Date(0);
+        expires.setUTCSeconds(new Date(entry["expires"]));
+        expires = '' + expires;
+        let httpOnly = entry["httpOnly"];
+        let secure = entry["secure"];
+        let sourcePort = entry["sourcePort"];
+        dataset.push([name, domain, expires, httpOnly, secure, sourcePort]);
+    }
+
+    // Initialize Errors Table
+    $('#cookiesTable').DataTable({
+        dom: 'Blfrtip',
+        buttons: [{text: 'Export', extend: 'csv', filename: 'Cookies Report'}],
+        pageLength: 10,
+        "aLengthMenu": [[10, 50, 100], [10, 50, 100]],
+        "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
+        "order": [[0, "asc"]],
+        data: dataset,
+        "autoWidth": false,
+        "columnDefs": [
+            {
+                "width": "10%", "targets": 0, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            },
+            {
+                "width": "20%", "targets": 1, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            },
+            {
+                "width": "40%", "targets": 2, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            },
+            {
+                "width": "10%", "targets": 3, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            },
+            {
+                "width": "10%", "targets": 4, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            },
+            {
+                "width": "10%", "targets": 5, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            }
+        ]
+    });
+
+    // Toggle Cookies Section
+    document.getElementById("cookies-total").innerText = dataset.length.toString();
+    document.getElementById("cookies-info").hidden = false;
+    document.getElementById("cookies-btn").hidden = true;
+    document.getElementById("cookies-modal-btn").hidden = false;
+
+    // Remove overlay
+    await overlay("removeOverlay", "", "");
+}
+
 async function main() {
     // Get iframe element
     let iframeElement = document.getElementById('mainContent').contentWindow.document;
@@ -1054,7 +1143,7 @@ async function main() {
     await overlay("removeOverlay", "", "")
 
     // Run Spelling Report
-    await runLanguageTool();
+    // await runLanguageTool();
 
     // END
     console.log("----------------------");

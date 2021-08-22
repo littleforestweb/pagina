@@ -1,5 +1,5 @@
 /*
- Created on : 31 Jul 2021, 00:09:29
+ Created on : 22 Ago 2021, 15:03:55
  Author     : xhico
  */
 
@@ -8,9 +8,9 @@
 
 
 const puppeteer = require('puppeteer-core');
+const helpers = require('./helpers');
 const fs = require('fs');
-let siteUrl, jsonPath, level;
-let reportInfo = "";
+let browser, page, siteUrl, jsonPath;
 
 
 // ------------------------------------- MAIN ------------------------------------- //
@@ -29,30 +29,20 @@ async function main() {
         '--ignore-certificate-errors-spki-list'];
 
     // Set browser
-    const browser = await puppeteer.launch({executablePath: '/usr/bin/google-chrome', ignoreHTTPSErrors: true, headless: true, args: args});
-
-    // Start new page
-    const page = await browser.newPage();
-
-    // Get report
-    page.on('console', msg => {
-        reportInfo += msg.text() + "\n";
-    });
+    browser = await puppeteer.launch({executablePath: '/usr/bin/google-chrome', ignoreHTTPSErrors: true, headless: true, args: args});
 
     // Load page
+    const page = await browser.newPage();
     await page.goto(siteUrl);
 
-    // Run report
-    await page.addScriptTag({path: '/opt/node/scripts/node_modules/html_codesniffer/build/HTMLCS.js'});
-    await page.evaluate(function (level) {
-        HTMLCS_RUNNER.run(level);
-    }, level);
+    // Get Cookies
+    const cookies = await page.cookies();
 
-    // Cloase browser
+    // Close browser
     await browser.close();
 
     // Save reportInfo to file
-    fs.writeFile(jsonPath, reportInfo, function (err) {
+    fs.writeFile(jsonPath, "{ \"Cookies\" : " + JSON.stringify(cookies) + "}", function (err) {
         if (err) {
             return console.log(err);
         }
@@ -63,14 +53,13 @@ async function main() {
 
 // ------------------------------------- INITIALIZE ------------------------------------- //
 
-
 (async () => {
-// Get cmd args; Get only non system arguments
+    // Get cmd args; Get only non system arguments
     process.argv.forEach(function (val, index, array) {
         if (index > 1 && val.startsWith("--")) {
 
             let argArray = val.split("=");
-            // console.log(argArray);
+            console.log(argArray);
 
             if (argArray.length > 1) {
                 let name = argArray[0];
@@ -80,18 +69,17 @@ async function main() {
                     siteUrl = value;
                 } else if (name === "--jsonPath") {
                     jsonPath = value;
-                } else if (name === "--level") {
-                    level = value;
                 }
             }
+
         }
     });
 
-    if (siteUrl === "" || jsonPath === "" || level === "") {
-        console.log("NO siteUrl or jsonPath or level")
+    // Init
+    if (siteUrl === "" || jsonPath === "") {
+        console.log("NO siteUrl or jsonPath")
     } else {
-        main();
+        await main();
     }
+
 })();
-
-
