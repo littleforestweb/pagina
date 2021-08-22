@@ -10,6 +10,8 @@
 const puppeteer = require('puppeteer-core');
 const helpers = require('./helpers');
 const fs = require('fs');
+const urlStatusCode = require('url-status-code');
+
 let browser, page, siteUrl, jsonPath;
 
 
@@ -56,37 +58,34 @@ async function main() {
 
             // Get absoule url
             let newUrl = helpers.absoluteUri(siteUrl, linkHref);
-            let status;
+            let status, redirectStatus = "";
 
             // Internal || External
             let domain = (new URL(siteUrl));
             let baseUrl = domain.protocol + "//" + domain.hostname;
-            let origin = ((linkHref.includes(baseUrl)) ? "Internal" : "External")
+            let origin = ((linkHref.includes(baseUrl)) ? "Internal" : "External");
 
             // Append linkHref to checkedLinks
             checkedLinks.push(newUrl);
 
-            // Open newPage
-            page = await browser.newPage();
-
+            // Get status code
             try {
-                // Get response
-                let response = await page.goto(newUrl, {waitUntil: 'domcontentloaded', timeout: 20000});
-
-                // Get status
-                status = response.status().toString();
-            } catch (ex) {
-                // console.log("Ex - " + ex);
+                status = '' + await urlStatusCode(newUrl);
+            } catch (error) {
                 status = "404";
             }
 
-            // Close page
-            page.close();
+            // Get Redirected UrL
+            if (status === "301") {
+                page = await browser.newPage();
+                await page.goto(newUrl, {waitUntil: 'domcontentloaded', timeout: 20000});
+                let redirectUrl = page.url();
+                redirectStatus = '' + await urlStatusCode(redirectUrl);
+                status = status + "," + redirectStatus;
+            }
 
             // Append info to jsonLinks
             jsonLinks.push('"' + newUrl + '": [\"' + status + "\", \"" + origin + '\"]');
-
-            console.log(newUrl + " " + status + " " + origin);
         }
 
         // Set full JSON String
@@ -102,6 +101,7 @@ async function main() {
 
         // Ignore the last ","
         fullJSON = fullJSON.substr(0, fullJSON.length) + "]}";
+        console.log(fullJSON);
 
         // Save fullJSON to file
         fs.writeFile(jsonPath, fullJSON, function (err) {
@@ -152,4 +152,3 @@ async function main() {
     }
 
 })();
-

@@ -216,14 +216,25 @@ table {
     text-overflow: ellipsis;
 }
 
-.link404 {
-    background-color: red;
-    padding: 4px;
-}
-
 .link200 {
     background-color: green;
     padding: 4px;
+    margin-left: 4px;
+    margin-right: 4px;
+}
+
+.link301 {
+    background-color: orange;
+    padding: 4px;
+    margin-left: 4px;
+    margin-right: 4px;
+}
+
+.link404 {
+    background-color: red;
+    padding: 4px;
+    margin-left: 4px;
+    margin-right: 4px;
 }
 
 .pagination .page-link {

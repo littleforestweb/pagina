@@ -15,6 +15,13 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
   <component name="LogFilters">
     <option name="FILTER_ERRORS" value="false" />
     <option name="FILTER_WARNINGS" value="false" />
@@ -143,7 +150,8 @@
       <workItem from="1629405006595" duration="4803000" />
       <workItem from="1629413134890" duration="13041000" />
       <workItem from="1629446840072" duration="53148000" />
-      <workItem from="1629548309658" duration="39729000" />
+      <workItem from="1629548309658" duration="47456000" />
+      <workItem from="1629597705767" duration="1112000" />
     </task>
     <servers />
   </component>

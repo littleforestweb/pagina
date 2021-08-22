@@ -742,6 +742,7 @@ async function runLinks() {
     }, function (result) {
         return result;
     });
+    console.log(linkJSON);
 
     // Iterate over every link
     let linksInfo = linkJSON["linksInfo"];
@@ -787,8 +788,20 @@ async function runLinks() {
             },
             {
                 "width": "20%", "targets": 1, "render": function (data, type, row) {
-                    let colorClass = ((data === "200") ? "link200" : "link404")
-                    return "<span class='" + colorClass + "'>" + data + "</span>";
+                    let status = data.split(",");
+                    let html = "";
+                    let colorClass;
+                    status.forEach(function (code) {
+                        if (code.includes("20")) {
+                            colorClass = "link200"
+                        } else if (code.includes("30")) {
+                            colorClass = "link301"
+                        } else {
+                            colorClass = "link404"
+                        }
+                        html += "<span class='" + colorClass + "'>" + code + "</span>";
+                    });
+                    return html;
                 },
             },
             {
@@ -1013,7 +1026,7 @@ async function main() {
     await overlay("removeOverlay", "", "")
 
     // Run Spelling Report
-    await runLanguageTool();
+    // await runLanguageTool();
 
     // END
     console.log("----------------------");
