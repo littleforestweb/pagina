@@ -107,13 +107,14 @@ Author     : xhico
 </div>
 <%-- END ERROR MODAL--%>
 
-<%-- DICTIONARY MODAL --%>
+<%-- SPELLING MODAL --%>
 <div class="modal fade bd-example-modal-xl" id="dictionary-modal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
 
             <div class="modal-header">
                 <h5 class="modal-title">Spelling Overview</h5>
+                <button type="button" class="btn active" onclick="clearSpelling('')">Re-run Spelling</button>
                 <div class="btn-group me-2 d-flex justify-content-center" role="group">
                     <button type="button" class="btn active" id="errorsTableViewBtn" onclick="toggleSpellView('errorsTableDiv')">Errors Found</button>
                     <button type="button" class="btn" id="dictionaryTableViewBtn" onclick="toggleSpellView('dictionaryTableDiv')">Dictionary</button>
@@ -166,7 +167,7 @@ Author     : xhico
         </div>
     </div>
 </div>
-<%-- END DICTIONARY MODAL--%>
+<%-- END SPELLING MODAL--%>
 
 <%-- lINKS MODAL --%>
 <div class="modal fade bd-example-modal-xl" id="linksModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">

@@ -8,8 +8,8 @@
 
 
 // const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS";
-const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
-// const inspectorUrl = "http://localhost:8080/InspectorWS";
+// const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
+const inspectorUrl = "http://localhost:8080/InspectorWS";
 const nameWS = inspectorUrl.split("/")[3] + "/";
 const languageToolPost = "/" + nameWS + "LanguageTool";
 const lighthousePost = "/" + nameWS + "Lighthouse";
@@ -403,6 +403,34 @@ async function toggleSpellView(view) {
     }
 }
 
+async function clearSpelling() {
+    // Remove errors from Spelling List
+    document.getElementById("spelling-errors").innerHTML = "";
+
+    // Clear spelling total p"
+    document.getElementById("spelling-total-p").innerHTML = "<p id=\"spelling-total-p\">Found <span id=\"spelling-total-errors\">0</span> occurrences.</p>"
+
+    // Toggle Spelling Section
+    document.getElementById("spelling-info").hidden = true;
+
+    // Remove spellError from iframe and htmlCode
+    let iframeElement = document.getElementById('mainContent').contentWindow.document;
+    let iframeCode = document.getElementById('mainCode').contentWindow.document;
+    let spellErrors = [...iframeElement.querySelectorAll("spellerror"), ...iframeCode.querySelectorAll("spellerror")];
+    spellErrors.forEach(function (elem) {
+        let parent = elem.parentNode;
+        while (elem.firstChild) parent.insertBefore(elem.firstChild, elem);
+        parent.removeChild(elem);
+
+    });
+
+    // Clear table
+    $('#errorsTable').DataTable().clear().draw();
+    $('#errorsTable').DataTable().destroy();
+
+    // Run Spelling again
+    await runLanguageTool();
+}
 
 // ------------------------------------- ACCESSIBILITY REPORT ------------------------------------- //
 
@@ -1026,7 +1054,7 @@ async function main() {
     await overlay("removeOverlay", "", "")
 
     // Run Spelling Report
-    // await runLanguageTool();
+    await runLanguageTool();
 
     // END
     console.log("----------------------");
