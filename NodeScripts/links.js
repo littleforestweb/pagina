@@ -72,11 +72,11 @@ async function main() {
             try {
                 status = '' + await urlStatusCode(newUrl);
             } catch (error) {
-                status = "404";
+                status = "999";
             }
 
             // Get Redirected UrL
-            if (status === "301") {
+            if (status.includes("30")) {
                 page = await browser.newPage();
                 await page.goto(newUrl, {waitUntil: 'domcontentloaded', timeout: 20000});
                 let redirectUrl = page.url();

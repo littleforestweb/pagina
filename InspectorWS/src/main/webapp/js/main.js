@@ -774,7 +774,6 @@ async function runLinks() {
     }, function (result) {
         return result;
     });
-    console.log(linkJSON);
 
     // Iterate over every link
     let linksInfo = linkJSON["linksInfo"];
@@ -1011,7 +1010,6 @@ async function runAccessibility() {
     document.getElementById("WCAG-level-list").hidden = true;
     document.getElementById("accessibility-modal-btn").hidden = false;
     document.getElementById("wcag-level-label").innerText += " - " + WCAGLevel;
-
 
     // Remove overlay
     await overlay("removeOverlay", "", "");
