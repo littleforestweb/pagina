@@ -387,7 +387,7 @@ Author     : xhico
 <div class="sidebar-nav bg-light">
 
     <%--    LOGO--%>
-    <a href="https://littleforest.co.uk" target="_blank"><img class="sidebar-logo" alt="sidebar Logo" src="https://littleforest.co.uk/wp-content/uploads/2020/11/littleforest_logo.png"></a>
+    <a href="https://littleforest.co.uk" target="_blank"><img class="sidebar-logo" alt="sidebar Logo" src="images/littleforest_logo.png"></a>
 
     <%--    SPELLING--%>
     <ul class="sidebar-list">
@@ -406,17 +406,17 @@ Author     : xhico
                 <option value=da-DK>Danish</option>
                 <option value=nl>Dutch</option>
                 <option value=nl-BE>Dutch (Belgium)</option>
+                <option value=en-GB>English (GB)</option>
                 <option value=en-AU>English (Australian)</option>
                 <option value=en-CA>English (Canadian)</option>
-                <option value=en-GB>English (GB)</option>
                 <option value=en-NZ>English (New Zealand)</option>
                 <option value=en-ZA>English (South African)</option>
                 <option value=en-US>English (US)</option>
                 <option value=eo>Esperanto</option>
                 <option value=fr>French</option>
                 <option value=gl-ES>Galician</option>
-                <option value=de-AT>German (Austria)</option>
                 <option value=de-DE>German (Germany)</option>
+                <option value=de-AT>German (Austria)</option>
                 <option value=de-CH>German (Swiss)</option>
                 <option value=el-GR>Greek</option>
                 <option value=ga-IE>Irish</option>
@@ -427,10 +427,10 @@ Author     : xhico
                 <option value=no>Norwegian (Bokmål)</option>
                 <option value=fa>Persian</option>
                 <option value=pl-PL>Polish</option>
+                <option value=pt-PT>Portuguese (Portugal)</option>
                 <option value=pt-AO>Portuguese (Angola preAO)</option>
                 <option value=pt-BR>Portuguese (Brazil)</option>
                 <option value=pt-MZ>Portuguese (Moçambique preAO)</option>
-                <option value=pt-PT>Portuguese (Portugal)</option>
                 <option value=ro-RO>Romanian</option>
                 <option value=ru-RU>Russian</option>
                 <option value=sk-SK>Slovak</option>
@@ -445,7 +445,7 @@ Author     : xhico
             <button type="button" id="spelling-btn" onclick="runLanguageTool()" class="btn active mt-2">Run Spelling Report</button>
 
             <div hidden id="spelling-info" class="mt-2">
-                <p id="spelling-total-p">Found <span id="spelling-total-errors">0</span> occurrences.</p>
+                <p id="spelling-total-p">Found <span id="spelling-total-errors">0</span> occurrence(s).</p>
                 <ul id="spelling-errors"></ul>
                 <button type="button" id="dict-modal-btn" class="btn active" data-bs-toggle="modal" data-bs-target="#dictionary-modal">View Overview</button>
             </div>
@@ -492,9 +492,9 @@ Author     : xhico
             <button type="button" id="accessibility-btn" class="btn active mt-2 mb-2" onclick="runAccessibility()">Run Accessibility Report</button>
 
             <div hidden id="accessibility-info" class="mt-2">
-                <p>Found <span id="accessibility-Errors">0</span> Errors</p>
-                <p>Found <span id="accessibility-Notices">0</span> Notices</p>
-                <p>Found <span id="accessibility-Warnings">0</span> Warnings</p>
+                <p>Found <span id="accessibility-Errors">0</span> Error(s)</p>
+                <p>Found <span id="accessibility-Notices">0</span> Notice(s)</p>
+                <p>Found <span id="accessibility-Warnings">0</span> Warning(s)</p>
             </div>
             <button hidden type="button" id="accessibility-modal-btn" class="btn active" data-bs-toggle="modal" data-bs-target="#accessibilityModal">View Overview</button>
         </div>
@@ -507,7 +507,7 @@ Author     : xhico
             <button type="button" id="cookies-btn" class="btn active" onclick="runCookies()">Run Cookies Report</button>
 
             <div id="cookies-info" hidden>
-                <p>Found <span id="cookies-total">0</span> cookies</p>
+                <p>Found <span id="cookies-total">0</span> cookie(s)</p>
             </div>
             <button hidden type="button" id="cookies-modal-btn" class="btn active mt-2" data-bs-toggle="modal" data-bs-target="#cookiesModal">View Overview</button>
         </div>
@@ -526,6 +526,18 @@ Author     : xhico
             <button hidden type="button" id="technologies-modal-btn" class="btn active mt-2" data-bs-toggle="modal" data-bs-target="#technologiesModal">View Overview</button>
         </div>
     </ul>
+
+    <%--    BOTTOM LINE--%>
+    <ul class="sidebar-list"></ul>
+
+    <%--    COPYRIGHT--%>
+    <div class="copyright">
+        <a target="_blank" href="https://littleforest.co.uk/"><img src="images/lf_logo.png" class="sidebar-footer-icon" alt="littleforest logo"></a>
+        <a target="_blank" href="https://www.linkedin.com/company/little-forest/"><img data-pin-nopin="true" alt="LinkedIn" title="LinkedIn" src="images/thin_linkedin.png" width="40" height="40" style="" class="sidebar-footer-icon" data-effect=""></a>
+        <a target="_blank" href="https://twitter.com/thelittleforest"><img data-pin-nopin="true" alt="Twitter" title="Twitter" src="images/thin_twitter.png" width="40" height="40" style="" class="sidebar-footer-icon" data-effect=""></a>
+        </br></br><p> © Little Forest 2021</br>All rights reserved - <a class="privacy-policy-link" href="https://littleforest.co.uk/privacy-policy/">Privacy Policy</a></p>
+    </div>
+
 </div>
 <%-- END SIDEBAR --%>
 
@@ -584,7 +596,7 @@ Author     : xhico
     // Enable searchURL
     document.getElementById("searchURL").disabled = false;
     document.getElementById("languages-list").disabled = false;
-    document.getElementById("dictionaryModalBtn").disabled = false;
+    document.getElementById("dict-modal-btn").disabled = false;
 
     // Check if url is Null
     <% if (!(url.equals("null"))) {%>

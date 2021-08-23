@@ -115,10 +115,31 @@ body * {
     padding-left: 20px;
 }
 
+.privacy-policy-link {
+    color: #166713;
+    text-decoration: none;
+}
+
+.sidebar-footer-icon {
+    width: 40px;
+    margin-bottom: -6px;
+    float: none;
+    position: relative;
+    line-height: initial;
+    margin-right: 0;
+    display: inline-block;
+    vertical-align: bottom;
+}
+
+.copyright {
+    text-align: center;
+}
+
 /*
 --------------------------------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------------------------------------
 */
+
 .navbar {
     margin-left: 298px;
     width: calc(100% - 298px);

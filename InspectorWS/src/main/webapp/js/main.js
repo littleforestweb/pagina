@@ -96,6 +96,9 @@ async function getSiteUrl() {
 }
 
 async function overlay(action, message, sndMessage) {
+    // Toggle Desktop View
+    await toggleView("Desktop");
+
     if (action === "addOverlay") {
         // Disable goBtn
         await enableDisableActions("disable");
@@ -118,7 +121,7 @@ async function enableDisableActions(action) {
 
     // Set all elemId
     let elemId = ["searchURL", "HTMLBtn", "LighthouseViewBtn", "desktopView", "mobileView", "languages-list", "spelling-btn", "dict-modal-btn",
-        "lighthouse-btn", "links-btn", "links-modal-btn", "accessibility-btn", "accessibility-modal-btn", "cookies-btn", "cookies-modal-btn",
+        "lighthouse-btn", "links-btn", "links-modal-btn", "accessibility-btn", "WCAG-level-list", "accessibility-modal-btn", "cookies-btn", "cookies-modal-btn",
         "technologies-btn", "technologies-modal-btn",];
 
     // Set disabled status
@@ -414,7 +417,7 @@ async function rerunSpelling() {
     document.getElementById("spelling-errors").innerHTML = "";
 
     // Clear spelling total p"
-    document.getElementById("spelling-total-p").innerHTML = "Found <span id=\"spelling-total-errors\">0</span> occurrences."
+    document.getElementById("spelling-total-p").innerHTML = "Found <span id=\"spelling-total-errors\">0</span> occurrence(s)."
 
     // Toggle Spelling Section
     document.getElementById("spelling-info").hidden = true;
@@ -437,6 +440,7 @@ async function rerunSpelling() {
     // Run Spelling again
     await runLanguageTool();
 }
+
 
 // ------------------------------------- ACCESSIBILITY REPORT ------------------------------------- //
 
@@ -477,41 +481,59 @@ async function runLanguageTool() {
     // Insert overlay
     await overlay("addOverlay", "Running Spell Check", "");
 
-    // Toggle Desktop View
-    await toggleView("Desktop");
-
     // Get iframe element
     let iframeElement = document.getElementById('mainContent').contentWindow.document;
 
     // Get htmlCode
     let iframeCode = document.getElementById('mainCode').contentWindow.document;
 
-    // Set Language
+
+    // Get all name from the langCodes
     let langValues = [];
-    let detectedLang = iframeElement.documentElement.lang;
     let languages_list = document.getElementById('languages-list');
     for (let i = 0; i < languages_list.options.length; i++) {
         langValues.push(languages_list.options[i].value);
     }
 
+    // Get the selected lanaguage
     let langCode = document.getElementById("languages-list").value;
+    // If is auto, try to detect the language from the lang attribute
+    let detectedLang = iframeElement.documentElement.lang;
     if (langCode === "auto") {
+        // If the full lang code is present on the list ("en-GB" not "en")
         if (langValues.includes(detectedLang)) {
             langCode = detectedLang;
             let valueText = languages_list.options[langValues.indexOf(langCode)].text;
             document.getElementById("overlaySndMessage").innerHTML = "</br>Detected Language: " + valueText + "</br>";
             document.getElementById("detectedLanguage").innerHTML = "(Auto-Detected)";
         } else {
+            // Try to detect the general language, if the lang attribute has only two chars ("en")
             langCode = "en-GB";
-            let valueText = languages_list.options[langValues.indexOf(langCode)].text;
-            document.getElementById("overlaySndMessage").innerHTML = "</br>Couldn't detect langauage.</br> Defaulting to : " + valueText + "</br>";
-            document.getElementById("detectedLanguage").innerHTML = "(Default)";
+            let generalDetect = false;
+            for (let i = 0; i < langValues.length; i++) {
+                // If detected general lang use the first variant on the list
+                if (langValues[i].split("-")[0] === detectedLang) {
+                    langCode = langValues[i];
+                    let valueText = languages_list.options[langValues.indexOf(langCode)].text;
+                    document.getElementById("overlaySndMessage").innerHTML = "</br>Detected general language: " + valueText.split(" ")[0] + "</br>Using: " + valueText + "</br>";
+                    generalDetect = true;
+                    break;
+                }
+            }
+            // If it didn't find a general lang, default to en-GB
+            if (!(generalDetect)) {
+                let valueText = languages_list.options[langValues.indexOf(langCode)].text;
+                document.getElementById("overlaySndMessage").innerHTML = "</br>Couldn't detect langauage.</br> Defaulting to : " + valueText + "</br>";
+                document.getElementById("detectedLanguage").innerHTML = "(Default)";
+            }
         }
     } else {
+        // If the user selected a language, then just use that code
         let valueText = languages_list.options[langValues.indexOf(langCode)].text;
         document.getElementById("overlaySndMessage").innerHTML = "</br>Selected language: " + valueText + "</br>";
     }
 
+    // Update the language-list with the language
     document.getElementById("languages-list").value = langCode;
     console.log("Language - " + langCode);
 
@@ -930,8 +952,8 @@ async function runAccessibility() {
     $('#snifferErrorsTable').DataTable({
         dom: 'Blfrtip',
         buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Errors Report'}],
-        pageLength: 10,
-        "aLengthMenu": [[10, 50, 100], [10, 50, 100]],
+        pageLength: 5,
+        "aLengthMenu": [[5, 10, 50], [5, 10, 50]],
         "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
         "order": [[0, "asc"]],
         data: errorsDataset,
@@ -959,8 +981,8 @@ async function runAccessibility() {
     $('#snifferNoticesTable').DataTable({
         dom: 'Blfrtip',
         buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Notices Report'}],
-        pageLength: 10,
-        "aLengthMenu": [[10, 50, 100], [10, 50, 100]],
+        pageLength: 5,
+        "aLengthMenu": [[5, 10, 50], [5, 10, 50]],
         "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
         "order": [[0, "asc"]],
         data: noticesDataset,
@@ -988,8 +1010,8 @@ async function runAccessibility() {
     $('#snifferWarningsTable').DataTable({
         dom: 'Blfrtip',
         buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Warnings Report'}],
-        pageLength: 10,
-        "aLengthMenu": [[10, 50, 100], [10, 50, 100]],
+        pageLength: 5,
+        "aLengthMenu": [[5, 10, 50], [5, 10, 50]],
         "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
         "order": [[0, "asc"]],
         data: warningsDataset,
@@ -1165,7 +1187,7 @@ async function runTechnologies() {
             },
             {
                 "width": "20%", "targets": 1, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
+                    return "<a target='_blank' href='" + data + "'>" + data + "</a>";
                 },
             },
             {
@@ -1227,6 +1249,11 @@ async function main() {
     // Remove overlay
     await overlay("removeOverlay", "", "")
 
-    // Run Spelling Report
+    // Run Reports
     // await runLanguageTool();
+    // await runLighthouse();
+    // await runLinks();
+    // await runAccessibility();
+    // await runCookies();
+    // await runTechnologies();
 }
