@@ -1046,7 +1046,8 @@ async function runAccessibility() {
     document.getElementById("accessibility-btn").hidden = true;
     document.getElementById("WCAG-level-list").hidden = true;
     document.getElementById("accessibility-modal-btn").hidden = false;
-    document.getElementById("wcag-level-label").innerText += " - " + WCAGLevel;
+    document.getElementById("wcag-level-label").innerText += " - " + WCAGLevel.replace("WCAG2", "");
+    document.getElementById("modal-accessibility-title").innerText += " - " + WCAGLevel.replace("WCAG2", "");
 
     // Remove overlay
     await overlay("removeOverlay", "", "");
