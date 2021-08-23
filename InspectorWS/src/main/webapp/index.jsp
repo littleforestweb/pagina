@@ -535,7 +535,12 @@ Author     : xhico
         <a target="_blank" href="https://littleforest.co.uk/"><img src="images/lf_logo.png" class="sidebar-footer-icon" alt="littleforest logo"></a>
         <a target="_blank" href="https://www.linkedin.com/company/little-forest/"><img data-pin-nopin="true" alt="LinkedIn" title="LinkedIn" src="images/thin_linkedin.png" width="40" height="40" style="" class="sidebar-footer-icon" data-effect=""></a>
         <a target="_blank" href="https://twitter.com/thelittleforest"><img data-pin-nopin="true" alt="Twitter" title="Twitter" src="images/thin_twitter.png" width="40" height="40" style="" class="sidebar-footer-icon" data-effect=""></a>
-        </br></br><p> © Little Forest 2021</br>All rights reserved - <a class="privacy-policy-link" href="https://littleforest.co.uk/privacy-policy/">Privacy Policy</a></p>
+        </br></br>Powered by: <a target="_blank" href="https://languagetool.org/">LanguageTool</a> |
+        <a target="_blank" href="https://developers.google.com/web/tools/lighthouse/">Lighthouse</a> |
+        <a target="_blank" href="https://developers.google.com/web/tools/puppeteer/">Puppeteer</a> |
+        <a target="_blank" href="https://squizlabs.github.io/HTML_CodeSniffer/">HTML CodeSniffer</a> |
+        <a target="_blank" href="https://www.wappalyzer.com/">Wappalyzer</a>
+        <p> © Little Forest 2021</br>All rights reserved - <a class="privacy-policy-link" href="https://littleforest.co.uk/privacy-policy/">Privacy Policy</a></p>
     </div>
 
 </div>
