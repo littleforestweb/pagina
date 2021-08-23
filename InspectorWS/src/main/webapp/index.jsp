@@ -535,7 +535,7 @@ Author     : xhico
         <a target="_blank" href="https://littleforest.co.uk/"><img src="images/lf_logo.png" class="sidebar-footer-icon" alt="littleforest logo"></a>
         <a target="_blank" href="https://www.linkedin.com/company/little-forest/"><img data-pin-nopin="true" alt="LinkedIn" title="LinkedIn" src="images/thin_linkedin.png" width="40" height="40" style="" class="sidebar-footer-icon" data-effect=""></a>
         <a target="_blank" href="https://twitter.com/thelittleforest"><img data-pin-nopin="true" alt="Twitter" title="Twitter" src="images/thin_twitter.png" width="40" height="40" style="" class="sidebar-footer-icon" data-effect=""></a>
-        </br></br>Powered by: <a target="_blank" href="https://languagetool.org/">LanguageTool</a> |
+        </br></br>Created by <a target="_blank" href="https://github.com/littleforestweb/pagina">Little Forest</a></br>Powered by: <a target="_blank" href="https://languagetool.org/">LanguageTool</a> |
         <a target="_blank" href="https://developers.google.com/web/tools/lighthouse/">Lighthouse</a> |
         <a target="_blank" href="https://developers.google.com/web/tools/puppeteer/">Puppeteer</a> |
         <a target="_blank" href="https://squizlabs.github.io/HTML_CodeSniffer/">HTML CodeSniffer</a> |

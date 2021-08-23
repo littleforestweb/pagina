@@ -24,6 +24,12 @@ let myTimmer = setInterval(myTimer, 1000);
 // ------------------------------------- AUX FUNCTIONS ------------------------------------- //
 
 
+$("#searchURL").on('keyup', function (e) {
+    if (e.key === 'Enter' || e.keyCode === 13) {
+        gotoNewPage();
+    }
+});
+
 async function myTimer() {
     // Get siteUrl
     let siteUrl = await getSiteUrl();
@@ -96,12 +102,12 @@ async function getSiteUrl() {
 }
 
 async function overlay(action, message, sndMessage) {
-    // Toggle Desktop View
-    await toggleView("Desktop");
-
     if (action === "addOverlay") {
         // Disable goBtn
         await enableDisableActions("disable");
+
+        // Toggle Desktop View
+        await toggleView("Desktop");
 
         // Insert overlay
         document.getElementById("overlay").style.display = "block";
