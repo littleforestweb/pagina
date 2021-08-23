@@ -338,6 +338,7 @@ Author     : xhico
                     <table id="technologiesTable" class="table table-striped">
                         <thead>
                         <tr>
+                            <th></th>
                             <th>Name</th>
                             <th>Website</th>
                             <th>Categories</th>
@@ -347,6 +348,7 @@ Author     : xhico
                         <tbody></tbody>
                         <tfoot>
                         <tr>
+                            <th></th>
                             <th>Name</th>
                             <th>Website</th>
                             <th>Categories</th>
@@ -521,7 +523,6 @@ Author     : xhico
 
             <div id="technologies-info" hidden>
                 <p>Found <span id="technologies-total">0</span> Technologies</p>
-                <ul id="technologies-name"></ul>
             </div>
             <button hidden type="button" id="technologies-modal-btn" class="btn active mt-2" data-bs-toggle="modal" data-bs-target="#technologiesModal">View Overview</button>
         </div>

@@ -1070,7 +1070,7 @@ async function runCookies() {
     });
 
     let dataset = [];
-    cookiesJSON = cookiesJSON["Cookies"];
+    cookiesJSON = cookiesJSON["cookies"];
     for (let i = 0; i < cookiesJSON.length; i++) {
         let entry = cookiesJSON[i];
         let name = entry["name"];
@@ -1156,11 +1156,11 @@ async function runTechnologies() {
     });
 
     let dataset = [];
-    let technologies_name = document.getElementById("technologies-name");
     wappalyzerJSON = wappalyzerJSON["Wappalyzer"]["technologies"];
     for (let i = 0; i < wappalyzerJSON.length; i++) {
         let entry = wappalyzerJSON[i];
         let confidence = entry["confidence"].toString();
+        let icon = entry["icon"];
         let name = entry["name"];
         let website = entry["website"];
         let categories = entry["categories"];
@@ -1169,10 +1169,7 @@ async function runTechnologies() {
             categoriesName += categories[j]["name"] + ", ";
         }
         categoriesName = categoriesName.substring(0, categoriesName.length - 2);
-        dataset.push([name, website, categoriesName, confidence]);
-
-        // Add errors to Sidebar
-        technologies_name.innerHTML += "<li>" + name + "</li>";
+        dataset.push([icon, name, website, categoriesName, confidence]);
     }
 
     // Initialize Errors Table
@@ -1187,22 +1184,27 @@ async function runTechnologies() {
         "autoWidth": false,
         "columnDefs": [
             {
-                "width": "20%", "targets": 0, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
+                "width": "5%", "targets": 0, "render": function (data, type, row) {
+                    return "<img width='30px' height='30px' src='https://www.wappalyzer.com/images/icons/" + data + "'/>";
                 },
             },
             {
                 "width": "20%", "targets": 1, "render": function (data, type, row) {
-                    return "<a target='_blank' href='" + data + "'>" + data + "</a>";
-                },
-            },
-            {
-                "width": "40%", "targets": 2, "render": function (data, type, row) {
                     return "<span>" + data + "</span>";
                 },
             },
             {
-                "width": "20%", "targets": 3, "render": function (data, type, row) {
+                "width": "20%", "targets": 2, "render": function (data, type, row) {
+                    return "<a target='_blank' href='" + data + "'>" + data + "</a>";
+                },
+            },
+            {
+                "width": "40%", "targets": 3, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            },
+            {
+                "width": "15%", "targets": 4, "render": function (data, type, row) {
                     return "<span>" + data + "</span>";
                 },
             },

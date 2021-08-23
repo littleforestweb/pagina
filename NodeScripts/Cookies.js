@@ -32,16 +32,16 @@ async function main() {
 
     // Load page
     const page = await browser.newPage();
-    await page.goto(siteUrl);
+    await page.goto(siteUrl, {waitUntil: 'networkidle2'});
 
     // Get Cookies
-    const cookies = await page.cookies();
+    const cookies = await page._client.send('Network.getAllCookies');
 
     // Close browser
     await browser.close();
 
     // Save reportInfo to file
-    fs.writeFile(jsonPath, "{ \"Cookies\" : " + JSON.stringify(cookies) + "}", function (err) {
+    fs.writeFile(jsonPath, JSON.stringify(cookies), function (err) {
         if (err) {
             return console.log(err);
         }
