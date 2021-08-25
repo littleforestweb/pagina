@@ -321,7 +321,7 @@ async function loadDictionaryList() {
         dom: 'Blfrtip',
         buttons: [{text: 'Export', extend: 'csv', filename: 'Spelling Errors'}],
         pageLength: 10,
-        "aLengthMenu": [[10, 50, 100], [10, 50, 100]],
+        "bLengthChange": false,
         "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
         "order": [[0, "desc"]],
         data: dataset,
@@ -464,6 +464,19 @@ async function rerunSpelling() {
     await runLanguageTool();
 }
 
+
+// ------------------------------------- ACCESSIBILITY REPORT ------------------------------------- //
+
+
+async function gotoLighthouseCat(categorie) {
+    console.log("Goto " + categorie);
+
+    // Get iframe element
+    let mainLighthouse = document.getElementById("mainLighthouse").contentWindow;
+
+    // Scroll to spell Errors in htmlView and htmlCode
+    mainLighthouse.document.getElementById(categorie).scrollIntoView();
+}
 
 // ------------------------------------- ACCESSIBILITY REPORT ------------------------------------- //
 
@@ -695,7 +708,7 @@ async function runLanguageTool() {
         dom: 'Blfrtip',
         buttons: [{text: 'Export', extend: 'csv', filename: 'Spelling Errors'}],
         pageLength: 10,
-        "aLengthMenu": [[10, 50, 100], [10, 50, 100]],
+        "bLengthChange": false,
         "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
         "order": [[3, "desc"]],
         data: dataset,
@@ -787,7 +800,8 @@ async function runLighthouse() {
         categories.forEach(cat => {
             let catScore = Math.round(lighthouseJson["categories"][cat]["score"] * 100);
             let catTitle = lighthouseJson["categories"][cat]["title"];
-            lighthouse_info.innerHTML += "<li>" + catTitle + " - " + catScore + " % </li > ";
+            let catName = ((catTitle === "Progressive Web App") ? "pwa" : catTitle.toLowerCase().replaceAll(" ", "-"));
+            lighthouse_info.innerHTML += "<li><a href=javascript:gotoLighthouseCat('" + catName + "');>" + catTitle + " - " + catScore + " % </a></li>";
         });
 
         // Toggle Lighthouse Section
@@ -858,7 +872,7 @@ async function runLinks() {
         dom: 'Blfrtip',
         buttons: [{text: 'Export', extend: 'csv', filename: 'Links Report'}],
         pageLength: 10,
-        "aLengthMenu": [[10, 50, 100], [10, 50, 100]],
+        "bLengthChange": false,
         "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
         "order": [[0, "asc"]],
         data: dataset,
@@ -974,8 +988,8 @@ async function runAccessibility() {
     $('#snifferErrorsTable').DataTable({
         dom: 'Blfrtip',
         buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Errors Report'}],
-        pageLength: 5,
-        "aLengthMenu": [[5, 10, 50], [5, 10, 50]],
+        pageLength: 10,
+        "bLengthChange": false,
         "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
         "order": [[0, "asc"]],
         data: errorsDataset,
@@ -1032,8 +1046,8 @@ async function runAccessibility() {
     $('#snifferWarningsTable').DataTable({
         dom: 'Blfrtip',
         buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Warnings Report'}],
-        pageLength: 5,
-        "aLengthMenu": [[5, 10, 50], [5, 10, 50]],
+        pageLength: 10,
+        "bLengthChange": false,
         "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
         "order": [[0, "asc"]],
         data: warningsDataset,
@@ -1105,7 +1119,7 @@ async function runCookies() {
         dom: 'Blfrtip',
         buttons: [{text: 'Export', extend: 'csv', filename: 'Cookies Report'}],
         pageLength: 10,
-        "aLengthMenu": [[10, 50, 100], [10, 50, 100]],
+        "bLengthChange": false,
         "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
         "order": [[0, "asc"]],
         data: dataset,
@@ -1193,7 +1207,7 @@ async function runTechnologies() {
         dom: 'Blfrtip',
         buttons: [{text: 'Export', extend: 'csv', filename: 'Technologies Report'}],
         pageLength: 10,
-        "aLengthMenu": [[10, 50, 100], [10, 50, 100]],
+        "bLengthChange": false,
         "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
         "order": [[0, "asc"]],
         data: dataset,
@@ -1201,7 +1215,7 @@ async function runTechnologies() {
         "columnDefs": [
             {
                 "width": "5%", "targets": 0, "render": function (data, type, row) {
-                    return "<img width='30px' height='30px' src='https://www.wappalyzer.com/images/icons/" + data + "'/>";
+                    return "<img width='30px' height='30px' src='https://www.wappalyzer.com/images/icons/" + data + "' alt='" + data + " Icon'/>";
                 },
             },
             {
@@ -1274,10 +1288,10 @@ async function main() {
     await overlay("removeOverlay", "", "")
 
     // Run Reports
-    // await runLanguageTool();
+    await runLanguageTool();
     await runLighthouse();
-    // await runLinks();
-    // await runAccessibility();
-    // await runCookies();
-    // await runTechnologies();
+    await runLinks();
+    await runAccessibility();
+    await runCookies();
+    await runTechnologies();
 }
