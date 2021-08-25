@@ -107,263 +107,6 @@ Author     : xhico
 </div>
 <%-- END ERROR MODAL--%>
 
-<%-- SPELLING MODAL --%>
-<div class="modal fade bd-example-modal-xl" id="dictionary-modal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <h5 class="modal-title">Spelling Overview</h5>
-                <button type="button" class="btn active" onclick="rerunSpelling('')">Re-run Spelling</button>
-                <div class="btn-group me-2 d-flex justify-content-center" role="group">
-                    <button type="button" class="btn active" id="errorsTableViewBtn" onclick="toggleSpellView('errorsTableDiv')">Errors Found</button>
-                    <button type="button" class="btn" id="dictionaryTableViewBtn" onclick="toggleSpellView('dictionaryTableDiv')">Dictionary</button>
-                </div>
-            </div>
-
-            <div class="modal-body">
-                <div id="errorsTableDiv">
-                    <table id="errorsTable" class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th>Error</th>
-                            <th>Replacements</th>
-                            <th>Message</th>
-                            <th>Occurrences</th>
-                            <th>Action</th>
-                        </tr>
-                        </thead>
-                        <tbody></tbody>
-                        <tfoot>
-                        <tr>
-                            <th>Error</th>
-                            <th>Replacements</th>
-                            <th>Message</th>
-                            <th>Occurrences</th>
-                            <th>Action</th>
-                        </tr>
-                        </tfoot>
-                    </table>
-                </div>
-                <div hidden id="dictionaryTableDiv">
-                    <table id="dictionaryTable" class="table table-striped spellingTable">
-                        <thead>
-                        <tr>
-                            <th>Error</th>
-                            <th>Action</th>
-                        </tr>
-                        </thead>
-                        <tbody></tbody>
-                        <tfoot>
-                        <tr>
-                            <th>Error</th>
-                            <th>Action</th>
-                        </tr>
-                        </tfoot>
-                    </table>
-                </div>
-
-            </div>
-        </div>
-    </div>
-</div>
-<%-- END SPELLING MODAL--%>
-
-<%-- lINKS MODAL --%>
-<div class="modal fade bd-example-modal-xl" id="linksModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <h5 class="modal-title">Links Overview</h5>
-            </div>
-
-            <div class="modal-body">
-                <table id="linksTable" class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>URL</th>
-                        <th>Status</th>
-                        <th>Origin</th>
-                    </tr>
-                    </thead>
-                    <tbody id="linksTableBody"></tbody>
-                    <tfoot>
-                    <tr>
-                        <th>URL</th>
-                        <th>Status</th>
-                        <th>Origin</th>
-                    </tr>
-                    </tfoot>
-                </table>
-            </div>
-
-        </div>
-    </div>
-</div>
-<%-- END lINKS MODAL--%>
-
-<%-- ACCESSIBILITY MODAL --%>
-<div class="modal fade bd-example-modal-xl" id="accessibilityModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <h5 class="modal-title">Accessibility Overview<span id="modal-accessibility-title"></span></h5>
-                <div class="btn-group me-2 d-flex justify-content-center" role="group">
-                    <button type="button" class="btn active" id="snifferErrorsTableViewBtn" onclick="toggleAccessibilityView('snifferErrorsTableDiv')">Errors</button>
-                    <button type="button" class="btn" id="snifferNoticesTableViewBtn" onclick="toggleAccessibilityView('snifferNoticesTableDiv')">Notices</button>
-                    <button type="button" class="btn" id="snifferWarningsTableViewBtn" onclick="toggleAccessibilityView('snifferWarningsTableDiv')">Warnings</button>
-                </div>
-            </div>
-
-            <div class="modal-body">
-                <div id="snifferErrorsTableDiv">
-                    <table id="snifferErrorsTable" class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th>Guideline</th>
-                            <th>Message</th>
-                            <th>Tag</th>
-                        </tr>
-                        </thead>
-                        <tbody></tbody>
-                        <tfoot>
-                        <tr>
-                            <th>Guideline</th>
-                            <th>Message</th>
-                            <th>Tag</th>
-                        </tr>
-                        </tfoot>
-                    </table>
-                </div>
-                <div hidden id="snifferNoticesTableDiv">
-                    <table id="snifferNoticesTable" class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th>Guideline</th>
-                            <th>Message</th>
-                            <th>Tag</th>
-                        </tr>
-                        </thead>
-                        <tbody></tbody>
-                        <tfoot>
-                        <tr>
-                            <th>Guideline</th>
-                            <th>Message</th>
-                            <th>Tag</th>
-                        </tr>
-                        </tfoot>
-                    </table>
-                </div>
-                <div hidden id="snifferWarningsTableDiv">
-                    <table id="snifferWarningsTable" class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th>Guideline</th>
-                            <th>Message</th>
-                            <th>Tag</th>
-                        </tr>
-                        </thead>
-                        <tbody></tbody>
-                        <tfoot>
-                        <tr>
-                            <th>Guideline</th>
-                            <th>Message</th>
-                            <th>Tag</th>
-                        </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</div>
-<%-- END ACCESSIBILITY MODAL--%>
-
-<%-- COOKIES MODAL --%>
-<div class="modal fade bd-example-modal-xl" id="cookiesModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <h5 class="modal-title">Cookies Overview</h5>
-            </div>
-
-            <div class="modal-body">
-                <div id="cookiesTableDiv">
-                    <table id="cookiesTable" class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Domain</th>
-                            <th>Expires</th>
-                            <th>Http Only</th>
-                            <th>Secure</th>
-                            <th>Source Port</th>
-                        </tr>
-                        </thead>
-                        <tbody></tbody>
-                        <tfoot>
-                        <tr>
-                            <th>Name</th>
-                            <th>Domain</th>
-                            <th>Expires</th>
-                            <th>Http Only</th>
-                            <th>Secure</th>
-                            <th>Source Port</th>
-                        </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</div>
-<%-- END COOKIES MODAL--%>
-
-<%-- TECHNOLOGIES MODAL --%>
-<div class="modal fade bd-example-modal-xl" id="technologiesModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <h5 class="modal-title">Technologies Overview</h5>
-            </div>
-
-            <div class="modal-body">
-                <div id="technologiesTableDiv">
-                    <table id="technologiesTable" class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th></th>
-                            <th>Name</th>
-                            <th>Website</th>
-                            <th>Categories</th>
-                            <th>Confidence</th>
-                        </tr>
-                        </thead>
-                        <tbody></tbody>
-                        <tfoot>
-                        <tr>
-                            <th></th>
-                            <th>Name</th>
-                            <th>Website</th>
-                            <th>Categories</th>
-                            <th>Confidence</th>
-                        </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</div>
-<%-- END TECHNOLOGIES MODAL--%>
-
 <%-- TOPNAV --%>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
@@ -378,7 +121,7 @@ Author     : xhico
                 <button type="button" id="desktopView" onclick="toggleView('Desktop')" class="active btn">Desktop</button>
                 <button type="button" id="mobileView" onclick="toggleView('Mobile')" class="btn">Mobile</button>
                 <button type="button" id="HTMLBtn" onclick="toggleView('HTML')" class="btn">Code</button>
-                <button hidden type="button" id="LighthouseViewBtn" onclick="toggleView('lighthouseReport')" class="btn">Lighthouse</button>
+                <button type="button" id="ReportsViewBtn" onclick="toggleView('Reports')" class="btn">Reports</button>
             </div>
         </div>
     </div>
@@ -549,18 +292,219 @@ Author     : xhico
 
 <%-- MAIN CONTENT --%>
 <% if (!(mainURL.equals("null"))) {%>
-<main class="main">
+<main>
     <%--    MAIN CONTENT--%>
-    <iframe is="x-frame-bypass" id="mainContent"></iframe>
+    <iframe class="main" is="x-frame-bypass" id="mainContent"></iframe>
     <%--    END MAIN CONTENT--%>
 
     <%--    CODE--%>
-    <iframe hidden id="mainCode" src="about:blank"></iframe>
+    <iframe class="main" hidden id="mainCode" src="about:blank"></iframe>
     <%--    END CODE--%>
 
-    <%--    LIGHTHOUSE REPORT--%>
-    <iframe hidden id="mainLighthouse"></iframe>
-    <%--    END LIGHTHOUSE --%>
+    <%--    REPORTS--%>
+    <div id="mainReports" class="main">
+        <nav>
+            <div class="nav nav-tabs nav-submenu-main" id="nav-tab" role="tablist">
+                <button onclick="toggleReportView('spelling')" class="nav-link active" id="nav-spelling-tab" data-bs-toggle="tab" data-bs-target="#spelling-section" type="button" role="tab" aria-controls="nav-spelling" aria-selected="true">Spelling</button>
+                <button onclick="toggleReportView('lighthouse')" class="nav-link" id="nav-lighthouse-tab" data-bs-toggle="tab" data-bs-target="#lighthouse-section" type="button" role="tab" aria-controls="nav-lighthouse" aria-selected="true">Lighthouse</button>
+                <button onclick="toggleReportView('')" class="nav-link" id="nav-links-tab" data-bs-toggle="tab" data-bs-target="#links-section" type="button" role="tab" aria-controls="nav-links" aria-selected="true">Links</button>
+                <button onclick="toggleReportView('accessibility')" class="nav-link" id="nav-accessibility-tab" data-bs-toggle="tab" data-bs-target="#accessibility-section" type="button" role="tab" aria-controls="nav-accessibility" aria-selected="true">Accessibility</button>
+                <button onclick="toggleReportView('')" class="nav-link" id="nav-cookies-tab" data-bs-toggle="tab" data-bs-target="#cookies-section" type="button" role="tab" aria-controls="nav-cookies" aria-selected="true">Cookies</button>
+                <button onclick="toggleReportView('')" class="nav-link" id="nav-technologies-tab" data-bs-toggle="tab" data-bs-target="#technologies-section" type="button" role="tab" aria-controls="nav-technologies" aria-selected="true">Technologies</button>
+            </div>
+        </nav>
+        <nav>
+            <div class="nav nav-tabs nav-submenu-secondary" id="nav-spelling" role="tablist">
+                <button onclick="toggleSpellView('errorsTableDiv')" class="nav-link active" id="errorsTableViewBtn" data-bs-toggle="tab" data-bs-target="#nav-spelling-errors" type="button" role="tab" aria-controls="nav-spelling-errors" aria-selected="true">Spelling</button>
+                <button onclick="toggleSpellView('dictionaryTableDiv')" class="nav-link" id="dictionaryTableViewBtn" data-bs-toggle="tab" data-bs-target="#nav-spelling-dictionary" type="button" role="tab" aria-controls="nav-spelling-dictionary" aria-selected="false">Dictionary</button>
+            </div>
+            <div hidden class="nav nav-tabs nav-submenu-secondary" id="nav-accessibility" role="tablist">
+                <button onclick="toggleAccessibilityView('snifferErrorsTableDiv')" class="nav-link active" id="snifferErrorsTableViewBtn" data-bs-toggle="tab" data-bs-target="#nav-accessibility-errors" type="button" role="tab" aria-controls="nav-accessibility-errors" aria-selected="true">Errors</button>
+                <button onclick="toggleAccessibilityView('snifferNoticesTableDiv')" class="nav-link" id="snifferNoticesTableViewBtn" data-bs-toggle="tab" data-bs-target="#nav-accessibility-dictionary" type="button" role="tab" aria-controls="nav-accessibility-dictionary" aria-selected="false">Notices</button>
+                <button onclick="toggleAccessibilityView('snifferWarningsTableDiv')" class="nav-link" id="snifferWarningsTableViewBtn" data-bs-toggle="tab" data-bs-target="#nav-accessibility-dictionary" type="button" role="tab" aria-controls="nav-accessibility-dictionary" aria-selected="false">Warnings</button>
+            </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+            <%--    SPELLING--%>
+            <div class="tab-pane fade show active" id="spelling-section" role="tabpanel" aria-labelledby="nav-spelling-tab">
+                <div id="errorsTableDiv">
+                    <table id="errorsTable" class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Error</th>
+                            <th>Replacements</th>
+                            <th>Message</th>
+                            <th>Occurrences</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot>
+                        <tr>
+                            <th>Error</th>
+                            <th>Replacements</th>
+                            <th>Message</th>
+                            <th>Occurrences</th>
+                            <th>Action</th>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div hidden id="dictionaryTableDiv">
+                    <table id="dictionaryTable" class="table table-striped spellingTable">
+                        <thead>
+                        <tr>
+                            <th>Error</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot>
+                        <tr>
+                            <th>Error</th>
+                            <th>Action</th>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            <%--    LIGHTHOUSE--%>
+            <div class="tab-pane fade" id="lighthouse-section" role="tabpanel" aria-labelledby="nav-lighthouse-tab">
+                <iframe class="lighthouseIframe" id="mainLighthouse"></iframe>
+            </div>
+            <%--    LINKS--%>
+            <div class="tab-pane fade" id="links-section" role="tabpanel" aria-labelledby="nav-links-tab">
+                <table id="linksTable" class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>URL</th>
+                        <th>Status</th>
+                        <th>Origin</th>
+                    </tr>
+                    </thead>
+                    <tbody id="linksTableBody"></tbody>
+                    <tfoot>
+                    <tr>
+                        <th>URL</th>
+                        <th>Status</th>
+                        <th>Origin</th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <%--    ACCESSIBILITY--%>
+            <div class="tab-pane fade" id="accessibility-section" role="tabpanel" aria-labelledby="nav-accessibility-tab">
+                <div id="snifferErrorsTableDiv">
+                    <table id="snifferErrorsTable" class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Guideline</th>
+                            <th>Message</th>
+                            <th>Tag</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot>
+                        <tr>
+                            <th>Guideline</th>
+                            <th>Message</th>
+                            <th>Tag</th>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div hidden id="snifferNoticesTableDiv">
+                    <table id="snifferNoticesTable" class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Guideline</th>
+                            <th>Message</th>
+                            <th>Tag</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot>
+                        <tr>
+                            <th>Guideline</th>
+                            <th>Message</th>
+                            <th>Tag</th>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div hidden id="snifferWarningsTableDiv">
+                    <table id="snifferWarningsTable" class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Guideline</th>
+                            <th>Message</th>
+                            <th>Tag</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot>
+                        <tr>
+                            <th>Guideline</th>
+                            <th>Message</th>
+                            <th>Tag</th>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            <%--    COOKIES--%>
+            <div class="tab-pane fade" id="cookies-section" role="tabpanel" aria-labelledby="nav-cookies-tab">
+                <table id="cookiesTable" class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Domain</th>
+                        <th>Expires</th>
+                        <th>Http Only</th>
+                        <th>Secure</th>
+                        <th>Source Port</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot>
+                    <tr>
+                        <th>Name</th>
+                        <th>Domain</th>
+                        <th>Expires</th>
+                        <th>Http Only</th>
+                        <th>Secure</th>
+                        <th>Source Port</th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <%--    TECHNOLOGIES--%>
+            <div class="tab-pane fade" id="technologies-section" role="tabpanel" aria-labelledby="nav-technologies-tab">
+                <table id="technologiesTable" class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Website</th>
+                        <th>Categories</th>
+                        <th>Confidence</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot>
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Website</th>
+                        <th>Categories</th>
+                        <th>Confidence</th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+    <%--    END REPORTS --%>
 </main>
 <% }%>
 <%-- END LOAD PAGE --%>

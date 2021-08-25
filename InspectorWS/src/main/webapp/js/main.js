@@ -126,7 +126,7 @@ async function overlay(action, message, sndMessage) {
 async function enableDisableActions(action) {
 
     // Set all elemId
-    let elemId = ["searchURL", "HTMLBtn", "LighthouseViewBtn", "desktopView", "mobileView", "languages-list", "spelling-btn", "dict-modal-btn",
+    let elemId = ["searchURL", "HTMLBtn", "ReportsViewBtn", "desktopView", "mobileView", "languages-list", "spelling-btn", "dict-modal-btn",
         "lighthouse-btn", "links-btn", "links-modal-btn", "accessibility-btn", "WCAG-level-list", "accessibility-modal-btn", "cookies-btn", "cookies-modal-btn",
         "technologies-btn", "technologies-modal-btn",];
 
@@ -163,35 +163,35 @@ async function toggleView(view) {
     if (view === "HTML") {
         document.getElementById("mainContent").hidden = true;
         document.getElementById("mainCode").hidden = false;
-        document.getElementById("mainLighthouse").hidden = true;
+        document.getElementById("mainReports").hidden = true;
         document.getElementById("HTMLBtn").classList.add("active");
-        document.getElementById("LighthouseViewBtn").classList.remove("active");
+        document.getElementById("ReportsViewBtn").classList.remove("active");
         document.getElementById("mobileView").classList.remove("active");
         document.getElementById("desktopView").classList.remove("active");
     } else if (view === "Desktop") {
         document.getElementById("mainContent").hidden = false;
         document.getElementById("mainCode").hidden = true;
-        document.getElementById("mainLighthouse").hidden = true;
+        document.getElementById("mainReports").hidden = true;
         document.getElementById("HTMLBtn").classList.remove("active");
-        document.getElementById("LighthouseViewBtn").classList.remove("active");
+        document.getElementById("ReportsViewBtn").classList.remove("active");
         document.getElementById("mobileView").classList.remove("active");
         document.getElementById("desktopView").classList.add("active");
         document.getElementById("mainContent").classList.remove("iframePageMobile")
     } else if (view === "Mobile") {
         document.getElementById("mainContent").hidden = false;
         document.getElementById("mainCode").hidden = true;
-        document.getElementById("mainLighthouse").hidden = true;
+        document.getElementById("mainReports").hidden = true;
         document.getElementById("HTMLBtn").classList.remove("active");
-        document.getElementById("LighthouseViewBtn").classList.remove("active");
+        document.getElementById("ReportsViewBtn").classList.remove("active");
         document.getElementById("mobileView").classList.add("active");
         document.getElementById("desktopView").classList.remove("active");
         document.getElementById("mainContent").classList.add("iframePageMobile")
-    } else if (view === "lighthouseReport") {
+    } else if (view === "Reports") {
         document.getElementById("mainContent").hidden = true;
         document.getElementById("mainCode").hidden = true;
-        document.getElementById("mainLighthouse").hidden = false;
+        document.getElementById("mainReports").hidden = false;
         document.getElementById("HTMLBtn").classList.remove("active");
-        document.getElementById("LighthouseViewBtn").classList.add("active");
+        document.getElementById("ReportsViewBtn").classList.add("active");
         document.getElementById("mobileView").classList.remove("active");
         document.getElementById("desktopView").classList.remove("active");
     } else {
@@ -225,6 +225,23 @@ async function toggleSidebar(section) {
         let technologiesDiv = document.getElementById("technologies-main");
         technologiesDiv.hidden = !technologiesDiv.hidden;
     }
+}
+
+async function toggleReportView(report) {
+    if (report === "spelling") {
+        document.getElementById("nav-spelling").hidden = false;
+        document.getElementById("nav-accessibility").hidden = true;
+        document.getElementById("nav-tab").style.width = "70%";
+    } else if (report === "accessibility") {
+        document.getElementById("nav-spelling").hidden = true;
+        document.getElementById("nav-accessibility").hidden = false;
+        document.getElementById("nav-tab").style.width = "70%";
+    } else {
+        document.getElementById("nav-spelling").hidden = true;
+        document.getElementById("nav-accessibility").hidden = true;
+        document.getElementById("nav-tab").style.width = "100%";
+    }
+
 }
 
 
@@ -777,8 +794,7 @@ async function runLighthouse() {
         document.getElementById("mainLighthouse").src = inspectorUrl + "/Lighthouse?" + "url=null" + "&cats=null" + "&view=" + lighthouseJson["htmlReport"];
         document.getElementById("lighthouse-btn").hidden = true;
         document.getElementById("lighthouse-info").hidden = false;
-        document.getElementById("LighthouseViewBtn").hidden = false;
-        toggleView("lighthouseReport");
+        document.getElementById("mainLighthouse").hidden = false;
     } catch (Ex) {
         console.log(Ex);
         await setErrorModal("", "Lighthouse was unable to reliably load the page you requested.<br>Please try again.");
@@ -1047,7 +1063,6 @@ async function runAccessibility() {
     document.getElementById("WCAG-level-list").hidden = true;
     document.getElementById("accessibility-modal-btn").hidden = false;
     document.getElementById("wcag-level-label").innerText += " - " + WCAGLevel.replace("WCAG2", "");
-    document.getElementById("modal-accessibility-title").innerText += " - " + WCAGLevel.replace("WCAG2", "");
 
     // Remove overlay
     await overlay("removeOverlay", "", "");
@@ -1260,7 +1275,7 @@ async function main() {
 
     // Run Reports
     // await runLanguageTool();
-    // await runLighthouse();
+    await runLighthouse();
     // await runLinks();
     // await runAccessibility();
     // await runCookies();

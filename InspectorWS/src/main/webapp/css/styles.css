@@ -9,7 +9,7 @@ body * {
     font-family: 'Inter Regular';
 }
 
-.main * {
+.main {
     position: absolute;
     display: block;
     border: none;
@@ -17,6 +17,16 @@ body * {
     margin-left: 298px;
     width: calc(100% - 298px);
     height: calc(100% - 50px);
+}
+
+.lighthouseIframe {
+    position: absolute;
+    display: block;
+    border: none;
+    overflow: hidden;
+    width: 100%;
+    height: calc(100% - 42px);
+    margin-top: 42px;
 }
 
 .iframePageMobile {
@@ -146,6 +156,20 @@ body * {
     height: 50px;
     border-bottom: 2px solid;
     z-index: 3;
+}
+
+.nav-submenu-main {
+    width: 70%;
+    float: left;
+}
+
+.nav-submenu-secondary {
+    width: 30%;
+    float: right;
+}
+
+.nav-tabs .nav-link {
+    color: #166713;
 }
 
 /*
