@@ -543,7 +543,6 @@ Author     : xhico
     // Enable searchURL
     document.getElementById("searchURL").disabled = false;
     document.getElementById("languages-list").disabled = false;
-    document.getElementById("dict-modal-btn").disabled = false;
 
     // Check if url is Null
     <% if (!(url.equals("null"))) {%>
