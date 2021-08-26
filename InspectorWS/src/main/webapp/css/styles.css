@@ -11,36 +11,32 @@ body * {
 
 .main {
     position: absolute;
-    display: block;
-    border: none;
-    overflow: hidden;
-    margin-left: 298px;
-    width: calc(100% - 298px);
+    margin-left: 300px;
+    width: calc(100% - 300px);
     height: calc(100% - 50px);
+    margin-top: 50px;
 }
 
 #mainReports {
-    margin-left: 298px;
-    width: calc(100% - 298px);
+    margin-left: 300px;
+    width: calc(100% - 300px);
     height: calc(100% - 50px);
 }
 
 #mainLighthouse {
     position: absolute;
     display: block;
-    border: none;
-    overflow: hidden;
-    width: calc(100% - 298px);
-    height: calc(100% - 50px - 50px);
+    width: 100%;
+    height: calc(100% - 50px);
     margin-top: 50px;
 }
 
 .iframePageMobile {
     width: 375px;
     height: calc(100% - 50px);
-    margin-left: calc((298px / 2) + (calc(100% - 298px) / 2));
-    border-right: 2px black solid;
-    border-left: 2px black solid;
+    margin-left: calc((300px / 2) + (calc(100% - 300px) / 2));
+    border-right: 2px solid;
+    border-left: 2px solid;
 }
 
 #overlay {
@@ -82,15 +78,18 @@ body * {
     top: 0;
     left: 0;
     height: 100vh;
-    width: calc(100% - 298px);
+    width: calc(100% - 300px);
     transform: translateX(0);
     border-right: 2px solid;
     min-width: 250px;
     max-width: 300px;
     padding: 20px;
     overflow: scroll;
-    overflow-x: hidden;
     z-index: 3;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+    display: none;
 }
 
 .sidebar-logo {
@@ -157,8 +156,8 @@ body * {
 */
 
 .navbar {
-    margin-left: 298px;
-    width: calc(100% - 298px);
+    margin-left: 300px;
+    width: calc(100% - 300px);
     height: 50px;
     border-bottom: 2px solid;
     z-index: 3;
@@ -215,35 +214,6 @@ body * {
 --------------------------------------------------------------------------------------------------------------------------------------
 */
 
-span.hoverMessage {
-    position: relative;
-}
-
-span.hoverMessage .msgPopup {
-    padding: 6px 6px;
-    color: black;
-    z-index: 10;
-    min-width: 300px;
-    display: none;
-    font-size: 16px;
-    position: absolute;
-    left: 0;
-    background: #f8f9fa;
-    border: 2px solid grey;
-    border-radius: 5px;
-    font-family: "Inter Medium";
-}
-
-span.hoverMessage:hover .msgPopup {
-    display: block;
-    margin: 4px 0;
-}
-
-/*
---------------------------------------------------------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------------------------------------------------------
-*/
-
 table {
     width: 100%;
 }
@@ -274,15 +244,6 @@ table {
     padding: 4px;
     margin-left: 4px;
     margin-right: 4px;
-}
-
-.pagination .page-link {
-    color: black;
-}
-
-.pagination .page-item.active .page-link {
-    background-color: #166713;
-    color: black;
 }
 
 div.dataTables_wrapper div.dataTables_length {

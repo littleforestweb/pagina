@@ -320,8 +320,7 @@ async function loadDictionaryList() {
     $('#dictionaryTable').DataTable({
         dom: 'Blfrtip',
         buttons: [{text: 'Export', extend: 'csv', filename: 'Spelling Errors'}],
-        pageLength: 10,
-        "bLengthChange": false,
+        paginate: false,
         "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
         "order": [[0, "desc"]],
         data: dataset,
@@ -707,8 +706,9 @@ async function runLanguageTool() {
     $('#errorsTable').DataTable({
         dom: 'Blfrtip',
         buttons: [{text: 'Export', extend: 'csv', filename: 'Spelling Errors'}],
-        pageLength: 10,
-        "bLengthChange": false,
+        // pageLength: 10,
+        // "bLengthChange": false,
+        paginate: false,
         "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
         "order": [[3, "desc"]],
         data: dataset,
@@ -871,8 +871,7 @@ async function runLinks() {
     $('#linksTable').DataTable({
         dom: 'Blfrtip',
         buttons: [{text: 'Export', extend: 'csv', filename: 'Links Report'}],
-        pageLength: 10,
-        "bLengthChange": false,
+        paginate: false,
         "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
         "order": [[0, "asc"]],
         data: dataset,
@@ -987,8 +986,7 @@ async function runAccessibility() {
     $('#snifferErrorsTable').DataTable({
         dom: 'Blfrtip',
         buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Errors Report'}],
-        pageLength: 10,
-        "bLengthChange": false,
+        paginate: false,
         "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
         "order": [[0, "asc"]],
         data: errorsDataset,
@@ -1016,8 +1014,7 @@ async function runAccessibility() {
     $('#snifferNoticesTable').DataTable({
         dom: 'Blfrtip',
         buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Notices Report'}],
-        pageLength: 5,
-        "aLengthMenu": [[5, 10, 50], [5, 10, 50]],
+        paginate: false,
         "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
         "order": [[0, "asc"]],
         data: noticesDataset,
@@ -1045,8 +1042,7 @@ async function runAccessibility() {
     $('#snifferWarningsTable').DataTable({
         dom: 'Blfrtip',
         buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Warnings Report'}],
-        pageLength: 10,
-        "bLengthChange": false,
+        paginate: false,
         "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
         "order": [[0, "asc"]],
         data: warningsDataset,
@@ -1116,8 +1112,7 @@ async function runCookies() {
     $('#cookiesTable').DataTable({
         dom: 'Blfrtip',
         buttons: [{text: 'Export', extend: 'csv', filename: 'Cookies Report'}],
-        pageLength: 10,
-        "bLengthChange": false,
+        paginate: false,
         "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
         "order": [[0, "asc"]],
         data: dataset,
@@ -1203,8 +1198,7 @@ async function runTechnologies() {
     $('#technologiesTable').DataTable({
         dom: 'Blfrtip',
         buttons: [{text: 'Export', extend: 'csv', filename: 'Technologies Report'}],
-        pageLength: 10,
-        "bLengthChange": false,
+        paginate: false,
         "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
         "order": [[0, "asc"]],
         data: dataset,
@@ -1284,8 +1278,8 @@ async function main() {
     await overlay("removeOverlay", "", "")
 
     // Run Reports
-    await runLanguageTool();
-    // await runLighthouse();
+    // await runLanguageTool();
+    await runLighthouse();
     // await runLinks();
     // await runAccessibility();
     // await runCookies();

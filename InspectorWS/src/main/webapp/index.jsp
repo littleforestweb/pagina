@@ -108,7 +108,7 @@ Author     : xhico
 <%-- END ERROR MODAL--%>
 
 <%-- TOPNAV --%>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar fixed-top navbar-expand-lg bg-light">
     <div class="container-fluid">
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <div class="d-flex me-auto">
@@ -297,7 +297,7 @@ Author     : xhico
     <%--    END CODE--%>
 
     <%--    REPORTS--%>
-    <div id="mainReports">
+    <div class="main" id="mainReports">
         <nav>
             <div class="nav nav-tabs nav-submenu-main" id="nav-tab" role="tablist">
                 <button onclick="toggleReportView('spelling')" class="nav-link active" id="nav-spelling-tab" data-bs-toggle="tab" data-bs-target="#spelling-section" type="button" role="tab" aria-controls="nav-spelling" aria-selected="true">Spelling</button>
@@ -307,8 +307,6 @@ Author     : xhico
                 <button onclick="toggleReportView('')" class="nav-link" id="nav-cookies-tab" data-bs-toggle="tab" data-bs-target="#cookies-section" type="button" role="tab" aria-controls="nav-cookies" aria-selected="true">Cookies</button>
                 <button onclick="toggleReportView('')" class="nav-link" id="nav-technologies-tab" data-bs-toggle="tab" data-bs-target="#technologies-section" type="button" role="tab" aria-controls="nav-technologies" aria-selected="true">Technologies</button>
             </div>
-        </nav>
-        <nav>
             <div class="nav nav-tabs nav-submenu-secondary" id="nav-spelling" role="tablist">
                 <button onclick="toggleSpellView('errorsTableDiv')" class="nav-link active" id="errorsTableViewBtn" data-bs-toggle="tab" data-bs-target="#nav-spelling-errors" type="button" role="tab" aria-controls="nav-spelling-errors" aria-selected="true">Errors</button>
                 <button onclick="toggleSpellView('dictionaryTableDiv')" class="nav-link" id="dictionaryTableViewBtn" data-bs-toggle="tab" data-bs-target="#nav-spelling-dictionary" type="button" role="tab" aria-controls="nav-spelling-dictionary" aria-selected="false">Dictionary</button>
@@ -323,7 +321,7 @@ Author     : xhico
             <%--    SPELLING--%>
             <div class="tab-pane fade show active" id="spelling-section" role="tabpanel" aria-labelledby="nav-spelling-tab">
                 <div id="errorsTableDiv">
-                    <table id="errorsTable" class="table table-striped">
+                    <table id="errorsTable" class="table">
                         <thead>
                         <tr>
                             <th>Error</th>
@@ -346,7 +344,7 @@ Author     : xhico
                     </table>
                 </div>
                 <div hidden id="dictionaryTableDiv">
-                    <table id="dictionaryTable" class="table table-striped spellingTable">
+                    <table id="dictionaryTable" class="table">
                         <thead>
                         <tr>
                             <th>Error</th>
@@ -365,13 +363,11 @@ Author     : xhico
             </div>
             <%--    LIGHTHOUSE--%>
             <div class="tab-pane fade" id="lighthouse-section" role="tabpanel" aria-labelledby="nav-lighthouse-tab">
-                <iframe src="https://inspector.littleforest.co.uk/TestWS/Lighthouse?url=null&cats=null&view=httpsinspectorlittleforestcoukInspectorWStesthtml_20210825195127.report.html"
-                        id="mainLighthouse">
-                </iframe>
+                <iframe id="mainLighthouse"></iframe>
             </div>
             <%--    LINKS--%>
             <div class="tab-pane fade" id="links-section" role="tabpanel" aria-labelledby="nav-links-tab">
-                <table id="linksTable" class="table table-striped">
+                <table id="linksTable" class="table">
                     <thead>
                     <tr>
                         <th>URL</th>
@@ -392,7 +388,7 @@ Author     : xhico
             <%--    ACCESSIBILITY--%>
             <div class="tab-pane fade" id="accessibility-section" role="tabpanel" aria-labelledby="nav-accessibility-tab">
                 <div id="snifferErrorsTableDiv">
-                    <table id="snifferErrorsTable" class="table table-striped">
+                    <table id="snifferErrorsTable" class="table">
                         <thead>
                         <tr>
                             <th>Guideline</th>
@@ -411,7 +407,7 @@ Author     : xhico
                     </table>
                 </div>
                 <div hidden id="snifferNoticesTableDiv">
-                    <table id="snifferNoticesTable" class="table table-striped">
+                    <table id="snifferNoticesTable" class="table">
                         <thead>
                         <tr>
                             <th>Guideline</th>
@@ -430,7 +426,7 @@ Author     : xhico
                     </table>
                 </div>
                 <div hidden id="snifferWarningsTableDiv">
-                    <table id="snifferWarningsTable" class="table table-striped">
+                    <table id="snifferWarningsTable" class="table">
                         <thead>
                         <tr>
                             <th>Guideline</th>
@@ -451,7 +447,7 @@ Author     : xhico
             </div>
             <%--    COOKIES--%>
             <div class="tab-pane fade" id="cookies-section" role="tabpanel" aria-labelledby="nav-cookies-tab">
-                <table id="cookiesTable" class="table table-striped">
+                <table id="cookiesTable" class="table">
                     <thead>
                     <tr>
                         <th>Name</th>
@@ -477,7 +473,7 @@ Author     : xhico
             </div>
             <%--    TECHNOLOGIES--%>
             <div class="tab-pane fade" id="technologies-section" role="tabpanel" aria-labelledby="nav-technologies-tab">
-                <table id="technologiesTable" class="table table-striped">
+                <table id="technologiesTable" class="table">
                     <thead>
                     <tr>
                         <th></th>
