@@ -19,14 +19,20 @@ body * {
     height: calc(100% - 50px);
 }
 
-.lighthouseIframe {
+#mainReports {
+    margin-left: 298px;
+    width: calc(100% - 298px);
+    height: calc(100% - 50px);
+}
+
+#mainLighthouse {
     position: absolute;
     display: block;
     border: none;
     overflow: hidden;
-    width: 100%;
-    height: calc(100% - 42px);
-    margin-top: 42px;
+    width: calc(100% - 298px);
+    height: calc(100% - 50px - 50px);
+    margin-top: 50px;
 }
 
 .iframePageMobile {
@@ -159,36 +165,24 @@ body * {
 }
 
 .nav-submenu-main {
+    height: 50px;
     width: 70%;
     float: left;
 }
 
 .nav-submenu-secondary {
+    height: 50px;
     width: 30%;
     float: right;
 }
 
 .nav-tabs .nav-link {
+    color: black;
+}
+
+.nav-tabs .nav-link.active {
     color: #166713;
 }
-
-/*
---------------------------------------------------------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------------------------------------------------------
-*/
-
-/*::-webkit-scrollbar {
-    width: 10px;
-}
-
-::-webkit-scrollbar-track {
-    border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #166713;
-    border-radius: 10px;
-}*/
 
 /*
 --------------------------------------------------------------------------------------------------------------------------------------

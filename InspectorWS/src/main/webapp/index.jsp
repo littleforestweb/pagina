@@ -192,7 +192,6 @@ Author     : xhico
             <div hidden id="spelling-info" class="mt-2">
                 <p id="spelling-total-p">Found <span id="spelling-total-errors">0</span> occurrence(s).</p>
                 <ul id="spelling-errors"></ul>
-                <button type="button" id="dict-modal-btn" class="btn active" data-bs-toggle="modal" data-bs-target="#dictionary-modal">View Overview</button>
             </div>
 
         </div>
@@ -220,7 +219,6 @@ Author     : xhico
                 <p>Found <span id="links-total">0</span> link(s) (<span id="links-ext">0</span> external and <span id="links-int">0</span> internal).</p>
                 <p id="links-broken-p" hidden>Found <span id="links-broken">0</span> broken links(s).</p>
             </div>
-            <button hidden type="button" id="links-modal-btn" class="btn active mt-2" data-bs-toggle="modal" data-bs-target="#linksModal">View Overview</button>
         </div>
     </ul>
 
@@ -241,7 +239,6 @@ Author     : xhico
                 <p>Found <span id="accessibility-Notices">0</span> Notice(s)</p>
                 <p>Found <span id="accessibility-Warnings">0</span> Warning(s)</p>
             </div>
-            <button hidden type="button" id="accessibility-modal-btn" class="btn active" data-bs-toggle="modal" data-bs-target="#accessibilityModal">View Overview</button>
         </div>
     </ul>
 
@@ -254,7 +251,6 @@ Author     : xhico
             <div id="cookies-info" hidden>
                 <p>Found <span id="cookies-total">0</span> cookie(s)</p>
             </div>
-            <button hidden type="button" id="cookies-modal-btn" class="btn active mt-2" data-bs-toggle="modal" data-bs-target="#cookiesModal">View Overview</button>
         </div>
     </ul>
 
@@ -267,7 +263,6 @@ Author     : xhico
             <div id="technologies-info" hidden>
                 <p>Found <span id="technologies-total">0</span> Technologies</p>
             </div>
-            <button hidden type="button" id="technologies-modal-btn" class="btn active mt-2" data-bs-toggle="modal" data-bs-target="#technologiesModal">View Overview</button>
         </div>
     </ul>
 
@@ -302,7 +297,7 @@ Author     : xhico
     <%--    END CODE--%>
 
     <%--    REPORTS--%>
-    <div id="mainReports" class="main">
+    <div id="mainReports">
         <nav>
             <div class="nav nav-tabs nav-submenu-main" id="nav-tab" role="tablist">
                 <button onclick="toggleReportView('spelling')" class="nav-link active" id="nav-spelling-tab" data-bs-toggle="tab" data-bs-target="#spelling-section" type="button" role="tab" aria-controls="nav-spelling" aria-selected="true">Spelling</button>
@@ -315,7 +310,7 @@ Author     : xhico
         </nav>
         <nav>
             <div class="nav nav-tabs nav-submenu-secondary" id="nav-spelling" role="tablist">
-                <button onclick="toggleSpellView('errorsTableDiv')" class="nav-link active" id="errorsTableViewBtn" data-bs-toggle="tab" data-bs-target="#nav-spelling-errors" type="button" role="tab" aria-controls="nav-spelling-errors" aria-selected="true">Spelling</button>
+                <button onclick="toggleSpellView('errorsTableDiv')" class="nav-link active" id="errorsTableViewBtn" data-bs-toggle="tab" data-bs-target="#nav-spelling-errors" type="button" role="tab" aria-controls="nav-spelling-errors" aria-selected="true">Errors</button>
                 <button onclick="toggleSpellView('dictionaryTableDiv')" class="nav-link" id="dictionaryTableViewBtn" data-bs-toggle="tab" data-bs-target="#nav-spelling-dictionary" type="button" role="tab" aria-controls="nav-spelling-dictionary" aria-selected="false">Dictionary</button>
             </div>
             <div hidden class="nav nav-tabs nav-submenu-secondary" id="nav-accessibility" role="tablist">
@@ -370,7 +365,9 @@ Author     : xhico
             </div>
             <%--    LIGHTHOUSE--%>
             <div class="tab-pane fade" id="lighthouse-section" role="tabpanel" aria-labelledby="nav-lighthouse-tab">
-                <iframe class="lighthouseIframe" id="mainLighthouse"></iframe>
+                <iframe src="https://inspector.littleforest.co.uk/TestWS/Lighthouse?url=null&cats=null&view=httpsinspectorlittleforestcoukInspectorWStesthtml_20210825195127.report.html"
+                        id="mainLighthouse">
+                </iframe>
             </div>
             <%--    LINKS--%>
             <div class="tab-pane fade" id="links-section" role="tabpanel" aria-labelledby="nav-links-tab">

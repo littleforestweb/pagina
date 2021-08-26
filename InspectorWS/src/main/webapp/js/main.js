@@ -126,9 +126,9 @@ async function overlay(action, message, sndMessage) {
 async function enableDisableActions(action) {
 
     // Set all elemId
-    let elemId = ["searchURL", "HTMLBtn", "ReportsViewBtn", "desktopView", "mobileView", "languages-list", "spelling-btn", "dict-modal-btn",
-        "lighthouse-btn", "links-btn", "links-modal-btn", "accessibility-btn", "WCAG-level-list", "accessibility-modal-btn", "cookies-btn", "cookies-modal-btn",
-        "technologies-btn", "technologies-modal-btn",];
+    let elemId = ["searchURL", "HTMLBtn", "ReportsViewBtn", "desktopView", "mobileView", "languages-list", "spelling-btn",
+        "lighthouse-btn", "links-btn", "accessibility-btn", "WCAG-level-list", "cookies-btn",
+        "technologies-btn"];
 
     // Set disabled status
     elemId.forEach(function (id) {
@@ -923,7 +923,6 @@ async function runLinks() {
 
     // Toggle Links Section
     document.getElementById("links-info").hidden = false;
-    document.getElementById("links-modal-btn").hidden = false;
 
     // Remove overlay
     await overlay("removeOverlay", "", "");
@@ -1075,7 +1074,6 @@ async function runAccessibility() {
     document.getElementById("accessibility-info").hidden = false;
     document.getElementById("accessibility-btn").hidden = true;
     document.getElementById("WCAG-level-list").hidden = true;
-    document.getElementById("accessibility-modal-btn").hidden = false;
     document.getElementById("wcag-level-label").innerText += " - " + WCAGLevel.replace("WCAG2", "");
 
     // Remove overlay
@@ -1162,7 +1160,6 @@ async function runCookies() {
     document.getElementById("cookies-total").innerText = dataset.length.toString();
     document.getElementById("cookies-info").hidden = false;
     document.getElementById("cookies-btn").hidden = true;
-    document.getElementById("cookies-modal-btn").hidden = false;
 
     // Remove overlay
     await overlay("removeOverlay", "", "");
@@ -1245,7 +1242,6 @@ async function runTechnologies() {
     document.getElementById("technologies-total").innerText = dataset.length.toString();
     document.getElementById("technologies-info").hidden = false;
     document.getElementById("technologies-btn").hidden = true;
-    document.getElementById("technologies-modal-btn").hidden = false;
 
     // Remove overlay
     await overlay("removeOverlay", "", "");
@@ -1289,9 +1285,9 @@ async function main() {
 
     // Run Reports
     await runLanguageTool();
-    await runLighthouse();
-    await runLinks();
-    await runAccessibility();
-    await runCookies();
-    await runTechnologies();
+    // await runLighthouse();
+    // await runLinks();
+    // await runAccessibility();
+    // await runCookies();
+    // await runTechnologies();
 }
