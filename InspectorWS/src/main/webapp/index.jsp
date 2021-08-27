@@ -87,7 +87,7 @@ Author     : xhico
         <span id="overlaySndMessage"></span>
         <span id="overlayProgress"></span>
         Please Wait</br>
-        <div class="spinner-border"></div>
+        <div class="spinner-border text-success"></div>
     </div>
 </div>
 <%-- END OVERLAY --%>
@@ -298,29 +298,52 @@ Author     : xhico
 
     <%--    REPORTS--%>
     <div class="main" id="mainReports">
-        <nav>
-            <div class="nav nav-tabs nav-submenu-main" id="nav-tab" role="tablist">
-                <button onclick="toggleReportView('spelling')" class="nav-link active" id="nav-spelling-tab" data-bs-toggle="tab" data-bs-target="#spelling-section" type="button" role="tab" aria-controls="nav-spelling" aria-selected="true">Spelling</button>
-                <button onclick="toggleReportView('lighthouse')" class="nav-link" id="nav-lighthouse-tab" data-bs-toggle="tab" data-bs-target="#lighthouse-section" type="button" role="tab" aria-controls="nav-lighthouse" aria-selected="true">Lighthouse</button>
-                <button onclick="toggleReportView('')" class="nav-link" id="nav-links-tab" data-bs-toggle="tab" data-bs-target="#links-section" type="button" role="tab" aria-controls="nav-links" aria-selected="true">Links</button>
-                <button onclick="toggleReportView('accessibility')" class="nav-link" id="nav-accessibility-tab" data-bs-toggle="tab" data-bs-target="#accessibility-section" type="button" role="tab" aria-controls="nav-accessibility" aria-selected="true">Accessibility</button>
-                <button onclick="toggleReportView('')" class="nav-link" id="nav-cookies-tab" data-bs-toggle="tab" data-bs-target="#cookies-section" type="button" role="tab" aria-controls="nav-cookies" aria-selected="true">Cookies</button>
-                <button onclick="toggleReportView('')" class="nav-link" id="nav-technologies-tab" data-bs-toggle="tab" data-bs-target="#technologies-section" type="button" role="tab" aria-controls="nav-technologies" aria-selected="true">Technologies</button>
-            </div>
-            <div class="nav nav-tabs nav-submenu-secondary" id="nav-spelling" role="tablist">
-                <button onclick="toggleSpellView('errorsTableDiv')" class="nav-link active" id="errorsTableViewBtn" data-bs-toggle="tab" data-bs-target="#nav-spelling-errors" type="button" role="tab" aria-controls="nav-spelling-errors" aria-selected="true">Errors</button>
-                <button onclick="toggleSpellView('dictionaryTableDiv')" class="nav-link" id="dictionaryTableViewBtn" data-bs-toggle="tab" data-bs-target="#nav-spelling-dictionary" type="button" role="tab" aria-controls="nav-spelling-dictionary" aria-selected="false">Dictionary</button>
-            </div>
-            <div hidden class="nav nav-tabs nav-submenu-secondary" id="nav-accessibility" role="tablist">
-                <button onclick="toggleAccessibilityView('snifferErrorsTableDiv')" class="nav-link active" id="snifferErrorsTableViewBtn" data-bs-toggle="tab" data-bs-target="#nav-accessibility-errors" type="button" role="tab" aria-controls="nav-accessibility-errors" aria-selected="true">Errors</button>
-                <button onclick="toggleAccessibilityView('snifferNoticesTableDiv')" class="nav-link" id="snifferNoticesTableViewBtn" data-bs-toggle="tab" data-bs-target="#nav-accessibility-dictionary" type="button" role="tab" aria-controls="nav-accessibility-dictionary" aria-selected="false">Notices</button>
-                <button onclick="toggleAccessibilityView('snifferWarningsTableDiv')" class="nav-link" id="snifferWarningsTableViewBtn" data-bs-toggle="tab" data-bs-target="#nav-accessibility-dictionary" type="button" role="tab" aria-controls="nav-accessibility-dictionary" aria-selected="false">Warnings</button>
-            </div>
-        </nav>
+        <div class="nav nav-tabs bg-light" id="nav-tab" role="tablist">
+            <button class="nav-link active" id="nav-spelling-tab" data-bs-toggle="tab" data-bs-target="#spelling-section" type="button" role="tab" aria-controls="nav-spelling" aria-selected="true">Spelling</button>
+            <button class="nav-link" id="nav-lighthouse-tab" data-bs-toggle="tab" data-bs-target="#lighthouse-section" type="button" role="tab" aria-controls="nav-lighthouse" aria-selected="true">Lighthouse</button>
+            <button class="nav-link" id="nav-links-tab" data-bs-toggle="tab" data-bs-target="#links-section" type="button" role="tab" aria-controls="nav-links" aria-selected="true">Links</button>
+            <button class="nav-link" id="nav-accessibility-tab" data-bs-toggle="tab" data-bs-target="#accessibility-section" type="button" role="tab" aria-controls="nav-accessibility" aria-selected="true">Accessibility</button>
+            <button class="nav-link" id="nav-cookies-tab" data-bs-toggle="tab" data-bs-target="#cookies-section" type="button" role="tab" aria-controls="nav-cookies" aria-selected="true">Cookies</button>
+            <button class="nav-link" id="nav-technologies-tab" data-bs-toggle="tab" data-bs-target="#technologies-section" type="button" role="tab" aria-controls="nav-technologies" aria-selected="true">Technologies</button>
+        </div>
+
         <div class="tab-content" id="nav-tabContent">
             <%--    SPELLING--%>
             <div class="tab-pane fade show active" id="spelling-section" role="tabpanel" aria-labelledby="nav-spelling-tab">
-                <div id="errorsTableDiv">
+                <div class="container px-4 py-5">
+                    <h2 class="pb-2 border-bottom">Spelling Report</h2>
+                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more
+                        recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+                    <div class="container">
+                        <div class="row">
+                            <div class="four col-md-3">
+                                <div class="counter-box"><i class="fa fa-thumbs-o-up"></i> <span class="counter">2147</span>
+                                    <p>Happy Customers</p>
+                                </div>
+                            </div>
+                            <div class="four col-md-3">
+                                <div class="counter-box"><i class="fa fa-group"></i> <span class="counter">3275</span>
+                                    <p>Registered Members</p>
+                                </div>
+                            </div>
+                            <div class="four col-md-3">
+                                <div class="counter-box"><i class="fa fa-shopping-cart"></i> <span class="counter">289</span>
+                                    <p>Available Products</p>
+                                </div>
+                            </div>
+                            <div class="four col-md-3">
+                                <div class="counter-box"><i class="fa fa-user"></i> <span class="counter">1563</span>
+                                    <p>Saved Trees</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="container nav nav-tabs bg-light" id="nav-spelling" role="tablist">
+                    <button onclick="toggleSpellView('errorsTableDiv')" class="nav-link active" id="errorsTableViewBtn" data-bs-toggle="tab" data-bs-target="#nav-spelling-errors" type="button" role="tab" aria-controls="nav-spelling-errors" aria-selected="true">Errors</button>
+                    <button onclick="toggleSpellView('dictionaryTableDiv')" class="nav-link" id="dictionaryTableViewBtn" data-bs-toggle="tab" data-bs-target="#nav-spelling-dictionary" type="button" role="tab" aria-controls="nav-spelling-dictionary" aria-selected="false">Dictionary</button>
+                </div>
+                <div class="container px-4 py-5" id="errorsTableDiv">
                     <table id="errorsTable" class="table">
                         <thead>
                         <tr>
@@ -343,7 +366,7 @@ Author     : xhico
                         </tfoot>
                     </table>
                 </div>
-                <div hidden id="dictionaryTableDiv">
+                <div class="container px-4 py-5" hidden id="dictionaryTableDiv">
                     <table id="dictionaryTable" class="table">
                         <thead>
                         <tr>
@@ -361,10 +384,12 @@ Author     : xhico
                     </table>
                 </div>
             </div>
+
             <%--    LIGHTHOUSE--%>
             <div class="tab-pane fade" id="lighthouse-section" role="tabpanel" aria-labelledby="nav-lighthouse-tab">
                 <iframe id="mainLighthouse"></iframe>
             </div>
+
             <%--    LINKS--%>
             <div class="tab-pane fade" id="links-section" role="tabpanel" aria-labelledby="nav-links-tab">
                 <table id="linksTable" class="table">
@@ -385,8 +410,14 @@ Author     : xhico
                     </tfoot>
                 </table>
             </div>
+
             <%--    ACCESSIBILITY--%>
             <div class="tab-pane fade" id="accessibility-section" role="tabpanel" aria-labelledby="nav-accessibility-tab">
+                <div class="nav nav-tabs bg-light" id="nav-accessibility" role="tablist">
+                    <button onclick="toggleAccessibilityView('snifferErrorsTableDiv')" class="nav-link active" id="snifferErrorsTableViewBtn" data-bs-toggle="tab" data-bs-target="#nav-accessibility-errors" type="button" role="tab" aria-controls="nav-accessibility-errors" aria-selected="true">Errors</button>
+                    <button onclick="toggleAccessibilityView('snifferNoticesTableDiv')" class="nav-link" id="snifferNoticesTableViewBtn" data-bs-toggle="tab" data-bs-target="#nav-accessibility-dictionary" type="button" role="tab" aria-controls="nav-accessibility-dictionary" aria-selected="false">Notices</button>
+                    <button onclick="toggleAccessibilityView('snifferWarningsTableDiv')" class="nav-link" id="snifferWarningsTableViewBtn" data-bs-toggle="tab" data-bs-target="#nav-accessibility-dictionary" type="button" role="tab" aria-controls="nav-accessibility-dictionary" aria-selected="false">Warnings</button>
+                </div>
                 <div id="snifferErrorsTableDiv">
                     <table id="snifferErrorsTable" class="table">
                         <thead>
@@ -445,6 +476,7 @@ Author     : xhico
                     </table>
                 </div>
             </div>
+
             <%--    COOKIES--%>
             <div class="tab-pane fade" id="cookies-section" role="tabpanel" aria-labelledby="nav-cookies-tab">
                 <table id="cookiesTable" class="table">
@@ -471,6 +503,7 @@ Author     : xhico
                     </tfoot>
                 </table>
             </div>
+
             <%--    TECHNOLOGIES--%>
             <div class="tab-pane fade" id="technologies-section" role="tabpanel" aria-labelledby="nav-technologies-tab">
                 <table id="technologiesTable" class="table">

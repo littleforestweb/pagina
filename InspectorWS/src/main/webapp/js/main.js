@@ -8,8 +8,8 @@
 
 
 // const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS";
-const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
-// const inspectorUrl = "http://localhost:8080/InspectorWS";
+// const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
+const inspectorUrl = "http://localhost:8080/InspectorWS";
 const nameWS = inspectorUrl.split("/")[3] + "/";
 const languageToolPost = "/" + nameWS + "LanguageTool";
 const lighthousePost = "/" + nameWS + "Lighthouse";
@@ -225,23 +225,6 @@ async function toggleSidebar(section) {
         let technologiesDiv = document.getElementById("technologies-main");
         technologiesDiv.hidden = !technologiesDiv.hidden;
     }
-}
-
-async function toggleReportView(report) {
-    if (report === "spelling") {
-        document.getElementById("nav-spelling").hidden = false;
-        document.getElementById("nav-accessibility").hidden = true;
-        document.getElementById("nav-tab").style.width = "70%";
-    } else if (report === "accessibility") {
-        document.getElementById("nav-spelling").hidden = true;
-        document.getElementById("nav-accessibility").hidden = false;
-        document.getElementById("nav-tab").style.width = "70%";
-    } else {
-        document.getElementById("nav-spelling").hidden = true;
-        document.getElementById("nav-accessibility").hidden = true;
-        document.getElementById("nav-tab").style.width = "100%";
-    }
-
 }
 
 
@@ -1278,8 +1261,8 @@ async function main() {
     await overlay("removeOverlay", "", "")
 
     // Run Reports
-    // await runLanguageTool();
-    await runLighthouse();
+    await runLanguageTool();
+    // await runLighthouse();
     // await runLinks();
     // await runAccessibility();
     // await runCookies();
