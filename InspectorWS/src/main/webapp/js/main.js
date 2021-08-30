@@ -8,8 +8,8 @@
 
 
 // const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS";
-// const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
-const inspectorUrl = "http://localhost:8080/InspectorWS";
+const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
+// const inspectorUrl = "http://localhost:8080/InspectorWS";
 const nameWS = inspectorUrl.split("/")[3] + "/";
 const languageToolPost = "/" + nameWS + "LanguageTool";
 const lighthousePost = "/" + nameWS + "Lighthouse";
@@ -17,130 +17,34 @@ const linksPost = "/" + nameWS + "Links";
 const accessibilityPost = "/" + nameWS + "Accessibility";
 const cookiesPost = "/" + nameWS + "Cookies";
 const wappalyzerPost = "/" + nameWS + "Wappalyzer";
-let counter = 0;
-let myTimmer = setInterval(myTimer, 1000);
+let device = "desktop";
+let checkIframes = false;
+let checkLanguageTool = false;
+let checkLighthouse = false;
+let checkLinks = false;
+let checkAccessibility = false;
+let checkCookies = false;
+let checkTechnologies = false;
+let showTimeout = setTimeout(async function () {
+    let siteUrl = await getSiteUrl();
+    await setErrorModal("", "Failed to load <b>" + siteUrl + "</b> (Timeout)</br>Plase check the URL.");
+    await overlay("removeOverlay", "", "");
+    document.getElementById("mainPage").hidden = true;
+    clearTimeout(showTimeout);
+}, 10000);
 
 
 // ------------------------------------- AUX FUNCTIONS ------------------------------------- //
 
 
-$("#searchURL").on('keyup', function (e) {
-    if (e.key === 'Enter' || e.keyCode === 13) {
-        gotoNewPage();
-    }
-});
-
-async function myTimer() {
-    // Get siteUrl
-    let siteUrl = await getSiteUrl();
-    if (siteUrl === "") {
-        return;
-    }
-
-    try {
-        // Get Iframe
-        let iframeElement = document.getElementById('mainContent');
-        let html = iframeElement.contentWindow.document.documentElement.outerHTML;
-
-        // Check if HTML Content is valid
-        if (html.length <= 1000) {
-            if (counter === 10) {
-
-                // Get iframe element
-                iframeElement = iframeElement.contentWindow.document;
-                iframeElement.open();
-                iframeElement.write("");
-                iframeElement.close();
-
-                // Set Error Message in MODAL
-                await setErrorModal("", "Failed to load <b>" + siteUrl + "</b> (Timeout)</br>Plase check the URL.");
-
-                // Remove overlay
-                await overlay("removeOverlay", "", "")
-
-                // Enable Actions
-                await enableDisableActions("enable");
-
-                // Stop Interval
-                clearInterval(myTimmer);
-            }
-        } else {
-            // Stop Interval
-            clearInterval(myTimmer);
-        }
-
-        // Increment counter
-        counter = counter + 1
-    } catch (Ex) {
-        // console.log(Ex);
-    }
-
-}
-
-async function setIframe() {
-    console.log("setIframe");
-
-    // Get siteUrl
-    let siteUrl = await getSiteUrl();
-
-    // Add overlay
-    await overlay("addOverlay", "Loading page", "");
-
-    // Get iframe element
-    let iframeElement = document.getElementById('mainContent');
-
-    // Set iframe src to siteUrl
-    iframeElement.src = siteUrl;
-
-    // Add EventListener on load
-    iframeElement.addEventListener("load", main);
-}
-
 async function getSiteUrl() {
-    // Return siteUrl
     return document.getElementById("searchURL").value;
 }
 
-async function overlay(action, message, sndMessage) {
-    if (action === "addOverlay") {
-        // Disable goBtn
-        await enableDisableActions("disable");
-
-        // Toggle Desktop View
-        await toggleView("Desktop");
-
-        // Insert overlay
-        document.getElementById("overlay").style.display = "block";
-        document.getElementById("overlayMessage").innerText = message;
-        document.getElementById("overlaySndMessage").innerHTML = sndMessage + "</br>";
-        document.getElementById("overlayProgress").innerText = "";
-    } else if (action === "removeOverlay") {
-        // Remove overlay
-        document.getElementById("overlay").style.display = "none";
-
-        // Enable goBtn
-        await enableDisableActions("enable");
-    }
-}
-
-async function enableDisableActions(action) {
-
-    // Set all elemId
-    let elemId = ["searchURL", "HTMLBtn", "ReportsViewBtn", "desktopView", "mobileView", "languages-list", "spelling-btn",
-        "lighthouse-btn", "links-btn", "accessibility-btn", "WCAG-level-list", "cookies-btn",
-        "technologies-btn"];
-
-    // Set disabled status
-    elemId.forEach(function (id) {
-        document.getElementById(id).disabled = action !== "enable";
-    });
-}
-
-async function resetPage() {
-    // Remove overlay
-    await overlay("addOverlay", "Loading", "")
-
-    window.location.href = inspectorUrl;
+async function setErrorModal(title, message) {
+    document.getElementById("modalErrorTitle").innerHTML = ((title !== "") ? title : "Something went wrong!");
+    document.getElementById("modalErrorBody").innerHTML = message;
+    $("#errorModal").modal("show");
 }
 
 async function gotoNewPage() {
@@ -159,72 +63,80 @@ async function gotoNewPage() {
     }
 }
 
-async function toggleView(view) {
-    if (view === "HTML") {
-        document.getElementById("mainContent").hidden = true;
-        document.getElementById("mainCode").hidden = false;
-        document.getElementById("mainReports").hidden = true;
-        document.getElementById("HTMLBtn").classList.add("active");
-        document.getElementById("ReportsViewBtn").classList.remove("active");
-        document.getElementById("mobileView").classList.remove("active");
-        document.getElementById("desktopView").classList.remove("active");
-    } else if (view === "Desktop") {
-        document.getElementById("mainContent").hidden = false;
-        document.getElementById("mainCode").hidden = true;
-        document.getElementById("mainReports").hidden = true;
-        document.getElementById("HTMLBtn").classList.remove("active");
-        document.getElementById("ReportsViewBtn").classList.remove("active");
-        document.getElementById("mobileView").classList.remove("active");
-        document.getElementById("desktopView").classList.add("active");
-        document.getElementById("mainContent").classList.remove("iframePageMobile")
-    } else if (view === "Mobile") {
-        document.getElementById("mainContent").hidden = false;
-        document.getElementById("mainCode").hidden = true;
-        document.getElementById("mainReports").hidden = true;
-        document.getElementById("HTMLBtn").classList.remove("active");
-        document.getElementById("ReportsViewBtn").classList.remove("active");
-        document.getElementById("mobileView").classList.add("active");
-        document.getElementById("desktopView").classList.remove("active");
-        document.getElementById("mainContent").classList.add("iframePageMobile")
-    } else if (view === "Reports") {
-        document.getElementById("mainContent").hidden = true;
-        document.getElementById("mainCode").hidden = true;
-        document.getElementById("mainReports").hidden = false;
-        document.getElementById("HTMLBtn").classList.remove("active");
-        document.getElementById("ReportsViewBtn").classList.add("active");
-        document.getElementById("mobileView").classList.remove("active");
-        document.getElementById("desktopView").classList.remove("active");
-    } else {
+async function resetPage() {
+    window.location.href = inspectorUrl;
+}
+
+async function overlay(action, message, sndMessage) {
+    if (action === "addOverlay") {
+        // Disable goBtn
+        await enableDisableActions("disable");
+
+        // // Insert overlay
+        document.getElementById("overlay").style.display = "block";
+        document.getElementById("overlayMessage").innerText = message;
+        document.getElementById("overlaySndMessage").innerHTML = sndMessage + "</br>";
+        document.getElementById("overlayProgress").innerText = "";
+        document.getElementById("overlay").hidden = false;
+    } else if (action === "removeOverlay") {
+        // // Remove overlay
+        document.getElementById("overlay").style.display = "none";
+        document.getElementById("overlay").hidden = true;
+
+        // Enable goBtn
+        await enableDisableActions("enable");
     }
 }
 
-async function setErrorModal(title, message) {
-    document.getElementById("modalErrorTitle").innerHTML = ((title !== "") ? title : "Something went wrong!");
-    document.getElementById("modalErrorBody").innerHTML = message;
-    let errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
-    errorModal.show();
+async function setIframes() {
+    // Add overlay
+    await overlay("addOverlay", "Loading page", "");
+
+    // Get siteUrl, pageIframe, codeIframe
+    let siteUrl = await getSiteUrl();
+    let pageIframe = document.getElementById('mainPage');
+    let codeIframe = document.getElementById('mainCode');
+
+    // Set iframe src to siteUrl
+    pageIframe.src = siteUrl;
+
+    // Wait for pageIframe to load
+    pageIframe.addEventListener("load", function () {
+        let html = pageIframe.contentWindow.document.documentElement.outerHTML;
+        if (html.length > 500) {
+            clearTimeout(showTimeout);
+
+            // Set codeIframe
+            codeIframe = codeIframe.contentWindow.document;
+            codeIframe.open();
+            html = html.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+            codeIframe.write('<pre><code id="htmlCode">' + html + '</code></pre>');
+            codeIframe.close();
+
+            // HTMLCode Syntax Highlighter
+            w3CodeColor();
+
+            // Add Stylesheet to iframe head Page and Code
+            let iframeCSS = inspectorUrl + "/css/iframe.css";
+            pageIframe = pageIframe.contentWindow.document;
+            pageIframe.head.innerHTML = pageIframe.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
+            codeIframe.head.innerHTML = codeIframe.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
+
+            // Remove overlay
+            overlay("removeOverlay", "", "");
+        }
+    });
 }
 
-async function toggleSidebar(section) {
-    if (section === "spelling") {
-        let spellingDiv = document.getElementById("spelling-main");
-        spellingDiv.hidden = !spellingDiv.hidden;
-    } else if (section === "lighthouse") {
-        let lighthouseDiv = document.getElementById("lighthouse-main");
-        lighthouseDiv.hidden = !lighthouseDiv.hidden;
-    } else if (section === "links") {
-        let linksDiv = document.getElementById("links-main");
-        linksDiv.hidden = !linksDiv.hidden;
-    } else if (section === "accessibility") {
-        let accessibilityDiv = document.getElementById("accessibility-main");
-        accessibilityDiv.hidden = !accessibilityDiv.hidden;
-    } else if (section === "cookies") {
-        let cookiesDiv = document.getElementById("cookies-main");
-        cookiesDiv.hidden = !cookiesDiv.hidden;
-    } else if (section === "technologies") {
-        let technologiesDiv = document.getElementById("technologies-main");
-        technologiesDiv.hidden = !technologiesDiv.hidden;
-    }
+async function enableDisableActions(action) {
+    // Set all elemId
+    let elemId = ["searchURL", "desktop-btn", "mobile-btn", "code-btn", "spelling-btn", "languages-list", "lighthouse-btn", "links-btn",
+        "accessibility-btn", "WCAG-level-list", "cookies-btn", "technologies-btn"];
+
+    // Set disabled status
+    elemId.forEach(function (id) {
+        document.getElementById(id).disabled = action !== "enable";
+    });
 }
 
 
@@ -235,15 +147,16 @@ async function gotoSpellError(spellError) {
     console.log("Goto " + spellError);
 
     // Get iframe element
-    let iframeElement = document.getElementById("mainContent").contentWindow;
+    let pageIframe = document.getElementById("mainPage").contentWindow;
 
     // Get htmlCode
-    let htmlCode = document.getElementById("mainCode").contentWindow;
+    let codeIframe = document.getElementById("mainCode").contentWindow;
+
+    await toggleView("desktop");
 
     // Scroll to spell Errors in htmlView and htmlCode
-    iframeElement.document.getElementById(spellError).scrollIntoView();
-    htmlCode.document.getElementById(spellError).scrollIntoView();
-
+    pageIframe.document.getElementById(spellError).scrollIntoView();
+    codeIframe.document.getElementById(spellError).scrollIntoView();
 }
 
 async function setDictionary(cname, cvalue, exdays) {
@@ -299,6 +212,9 @@ async function loadDictionaryList() {
         });
     }
 
+    // Update GENERAL INFO
+    document.getElementById("spelling-total-dictionary").innerText = dict.length.toString();
+
     // Initialize Dictionary Table
     $('#dictionaryTable').DataTable({
         dom: 'Blfrtip',
@@ -316,7 +232,7 @@ async function loadDictionaryList() {
             },
             {
                 "width": "50%", "targets": 1, "render": function (data, type, row) {
-                    return "<a href='#' class='removeDictionary' onclick='removeDictionary(\"" + data + "\")'>Remove from Dictionary</a>";
+                    return "<button href='#/' class='removeDictionary bg-transparent border-0 text-lfi-green' onclick='removeDictionary(\"" + data + "\")'><b>Remove from Dictionary</b></button>";
                 },
             }
         ]
@@ -337,33 +253,49 @@ async function addDictionary(row) {
 
     // Add to Dictionary Table
     let dictionaryTable = $('#dictionaryTable').DataTable();
-    dictionaryTable.row.add(["<span>" + error + "</span>", error]).draw(false);
-
-    // Remove from Spelling List
-    let spelling_errors = document.getElementById("spelling-errors").childNodes;
-    for (let i = 0; i < spelling_errors.length; i++) {
-        let elem = spelling_errors[i];
-        if (elem.innerText.split(" (")[0] === error) {
-            elem.remove();
-            break;
-        }
-    }
-
-    //  Update totalErrors to GENERALINFO
-    document.getElementById("spelling-total-errors").innerText = spelling_errors.length.toString();
+    dictionaryTable.row.add(["<span>" + error + "</span>", error]).draw();
 
     // Remove spellError from iframe and htmlCode
-    let iframeElement = document.getElementById('mainContent').contentWindow.document;
-    let iframeCode = document.getElementById('mainCode').contentWindow.document;
-    let spellErrors = [...iframeElement.querySelectorAll("spellerror"), ...iframeCode.querySelectorAll("spellerror")];
+    let pageIframe = document.getElementById('mainPage').contentWindow.document;
+    let codeIframe = document.getElementById('mainCode').contentWindow.document;
+    let spellErrors = [...pageIframe.querySelectorAll("spellerror"), ...codeIframe.querySelectorAll("spellerror")];
     spellErrors.forEach(function (elem) {
         if (elem.innerText === error) {
             let parent = elem.parentNode;
             while (elem.firstChild) parent.insertBefore(elem.firstChild, elem);
             parent.removeChild(elem);
         }
-
     });
+
+    // Update GENERAL INFO
+    let updatedErrorsTable = $('#errorsTable').DataTable().data();
+    let n_dataset = [];
+    for (let i = 0; i < updatedErrorsTable.length; i++) {
+        let n_error = updatedErrorsTable[i][0];
+        n_dataset.push(n_error);
+    }
+    n_dataset = n_dataset.filter(function (value, index, arr) {
+        return value !== error;
+    });
+    let mostError = "Good Job!";
+    let leastError = "Good Job!";
+    let totalError = "0 - Good Job!"
+    if (n_dataset.length === 0) {
+        document.getElementById("spell-card-total").classList.remove("bg-lfi-blue");
+        document.getElementById("spell-card-total").classList.add("bg-lfi-green");
+        document.getElementById("spell-card-most").classList.remove("bg-lfi-blue");
+        document.getElementById("spell-card-most").classList.add("bg-lfi-green");
+        document.getElementById("spell-card-least").classList.remove("bg-lfi-blue");
+        document.getElementById("spell-card-least").classList.add("bg-lfi-green");
+    } else {
+        totalError = n_dataset.length;
+        mostError = n_dataset[0];
+        leastError = n_dataset[n_dataset.length - 1];
+    }
+    document.getElementById("spelling-total-errors").innerText = totalError;
+    document.getElementById("spelling-most-errors").innerText = mostError;
+    document.getElementById("spelling-least-errors").innerText = leastError;
+
 
     // Get existing Dictionary
     let dict = await getDictionary("dictionary");
@@ -374,6 +306,9 @@ async function addDictionary(row) {
     } else {
         dict.push(error);
     }
+
+    // Update GENERAL INFO
+    document.getElementById("spelling-total-dictionary").innerText = dict.length.toString();
 
     // Update Cookie with the new Dictionary
     await setDictionary("dictionary", dict, 180);
@@ -393,6 +328,9 @@ async function removeDictionary(row) {
         return value !== error;
     });
 
+    // Update GENERAL INFO
+    document.getElementById("spelling-total-dictionary").innerText = dict.length.toString();
+
     // Update Cookie with the new Dictionary
     await setDictionary("dictionary", dict, 180);
 
@@ -405,32 +343,19 @@ async function removeDictionary(row) {
 
 async function toggleSpellView(view) {
     if (view === "dictionaryTableDiv") {
-        document.getElementById("dictionaryTableViewBtn").classList.add("active");
-        document.getElementById("errorsTableViewBtn").classList.remove("active");
         document.getElementById("dictionaryTableDiv").hidden = false;
         document.getElementById("errorsTableDiv").hidden = true;
     } else if (view === "errorsTableDiv") {
-        document.getElementById("dictionaryTableViewBtn").classList.remove("active");
-        document.getElementById("errorsTableViewBtn").classList.add("active");
         document.getElementById("dictionaryTableDiv").hidden = true;
         document.getElementById("errorsTableDiv").hidden = false;
     }
 }
 
 async function rerunSpelling() {
-    // Remove errors from Spelling List
-    document.getElementById("spelling-errors").innerHTML = "";
-
-    // Clear spelling total p"
-    document.getElementById("spelling-total-p").innerHTML = "Found <span id=\"spelling-total-errors\">0</span> occurrence(s)."
-
-    // Toggle Spelling Section
-    document.getElementById("spelling-info").hidden = true;
-
     // Remove spellError from iframe and htmlCode
-    let iframeElement = document.getElementById('mainContent').contentWindow.document;
-    let iframeCode = document.getElementById('mainCode').contentWindow.document;
-    let spellErrors = [...iframeElement.querySelectorAll("spellerror"), ...iframeCode.querySelectorAll("spellerror")];
+    let pageIframe = document.getElementById('mainPage').contentWindow.document;
+    let codeIframe = document.getElementById('mainCode').contentWindow.document;
+    let spellErrors = [...pageIframe.querySelectorAll("spellerror"), ...codeIframe.querySelectorAll("spellerror")];
     spellErrors.forEach(function (elem) {
         let parent = elem.parentNode;
         while (elem.firstChild) parent.insertBefore(elem.firstChild, elem);
@@ -438,16 +363,20 @@ async function rerunSpelling() {
 
     });
 
-    // Clear table
+    // Clear Errors table
     $('#errorsTable').DataTable().clear().draw();
     $('#errorsTable').DataTable().destroy();
 
-    // Run Spelling again
-    await runLanguageTool();
+    // Clear Dictionary table
+    $('#dictionaryTable').DataTable().clear().draw();
+    $('#dictionaryTable').DataTable().destroy();
+
+    checkLanguageTool = false;
+    toggleView("spelling");
 }
 
 
-// ------------------------------------- ACCESSIBILITY REPORT ------------------------------------- //
+// ------------------------------------- LIGHTHOUSE REPORT ------------------------------------- //
 
 
 async function gotoLighthouseCat(categorie) {
@@ -460,28 +389,20 @@ async function gotoLighthouseCat(categorie) {
     mainLighthouse.document.getElementById(categorie).scrollIntoView();
 }
 
+
 // ------------------------------------- ACCESSIBILITY REPORT ------------------------------------- //
 
 
 async function toggleAccessibilityView(view) {
     if (view === "snifferErrorsTableDiv") {
-        document.getElementById("snifferErrorsTableViewBtn").classList.add("active");
-        document.getElementById("snifferNoticesTableViewBtn").classList.remove("active");
-        document.getElementById("snifferWarningsTableViewBtn").classList.remove("active");
         document.getElementById("snifferErrorsTableDiv").hidden = false;
         document.getElementById("snifferNoticesTableDiv").hidden = true;
         document.getElementById("snifferWarningsTableDiv").hidden = true;
     } else if (view === "snifferNoticesTableDiv") {
-        document.getElementById("snifferErrorsTableViewBtn").classList.remove("active");
-        document.getElementById("snifferNoticesTableViewBtn").classList.add("active");
-        document.getElementById("snifferWarningsTableViewBtn").classList.remove("active");
         document.getElementById("snifferErrorsTableDiv").hidden = true;
         document.getElementById("snifferNoticesTableDiv").hidden = false;
         document.getElementById("snifferWarningsTableDiv").hidden = true;
     } else if (view === "snifferWarningsTableDiv") {
-        document.getElementById("snifferErrorsTableViewBtn").classList.remove("active");
-        document.getElementById("snifferNoticesTableViewBtn").classList.remove("active");
-        document.getElementById("snifferWarningsTableViewBtn").classList.add("active");
         document.getElementById("snifferErrorsTableDiv").hidden = true;
         document.getElementById("snifferNoticesTableDiv").hidden = true;
         document.getElementById("snifferWarningsTableDiv").hidden = false;
@@ -489,22 +410,19 @@ async function toggleAccessibilityView(view) {
 }
 
 
-// ------------------------------------- MAIN FUNCTIONS ------------------------------------- //
+// ------------------------------------- MAIN ------------------------------------- //
 
 
 async function runLanguageTool() {
-    console.log("-------------------------");
-    console.log("runLanguageTool");
+    console.log("-------------------");
+    console.log("runLanguageTool()");
 
     // Insert overlay
     await overlay("addOverlay", "Running Spell Check", "");
 
-    // Get iframe element
-    let iframeElement = document.getElementById('mainContent').contentWindow.document;
-
-    // Get htmlCode
-    let iframeCode = document.getElementById('mainCode').contentWindow.document;
-
+    // Get pageIframe, codeIframe
+    let pageIframe = document.getElementById('mainPage').contentWindow.document;
+    let codeIframe = document.getElementById('mainCode').contentWindow.document;
 
     // Get all name from the langCodes
     let langValues = [];
@@ -515,18 +433,17 @@ async function runLanguageTool() {
 
     // Get the selected lanaguage
     let langCode = document.getElementById("languages-list").value;
-    // If is auto, try to detect the language from the lang attribute
-    let detectedLang = iframeElement.documentElement.lang;
     if (langCode === "auto") {
+        // If is auto, try to detect the language from the lang attribute
+        let detectedLang = pageIframe.documentElement.lang;
+
         // If the full lang code is present on the list ("en-GB" not "en")
         if (langValues.includes(detectedLang)) {
             langCode = detectedLang;
             let valueText = languages_list.options[langValues.indexOf(langCode)].text;
             document.getElementById("overlaySndMessage").innerHTML = "</br>Detected Language: " + valueText + "</br>";
-            document.getElementById("detectedLanguage").innerHTML = "(Auto-Detected)";
         } else {
             // Try to detect the general language, if the lang attribute has only two chars ("en")
-            langCode = "en-GB";
             let generalDetect = false;
             for (let i = 0; i < langValues.length; i++) {
                 // If detected general lang use the first variant on the list
@@ -540,9 +457,9 @@ async function runLanguageTool() {
             }
             // If it didn't find a general lang, default to en-GB
             if (!(generalDetect)) {
+                langCode = "en-GB";
                 let valueText = languages_list.options[langValues.indexOf(langCode)].text;
                 document.getElementById("overlaySndMessage").innerHTML = "</br>Couldn't detect langauage.</br> Defaulting to : " + valueText + "</br>";
-                document.getElementById("detectedLanguage").innerHTML = "(Default)";
             }
         }
     } else {
@@ -555,6 +472,9 @@ async function runLanguageTool() {
     document.getElementById("languages-list").value = langCode;
     console.log("Language - " + langCode);
 
+    // Load Dictionary
+    await loadDictionaryList();
+
     // Get existing Dictionary
     let dict = await getDictionary("dictionary");
 
@@ -562,7 +482,7 @@ async function runLanguageTool() {
     let errorsDict = {};
 
     // Get all tagsElem ->  Empty strings -> Only spaces -> Ignore duplicates
-    let tagsElem = [...new Set(iframeElement.body.innerText.split("\n").filter(e => e).filter(e => e !== " "))];
+    let tagsElem = [...new Set(pageIframe.body.innerText.split("\n").filter(e => e).filter(e => e !== " "))];
 
     // Iterate on every tag
     for (let i = 0; i < tagsElem.length; i++) {
@@ -610,9 +530,6 @@ async function runLanguageTool() {
         } catch (Ex) {
             console.log(Ex);
         }
-
-        // Update secondary message on Overlay
-        document.getElementById("overlayProgress").innerHTML = "Found " + Object.keys(errorsDict).length + " spelling occurrences </br>";
     }
 
     // Sort the array based on the length of the error
@@ -627,7 +544,7 @@ async function runLanguageTool() {
         let error = entry[0];
 
         // Highlight Spelling Errors on Page View
-        findAndReplaceDOMText(iframeElement.body, {
+        findAndReplaceDOMText(pageIframe.body, {
             preset: 'prose',
             find: error,
             wrap: 'spellerror',
@@ -636,7 +553,7 @@ async function runLanguageTool() {
         });
 
         // Highlight Spelling Errors on Code View
-        findAndReplaceDOMText(iframeCode.getElementById("htmlCode"), {
+        findAndReplaceDOMText(codeIframe.getElementById("htmlCode"), {
             preset: 'prose',
             find: error,
             wrap: 'spellerror',
@@ -650,7 +567,7 @@ async function runLanguageTool() {
         let key = entry;
         let value = errorsDict[entry];
         let count = 0;
-        let spellErrors = iframeElement.querySelectorAll("spellerror");
+        let spellErrors = pageIframe.querySelectorAll("spellerror");
         for (let i = 0; i < spellErrors.length; i++) {
             let entry = spellErrors[i];
             if (entry.innerText === key) {
@@ -667,9 +584,9 @@ async function runLanguageTool() {
         return second[1][0] - first[1][0];
     });
 
-    let dataset = [];
     // Highlight Spelling Errors on Page and Code View
     // Add Spelling Errors to sidebar
+    let dataset = [];
     for (let i = 0; i < items.length; i++) {
         let entry = items[i];
         let error = entry[0];
@@ -679,10 +596,6 @@ async function runLanguageTool() {
 
         // Add to dataset
         dataset.push([error, replacements, message, count]);
-
-        // Add errors to Sidebar
-        let spelling_errors = document.getElementById("spelling-errors");
-        spelling_errors.innerHTML += "<li><a href=javascript:gotoSpellError('spell_" + error + "');>" + error + " (" + count + "x)</a></li>";
     }
 
     // Initialize Errors Table
@@ -719,29 +632,41 @@ async function runLanguageTool() {
             },
             {
                 "width": "15%", "targets": 4, "render": function (data, type, row) {
-                    return "<a href='#' class='addDictionary' onclick='addDictionary(\"" + row + "\")'>Add to Dictionary</a>";
+                    return "<button class='addDictionary bg-transparent border-0 text-lfi-green' onclick='addDictionary(\"" + row + "\")'><b>Add to Dictionary</b></button>" + "|" + "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoSpellError(\"spell_" + row[0] + "\")'><b>View</b></button>";
                 },
             }
         ]
     });
 
-    //  Add totalErrors to GENERALINFO
-    document.getElementById("spelling-total-errors").innerText = Object.keys(errorsDict).length.toString();
-
-    // If there is no spell errors add "Good Job!"
-    if (Object.keys(errorsDict).length === 0) {
-        document.getElementById("spelling-total-p").innerHTML = document.getElementById("spelling-total-p").innerHTML + "<br><b>Good Job!<br>"
+    // Update GENERAL INFO
+    let mostError = "Good Job!";
+    let leastError = "Good Job!";
+    let totalError = "0 - Good Job!"
+    if (dataset.length === 0) {
+        document.getElementById("spell-card-total").classList.remove("bg-lfi-blue");
+        document.getElementById("spell-card-total").classList.add("bg-lfi-green");
+        document.getElementById("spell-card-most").classList.remove("bg-lfi-blue");
+        document.getElementById("spell-card-most").classList.add("bg-lfi-green");
+        document.getElementById("spell-card-least").classList.remove("bg-lfi-blue");
+        document.getElementById("spell-card-least").classList.add("bg-lfi-green");
+    } else {
+        document.getElementById("spell-card-total").classList.add("bg-lfi-blue");
+        document.getElementById("spell-card-most").classList.add("bg-lfi-blue");
+        document.getElementById("spell-card-least").classList.add("bg-lfi-blue");
+        totalError = dataset.length.toString();
+        mostError = dataset[0][0];
+        leastError = dataset[dataset.length - 1][0];
     }
+    document.getElementById("spelling-total-errors").innerText = totalError;
+    document.getElementById("spelling-most-errors").innerText = mostError;
+    document.getElementById("spelling-least-errors").innerText = leastError;
 
-    // Toggle Spelling Section
-    document.getElementById("spelling-btn").hidden = true;
-    document.getElementById("spelling-info").hidden = false;
+    await toggleSpellView("errorsTableDiv");
 
     // Remove overlay
     await overlay("removeOverlay", "", "");
 
-    // Enable Actions
-    await enableDisableActions("enable");
+    console.log("-------------------");
 }
 
 async function runLighthouse() {
@@ -751,24 +676,13 @@ async function runLighthouse() {
     // Get siteUrl
     let siteUrl = await getSiteUrl();
 
-    // Check if at least one categories is selected
-    let lighthouse_info = document.getElementById("lighthouse-info");
-
     // Insert overlay
     await overlay("addOverlay", "Running Lighthouse Report", "");
-
-    // Enable Actions
-    await enableDisableActions("disable");
-
-    // Get selected device
-    let checkMobile = document.getElementById("mobileView").classList.contains("active");
-    let device = ((checkMobile) ? "mobile" : "desktop");
 
     console.log("siteUrl: " + siteUrl);
     console.log("Device: " + device);
 
     try {
-
         // Get lighthouseJson
         let lighthouseJson = await $.post(lighthousePost, {
             url: siteUrl,
@@ -776,21 +690,9 @@ async function runLighthouse() {
         }, function (result) {
             return result;
         });
-        console.log(lighthouseJson);
-
-        // Iterate over every Category and set the Tittle and Score
-        let categories = ["performance", "accessibility", "best-practices", "seo", "pwa"];
-        categories.forEach(cat => {
-            let catScore = Math.round(lighthouseJson["categories"][cat]["score"] * 100);
-            let catTitle = lighthouseJson["categories"][cat]["title"];
-            let catName = ((catTitle === "Progressive Web App") ? "pwa" : catTitle.toLowerCase().replaceAll(" ", "-"));
-            lighthouse_info.innerHTML += "<li><a href=javascript:gotoLighthouseCat('" + catName + "');>" + catTitle + " - " + catScore + " % </a></li>";
-        });
 
         // Toggle Lighthouse Section
         document.getElementById("mainLighthouse").src = inspectorUrl + "/Lighthouse?" + "url=null" + "&cats=null" + "&view=" + lighthouseJson["htmlReport"];
-        document.getElementById("lighthouse-btn").hidden = true;
-        document.getElementById("lighthouse-info").hidden = false;
         document.getElementById("mainLighthouse").hidden = false;
     } catch (Ex) {
         console.log(Ex);
@@ -799,11 +701,13 @@ async function runLighthouse() {
 
     // Remove overlay
     await overlay("removeOverlay", "", "");
+
+    console.log("-------------------");
 }
 
 async function runLinks() {
     console.log("-------------------------");
-    console.log("addLinksInfo");
+    console.log("runLinks");
 
     // Insert overlay
     await overlay("addOverlay", "Running Links Report", "");
@@ -843,7 +747,7 @@ async function runLinks() {
             } else if (origin === "Internal") {
                 intLinksCount += 1;
             }
-            if (status === "404" || status === "-1") {
+            if (status === "404" || status === "-1" || status === "999") {
                 brokenLinksCount += 1;
             }
 
@@ -891,23 +795,21 @@ async function runLinks() {
         ]
     });
 
-    // Set Links Counters on sidebar
+    // Update GENERAL INFO
+    if (brokenLinksCount === 0) {
+        brokenLinksCount = "0 - Good Job!"
+        document.getElementById("links-card-broken").classList.remove("bg-danger");
+        document.getElementById("links-card-broken").classList.add("bg-lfi-green");
+    }
     document.getElementById("links-total").innerText = totalLinksCount;
     document.getElementById("links-ext").innerText = extLinksCount;
     document.getElementById("links-int").innerText = intLinksCount;
     document.getElementById("links-broken").innerText = brokenLinksCount;
 
-    // Show Broken Links Message
-    document.getElementById("links-broken-p").hidden = false;
-
-    // Remove links-btn
-    document.getElementById("links-btn").hidden = true;
-
-    // Toggle Links Section
-    document.getElementById("links-info").hidden = false;
-
     // Remove overlay
     await overlay("removeOverlay", "", "");
+
+    console.log("-------------------");
 }
 
 async function runAccessibility() {
@@ -960,10 +862,37 @@ async function runAccessibility() {
                 warningsDataset.push([guideline, message, tag]);
             }
         }
-
-        // Set Accessibility Counter on sidebar
-        document.getElementById("accessibility-" + categorie).innerText = snifferCategorie.length;
     }
+
+    // Update GENERAL INFO
+    let total = errorsDataset.length + noticesDataset.length + warningsDataset.length
+    let errors = errorsDataset.length
+    let notices = noticesDataset.length
+    let warnings = warningsDataset.length
+    if (total === 0) {
+        total = "0 - Good Job!";
+        document.getElementById("accessibility-card-total").classList.remove("bg-lfi-blue");
+        document.getElementById("accessibility-card-total").classList.add("bg-lfi-green");
+    }
+    if (errors === 0) {
+        errors = "0 - Good Job!";
+        document.getElementById("accessibility-card-errors").classList.remove("bg-lfi-blue");
+        document.getElementById("accessibility-card-errors").classList.add("bg-lfi-green");
+    }
+    if (notices === 0) {
+        notices = "0 - Good Job!";
+        document.getElementById("accessibility-card-notices").classList.remove("bg-lfi-blue");
+        document.getElementById("accessibility-card-notices").classList.add("bg-lfi-green");
+    }
+    if (warnings === 0) {
+        warnings = "0 - Good Job!";
+        document.getElementById("accessibility-card-warnings").classList.remove("bg-lfi-blue");
+        document.getElementById("accessibility-card-warnings").classList.add("bg-lfi-green");
+    }
+    document.getElementById("accessibility-total").innerText = total.toString();
+    document.getElementById("accessibility-errors").innerText = errors.toString();
+    document.getElementById("accessibility-notices").innerText = notices.toString();
+    document.getElementById("accessibility-warnings").innerText = warnings.toString();
 
     // Initialize Errors Table
     $('#snifferErrorsTable').DataTable({
@@ -1049,12 +978,6 @@ async function runAccessibility() {
         ]
     });
 
-    // Toggle Accessibility Section
-    document.getElementById("accessibility-info").hidden = false;
-    document.getElementById("accessibility-btn").hidden = true;
-    document.getElementById("WCAG-level-list").hidden = true;
-    document.getElementById("wcag-level-label").innerText += " - " + WCAGLevel.replace("WCAG2", "");
-
     // Remove overlay
     await overlay("removeOverlay", "", "");
 }
@@ -1133,11 +1056,7 @@ async function runCookies() {
             }
         ]
     });
-
-    // Toggle Cookies Section
     document.getElementById("cookies-total").innerText = dataset.length.toString();
-    document.getElementById("cookies-info").hidden = false;
-    document.getElementById("cookies-btn").hidden = true;
 
     // Remove overlay
     await overlay("removeOverlay", "", "");
@@ -1161,6 +1080,7 @@ async function runTechnologies() {
     });
 
     let dataset = [];
+    let categoriesCounter = {};
     wappalyzerJSON = wappalyzerJSON["Wappalyzer"]["technologies"];
     for (let i = 0; i < wappalyzerJSON.length; i++) {
         let entry = wappalyzerJSON[i];
@@ -1172,10 +1092,25 @@ async function runTechnologies() {
         let categoriesName = "";
         for (let j = 0; j < categories.length; j++) {
             categoriesName += categories[j]["name"] + ", ";
+            if (categories[j]["name"] in categoriesCounter) {
+                categoriesCounter[categories[j]["name"]] += 1;
+            } else {
+                categoriesCounter[categories[j]["name"]] = 1;
+            }
         }
         categoriesName = categoriesName.substring(0, categoriesName.length - 2);
         dataset.push([icon, name, website, categoriesName, confidence]);
     }
+
+    // Update GENERAL INFO
+    // Sort the array based on the count element
+    categoriesCounter = Object.keys(categoriesCounter).map(function (key) {
+        return [key, categoriesCounter[key]];
+    }).sort(function (first, second) {
+        return second[1] - first[1];
+    });
+    document.getElementById("technologies-total").innerText = dataset.length.toString();
+    document.getElementById("technologies-most").innerText = categoriesCounter[0][0];
 
     // Initialize Errors Table
     $('#technologiesTable').DataTable({
@@ -1215,56 +1150,109 @@ async function runTechnologies() {
         ]
     });
 
-    // Toggle Cookies Section
-    document.getElementById("technologies-total").innerText = dataset.length.toString();
-    document.getElementById("technologies-info").hidden = false;
-    document.getElementById("technologies-btn").hidden = true;
-
     // Remove overlay
     await overlay("removeOverlay", "", "");
 }
 
-async function main() {
-    // Get iframe element
-    let iframeElement = document.getElementById('mainContent').contentWindow.document;
+async function toggleView(view) {
+    console.log("toggleView - " + view);
 
-    // Get Iframe html
-    let html = iframeElement.documentElement.outerHTML;
-
-    // Check if content has loaded successfully
-    if (html.length <= 1000) {
-        return;
+    // Set Sidebar btn Active
+    let btnId = ["desktop-btn", "mobile-btn", "code-btn", "spelling-btn", "lighthouse-btn", "links-btn", "accessibility-btn", "cookies-btn", "technologies-btn"];
+    btnId.forEach(function (btn) {
+        document.getElementById(btn).classList.remove("active");
+    });
+    let activeBtnId = view + "-btn";
+    if (btnId.includes(activeBtnId)) {
+        document.getElementById(activeBtnId).classList.add("active");
     }
 
-    // Load Dictionary
-    await loadDictionaryList();
+    // Hide all sections except mainPage
+    let reportId = ["mainPageDiv", "mainCodeDiv", "mainSpellingDiv", "mainLighthouseDiv", "mainLinksDiv", "mainAccessibilityDiv", "mainCookiesDiv", "mainTechnologiesDiv"];
+    reportId.forEach(function (report) {
+        document.getElementById(report).hidden = true;
+    });
+    document.getElementById("mainPageDiv").hidden = false;
 
-    // Remove Event Listener
-    document.getElementById('mainContent').removeEventListener("load", main);
-
-    // Set htmlCode Text Area
-    let iframeCode = document.getElementById('mainCode').contentWindow.document;
-    iframeCode.open();
-    html = html.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-    iframeCode.write('<pre id="htmlView" class="htmlView"><code id="htmlCode">' + html + '</code></pre>');
-    iframeCode.close();
-
-    // Add Stylesheet to iframe head Page and Code
-    let iframeCSS = inspectorUrl + "/css/iframe.css";
-    iframeElement.head.innerHTML = iframeElement.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
-    iframeCode.head.innerHTML = iframeCode.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
-
-    // HTMLCode Syntax Highlighter
-    await w3CodeColor();
-
-    // Remove overlay
-    await overlay("removeOverlay", "", "")
-
-    // Run Reports
-    await runLanguageTool();
-    // await runLighthouse();
-    // await runLinks();
-    // await runAccessibility();
-    // await runCookies();
-    // await runTechnologies();
+    let pageIframe = document.getElementById('mainPage');
+    switch (view) {
+        case 'desktop':
+            pageIframe.classList.remove("iframePageMobile");
+            document.getElementById("mainPageDiv").hidden = false;
+            device = "desktop";
+            break;
+        case 'mobile':
+            pageIframe.classList.add("iframePageMobile");
+            document.getElementById("mainPageDiv").hidden = false;
+            device = "mobile";
+            break;
+        case 'code':
+            document.getElementById("mainCodeDiv").hidden = false;
+            document.getElementById("mainPageDiv").hidden = true;
+            break;
+        case 'spelling':
+            if (!checkLanguageTool) {
+                pageIframe.classList.remove("iframePageMobile");
+                document.getElementById("mainPageDiv").hidden = false;
+                await runLanguageTool();
+                checkLanguageTool = true;
+            } else {
+                console.log("Already runLanguageTool");
+            }
+            document.getElementById("mainPageDiv").hidden = true;
+            document.getElementById("mainSpellingDiv").hidden = false;
+            break;
+        case 'lighthouse':
+            if (!checkLighthouse) {
+                await runLighthouse();
+                checkLighthouse = true;
+            } else {
+                console.log("Already runLighthouse");
+            }
+            document.getElementById("mainPageDiv").hidden = true;
+            document.getElementById("mainLighthouseDiv").hidden = false;
+            break;
+        case 'links':
+            if (!checkLinks) {
+                await runLinks();
+                checkLinks = true;
+            } else {
+                console.log("Already runLinks");
+            }
+            document.getElementById("mainPageDiv").hidden = true;
+            document.getElementById("mainLinksDiv").hidden = false;
+            break;
+        case 'accessibility':
+            if (!checkAccessibility) {
+                await runAccessibility();
+                checkAccessibility = true;
+            } else {
+                console.log("Already runAccessibility");
+            }
+            document.getElementById("mainPageDiv").hidden = true;
+            document.getElementById("mainAccessibilityDiv").hidden = false;
+            break;
+        case 'cookies':
+            if (!checkCookies) {
+                await runCookies();
+                checkCookies = true;
+            } else {
+                console.log("Already runCookies");
+            }
+            document.getElementById("mainPageDiv").hidden = true;
+            document.getElementById("mainCookiesDiv").hidden = false;
+            break;
+        case 'technologies':
+            if (!checkTechnologies) {
+                await runTechnologies();
+                checkTechnologies = true;
+            } else {
+                console.log("Already runTechnologies");
+            }
+            document.getElementById("mainPageDiv").hidden = true;
+            document.getElementById("mainTechnologiesDiv").hidden = false;
+            break;
+        default:
+            console.log("Wrong view");
+    }
 }

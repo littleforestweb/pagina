@@ -1,14 +1,10 @@
-<%-- 
-Document   : Little Forest - PageInspector
-Created on : Jul 7, 2021, 7:13:28 PM
-Author     : xhico
---%>
-
-<%@page contentType="text/html" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
-<html>
+<html lang="en-GB">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="author" content="Francisco 'xhico' Filipe @ Little Forest UK"/>
+    <title>Page Inspector - Little Forest</title>
 
     <%--    Favicon --%>
     <link rel="icon" href="images/lf_logo-100x100.png" sizes="32x32"/>
@@ -37,60 +33,11 @@ Author     : xhico
     <script src="https://unpkg.com/@ungap/custom-elements-builtin"></script>
     <script type="module" src="https://unpkg.com/x-frame-bypass"></script>
 
-    <!-- Custom -->
-    <link rel="stylesheet" href="css/styles.css"/>
-    <link rel="stylesheet" href="css/iframe.css"/>
-
-    <%-- Google Analytics --%>
-    <script>
-        (function (i, s, o, g, r, a, m) {
-            i['GoogleAnalyticsObject'] = r;
-            i[r] = i[r] || function () {
-                (i[r].q = i[r].q || []).push(arguments)
-            }, i[r].l = 1 * new Date();
-            a = s.createElement(o),
-                m = s.getElementsByTagName(o)[0];
-            a.async = 1;
-            a.src = g;
-            m.parentNode.insertBefore(a, m)
-        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-        ga('create', 'UA-2666648-2', 'auto');
-        ga('send', 'pageview');
-    </script>
+    <%--    Custom  --%>
+    <link href="css/styles.css" rel="stylesheet"/>
 </head>
-<body>
-<%
-    String url;
-    String mainURL;
-    String mainLang;
-    try {
-        url = request.getAttribute("url").toString();
-    } catch (Exception ex) {
-        url = "null";
-    }
-    try {
-        mainURL = request.getAttribute("mainURL").toString();
-    } catch (Exception ex) {
-        mainURL = "null";
-    }
-    try {
-        mainLang = request.getAttribute("mainLang").toString();
-    } catch (Exception ex) {
-        mainLang = "null";
-    }
-%>
 
-<%-- OVERLAY --%>
-<div id="overlay">
-    <div id="overlay_text">
-        <span id="overlayMessage"></span>
-        <span id="overlaySndMessage"></span>
-        <span id="overlayProgress"></span>
-        Please Wait</br>
-        <div class="spinner-border text-success"></div>
-    </div>
-</div>
-<%-- END OVERLAY --%>
+<body class="lf-nav-fixed">
 
 <%-- ERROR MODAL --%>
 <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
@@ -105,41 +52,19 @@ Author     : xhico
         </div>
     </div>
 </div>
-<%-- END ERROR MODAL--%>
 
-<%-- TOPNAV --%>
-<nav class="navbar fixed-top navbar-expand-lg bg-light">
-    <div class="container-fluid">
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <div class="d-flex me-auto">
-                <input id="searchURL" class="form-control col-md-6 me-2" type="search" placeholder="Check URL" aria-label="Search">
-                <button type="button" id="loadBtn" onclick="gotoNewPage()" class="btn active col-md-3  me-2">Go</button>
-                <button type="button" onclick="resetPage()" class="btn active col-md-3  me-2">Clear</button>
-                <button type="button" id="goBtn" hidden onclick="setIframe()" class="btn col-md-3  me-2">setIframe</button>
-            </div>
-            <div class="btn-group me-2" role="group">
-                <button type="button" id="desktopView" onclick="toggleView('Desktop')" class="active btn">Desktop</button>
-                <button type="button" id="mobileView" onclick="toggleView('Mobile')" class="btn">Mobile</button>
-                <button type="button" id="HTMLBtn" onclick="toggleView('HTML')" class="btn">Code</button>
-                <button type="button" id="ReportsViewBtn" onclick="toggleView('Reports')" class="btn">Reports</button>
-            </div>
-        </div>
-    </div>
-</nav>
-<%-- END TOPNAV- -%>
-
-<%-- SIDEBAR --%>
-<div class="sidebar-nav bg-light">
-
-    <%--    LOGO--%>
-    <a href="https://littleforest.co.uk" target="_blank"><img class="sidebar-logo" alt="sidebar Logo" src="images/littleforest_logo.png"></a>
-
-    <%--    SPELLING--%>
-    <ul class="sidebar-list">
-        <li><b><a href="#" onclick="toggleSidebar('spelling')">SPELLING REPORT <i class="arrow down"></i></a></b></li>
-        <div id="spelling-main">
-            <label>Language <span id="detectedLanguage"></span></label>
+<%-- NAV --%>
+<nav class="lf-topnav navbar navbar-expand navbar-light bg-light shadow">
+    <!-- Navbar Brand-->
+    <a class="navbar-brand text-center" href="https://littleforest.co.uk" target="_blank"><img height="32" src="images/littleforest_logo.png"></a>
+    <!-- Sidebar Toggle-->
+    <button class="btn active btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+    <!-- Navbar Search-->
+    <div class="w-75 d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+        <div class="input-group">
+            <input class="w-50 form-control" id="searchURL" type="text" placeholder="Insert URL to check..." aria-label="Insert URL to check..." aria-describedby="btnNavbarSearch"/>
             <select class="form-select" id="languages-list">
+                <option disabled>Language</option>
                 <option selected value=auto>Auto-Detect</option>
                 <option value=ar>Arabic</option>
                 <option value=ast-ES>Asturian</option>
@@ -187,400 +112,527 @@ Author     : xhico
                 <option value=ta-IN>Tamil</option>
                 <option value=uk-UA>Ukrainian</option>
             </select>
-            <button type="button" id="spelling-btn" onclick="runLanguageTool()" class="btn active mt-2">Run Spelling Report</button>
-
-            <div hidden id="spelling-info" class="mt-2">
-                <p id="spelling-total-p">Found <span id="spelling-total-errors">0</span> occurrence(s).</p>
-                <ul id="spelling-errors"></ul>
-            </div>
-
-        </div>
-    </ul>
-
-    <%--    LIGHTHOUSE--%>
-    <ul class="sidebar-list">
-        <li><b><a href="#" onclick="toggleSidebar('lighthouse')">LIGHTHOUSE REPORT<i class="arrow down"></i></a></b></li>
-        <div id="lighthouse-main">
-            <button type="button" id="lighthouse-btn" class="btn active" onclick="runLighthouse()">Run Lighthouse Report</button>
-
-            <div id="lighthouse-info" hidden>
-                <ul id="lighthouse-categories"></ul>
-            </div>
-        </div>
-    </ul>
-
-    <%--    LINKS--%>
-    <ul class="sidebar-list">
-        <li><b><a href="#" onclick="toggleSidebar('links')">LINKS REPORT<i class="arrow down"></i></a></b></li>
-        <div id="links-main">
-            <button type="button" id="links-btn" class="btn active" onclick="runLinks()">Run Links Report</button>
-
-            <div id="links-info" hidden>
-                <p>Found <span id="links-total">0</span> link(s) (<span id="links-ext">0</span> external and <span id="links-int">0</span> internal).</p>
-                <p id="links-broken-p" hidden>Found <span id="links-broken">0</span> broken links(s).</p>
-            </div>
-        </div>
-    </ul>
-
-    <%--    ACCESSIBILITY--%>
-    <ul class="sidebar-list">
-        <li><b><a href="#" onclick="toggleSidebar('accessibility')">ACCESSIBILITY REPORT<i class="arrow down"></i></a></b></li>
-        <div id="accessibility-main">
-            <label id="wcag-level-label">WCAG Level</label>
             <select class="form-select" id="WCAG-level-list">
+                <option disabled>Accessibility Level</option>
                 <option value=WCAG2A>WCAG2A</option>
                 <option selected value=WCAG2AA>WCAG2AA</option>
                 <option value=WCAG2AAA>WCAG2AAA</option>
             </select>
-            <button type="button" id="accessibility-btn" class="btn active mt-2 mb-2" onclick="runAccessibility()">Run Accessibility Report</button>
-
-            <div hidden id="accessibility-info" class="mt-2">
-                <p>Found <span id="accessibility-Errors">0</span> Error(s)</p>
-                <p>Found <span id="accessibility-Notices">0</span> Notice(s)</p>
-                <p>Found <span id="accessibility-Warnings">0</span> Warning(s)</p>
+            <div class="btn-group me-2" role="group">
+                <button hidden></button>
+                <button class="btn active" type="button" onclick="gotoNewPage()"><span class="me-2">Inspect</span><i class="fas fa-play"></i></button>
+                <button class="btn active" type="button" onclick="resetPage()"><span class="me-2">Clear</span><i class="fas fa-trash"></i></button>
             </div>
         </div>
-    </ul>
+    </div>
+</nav>
 
-    <%--    COOKIES--%>
-    <ul class="sidebar-list">
-        <li><b><a href="#" onclick="toggleSidebar('cookies')">COOKIES REPORT<i class="arrow down"></i></a></b></li>
-        <div id="cookies-main">
-            <button type="button" id="cookies-btn" class="btn active" onclick="runCookies()">Run Cookies Report</button>
+<%-- MAIN BODY --%>
+<div id="layoutSidenav">
 
-            <div id="cookies-info" hidden>
-                <p>Found <span id="cookies-total">0</span> cookie(s)</p>
+    <%-- SIDEBAR --%>
+    <div id="layoutSidenav_nav">
+        <nav class="lf-sidenav accordion lf-sidenav-light shadow" id="sidenavAccordion">
+            <div class="lf-sidenav-menu">
+                <div class="nav">
+                    <div class="lf-sidenav-menu-heading">Views</div>
+                    <button id="desktop-btn" onclick="toggleView('desktop')" class="active nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i class="fas fa-desktop"></i></span>Desktop</button>
+                    <button id="mobile-btn" onclick="toggleView('mobile')" class="nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i class="fas fa-mobile-alt"></i></span>Mobile</button>
+                    <button id="code-btn" onclick="toggleView('code')" class="nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i class="fas fa-code"></i></span>Code</button>
+                    <div class="lf-sidenav-menu-heading">Reports</div>
+                    <button id="spelling-btn" onclick="toggleView('spelling')" class="nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i class="fas fa-spell-check"></i></span>Spelling</button>
+                    <button id="lighthouse-btn" onclick="toggleView('lighthouse')" class="nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i class="fas fa-tachometer-alt"></i></span>Lighthouse</button>
+                    <button id="links-btn" onclick="toggleView('links')" class="nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i class="fas fa-link"></i></span>Links</button>
+                    <button id="accessibility-btn" onclick="toggleView('accessibility')" class="nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i class="fas fa-universal-access"></i></span>Accessibility</button>
+                    <button id="cookies-btn" onclick="toggleView('cookies')" class="nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i class="fas fa-cookie"></i></span>Cookies</button>
+                    <button id="technologies-btn" onclick="toggleView('technologies')" class="nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i class="fab fa-bootstrap"></i></span>Technologies</button>
+                </div>
             </div>
-        </div>
-    </ul>
-
-    <%--    TECHNOLOGIES--%>
-    <ul class="sidebar-list">
-        <li><b><a href="#" onclick="toggleSidebar('technologies')">TECHNOLOGIES REPORT<i class="arrow down"></i></a></b></li>
-        <div id="technologies-main">
-            <button type="button" id="technologies-btn" class="btn active" onclick="runTechnologies()">Run Technologies Report</button>
-
-            <div id="technologies-info" hidden>
-                <p>Found <span id="technologies-total">0</span> Technologies</p>
+            <div class="lf-sidenav-footer">
+                <div class="small">Logged in as:</div>
+                <span>xhico</span>
             </div>
-        </div>
-    </ul>
-
-    <%--    BOTTOM LINE--%>
-    <ul class="sidebar-list"></ul>
-
-    <%--    COPYRIGHT--%>
-    <div class="copyright">
-        <a target="_blank" href="https://littleforest.co.uk/"><img src="images/lf_logo.png" class="sidebar-footer-icon" alt="littleforest logo"></a>
-        <a target="_blank" href="https://www.linkedin.com/company/little-forest/"><img data-pin-nopin="true" alt="LinkedIn" title="LinkedIn" src="images/thin_linkedin.png" width="40" height="40" style="" class="sidebar-footer-icon" data-effect=""></a>
-        <a target="_blank" href="https://twitter.com/thelittleforest"><img data-pin-nopin="true" alt="Twitter" title="Twitter" src="images/thin_twitter.png" width="40" height="40" style="" class="sidebar-footer-icon" data-effect=""></a>
-        </br></br>Created by <a class="copyright-link" target="_blank" href="https://github.com/littleforestweb/pagina">Little Forest</a></br>Powered by: <a class="copyright-link" target="_blank" href="https://languagetool.org/">LanguageTool</a> |
-        <a class="copyright-link" target="_blank" href="https://developers.google.com/web/tools/lighthouse/">Lighthouse</a> |
-        <a class="copyright-link" target="_blank" href="https://developers.google.com/web/tools/puppeteer/">Puppeteer</a> |
-        <a class="copyright-link" target="_blank" href="https://squizlabs.github.io/HTML_CodeSniffer/">HTML CodeSniffer</a> |
-        <a class="copyright-link" target="_blank" href="https://www.wappalyzer.com/">Wappalyzer</a>
-        <p> © Little Forest 2021</br>All rights reserved - <a class="copyright-link" target="_blank" href="https://littleforest.co.uk/privacy-policy/">Privacy Policy</a></p>
+            <div class="lf-sidenav-footer" style="border-top: 1px solid rgba(0, 0, 0, 0.1)">
+                <span class="text-muted">Little Forest 2021</span></br><span class="text-muted">All rights reserved</span></br>
+                <a style="color: #166713" href="https://littleforest.co.uk/privacy-policy/" target="_blank">Privacy Policy</a>
+            </div>
+        </nav>
     </div>
 
-</div>
-<%-- END SIDEBAR --%>
+    <%-- MAIN CONTENT --%>
+    <div id="layoutSidenav_content">
+        <main>
+            <%-- OVERLAY --%>
+            <div id="overlay">
+                <div id="overlay_text">
+                    <span id="overlayMessage"></span>
+                    <span id="overlaySndMessage"></span>
+                    <span id="overlayProgress"></span>
+                    Please Wait</br>
+                    <div class="spinner-border text-lfi-green"></div>
+                </div>
+            </div>
 
-<%-- MAIN CONTENT --%>
-<% if (!(mainURL.equals("null"))) {%>
-<main>
-    <%--    MAIN CONTENT--%>
-    <iframe class="main" is="x-frame-bypass" id="mainContent"></iframe>
-    <%--    END MAIN CONTENT--%>
+            <%-- PAGE IFRAME --%>
+            <div id="mainPageDiv" class="iframe-container">
+                <iframe is="x-frame-bypass" id="mainPage"></iframe>
+            </div>
 
-    <%--    CODE--%>
-    <iframe class="main" hidden id="mainCode" src="about:blank"></iframe>
-    <%--    END CODE--%>
+            <%-- CODE IFRAME --%>
+            <div hidden id="mainCodeDiv" class="iframe-container">
+                <iframe id="mainCode"></iframe>
+            </div>
 
-    <%--    REPORTS--%>
-    <div class="main" id="mainReports">
-        <div class="nav nav-tabs bg-light" id="nav-tab" role="tablist">
-            <button class="nav-link active" id="nav-spelling-tab" data-bs-toggle="tab" data-bs-target="#spelling-section" type="button" role="tab" aria-controls="nav-spelling" aria-selected="true">Spelling</button>
-            <button class="nav-link" id="nav-lighthouse-tab" data-bs-toggle="tab" data-bs-target="#lighthouse-section" type="button" role="tab" aria-controls="nav-lighthouse" aria-selected="true">Lighthouse</button>
-            <button class="nav-link" id="nav-links-tab" data-bs-toggle="tab" data-bs-target="#links-section" type="button" role="tab" aria-controls="nav-links" aria-selected="true">Links</button>
-            <button class="nav-link" id="nav-accessibility-tab" data-bs-toggle="tab" data-bs-target="#accessibility-section" type="button" role="tab" aria-controls="nav-accessibility" aria-selected="true">Accessibility</button>
-            <button class="nav-link" id="nav-cookies-tab" data-bs-toggle="tab" data-bs-target="#cookies-section" type="button" role="tab" aria-controls="nav-cookies" aria-selected="true">Cookies</button>
-            <button class="nav-link" id="nav-technologies-tab" data-bs-toggle="tab" data-bs-target="#technologies-section" type="button" role="tab" aria-controls="nav-technologies" aria-selected="true">Technologies</button>
-        </div>
+            <%-- LIGHTHOUSE --%>
+            <div hidden id="mainLighthouseDiv" class="iframe-container">
+                <iframe id="mainLighthouse" src="about:blank"></iframe>
+            </div>
 
-        <div class="tab-content" id="nav-tabContent">
-            <%--    SPELLING--%>
-            <div class="tab-pane fade show active" id="spelling-section" role="tabpanel" aria-labelledby="nav-spelling-tab">
-                <div class="container px-4 py-5">
-                    <h2 class="pb-2 border-bottom">Spelling Report</h2>
-                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more
-                        recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
-                    <div class="container">
-                        <div class="row">
-                            <div class="four col-md-3">
-                                <div class="counter-box"><i class="fa fa-thumbs-o-up"></i> <span class="counter">2147</span>
-                                    <p>Happy Customers</p>
-                                </div>
+            <%-- SPELLING --%>
+            <div hidden id="mainSpellingDiv" class="container-fluid px-4">
+                <%-- TITLE --%>
+                <h1 class="mt-4">Spelling</h1>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item active">Report</li>
+                </ol>
+                <span class="btn active mb-4" onclick="rerunSpelling()">Run Again</span>
+                <%-- GENERAL INFO --%>
+                <div class="row d-flex justify-content-center">
+                    <div class="col-xl-3 col-md-6 text-center">
+                        <div id="spell-card-total" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title" id="spelling-total-errors">0</h5>
+                                <p class="card-text">Total Errors</p>
                             </div>
-                            <div class="four col-md-3">
-                                <div class="counter-box"><i class="fa fa-group"></i> <span class="counter">3275</span>
-                                    <p>Registered Members</p>
-                                </div>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <button id="spelling-errors-btn" onclick="toggleSpellView('errorsTableDiv')" class="small text-white stretched-link border-0 bg-transparent">View Details</button>
+                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                             </div>
-                            <div class="four col-md-3">
-                                <div class="counter-box"><i class="fa fa-shopping-cart"></i> <span class="counter">289</span>
-                                    <p>Available Products</p>
-                                </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 text-center">
+                        <div id="spell-card-most" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title" id="spelling-most-errors">None</h5>
+                                <p class="card-text">Most Frequent</p>
                             </div>
-                            <div class="four col-md-3">
-                                <div class="counter-box"><i class="fa fa-user"></i> <span class="counter">1563</span>
-                                    <p>Saved Trees</p>
-                                </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 text-center">
+                        <div id="spell-card-least" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title" id="spelling-least-errors">None</h5>
+                                <p class="card-text">Least Frequent</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 text-center">
+                        <div id="spell-card-dictionary" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title" id="spelling-total-dictionary">0</h5>
+                                <p class="card-text">Dictionary</p>
+                            </div>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <button id="spelling-dictionary-btn" onclick="toggleSpellView('dictionaryTableDiv')" class="small text-white stretched-link border-0 bg-transparent">View Details</button>
+                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="container nav nav-tabs bg-light" id="nav-spelling" role="tablist">
-                    <button onclick="toggleSpellView('errorsTableDiv')" class="nav-link active" id="errorsTableViewBtn" data-bs-toggle="tab" data-bs-target="#nav-spelling-errors" type="button" role="tab" aria-controls="nav-spelling-errors" aria-selected="true">Errors</button>
-                    <button onclick="toggleSpellView('dictionaryTableDiv')" class="nav-link" id="dictionaryTableViewBtn" data-bs-toggle="tab" data-bs-target="#nav-spelling-dictionary" type="button" role="tab" aria-controls="nav-spelling-dictionary" aria-selected="false">Dictionary</button>
+                <%-- TABLES --%>
+                <div id="errorsTableDiv" class="card mb-4">
+                    <div class="card-body">
+                        <h3 class="text-center">Errors</h3>
+                        <table class="table" id="errorsTable">
+                            <thead>
+                            <tr>
+                                <th>Error</th>
+                                <th>Replacements</th>
+                                <th>Message</th>
+                                <th>Occurrences</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                            <tr>
+                                <th>Error</th>
+                                <th>Replacements</th>
+                                <th>Message</th>
+                                <th>Occurrences</th>
+                                <th>Action</th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
-                <div class="container px-4 py-5" id="errorsTableDiv">
-                    <table id="errorsTable" class="table">
-                        <thead>
-                        <tr>
-                            <th>Error</th>
-                            <th>Replacements</th>
-                            <th>Message</th>
-                            <th>Occurrences</th>
-                            <th>Action</th>
-                        </tr>
-                        </thead>
-                        <tbody></tbody>
-                        <tfoot>
-                        <tr>
-                            <th>Error</th>
-                            <th>Replacements</th>
-                            <th>Message</th>
-                            <th>Occurrences</th>
-                            <th>Action</th>
-                        </tr>
-                        </tfoot>
-                    </table>
-                </div>
-                <div class="container px-4 py-5" hidden id="dictionaryTableDiv">
-                    <table id="dictionaryTable" class="table">
-                        <thead>
-                        <tr>
-                            <th>Error</th>
-                            <th>Action</th>
-                        </tr>
-                        </thead>
-                        <tbody></tbody>
-                        <tfoot>
-                        <tr>
-                            <th>Error</th>
-                            <th>Action</th>
-                        </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
-
-            <%--    LIGHTHOUSE--%>
-            <div class="tab-pane fade" id="lighthouse-section" role="tabpanel" aria-labelledby="nav-lighthouse-tab">
-                <iframe id="mainLighthouse"></iframe>
-            </div>
-
-            <%--    LINKS--%>
-            <div class="tab-pane fade" id="links-section" role="tabpanel" aria-labelledby="nav-links-tab">
-                <table id="linksTable" class="table">
-                    <thead>
-                    <tr>
-                        <th>URL</th>
-                        <th>Status</th>
-                        <th>Origin</th>
-                    </tr>
-                    </thead>
-                    <tbody id="linksTableBody"></tbody>
-                    <tfoot>
-                    <tr>
-                        <th>URL</th>
-                        <th>Status</th>
-                        <th>Origin</th>
-                    </tr>
-                    </tfoot>
-                </table>
-            </div>
-
-            <%--    ACCESSIBILITY--%>
-            <div class="tab-pane fade" id="accessibility-section" role="tabpanel" aria-labelledby="nav-accessibility-tab">
-                <div class="nav nav-tabs bg-light" id="nav-accessibility" role="tablist">
-                    <button onclick="toggleAccessibilityView('snifferErrorsTableDiv')" class="nav-link active" id="snifferErrorsTableViewBtn" data-bs-toggle="tab" data-bs-target="#nav-accessibility-errors" type="button" role="tab" aria-controls="nav-accessibility-errors" aria-selected="true">Errors</button>
-                    <button onclick="toggleAccessibilityView('snifferNoticesTableDiv')" class="nav-link" id="snifferNoticesTableViewBtn" data-bs-toggle="tab" data-bs-target="#nav-accessibility-dictionary" type="button" role="tab" aria-controls="nav-accessibility-dictionary" aria-selected="false">Notices</button>
-                    <button onclick="toggleAccessibilityView('snifferWarningsTableDiv')" class="nav-link" id="snifferWarningsTableViewBtn" data-bs-toggle="tab" data-bs-target="#nav-accessibility-dictionary" type="button" role="tab" aria-controls="nav-accessibility-dictionary" aria-selected="false">Warnings</button>
-                </div>
-                <div id="snifferErrorsTableDiv">
-                    <table id="snifferErrorsTable" class="table">
-                        <thead>
-                        <tr>
-                            <th>Guideline</th>
-                            <th>Message</th>
-                            <th>Tag</th>
-                        </tr>
-                        </thead>
-                        <tbody></tbody>
-                        <tfoot>
-                        <tr>
-                            <th>Guideline</th>
-                            <th>Message</th>
-                            <th>Tag</th>
-                        </tr>
-                        </tfoot>
-                    </table>
-                </div>
-                <div hidden id="snifferNoticesTableDiv">
-                    <table id="snifferNoticesTable" class="table">
-                        <thead>
-                        <tr>
-                            <th>Guideline</th>
-                            <th>Message</th>
-                            <th>Tag</th>
-                        </tr>
-                        </thead>
-                        <tbody></tbody>
-                        <tfoot>
-                        <tr>
-                            <th>Guideline</th>
-                            <th>Message</th>
-                            <th>Tag</th>
-                        </tr>
-                        </tfoot>
-                    </table>
-                </div>
-                <div hidden id="snifferWarningsTableDiv">
-                    <table id="snifferWarningsTable" class="table">
-                        <thead>
-                        <tr>
-                            <th>Guideline</th>
-                            <th>Message</th>
-                            <th>Tag</th>
-                        </tr>
-                        </thead>
-                        <tbody></tbody>
-                        <tfoot>
-                        <tr>
-                            <th>Guideline</th>
-                            <th>Message</th>
-                            <th>Tag</th>
-                        </tr>
-                        </tfoot>
-                    </table>
+                <div hidden id="dictionaryTableDiv" class="card mb-4">
+                    <div class="card-body">
+                        <h3 class="text-center">Dictionary</h3>
+                        <table class="table" id="dictionaryTable">
+                            <thead>
+                            <tr>
+                                <th>Error</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                            <tr>
+                                <th>Error</th>
+                                <th>Action</th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
             </div>
 
-            <%--    COOKIES--%>
-            <div class="tab-pane fade" id="cookies-section" role="tabpanel" aria-labelledby="nav-cookies-tab">
-                <table id="cookiesTable" class="table">
-                    <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Domain</th>
-                        <th>Expires</th>
-                        <th>Http Only</th>
-                        <th>Secure</th>
-                        <th>Source Port</th>
-                    </tr>
-                    </thead>
-                    <tbody></tbody>
-                    <tfoot>
-                    <tr>
-                        <th>Name</th>
-                        <th>Domain</th>
-                        <th>Expires</th>
-                        <th>Http Only</th>
-                        <th>Secure</th>
-                        <th>Source Port</th>
-                    </tr>
-                    </tfoot>
-                </table>
+            <%-- LINKS --%>
+            <div hidden id="mainLinksDiv" class="container-fluid px-4">
+                <%-- TITLE --%>
+                <h1 class="mt-4">Links</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item active">Report</li>
+                </ol>
+                <%-- GENERAL INFO --%>
+                <div class="row d-flex justify-content-center">
+                    <div class="col-xl-3 col-md-6 text-center">
+                        <div id="links-card-total" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title" id="links-total">0</h5>
+                                <p class="card-text">Total</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 text-center">
+                        <div id="links-card-ext" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title" id="links-ext">0</h5>
+                                <p class="card-text">External</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 text-center">
+                        <div id="links-card-int" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title" id="links-int">0</h5>
+                                <p class="card-text">Internal</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 text-center">
+                        <div id="links-card-broken" class="card mb-4 bg-danger text-white" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title" id="links-broken">0</h5>
+                                <p class="card-text">Broken</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <%-- TABLES --%>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <table id="linksTable" class="table">
+                            <thead>
+                            <tr>
+                                <th>URL</th>
+                                <th>Status</th>
+                                <th>Origin</th>
+                            </tr>
+                            </thead>
+                            <tbody id="linksTableBody"></tbody>
+                            <tfoot>
+                            <tr>
+                                <th>URL</th>
+                                <th>Status</th>
+                                <th>Origin</th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
             </div>
 
-            <%--    TECHNOLOGIES--%>
-            <div class="tab-pane fade" id="technologies-section" role="tabpanel" aria-labelledby="nav-technologies-tab">
-                <table id="technologiesTable" class="table">
-                    <thead>
-                    <tr>
-                        <th></th>
-                        <th>Name</th>
-                        <th>Website</th>
-                        <th>Categories</th>
-                        <th>Confidence</th>
-                    </tr>
-                    </thead>
-                    <tbody></tbody>
-                    <tfoot>
-                    <tr>
-                        <th></th>
-                        <th>Name</th>
-                        <th>Website</th>
-                        <th>Categories</th>
-                        <th>Confidence</th>
-                    </tr>
-                    </tfoot>
-                </table>
+            <%-- ACCESSIBILITY --%>
+            <div hidden id="mainAccessibilityDiv" class="container-fluid px-4">
+                <%-- TITLE --%>
+                <h1 class="mt-4">Accessibility</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item active">Report</li>
+                </ol>
+                <%-- GENERAL INFO --%>
+                <div class="row d-flex justify-content-center">
+                    <div class="col-xl-3 col-md-6 text-center">
+                        <div id="accessibility-card-total" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title" id="accessibility-total">0</h5>
+                                <p class="card-text">Total</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 text-center">
+                        <div id="accessibility-card-errors" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title" id="accessibility-errors">0</h5>
+                                <p class="card-text">Errors</p>
+                            </div>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <button id="accessibility-errors-btn" onclick="toggleAccessibilityView('snifferErrorsTableDiv')" class="small text-white stretched-link border-0 bg-transparent">View Details</button>
+                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 text-center">
+                        <div id="accessibility-card-notices" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title" id="accessibility-notices">0</h5>
+                                <p class="card-text">Notices</p>
+                            </div>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <button id="accessibility-notices-btn" onclick="toggleAccessibilityView('snifferNoticesTableDiv')" class="small text-white stretched-link border-0 bg-transparent">View Details</button>
+                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 text-center">
+                        <div id="accessibility-card-warnings" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title" id="accessibility-warnings">0</h5>
+                                <p class="card-text">Warnings</p>
+                            </div>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <button id="accessibility-warnings-btn" onclick="toggleAccessibilityView('snifferWarningsTableDiv')" class="small text-white stretched-link border-0 bg-transparent">View Details</button>
+                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <%-- TABLES --%>
+                <div id="snifferErrorsTableDiv" class="card mb-4">
+                    <div class="card-body">
+                        <h3 class="text-center">Errors</h3>
+                        <table id="snifferErrorsTable" class="table">
+                            <thead>
+                            <tr>
+                                <th>Guideline</th>
+                                <th>Message</th>
+                                <th>Tag</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                            <tr>
+                                <th>Guideline</th>
+                                <th>Message</th>
+                                <th>Tag</th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div hidden id="snifferNoticesTableDiv" class="card mb-4">
+                    <div class="card-body">
+                        <h3 class="text-center">Notices</h3>
+                        <table id="snifferNoticesTable" class="table">
+                            <thead>
+                            <tr>
+                                <th>Guideline</th>
+                                <th>Message</th>
+                                <th>Tag</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                            <tr>
+                                <th>Guideline</th>
+                                <th>Message</th>
+                                <th>Tag</th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div hidden id="snifferWarningsTableDiv" class="card mb-4">
+                    <div class="card-body">
+                        <h3 class="text-center">Warnings</h3>
+                        <table id="snifferWarningsTable" class="table">
+                            <thead>
+                            <tr>
+                                <th>Guideline</th>
+                                <th>Message</th>
+                                <th>Tag</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                            <tr>
+                                <th>Guideline</th>
+                                <th>Message</th>
+                                <th>Tag</th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
             </div>
-        </div>
+
+            <%-- COOKIES --%>
+            <div hidden id="mainCookiesDiv" class="container-fluid px-4">
+                <%-- TITLE --%>
+                <h1 class="mt-4">Cookies</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item active">Report</li>
+                </ol>
+                <%-- GENERAL INFO --%>
+                <div class="row d-flex justify-content-center">
+                    <div class="col-xl-3 col-md-6 text-center">
+                        <div id="cookies-card-total" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title" id="cookies-total">0</h5>
+                                <p class="card-text">Total</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <%-- TABLES --%>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <table id="cookiesTable" class="table">
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Domain</th>
+                                <th>Expires</th>
+                                <th>Http Only</th>
+                                <th>Secure</th>
+                                <th>Source Port</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                            <tr>
+                                <th>Name</th>
+                                <th>Domain</th>
+                                <th>Expires</th>
+                                <th>Http Only</th>
+                                <th>Secure</th>
+                                <th>Source Port</th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <%-- TECHNOLOGIES --%>
+            <div hidden id="mainTechnologiesDiv" class="container-fluid px-4">
+                <%-- TITLE --%>
+                <h1 class="mt-4">Technologies</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item active">Report</li>
+                </ol>
+                <%-- GENERAL INFO --%>
+                <div class="row d-flex justify-content-center">
+                    <div class="col-xl-3 col-md-6 text-center">
+                        <div id="technologies-card-total" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title" id="technologies-total">0</h5>
+                                <p class="card-text">Total</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 text-center">
+                        <div id="technologies-card-errors" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title" id="technologies-most">None</h5>
+                                <p class="card-text">Most Frequent Categorie</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <%-- TABLES --%>
+                <div id="snifferErrorsTableDiv" class="card mb-4">
+                    <div class="card-body">
+                        <table id="technologiesTable" class="table">
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th>Name</th>
+                                <th>Website</th>
+                                <th>Categories</th>
+                                <th>Confidence</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                            <tr>
+                                <th></th>
+                                <th>Name</th>
+                                <th>Website</th>
+                                <th>Categories</th>
+                                <th>Confidence</th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
-    <%--    END REPORTS --%>
-</main>
-<% }%>
-<%-- END LOAD PAGE --%>
+</div>
 
 <%-- SCRIPTS --%>
 <script src="js/findAndReplaceDOMText.js"></script>
 <script src="js/syntaxHighlighter.js"></script>
+<script src="js/scripts.js"></script>
 <script src="js/main.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-<%-- END SCRIPTS --%>
-
-<%-- LOAD PAGE  --%>
 <script>
+    <%
+        String url;
+        String mainURL;
+        String mainLang;
+        try {
+            url = request.getAttribute("url").toString();
+        } catch (Exception ex) {
+            url = "null";
+        }
+        try {
+            mainURL = request.getAttribute("mainURL").toString();
+        } catch (Exception ex) {
+            mainURL = "null";
+        }
+        try {
+            mainLang = request.getAttribute("mainLang").toString();
+        } catch (Exception ex) {
+            mainLang = "null";
+        }
+
+    %>
+
     // If a URL Param is present auto run
-    <% if (!(mainURL.equals("null"))) {%>
+    <% if (!(mainURL.equals("null"))) { %>
 
     // Redirect
-    <% if (!(mainURL.equals(url))) {%>
+    <% if (!(mainURL.equals(url))) { %>
     setErrorModal("Redirect found", "<b><%=url%></b> was redirected to <b><%=mainURL%></b>");
-    <% }%>
+    <% } %>
 
     // Set URL on search bar
     document.getElementById("searchURL").value = "<%=mainURL%>";
 
     // Set Language on Languages Dropdown list
-    <% if (!(mainLang.equals("null"))) {%>
-    console.log("<%=mainLang%>");
+    <% if (!(mainLang.equals("null"))) { %>
     document.getElementById("languages-list").value = "<%=mainLang%>";
-    <% }%>
-
-    // Start Running Reports
-    document.getElementById("goBtn").click();
-
-    <% } else { %>
-
-    // Disable Actions
-    enableDisableActions("disable");
-
-    // Enable searchURL
-    document.getElementById("searchURL").disabled = false;
-    document.getElementById("languages-list").disabled = false;
-
-    // Check if url is Null
-    <% if (!(url.equals("null"))) {%>
-    setErrorModal("", "Failed to load <b><%=url%></b></br>Please check the URL.");
     <% } %>
 
+    // Run Main
+    setIframes();
+
     <% } %>
+
 </script>
-<%-- END LOAD PAGE  --%>
-
 </body>
+
 </html>
