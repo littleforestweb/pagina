@@ -581,10 +581,10 @@
 </div>
 
 <%-- SCRIPTS --%>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <script src="js/findAndReplaceDOMText.js"></script>
 <script src="js/syntaxHighlighter.js"></script>
 <script src="js/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
 <%-- Get url / mainURL / mainLang --%>
 <%
@@ -609,24 +609,10 @@
     }
 %>
 
-<%-- If a URL Param is present => Load Inspector resources => auto run --%>
+<%-- If a URL Param is present => runMain --%>
 <% if (!(mainURL.equals("null"))) { %>
 <script>
-    // Redirect
-    <% if (!(mainURL.equals(url))) { %>
-    setErrorModal("Redirect found", "<b><%=url%></b> was redirected to <b><%=mainURL%></b>");
-    <% } %>
-
-    // Set URL on search bar
-    document.getElementById("searchURL").value = "<%=mainURL%>";
-
-    // Set Language on Languages Dropdown list
-    <% if (!(mainLang.equals("null"))) { %>
-    document.getElementById("languages-list").value = "<%=mainLang%>";
-    <% } %>
-
-    // Run Main
-    setIframes();
+    runMain("<%=url%>", "<%=mainURL%>", "<%=mainLang%>");
 </script>
 <% } %>
 

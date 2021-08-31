@@ -17,8 +17,8 @@ const linksPost = "/" + nameWS + "Links";
 const accessibilityPost = "/" + nameWS + "Accessibility";
 const cookiesPost = "/" + nameWS + "Cookies";
 const wappalyzerPost = "/" + nameWS + "Wappalyzer";
+let spellTagsElem = [];
 let device = "desktop";
-let checkIframes = false;
 let checkLanguageTool = false;
 let checkLighthouse = false;
 let checkLinks = false;
@@ -75,6 +75,109 @@ async function resetPage() {
     window.location.href = inspectorUrl;
 }
 
+async function toggleView(view) {
+    console.log("toggleView - " + view);
+
+    // Set Sidebar btn Active
+    let btnId = ["desktop-btn", "mobile-btn", "code-btn", "spelling-btn", "lighthouse-btn", "links-btn", "accessibility-btn", "cookies-btn", "technologies-btn"];
+    btnId.forEach(function (btn) {
+        document.getElementById(btn).classList.remove("active");
+    });
+    let activeBtnId = view + "-btn";
+    if (btnId.includes(activeBtnId)) {
+        document.getElementById(activeBtnId).classList.add("active");
+    }
+
+    // Hide all sections except mainPage
+    let reportId = ["mainPageDiv", "mainCodeDiv", "mainSpellingDiv", "mainLighthouseDiv", "mainLinksDiv", "mainAccessibilityDiv", "mainCookiesDiv", "mainTechnologiesDiv"];
+    reportId.forEach(function (report) {
+        document.getElementById(report).hidden = true;
+    });
+    document.getElementById("mainPageDiv").hidden = false;
+
+    let pageIframe = document.getElementById('mainPage');
+    switch (view) {
+        case 'desktop':
+            pageIframe.classList.remove("iframePageMobile");
+            document.getElementById("mainPageDiv").hidden = false;
+            device = "desktop";
+            break;
+        case 'mobile':
+            pageIframe.classList.add("iframePageMobile");
+            document.getElementById("mainPageDiv").hidden = false;
+            device = "mobile";
+            break;
+        case 'code':
+            document.getElementById("mainCodeDiv").hidden = false;
+            document.getElementById("mainPageDiv").hidden = true;
+            break;
+        case 'spelling':
+            if (!checkLanguageTool) {
+                pageIframe.classList.remove("iframePageMobile");
+                document.getElementById("mainPageDiv").hidden = false;
+                await runLanguageTool();
+                checkLanguageTool = true;
+            } else {
+                console.log("Already runLanguageTool");
+            }
+            document.getElementById("mainPageDiv").hidden = true;
+            document.getElementById("mainSpellingDiv").hidden = false;
+            break;
+        case 'lighthouse':
+            if (!checkLighthouse) {
+                await runLighthouse();
+                checkLighthouse = true;
+            } else {
+                console.log("Already runLighthouse");
+            }
+            document.getElementById("mainPageDiv").hidden = true;
+            document.getElementById("mainLighthouseDiv").hidden = false;
+            break;
+        case 'links':
+            if (!checkLinks) {
+                await runLinks();
+                checkLinks = true;
+            } else {
+                console.log("Already runLinks");
+            }
+            document.getElementById("mainPageDiv").hidden = true;
+            document.getElementById("mainLinksDiv").hidden = false;
+            break;
+        case 'accessibility':
+            if (!checkAccessibility) {
+                await runAccessibility();
+                checkAccessibility = true;
+            } else {
+                console.log("Already runAccessibility");
+            }
+            document.getElementById("mainPageDiv").hidden = true;
+            document.getElementById("mainAccessibilityDiv").hidden = false;
+            break;
+        case 'cookies':
+            if (!checkCookies) {
+                await runCookies();
+                checkCookies = true;
+            } else {
+                console.log("Already runCookies");
+            }
+            document.getElementById("mainPageDiv").hidden = true;
+            document.getElementById("mainCookiesDiv").hidden = false;
+            break;
+        case 'technologies':
+            if (!checkTechnologies) {
+                await runTechnologies();
+                checkTechnologies = true;
+            } else {
+                console.log("Already runTechnologies");
+            }
+            document.getElementById("mainPageDiv").hidden = true;
+            document.getElementById("mainTechnologiesDiv").hidden = false;
+            break;
+        default:
+            console.log("Wrong view");
+    }
+}
+
 async function overlay(action, message, sndMessage) {
     if (action === "addOverlay") {
         // Disable goBtn
@@ -94,46 +197,6 @@ async function overlay(action, message, sndMessage) {
         // Enable goBtn
         await enableDisableActions("enable");
     }
-}
-
-async function setIframes() {
-    // Add overlay
-    await overlay("addOverlay", "Loading page", "");
-
-    // Get siteUrl, pageIframe, codeIframe
-    let siteUrl = await getSiteUrl();
-    let pageIframe = document.getElementById('mainPage');
-    let codeIframe = document.getElementById('mainCode');
-
-    // Set iframe src to siteUrl
-    pageIframe.src = siteUrl;
-
-    // Wait for pageIframe to load
-    pageIframe.addEventListener("load", function () {
-        let html = pageIframe.contentWindow.document.documentElement.outerHTML;
-        if (html.length > 500) {
-            clearTimeout(showTimeout);
-
-            // Set codeIframe
-            codeIframe = codeIframe.contentWindow.document;
-            codeIframe.open();
-            html = html.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-            codeIframe.write('<pre><code id="htmlCode">' + html + '</code></pre>');
-            codeIframe.close();
-
-            // HTMLCode Syntax Highlighter
-            w3CodeColor();
-
-            // Add Stylesheet to iframe head Page and Code
-            let iframeCSS = inspectorUrl + "/css/iframe.css";
-            pageIframe = pageIframe.contentWindow.document;
-            pageIframe.head.innerHTML = pageIframe.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
-            codeIframe.head.innerHTML = codeIframe.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
-
-            // Remove overlay
-            overlay("removeOverlay", "", "");
-        }
-    });
 }
 
 async function enableDisableActions(action) {
@@ -228,7 +291,8 @@ async function loadDictionaryList() {
         dom: 'Blfrtip',
         buttons: [{text: 'Export', extend: 'csv', filename: 'Spelling Errors'}],
         paginate: false,
-        "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
+        "oLanguage": {"sSearch": "Filter:"},
+        "language": {"emptyTable": "There is no words on your dictionary."},
         "order": [[0, "desc"]],
         data: dataset,
         "autoWidth": false,
@@ -360,15 +424,14 @@ async function toggleSpellView(view) {
 }
 
 async function rerunSpelling() {
+    console.log("rerunSpelling");
+
     // Remove spellError from iframe and htmlCode
     let pageIframe = document.getElementById('mainPage').contentWindow.document;
     let codeIframe = document.getElementById('mainCode').contentWindow.document;
     let spellErrors = [...pageIframe.querySelectorAll("spellerror"), ...codeIframe.querySelectorAll("spellerror")];
     spellErrors.forEach(function (elem) {
-        let parent = elem.parentNode;
-        while (elem.firstChild) parent.insertBefore(elem.firstChild, elem);
-        parent.removeChild(elem);
-
+        elem.outerHTML = elem.innerHTML;
     });
 
     // Clear Errors table
@@ -380,7 +443,7 @@ async function rerunSpelling() {
     $('#dictionaryTable').DataTable().destroy();
 
     checkLanguageTool = false;
-    toggleView("spelling");
+    await toggleView("spelling");
 }
 
 
@@ -489,14 +552,17 @@ async function runLanguageTool() {
     // Set errorsDict where key => error and value => [count, color]
     let errorsDict = {};
 
-    // Get all tagsElem ->  Empty strings -> Only spaces -> Ignore duplicates
-    let tagsElem = [...new Set(pageIframe.body.innerText.split("\n").filter(e => e).filter(e => e !== " "))];
+    // Check if spellTagsElem is not empty (its a re-run)
+    // Get all spellTagsElem ->  Empty strings -> Only spaces -> Ignore duplicates
+    if (spellTagsElem.length === 0) {
+        spellTagsElem = [...new Set(pageIframe.body.innerText.split("\n").filter(e => e).filter(e => e !== " "))];
+    }
 
     // Iterate on every tag
-    for (let i = 0; i < tagsElem.length; i++) {
+    for (let i = 0; i < spellTagsElem.length; i++) {
 
         // Set phrase from content array index
-        let tagElem = tagsElem[i]
+        let tagElem = spellTagsElem[i];
 
         try {
             // Get SpellCheckJSON
@@ -612,7 +678,7 @@ async function runLanguageTool() {
         buttons: [{text: 'Export', extend: 'csv', filename: 'Spelling Errors'}],
         paginate: false,
         "oLanguage": {"sSearch": "Filter:"},
-        "sEmptyTable": "Congratulations! We didn't find any possible spelling mistakes in the last scan.",
+        "language": {"emptyTable": "Congratulations! We didn't find any possible spelling mistakes."},
         "order": [[3, "desc"]],
         data: dataset,
         "autoWidth": false,
@@ -766,7 +832,8 @@ async function runLinks() {
         dom: 'Blfrtip',
         buttons: [{text: 'Export', extend: 'csv', filename: 'Links Report'}],
         paginate: false,
-        "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
+        "oLanguage": {"sSearch": "Filter:"},
+        "language": {"emptyTable": "Congratulations! We didn't find any possible spelling mistakes in the last scan."},
         "order": [[0, "asc"]],
         data: dataset,
         "autoWidth": false,
@@ -906,7 +973,8 @@ async function runAccessibility() {
         dom: 'Blfrtip',
         buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Errors Report'}],
         paginate: false,
-        "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
+        "oLanguage": {"sSearch": "Filter:"},
+        "language": {"emptyTable": "Congratulations! We didn't find any possible spelling mistakes in the last scan."},
         "order": [[0, "asc"]],
         data: errorsDataset,
         "autoWidth": false,
@@ -934,7 +1002,8 @@ async function runAccessibility() {
         dom: 'Blfrtip',
         buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Notices Report'}],
         paginate: false,
-        "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
+        "oLanguage": {"sSearch": "Filter:"},
+        "language": {"emptyTable": "Congratulations! We didn't find any possible spelling mistakes in the last scan."},
         "order": [[0, "asc"]],
         data: noticesDataset,
         "autoWidth": false,
@@ -962,7 +1031,8 @@ async function runAccessibility() {
         dom: 'Blfrtip',
         buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Warnings Report'}],
         paginate: false,
-        "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
+        "oLanguage": {"sSearch": "Filter:"},
+        "language": {"emptyTable": "Congratulations! We didn't find any possible spelling mistakes in the last scan."},
         "order": [[0, "asc"]],
         data: warningsDataset,
         "autoWidth": false,
@@ -1026,7 +1096,8 @@ async function runCookies() {
         dom: 'Blfrtip',
         buttons: [{text: 'Export', extend: 'csv', filename: 'Cookies Report'}],
         paginate: false,
-        "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
+        "oLanguage": {"sSearch": "Filter:"},
+        "language": {"emptyTable": "Congratulations! We didn't find any possible spelling mistakes in the last scan."},
         "order": [[0, "asc"]],
         data: dataset,
         "autoWidth": false,
@@ -1124,7 +1195,8 @@ async function runTechnologies() {
         dom: 'Blfrtip',
         buttons: [{text: 'Export', extend: 'csv', filename: 'Technologies Report'}],
         paginate: false,
-        "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
+        "oLanguage": {"sSearch": "Filter:"},
+        "language": {"emptyTable": "Congratulations! We didn't find any possible spelling mistakes in the last scan."},
         "order": [[0, "asc"]],
         data: dataset,
         "autoWidth": false,
@@ -1161,105 +1233,53 @@ async function runTechnologies() {
     await overlay("removeOverlay", "", "");
 }
 
-async function toggleView(view) {
-    console.log("toggleView - " + view);
+async function runMain(url, mainURL, mainLang) {
+    // Add overlay
+    await overlay("addOverlay", "Loading page", "");
 
-    // Set Sidebar btn Active
-    let btnId = ["desktop-btn", "mobile-btn", "code-btn", "spelling-btn", "lighthouse-btn", "links-btn", "accessibility-btn", "cookies-btn", "technologies-btn"];
-    btnId.forEach(function (btn) {
-        document.getElementById(btn).classList.remove("active");
-    });
-    let activeBtnId = view + "-btn";
-    if (btnId.includes(activeBtnId)) {
-        document.getElementById(activeBtnId).classList.add("active");
-    }
+    // Set URL on search bar
+    document.getElementById("searchURL").value = mainURL;
 
-    // Hide all sections except mainPage
-    let reportId = ["mainPageDiv", "mainCodeDiv", "mainSpellingDiv", "mainLighthouseDiv", "mainLinksDiv", "mainAccessibilityDiv", "mainCookiesDiv", "mainTechnologiesDiv"];
-    reportId.forEach(function (report) {
-        document.getElementById(report).hidden = true;
-    });
-    document.getElementById("mainPageDiv").hidden = false;
+    // Set Language on Languages Dropdown list
+    document.getElementById("languages-list").value = mainLang;
 
+    // Get siteUrl, pageIframe, codeIframe
+    let siteUrl = await getSiteUrl();
     let pageIframe = document.getElementById('mainPage');
-    switch (view) {
-        case 'desktop':
-            pageIframe.classList.remove("iframePageMobile");
-            document.getElementById("mainPageDiv").hidden = false;
-            device = "desktop";
-            break;
-        case 'mobile':
-            pageIframe.classList.add("iframePageMobile");
-            document.getElementById("mainPageDiv").hidden = false;
-            device = "mobile";
-            break;
-        case 'code':
-            document.getElementById("mainCodeDiv").hidden = false;
-            document.getElementById("mainPageDiv").hidden = true;
-            break;
-        case 'spelling':
-            if (!checkLanguageTool) {
-                pageIframe.classList.remove("iframePageMobile");
-                document.getElementById("mainPageDiv").hidden = false;
-                await runLanguageTool();
-                checkLanguageTool = true;
-            } else {
-                console.log("Already runLanguageTool");
+    let codeIframe = document.getElementById('mainCode');
+
+    // Set iframe src to siteUrl
+    pageIframe.src = siteUrl;
+
+    // Wait for pageIframe to load
+    pageIframe.addEventListener("load", function () {
+        let html = pageIframe.contentWindow.document.documentElement.outerHTML;
+        if (html.length > 500) {
+            clearTimeout(showTimeout);
+
+            // Check if redirect
+            if (url !== mainURL) {
+                setErrorModal("Redirect found", "<b>" + url + "</b> was redirected to <b>" + mainURL + "</b>");
             }
-            document.getElementById("mainPageDiv").hidden = true;
-            document.getElementById("mainSpellingDiv").hidden = false;
-            break;
-        case 'lighthouse':
-            if (!checkLighthouse) {
-                await runLighthouse();
-                checkLighthouse = true;
-            } else {
-                console.log("Already runLighthouse");
-            }
-            document.getElementById("mainPageDiv").hidden = true;
-            document.getElementById("mainLighthouseDiv").hidden = false;
-            break;
-        case 'links':
-            if (!checkLinks) {
-                await runLinks();
-                checkLinks = true;
-            } else {
-                console.log("Already runLinks");
-            }
-            document.getElementById("mainPageDiv").hidden = true;
-            document.getElementById("mainLinksDiv").hidden = false;
-            break;
-        case 'accessibility':
-            if (!checkAccessibility) {
-                await runAccessibility();
-                checkAccessibility = true;
-            } else {
-                console.log("Already runAccessibility");
-            }
-            document.getElementById("mainPageDiv").hidden = true;
-            document.getElementById("mainAccessibilityDiv").hidden = false;
-            break;
-        case 'cookies':
-            if (!checkCookies) {
-                await runCookies();
-                checkCookies = true;
-            } else {
-                console.log("Already runCookies");
-            }
-            document.getElementById("mainPageDiv").hidden = true;
-            document.getElementById("mainCookiesDiv").hidden = false;
-            break;
-        case 'technologies':
-            if (!checkTechnologies) {
-                await runTechnologies();
-                checkTechnologies = true;
-            } else {
-                console.log("Already runTechnologies");
-            }
-            document.getElementById("mainPageDiv").hidden = true;
-            document.getElementById("mainTechnologiesDiv").hidden = false;
-            break;
-        default:
-            console.log("Wrong view");
-    }
+
+            // Set codeIframe
+            codeIframe = codeIframe.contentWindow.document;
+            codeIframe.open();
+            html = html.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+            codeIframe.write('<pre><code id="htmlCode">' + html + '</code></pre>');
+            codeIframe.close();
+
+            // HTMLCode Syntax Highlighter
+            w3CodeColor();
+
+            // Add Stylesheet to iframe head Page and Code
+            let iframeCSS = inspectorUrl + "/css/iframe.css";
+            pageIframe = pageIframe.contentWindow.document;
+            pageIframe.head.innerHTML = pageIframe.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
+            codeIframe.head.innerHTML = codeIframe.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
+
+            // Remove overlay
+            overlay("removeOverlay", "", "");
+        }
+    });
 }

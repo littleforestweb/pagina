@@ -6,9 +6,9 @@
 @import "../fonts/inter/style.css";
 
 :root {
-    --bs-lfi-green-rgb: 22, 103, 19;
-    --bs-lfi-blue-rgb: 49, 94, 127;
-    --bs-bg-opacity: 1;
+    --lfi-green-rgb: 22, 103, 19;
+    --lfi-blue-rgb: 49, 94, 127;
+    --lfi-bg-opacity: 1;
 }
 
 html, body {
@@ -264,19 +264,19 @@ body * {
 }
 
 .bg-lfi-green {
-    background-color: rgba(var(--bs-lfi-green-rgb), var(--bs-bg-opacity)) !important;
+    background-color: rgba(var(--lfi-green-rgb), var(--lfi-bg-opacity)) !important;
 }
 
 .bg-lfi-blue {
-    background-color: rgba(var(--bs-lfi-blue-rgb), var(--bs-bg-opacity)) !important;
+    background-color: rgba(var(--lfi-blue-rgb), var(--lfi-bg-opacity)) !important;
 }
 
 .text-lfi-green {
-    color: rgba(var(--bs-lfi-green-rgb), var(--bs-bg-opacity)) !important;
+    color: rgba(var(--lfi-green-rgb), var(--lfi-bg-opacity)) !important;
 }
 
 .text-lfi-blue {
-    color: rgba(var(--bs-lfi-blue-rgb), var(--bs-bg-opacity)) !important;
+    color: rgba(var(--lfi-blue-rgb), var(--lfi-bg-opacity)) !important;
 }
 
 .iframe-container iframe {
@@ -386,4 +386,8 @@ div.dataTables_wrapper div.dataTables_filter {
 div.dt-buttons {
     float: right;
     padding-left: 10px;
+}
+
+td.dataTables_empty {
+    color: rgba(var(--lfi-green-rgb));
 }
