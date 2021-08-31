@@ -8,8 +8,8 @@
 
 
 // const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS";
-const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
-// const inspectorUrl = "http://localhost:8080/InspectorWS";
+// const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
+const inspectorUrl = "http://localhost:8080/InspectorWS";
 const nameWS = inspectorUrl.split("/")[3] + "/";
 const languageToolPost = "/" + nameWS + "LanguageTool";
 const lighthousePost = "/" + nameWS + "Lighthouse";
@@ -27,15 +27,23 @@ let checkCookies = false;
 let checkTechnologies = false;
 let showTimeout = setTimeout(async function () {
     let siteUrl = await getSiteUrl();
-    await setErrorModal("", "Failed to load <b>" + siteUrl + "</b> (Timeout)</br>Plase check the URL.");
-    await overlay("removeOverlay", "", "");
-    document.getElementById("mainPage").hidden = true;
-    clearTimeout(showTimeout);
+    if (siteUrl !== "") {
+        await setErrorModal("", "Failed to load <b>" + siteUrl + "</b> (Timeout)</br>Plase check the URL.");
+        await overlay("removeOverlay", "", "");
+        document.getElementById("mainPage").hidden = true;
+        clearTimeout(showTimeout);
+    }
 }, 10000);
 
 
 // ------------------------------------- AUX FUNCTIONS ------------------------------------- //
 
+
+$("#searchURL").on('keyup', function (e) {
+    if (e.key === 'Enter' || e.keyCode === 13) {
+        gotoNewPage();
+    }
+});
 
 async function getSiteUrl() {
     return document.getElementById("searchURL").value;
@@ -602,10 +610,9 @@ async function runLanguageTool() {
     $('#errorsTable').DataTable({
         dom: 'Blfrtip',
         buttons: [{text: 'Export', extend: 'csv', filename: 'Spelling Errors'}],
-        // pageLength: 10,
-        // "bLengthChange": false,
         paginate: false,
-        "oLanguage": {"sSearch": "Filter:", "emptyTable": "loading data...please wait..."},
+        "oLanguage": {"sSearch": "Filter:"},
+        "sEmptyTable": "Congratulations! We didn't find any possible spelling mistakes in the last scan.",
         "order": [[3, "desc"]],
         data: dataset,
         "autoWidth": false,

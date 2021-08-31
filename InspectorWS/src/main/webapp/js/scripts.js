@@ -6,11 +6,4 @@ window.addEventListener('DOMContentLoaded', event => {
             document.body.classList.toggle('lf-sidenav-toggled');
         });
     }
-
-    // Wait for ENTER on input URL
-    $("#searchURL").on('keyup', function (e) {
-        if (e.key === 'Enter' || e.keyCode === 13) {
-            gotoNewPage();
-        }
-    });
 });

@@ -43,11 +43,9 @@
 <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-
             <div class="modal-header">
                 <h5 class="modal-title" id="modalErrorTitle"></h5>
             </div>
-
             <div class="modal-body" id="modalErrorBody"></div>
         </div>
     </div>
@@ -583,37 +581,37 @@
 </div>
 
 <%-- SCRIPTS --%>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <script src="js/findAndReplaceDOMText.js"></script>
 <script src="js/syntaxHighlighter.js"></script>
-<script src="js/scripts.js"></script>
 <script src="js/main.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+<%-- Get url / mainURL / mainLang --%>
+<%
+    String url;
+    String mainURL;
+    String mainLang;
+    try {
+        url = request.getAttribute("url").toString();
+    } catch (Exception ex) {
+        url = "null";
+
+    }
+    try {
+        mainURL = request.getAttribute("mainURL").toString();
+    } catch (Exception ex) {
+        mainURL = "null";
+    }
+    try {
+        mainLang = request.getAttribute("mainLang").toString();
+    } catch (Exception ex) {
+        mainLang = "null";
+    }
+%>
+
+<%-- If a URL Param is present => Load Inspector resources => auto run --%>
+<% if (!(mainURL.equals("null"))) { %>
 <script>
-    <%
-        String url;
-        String mainURL;
-        String mainLang;
-        try {
-            url = request.getAttribute("url").toString();
-        } catch (Exception ex) {
-            url = "null";
-        }
-        try {
-            mainURL = request.getAttribute("mainURL").toString();
-        } catch (Exception ex) {
-            mainURL = "null";
-        }
-        try {
-            mainLang = request.getAttribute("mainLang").toString();
-        } catch (Exception ex) {
-            mainLang = "null";
-        }
-
-    %>
-
-    // If a URL Param is present auto run
-    <% if (!(mainURL.equals("null"))) { %>
-
     // Redirect
     <% if (!(mainURL.equals(url))) { %>
     setErrorModal("Redirect found", "<b><%=url%></b> was redirected to <b><%=mainURL%></b>");
@@ -629,10 +627,8 @@
 
     // Run Main
     setIframes();
-
-    <% } %>
-
 </script>
-</body>
+<% } %>
 
+</body>
 </html>
