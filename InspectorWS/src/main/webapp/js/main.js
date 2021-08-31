@@ -8,8 +8,8 @@
 
 
 // const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS";
-const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
-// const inspectorUrl = "http://localhost:8080/InspectorWS";
+// const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
+const inspectorUrl = "http://localhost:8080/InspectorWS";
 const nameWS = inspectorUrl.split("/")[3] + "/";
 const languageToolPost = "/" + nameWS + "LanguageTool";
 const lighthousePost = "/" + nameWS + "Lighthouse";
@@ -458,7 +458,7 @@ async function toggleAccessibilityView(view) {
 }
 
 
-// ------------------------------------- RERUN REPORT ------------------------------------- //
+// ------------------------------------- RERUN REPORTS ------------------------------------- //
 
 
 async function rerunSpelling() {

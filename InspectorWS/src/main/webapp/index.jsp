@@ -51,6 +51,29 @@
     </div>
 </div>
 
+<%-- USERNAME MODAL --%>
+<div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalUserTitle">Hello!</h5>
+            </div>
+            <div class="modal-body" id="modalUserBody">
+                <p>Looks like it's your first time using the Little Forest Page Inspector.</br>Please insert your username.</p>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">@</span>
+                    </div>
+                    <input id="userModalInput" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="setUsername()" class="btn active">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <%-- NAV --%>
 <nav class="lf-topnav navbar navbar-expand navbar-light bg-light shadow">
     <!-- Navbar Brand-->
@@ -147,8 +170,8 @@
                 </div>
             </div>
             <div class="lf-sidenav-footer">
-                <div class="small">Logged in as:</div>
-                <span>xhico</span>
+                <div class="small">Welcome:</div>
+                <span id="username">user</span>
             </div>
             <div class="lf-sidenav-footer" style="border-top: 1px solid rgba(0, 0, 0, 0.1)">
                 <span class="text-muted">Little Forest 2021</span></br><span class="text-muted">All rights reserved</span></br>
