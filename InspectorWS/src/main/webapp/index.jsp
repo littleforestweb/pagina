@@ -293,6 +293,7 @@
                 <ol class="breadcrumb mb-4">
                     <li class="breadcrumb-item active">Report</li>
                 </ol>
+                <span class="btn active mb-4" onclick="rerunLinks()">Run Again</span>
                 <%-- GENERAL INFO --%>
                 <div class="row d-flex justify-content-center">
                     <div class="col-xl-3 col-md-6 text-center">
@@ -359,6 +360,7 @@
                 <ol class="breadcrumb mb-4">
                     <li class="breadcrumb-item active">Report</li>
                 </ol>
+                <span class="btn active mb-4" onclick="rerunAccessibility()">Run Again</span>
                 <%-- GENERAL INFO --%>
                 <div class="row d-flex justify-content-center">
                     <div class="col-xl-3 col-md-6 text-center">
@@ -482,6 +484,7 @@
                 <ol class="breadcrumb mb-4">
                     <li class="breadcrumb-item active">Report</li>
                 </ol>
+                <span class="btn active mb-4" onclick="rerunCookies()">Run Again</span>
                 <%-- GENERAL INFO --%>
                 <div class="row d-flex justify-content-center">
                     <div class="col-xl-3 col-md-6 text-center">
@@ -530,6 +533,7 @@
                 <ol class="breadcrumb mb-4">
                     <li class="breadcrumb-item active">Report</li>
                 </ol>
+                <span class="btn active mb-4" onclick="rerunTechnologies()">Run Again</span>
                 <%-- GENERAL INFO --%>
                 <div class="row d-flex justify-content-center">
                     <div class="col-xl-3 col-md-6 text-center">
@@ -544,7 +548,7 @@
                         <div id="technologies-card-errors" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title" id="technologies-most">None</h5>
-                                <p class="card-text">Most Frequent Categorie</p>
+                                <p class="card-text">Most Frequent Category</p>
                             </div>
                         </div>
                     </div>
@@ -558,7 +562,7 @@
                                 <th></th>
                                 <th>Name</th>
                                 <th>Website</th>
-                                <th>Categories</th>
+                                <th>Category</th>
                                 <th>Confidence</th>
                             </tr>
                             </thead>
@@ -568,7 +572,7 @@
                                 <th></th>
                                 <th>Name</th>
                                 <th>Website</th>
-                                <th>Categories</th>
+                                <th>Category</th>
                                 <th>Confidence</th>
                             </tr>
                             </tfoot>
@@ -583,6 +587,7 @@
 <%-- SCRIPTS --%>
 <script src="js/findAndReplaceDOMText.js"></script>
 <script src="js/syntaxHighlighter.js"></script>
+<script src="js/scripts.js"></script>
 <script src="js/main.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 

@@ -8,8 +8,8 @@
 
 
 // const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS";
-// const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
-const inspectorUrl = "http://localhost:8080/InspectorWS";
+const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
+// const inspectorUrl = "http://localhost:8080/InspectorWS";
 const nameWS = inspectorUrl.split("/")[3] + "/";
 const languageToolPost = "/" + nameWS + "LanguageTool";
 const lighthousePost = "/" + nameWS + "Lighthouse";
@@ -423,6 +423,44 @@ async function toggleSpellView(view) {
     }
 }
 
+
+// ------------------------------------- LIGHTHOUSE REPORT ------------------------------------- //
+
+
+async function gotoLighthouseCat(category) {
+    console.log("Goto " + category);
+
+    // Get iframe element
+    let mainLighthouse = document.getElementById("mainLighthouse").contentWindow;
+
+    // Scroll to spell Errors in htmlView and htmlCode
+    mainLighthouse.document.getElementById(category).scrollIntoView();
+}
+
+
+// ------------------------------------- ACCESSIBILITY REPORT ------------------------------------- //
+
+
+async function toggleAccessibilityView(view) {
+    if (view === "snifferErrorsTableDiv") {
+        document.getElementById("snifferErrorsTableDiv").hidden = false;
+        document.getElementById("snifferNoticesTableDiv").hidden = true;
+        document.getElementById("snifferWarningsTableDiv").hidden = true;
+    } else if (view === "snifferNoticesTableDiv") {
+        document.getElementById("snifferErrorsTableDiv").hidden = true;
+        document.getElementById("snifferNoticesTableDiv").hidden = false;
+        document.getElementById("snifferWarningsTableDiv").hidden = true;
+    } else if (view === "snifferWarningsTableDiv") {
+        document.getElementById("snifferErrorsTableDiv").hidden = true;
+        document.getElementById("snifferNoticesTableDiv").hidden = true;
+        document.getElementById("snifferWarningsTableDiv").hidden = false;
+    }
+}
+
+
+// ------------------------------------- RERUN REPORT ------------------------------------- //
+
+
 async function rerunSpelling() {
     console.log("rerunSpelling");
 
@@ -446,38 +484,52 @@ async function rerunSpelling() {
     await toggleView("spelling");
 }
 
+async function rerunLinks() {
+    console.log("rerunLinks");
 
-// ------------------------------------- LIGHTHOUSE REPORT ------------------------------------- //
+    // Clear Links table
+    $('#linksTable').DataTable().clear().draw();
+    $('#linksTable').DataTable().destroy();
 
-
-async function gotoLighthouseCat(categorie) {
-    console.log("Goto " + categorie);
-
-    // Get iframe element
-    let mainLighthouse = document.getElementById("mainLighthouse").contentWindow;
-
-    // Scroll to spell Errors in htmlView and htmlCode
-    mainLighthouse.document.getElementById(categorie).scrollIntoView();
+    checkLinks = false;
+    await toggleView("links");
 }
 
+async function rerunAccessibility() {
+    console.log("rerunAccessibility");
 
-// ------------------------------------- ACCESSIBILITY REPORT ------------------------------------- //
+    // Clear Accessibility table
+    $('#snifferErrorsTable').DataTable().clear().draw();
+    $('#snifferErrorsTable').DataTable().destroy();
+    $('#snifferNoticesTable').DataTable().clear().draw();
+    $('#snifferNoticesTable').DataTable().destroy();
+    $('#snifferWarningsTable').DataTable().clear().draw();
+    $('#snifferWarningsTable').DataTable().destroy();
 
+    checkAccessibility = false;
+    await toggleView("accessibility");
+}
 
-async function toggleAccessibilityView(view) {
-    if (view === "snifferErrorsTableDiv") {
-        document.getElementById("snifferErrorsTableDiv").hidden = false;
-        document.getElementById("snifferNoticesTableDiv").hidden = true;
-        document.getElementById("snifferWarningsTableDiv").hidden = true;
-    } else if (view === "snifferNoticesTableDiv") {
-        document.getElementById("snifferErrorsTableDiv").hidden = true;
-        document.getElementById("snifferNoticesTableDiv").hidden = false;
-        document.getElementById("snifferWarningsTableDiv").hidden = true;
-    } else if (view === "snifferWarningsTableDiv") {
-        document.getElementById("snifferErrorsTableDiv").hidden = true;
-        document.getElementById("snifferNoticesTableDiv").hidden = true;
-        document.getElementById("snifferWarningsTableDiv").hidden = false;
-    }
+async function rerunCookies() {
+    console.log("rerunCookies");
+
+    // Clear Cookies table
+    $('#cookiesTable').DataTable().clear().draw();
+    $('#cookiesTable').DataTable().destroy();
+
+    checkCookies = false;
+    await toggleView("cookies");
+}
+
+async function rerunTechnologies() {
+    console.log("rerunTechnologies");
+
+    // Clear Technologies table
+    $('#technologiesTable').DataTable().clear().draw();
+    $('#technologiesTable').DataTable().destroy();
+
+    checkTechnologies = false;
+    await toggleView("technologies");
 }
 
 
@@ -907,32 +959,32 @@ async function runAccessibility() {
         return result;
     });
 
-    // Iterate over all 3 Categories
+    // Iterate over all 3 1s
     let snifferCategories = ["Errors", "Notices", "Warnings"];
     let errorsDataset = [];
     let noticesDataset = [];
     let warningsDataset = [];
 
-    // Iterate over every entry on the categorie
+    // Iterate over every entry on the category
     for (let i = 0; i < snifferCategories.length; i++) {
-        let categorie = snifferCategories[i];
+        let category = snifferCategories[i];
 
-        // Get Categorie JSON
-        let snifferCategorie = accessibilityJSON[categorie];
+        // Get category JSON
+        let snifferCategory = accessibilityJSON[category];
 
         // Add entry to Table
-        for (let j = 0; j < snifferCategorie.length; j++) {
-            let entry = snifferCategorie[j];
+        for (let j = 0; j < snifferCategory.length; j++) {
+            let entry = snifferCategory[j];
             let guideline = ((entry["Guideline"] !== "null") ? entry["Guideline"].replaceAll(".", " ") : "N/A");
             let message = ((entry["Message"] !== "null") ? entry["Message"] : "N/A");
             let tag = ((entry["Tag"] !== "null") ? entry["Tag"] : "N/A");
             let code = ((entry["Code"] !== "null") ? entry["Code"] : "N/A");
 
-            if (categorie === "Errors") {
+            if (category === "Errors") {
                 errorsDataset.push([guideline, message, tag]);
-            } else if (categorie === "Notices") {
+            } else if (category === "Notices") {
                 noticesDataset.push([guideline, message, tag]);
-            } else if (categorie === "Warnings") {
+            } else if (category === "Warnings") {
                 warningsDataset.push([guideline, message, tag]);
             }
         }
@@ -1158,45 +1210,50 @@ async function runTechnologies() {
     });
 
     let dataset = [];
-    let categoriesCounter = {};
-    wappalyzerJSON = wappalyzerJSON["Wappalyzer"]["technologies"];
-    for (let i = 0; i < wappalyzerJSON.length; i++) {
-        let entry = wappalyzerJSON[i];
-        let confidence = entry["confidence"].toString();
-        let icon = entry["icon"];
-        let name = entry["name"];
-        let website = entry["website"];
-        let categories = entry["categories"];
-        let categoriesName = "";
-        for (let j = 0; j < categories.length; j++) {
-            categoriesName += categories[j]["name"] + ", ";
-            if (categories[j]["name"] in categoriesCounter) {
-                categoriesCounter[categories[j]["name"]] += 1;
-            } else {
-                categoriesCounter[categories[j]["name"]] = 1;
+    let checkError = wappalyzerJSON["Wappalyzer"]["urls"][siteUrl]["error"];
+    if (checkError) {
+        setErrorModal("", "Couldn't get technologies from server.");
+    } else {
+        let categoriesCounter = {};
+        wappalyzerJSON = wappalyzerJSON["Wappalyzer"]["technologies"];
+        for (let i = 0; i < wappalyzerJSON.length; i++) {
+            let entry = wappalyzerJSON[i];
+            let confidence = entry["confidence"].toString();
+            let icon = entry["icon"];
+            let name = entry["name"];
+            let website = entry["website"];
+            let categories = entry["categories"];
+            let categoriesName = "";
+            for (let j = 0; j < categories.length; j++) {
+                categoriesName += categories[j]["name"] + ", ";
+                if (categories[j]["name"] in categoriesCounter) {
+                    categoriesCounter[categories[j]["name"]] += 1;
+                } else {
+                    categoriesCounter[categories[j]["name"]] = 1;
+                }
             }
+            categoriesName = categoriesName.substring(0, categoriesName.length - 2);
+            dataset.push([icon, name, website, categoriesName, confidence]);
         }
-        categoriesName = categoriesName.substring(0, categoriesName.length - 2);
-        dataset.push([icon, name, website, categoriesName, confidence]);
+
+        // Update GENERAL INFO
+        // Sort the array based on the count element
+        categoriesCounter = Object.keys(categoriesCounter).map(function (key) {
+            return [key, categoriesCounter[key]];
+        }).sort(function (first, second) {
+            return second[1] - first[1];
+        });
+        document.getElementById("technologies-total").innerText = dataset.length.toString();
+        document.getElementById("technologies-most").innerText = categoriesCounter[0][0];
     }
 
-    // Update GENERAL INFO
-    // Sort the array based on the count element
-    categoriesCounter = Object.keys(categoriesCounter).map(function (key) {
-        return [key, categoriesCounter[key]];
-    }).sort(function (first, second) {
-        return second[1] - first[1];
-    });
-    document.getElementById("technologies-total").innerText = dataset.length.toString();
-    document.getElementById("technologies-most").innerText = categoriesCounter[0][0];
-
-    // Initialize Errors Table
+    // Initialize Technologies Table
     $('#technologiesTable').DataTable({
         dom: 'Blfrtip',
         buttons: [{text: 'Export', extend: 'csv', filename: 'Technologies Report'}],
         paginate: false,
         "oLanguage": {"sSearch": "Filter:"},
-        "language": {"emptyTable": "Congratulations! We didn't find any possible spelling mistakes in the last scan."},
+        "language": {"emptyTable": "No data available in table"},
         "order": [[0, "asc"]],
         data: dataset,
         "autoWidth": false,
@@ -1252,14 +1309,14 @@ async function runMain(url, mainURL, mainLang) {
     pageIframe.src = siteUrl;
 
     // Wait for pageIframe to load
-    pageIframe.addEventListener("load", function () {
+    pageIframe.addEventListener("load", async function () {
         let html = pageIframe.contentWindow.document.documentElement.outerHTML;
         if (html.length > 500) {
             clearTimeout(showTimeout);
 
             // Check if redirect
             if (url !== mainURL) {
-                setErrorModal("Redirect found", "<b>" + url + "</b> was redirected to <b>" + mainURL + "</b>");
+                await setErrorModal("Redirect found", "<b>" + url + "</b> was redirected to <b>" + mainURL + "</b>");
             }
 
             // Set codeIframe
@@ -1280,6 +1337,14 @@ async function runMain(url, mainURL, mainLang) {
 
             // Remove overlay
             overlay("removeOverlay", "", "");
+
+            // Auto Run
+            // await toggleView("spelling");
+            // await toggleView("lighthouse");
+            // await toggleView("links");
+            // await toggleView("accessibility");
+            // await toggleView("cookies");
+            // await toggleView("technologies");
         }
     });
 }

@@ -388,6 +388,6 @@ div.dt-buttons {
     padding-left: 10px;
 }
 
-td.dataTables_empty {
-    color: rgba(var(--lfi-green-rgb));
-}
+/*td.dataTables_empty {*/
+/*    color: rgba(var(--lfi-green-rgb));*/
+/*}*/
