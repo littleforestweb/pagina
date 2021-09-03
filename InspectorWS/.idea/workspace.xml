@@ -54,7 +54,7 @@
     <property name="settings.editor.selected.configurable" value="reference.settings.ide.settings.spelling" />
   </component>
   <component name="RunManager">
-    <configuration name="Page Inspector" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 9.0.14" ALTERNATIVE_JRE_ENABLED="false">
+    <configuration name="InspectorWS" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 9.0.14" ALTERNATIVE_JRE_ENABLED="false">
       <option name="UPDATE_ON_FRAME_DEACTIVATION" value="true" />
       <option name="UPDATING_POLICY" value="update-resources" />
       <deployment>
@@ -179,7 +179,10 @@
       <workItem from="1630163326679" duration="37610000" />
       <workItem from="1630202319107" duration="3857000" />
       <workItem from="1630235257194" duration="33933000" />
-      <workItem from="1630415012557" duration="15594000" />
+      <workItem from="1630415012557" duration="15876000" />
+      <workItem from="1630479568571" duration="2174000" />
+      <workItem from="1630590931599" duration="1574000" />
+      <workItem from="1630656328674" duration="1906000" />
     </task>
     <servers />
   </component>

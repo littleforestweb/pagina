@@ -1,3 +1,9 @@
+/*
+ Created on : 23 Jul 2021, 10:38:17
+ Author     : xhico
+ */
+
+
 async function toggleSidebar() {
     // Toggle the side navigation
     const sidebarToggle = document.body.querySelector('#sidebarToggle');
@@ -32,7 +38,7 @@ async function setUsername() {
     let cname = "username";
     let exdays = 180;
 
-    // Check if the String is Empty and Only has one element
+    // Check if the String is Empty
     if (cvalue === "") {
         document.getElementById("userModalInput").placeholder = "Please insert a valid username";
         return;
@@ -61,9 +67,10 @@ $("#userModalInput").on('keyup', function (e) {
 
 
 window.addEventListener('DOMContentLoaded', async event => {
+    // Enable sidebar toggle
     toggleSidebar();
 
-    // Check username => Add to sidebar or ask for user input
+    // Check username => Add to sidebar || Ask for user input
     let username = await getUsername();
     if (username === "") {
         $("#userModal").modal("show");

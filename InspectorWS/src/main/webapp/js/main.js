@@ -8,8 +8,8 @@
 
 
 // const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS";
-// const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
-const inspectorUrl = "http://localhost:8080/InspectorWS";
+const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
+// const inspectorUrl = "http://localhost:8080/InspectorWS";
 const nameWS = inspectorUrl.split("/")[3] + "/";
 const languageToolPost = "/" + nameWS + "LanguageTool";
 const lighthousePost = "/" + nameWS + "Lighthouse";
@@ -923,7 +923,7 @@ async function runLinks() {
 
     // Update GENERAL INFO
     if (brokenLinksCount === 0) {
-        brokenLinksCount = "0 - Good Job!"
+        brokenLinksCount = "0 - Great Job!"
         document.getElementById("links-card-broken").classList.remove("bg-danger");
         document.getElementById("links-card-broken").classList.add("bg-lfi-green");
     }

@@ -1,3 +1,9 @@
+<%--
+Created on : 23 Jul 2021, 10:38:17
+Author : xhico
+--%>
+
+
 <!DOCTYPE html>
 <html lang="en-GB">
 <head>
@@ -347,7 +353,7 @@
                         <div id="links-card-broken" class="card mb-4 bg-danger text-white" style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title" id="links-broken">0</h5>
-                                <p class="card-text">Broken</p>
+                                <p class="card-text">Broken Links</p>
                             </div>
                         </div>
                     </div>
@@ -637,12 +643,18 @@
     }
 %>
 
-<%-- If a URL Param is present => runMain --%>
-<% if (!(mainURL.equals("null"))) { %>
 <script>
+    // Disable sidebar btns
+    enableDisableActions("disable");
+    document.getElementById("searchURL").disabled = false;
+    document.getElementById("languages-list").disabled = false;
+    document.getElementById("WCAG-level-list").disabled = false;
+
+    <%-- If a URL Param is present => runMain --%>
+    <% if (!(mainURL.equals("null"))) { %>
     runMain("<%=url%>", "<%=mainURL%>", "<%=mainLang%>");
+    <% } %>
 </script>
-<% } %>
 
 </body>
 </html>
