@@ -210,6 +210,41 @@ async function enableDisableActions(action) {
     });
 }
 
+async function chechCMS() {
+    let pageIframe = document.getElementById('mainPage').contentWindow.document;
+
+    // Check if WordPress | Drupal
+    let cmsName = "null";
+    let metas = pageIframe.getElementsByTagName('meta');
+    for (let i = 0; i < metas.length; i++) {
+        if (metas[i].getAttribute("name") === "generator" || metas[i].getAttribute("name") === "Generator") {
+            if (metas[i].getAttribute("content").includes("wordpress")) {
+                cmsName = "WordPress";
+                break;
+            } else if (metas[i].getAttribute("content").includes("drupal")) {
+                cmsName = "Drupal";
+                break;
+            }
+        }
+    }
+
+    // Get shortling IF WordPress | Drupal
+    if (cmsName !== "null") {
+        let linkRel = pageIframe.getElementsByTagName('link');
+        for (let i = 0; i < linkRel.length; i++) {
+            if (linkRel[i].rel === "shortlink") {
+                console.log(linkRel[i].href);
+                if (cmsName === "WordPress") {
+                    document.getElementById("editPageBtn").setAttribute('href', linkRel[i].href + "&action=edit");
+                } else {
+                    document.getElementById("editPageBtn").setAttribute('href', linkRel[i].href + "/edit/");
+                }
+                document.getElementById("editPageBtn").hidden = false;
+            }
+        }
+    }
+}
+
 
 // ------------------------------------- SPELLING REPORT ------------------------------------- //
 
@@ -435,6 +470,45 @@ async function gotoLighthouseCat(category) {
 
     // Scroll to spell Errors in htmlView and htmlCode
     mainLighthouse.document.getElementById(category).scrollIntoView();
+}
+
+
+// ------------------------------------- LINKS REPORT ------------------------------------- //
+
+
+async function absoluteUri(base, href) {
+
+    // Parse a URI and return its constituent parts
+    function parseUri(url) {
+        var match = String(url).replace(/^\s+|\s+$/g, '').match(/^([^:\/?#]+:)?(\/\/(?:[^:@]*(?::[^:@]*)?@)?(([^:\/?#]*)(?::(\d*))?))?([^?#]*)(\?[^#]*)?(#[\s\S]*)?/);
+        return (match ? {
+            href: match[0] || '', protocol: match[1] || '', authority: match[2] || '', host: match[3] || '', hostname: match[4] || '',
+            port: match[5] || '', pathname: match[6] || '', search: match[7] || '', hash: match[8] || ''
+        } : null);
+    }
+
+    // Resolve dots in the path
+    function resolvePathDots(input) {
+        var output = [];
+        input.replace(/^(\.\.?(\/|$))+/, '')
+            .replace(/\/(\.(\/|$))+/g, '/')
+            .replace(/\/\.\.$/, '/../')
+            .replace(/\/?[^\/]*/g, function (part) {
+                part === '/..' ? output.pop() : output.push(part);
+            });
+        return output.join('').replace(/^\//, input.charAt(0) === '/' ? '/' : '');
+    }
+
+    // Parse base and href
+    href = parseUri(href || '');
+    base = parseUri(base || '');
+
+    // Build and return the URI
+    return !href || !base ? null : (href.protocol || base.protocol) +
+        (href.protocol || href.authority ? href.authority : base.authority) +
+        (resolvePathDots(href.protocol || href.authority || href.pathname.charAt(0) === '/' ? href.pathname : (href.pathname ? ((base.authority && !base.pathname ? '/' : '') + base.pathname.slice(0, base.pathname.lastIndexOf('/') + 1) + href.pathname) : base.pathname))) +
+        (href.protocol || href.authority || href.pathname ? href.search : (href.search || base.search)) + href.hash;
+
 }
 
 
@@ -757,7 +831,7 @@ async function runLanguageTool() {
             },
             {
                 "width": "15%", "targets": 4, "render": function (data, type, row) {
-                    return "<button class='addDictionary bg-transparent border-0 text-lfi-green' onclick='addDictionary(\"" + row + "\")'><b>Add to Dictionary</b></button>" + "|" + "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoSpellError(\"spell_" + row[0] + "\")'><b>View</b></button>";
+                    return "<button class='addDictionary bg-transparent border-0 text-lfi-green' onclick='addDictionary(\"" + row + "\")'><b>Add to Dictionary</b></button>" + "|" + "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoSpellError(\"spell_" + row[0] + "\")'><b>View in Page</b></button>";
                 },
             }
         ]
@@ -840,6 +914,10 @@ async function runLinks() {
     // Get siteUrl
     let siteUrl = await getSiteUrl();
 
+    // Get pageIframe, codeIframe
+    let pageIframe = document.getElementById('mainPage').contentWindow.document;
+    let codeIframe = document.getElementById('mainCode').contentWindow.document;
+
     // Set links counter
     let totalLinksCount = 0;
     let extLinksCount = 0;
@@ -861,9 +939,24 @@ async function runLinks() {
             let url = key;
             let status = value[0];
             let origin = value[1];
+            let ogLink = value[2];
 
             // Add to dataset
-            dataset.push([url, status, origin]);
+            dataset.push([url, status, origin, ogLink]);
+
+            let links = Array.from(pageIframe.querySelectorAll('a'));
+            for (let i = 0; i < links.length; i++) {
+                let linkElem = links[i];
+                let linkHref = linkElem.href
+
+                if (linkHref === ogLink && (status === "404" || status === "-1" || status === "999")) {
+                    // Highlight Broken Link in HTML View
+                    linkElem.innerHTML = "<div style=' border: 2px solid red;'>" + linkElem.innerHTML + "</div>";
+
+                    // Update error color on html Code
+                    // codeIframe.innerHTML = codeIframe.innerHTML.replaceAll(linkHref, "<span style='border: 2px solid red'>" + linkHref + "</span>");
+                }
+            }
 
             // Set links counters
             totalLinksCount += 1;
@@ -1335,13 +1428,16 @@ async function runMain(url, mainURL, mainLang) {
             pageIframe.head.innerHTML = pageIframe.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
             codeIframe.head.innerHTML = codeIframe.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
 
+            // Check Drupal || Wordpress -> Edit Btn
+            await chechCMS()
+
             // Remove overlay
             overlay("removeOverlay", "", "");
 
             // Auto Run
             // await toggleView("spelling");
             // await toggleView("lighthouse");
-            // await toggleView("links");
+            await toggleView("links");
             // await toggleView("accessibility");
             // await toggleView("cookies");
             // await toggleView("technologies");

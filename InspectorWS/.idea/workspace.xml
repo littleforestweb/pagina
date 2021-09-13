@@ -32,6 +32,7 @@
     <option name="CUSTOM_FILTER" />
   </component>
   <component name="ProjectId" id="1wxf97GEMxkyrQBzhjkdmmGAOvB" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -42,7 +43,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="ToolWindowServices.ShowToolbar" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../crawler" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../NodeScripts/helpers.js" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -51,7 +52,7 @@
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15234375" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="reference.settings.ide.settings.spelling" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RunManager">
     <configuration name="InspectorWS" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 9.0.14" ALTERNATIVE_JRE_ENABLED="false">
@@ -183,6 +184,12 @@
       <workItem from="1630479568571" duration="2174000" />
       <workItem from="1630590931599" duration="1574000" />
       <workItem from="1630656328674" duration="1906000" />
+      <workItem from="1631019099795" duration="8978000" />
+      <workItem from="1631192084305" duration="20000" />
+      <workItem from="1631197905376" duration="661000" />
+      <workItem from="1631286821260" duration="1581000" />
+      <workItem from="1631370579677" duration="5000" />
+      <workItem from="1631520519448" duration="2684000" />
     </task>
     <servers />
   </component>

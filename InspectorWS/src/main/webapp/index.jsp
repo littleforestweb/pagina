@@ -33,7 +33,8 @@ Author : xhico
     <link href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css" rel="stylesheet">
 
     <%--  Bootstrap  --%>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
     <%--  X-Frame Bypass  --%>
     <script src="https://unpkg.com/@ungap/custom-elements-builtin"></script>
@@ -65,12 +66,14 @@ Author : xhico
                 <h5 class="modal-title" id="modalUserTitle">Hello!</h5>
             </div>
             <div class="modal-body" id="modalUserBody">
-                <p>Looks like it's your first time using the Little Forest Page Inspector.</br>Please insert your username.</p>
+                <p>Looks like it's your first time using the Little Forest Page Inspector.</br>Please insert your
+                    username.</p>
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="basic-addon1">@</span>
                     </div>
-                    <input id="userModalInput" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                    <input id="userModalInput" type="text" class="form-control" placeholder="Username"
+                           aria-label="Username" aria-describedby="basic-addon1">
                 </div>
             </div>
             <div class="modal-footer">
@@ -83,13 +86,16 @@ Author : xhico
 <%-- NAV --%>
 <nav class="lf-topnav navbar navbar-expand navbar-light bg-light shadow">
     <!-- Navbar Brand-->
-    <a class="navbar-brand text-center" href="https://littleforest.co.uk" target="_blank"><img height="32" src="images/littleforest_logo.png"></a>
+    <a class="navbar-brand text-center" href="https://littleforest.co.uk" target="_blank"><img height="32"
+                                                                                               src="images/littleforest_logo.png"></a>
     <!-- Sidebar Toggle-->
-    <button class="btn active btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+    <button class="btn active btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle"><i
+            class="fas fa-bars"></i></button>
     <!-- Navbar Search-->
     <div class="w-75 d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
         <div class="input-group">
-            <input class="w-50 form-control" id="searchURL" type="text" placeholder="Insert URL to check..." aria-label="Insert URL to check..." aria-describedby="btnNavbarSearch"/>
+            <input class="w-50 form-control" id="searchURL" type="text" placeholder="Insert URL to check..."
+                   aria-label="Insert URL to check..." aria-describedby="btnNavbarSearch"/>
             <select class="form-select" id="languages-list">
                 <option disabled>Language</option>
                 <option selected value=auto>Auto-Detect</option>
@@ -147,8 +153,15 @@ Author : xhico
             </select>
             <div class="btn-group me-2" role="group">
                 <button hidden></button>
-                <button class="btn active" type="button" onclick="gotoNewPage()"><span class="me-2">Inspect</span><i class="fas fa-play"></i></button>
-                <button class="btn active" type="button" onclick="resetPage()"><span class="me-2">Clear</span><i class="fas fa-trash"></i></button>
+                <button class="btn active" type="button" onclick="gotoNewPage()"><span class="me-2">Inspect</span><i
+                        class="fas fa-play"></i></button>
+                <button class="btn active" type="button" onclick="resetPage()"><span class="me-2">Clear</span><i
+                        class="fas fa-trash"></i></button>
+            </div>
+
+            <div class="btn-group me-2" role="group">
+                <a hidden href="#" target="_blank" id="editPageBtn" class="btn active" type="button"><span class="me-2">Edit Page</span><i
+                        class="fas fa-edit"></i></a>
             </div>
         </div>
     </div>
@@ -163,16 +176,38 @@ Author : xhico
             <div class="lf-sidenav-menu">
                 <div class="nav">
                     <div class="lf-sidenav-menu-heading">Views</div>
-                    <button id="desktop-btn" onclick="toggleView('desktop')" class="active nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i class="fas fa-desktop"></i></span>Desktop</button>
-                    <button id="mobile-btn" onclick="toggleView('mobile')" class="nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i class="fas fa-mobile-alt"></i></span>Mobile</button>
-                    <button id="code-btn" onclick="toggleView('code')" class="nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i class="fas fa-code"></i></span>Code</button>
+                    <button id="desktop-btn" onclick="toggleView('desktop')"
+                            class="active nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i
+                            class="fas fa-desktop"></i></span>Desktop
+                    </button>
+                    <button id="mobile-btn" onclick="toggleView('mobile')" class="nav-link bg-transparent border-0">
+                        <span class="lf-nav-link-icon"><i class="fas fa-mobile-alt"></i></span>Mobile
+                    </button>
+                    <button id="code-btn" onclick="toggleView('code')" class="nav-link bg-transparent border-0"><span
+                            class="lf-nav-link-icon"><i class="fas fa-code"></i></span>Code
+                    </button>
                     <div class="lf-sidenav-menu-heading">Reports</div>
-                    <button id="spelling-btn" onclick="toggleView('spelling')" class="nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i class="fas fa-spell-check"></i></span>Spelling</button>
-                    <button id="lighthouse-btn" onclick="toggleView('lighthouse')" class="nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i class="fas fa-tachometer-alt"></i></span>Lighthouse</button>
-                    <button id="links-btn" onclick="toggleView('links')" class="nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i class="fas fa-link"></i></span>Links</button>
-                    <button id="accessibility-btn" onclick="toggleView('accessibility')" class="nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i class="fas fa-universal-access"></i></span>Accessibility</button>
-                    <button id="cookies-btn" onclick="toggleView('cookies')" class="nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i class="fas fa-cookie"></i></span>Cookies</button>
-                    <button id="technologies-btn" onclick="toggleView('technologies')" class="nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i class="fab fa-bootstrap"></i></span>Technologies</button>
+                    <button id="spelling-btn" onclick="toggleView('spelling')" class="nav-link bg-transparent border-0">
+                        <span class="lf-nav-link-icon"><i class="fas fa-spell-check"></i></span>Spelling
+                    </button>
+                    <button id="lighthouse-btn" onclick="toggleView('lighthouse')"
+                            class="nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i
+                            class="fas fa-tachometer-alt"></i></span>Lighthouse
+                    </button>
+                    <button id="links-btn" onclick="toggleView('links')" class="nav-link bg-transparent border-0"><span
+                            class="lf-nav-link-icon"><i class="fas fa-link"></i></span>Links
+                    </button>
+                    <button id="accessibility-btn" onclick="toggleView('accessibility')"
+                            class="nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i
+                            class="fas fa-universal-access"></i></span>Accessibility
+                    </button>
+                    <button id="cookies-btn" onclick="toggleView('cookies')" class="nav-link bg-transparent border-0">
+                        <span class="lf-nav-link-icon"><i class="fas fa-cookie"></i></span>Cookies
+                    </button>
+                    <button id="technologies-btn" onclick="toggleView('technologies')"
+                            class="nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i
+                            class="fab fa-bootstrap"></i></span>Technologies
+                    </button>
                 </div>
             </div>
             <div class="lf-sidenav-footer">
@@ -180,8 +215,10 @@ Author : xhico
                 <span id="username">user</span>
             </div>
             <div class="lf-sidenav-footer" style="border-top: 1px solid rgba(0, 0, 0, 0.1)">
-                <span class="text-muted">Little Forest 2021</span></br><span class="text-muted">All rights reserved</span></br>
-                <a style="color: #166713" href="https://littleforest.co.uk/privacy-policy/" target="_blank">Privacy Policy</a>
+                <span class="text-muted">Little Forest 2021</span></br><span
+                    class="text-muted">All rights reserved</span></br>
+                <a style="color: #166713" href="https://littleforest.co.uk/privacy-policy/" target="_blank">Privacy
+                    Policy</a>
             </div>
         </nav>
     </div>
@@ -232,7 +269,9 @@ Author : xhico
                                 <p class="card-text">Total Errors</p>
                             </div>
                             <div class="card-footer d-flex align-items-center justify-content-between">
-                                <button id="spelling-errors-btn" onclick="toggleSpellView('errorsTableDiv')" class="small text-white stretched-link border-0 bg-transparent">View Details</button>
+                                <button id="spelling-errors-btn" onclick="toggleSpellView('errorsTableDiv')"
+                                        class="small text-white stretched-link border-0 bg-transparent">View Details
+                                </button>
                                 <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                             </div>
                         </div>
@@ -260,7 +299,9 @@ Author : xhico
                                 <p class="card-text">Dictionary</p>
                             </div>
                             <div class="card-footer d-flex align-items-center justify-content-between">
-                                <button id="spelling-dictionary-btn" onclick="toggleSpellView('dictionaryTableDiv')" class="small text-white stretched-link border-0 bg-transparent">View Details</button>
+                                <button id="spelling-dictionary-btn" onclick="toggleSpellView('dictionaryTableDiv')"
+                                        class="small text-white stretched-link border-0 bg-transparent">View Details
+                                </button>
                                 <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                             </div>
                         </div>
@@ -393,7 +434,8 @@ Author : xhico
                 <%-- GENERAL INFO --%>
                 <div class="row d-flex justify-content-center">
                     <div class="col-xl-3 col-md-6 text-center">
-                        <div id="accessibility-card-total" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                        <div id="accessibility-card-total" class="card mb-4 bg-lfi-blue text-white"
+                             style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title" id="accessibility-total">0</h5>
                                 <p class="card-text">Total</p>
@@ -401,37 +443,49 @@ Author : xhico
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6 text-center">
-                        <div id="accessibility-card-errors" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                        <div id="accessibility-card-errors" class="card mb-4 bg-lfi-blue text-white"
+                             style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title" id="accessibility-errors">0</h5>
                                 <p class="card-text">Errors</p>
                             </div>
                             <div class="card-footer d-flex align-items-center justify-content-between">
-                                <button id="accessibility-errors-btn" onclick="toggleAccessibilityView('snifferErrorsTableDiv')" class="small text-white stretched-link border-0 bg-transparent">View Details</button>
+                                <button id="accessibility-errors-btn"
+                                        onclick="toggleAccessibilityView('snifferErrorsTableDiv')"
+                                        class="small text-white stretched-link border-0 bg-transparent">View Details
+                                </button>
                                 <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                             </div>
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6 text-center">
-                        <div id="accessibility-card-notices" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                        <div id="accessibility-card-notices" class="card mb-4 bg-lfi-blue text-white"
+                             style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title" id="accessibility-notices">0</h5>
                                 <p class="card-text">Notices</p>
                             </div>
                             <div class="card-footer d-flex align-items-center justify-content-between">
-                                <button id="accessibility-notices-btn" onclick="toggleAccessibilityView('snifferNoticesTableDiv')" class="small text-white stretched-link border-0 bg-transparent">View Details</button>
+                                <button id="accessibility-notices-btn"
+                                        onclick="toggleAccessibilityView('snifferNoticesTableDiv')"
+                                        class="small text-white stretched-link border-0 bg-transparent">View Details
+                                </button>
                                 <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                             </div>
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6 text-center">
-                        <div id="accessibility-card-warnings" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                        <div id="accessibility-card-warnings" class="card mb-4 bg-lfi-blue text-white"
+                             style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title" id="accessibility-warnings">0</h5>
                                 <p class="card-text">Warnings</p>
                             </div>
                             <div class="card-footer d-flex align-items-center justify-content-between">
-                                <button id="accessibility-warnings-btn" onclick="toggleAccessibilityView('snifferWarningsTableDiv')" class="small text-white stretched-link border-0 bg-transparent">View Details</button>
+                                <button id="accessibility-warnings-btn"
+                                        onclick="toggleAccessibilityView('snifferWarningsTableDiv')"
+                                        class="small text-white stretched-link border-0 bg-transparent">View Details
+                                </button>
                                 <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                             </div>
                         </div>
@@ -566,7 +620,8 @@ Author : xhico
                 <%-- GENERAL INFO --%>
                 <div class="row d-flex justify-content-center">
                     <div class="col-xl-3 col-md-6 text-center">
-                        <div id="technologies-card-total" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                        <div id="technologies-card-total" class="card mb-4 bg-lfi-blue text-white"
+                             style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title" id="technologies-total">0</h5>
                                 <p class="card-text">Total</p>
@@ -574,7 +629,8 @@ Author : xhico
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6 text-center">
-                        <div id="technologies-card-errors" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                        <div id="technologies-card-errors" class="card mb-4 bg-lfi-blue text-white"
+                             style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title" id="technologies-most">None</h5>
                                 <p class="card-text">Most Frequent Category</p>
@@ -618,7 +674,9 @@ Author : xhico
 <script src="js/syntaxHighlighter.js"></script>
 <script src="js/scripts.js"></script>
 <script src="js/main.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
 
 <%-- Get url / mainURL / mainLang --%>
 <%

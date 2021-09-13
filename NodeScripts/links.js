@@ -90,7 +90,7 @@ async function main() {
                 }
 
                 // Append info to jsonLinks
-                jsonLinks.push('"' + newUrl + '": [\"' + status + "\", \"" + origin + '\"]');
+                jsonLinks.push('"' + newUrl + '": [\"' + status + "\", \"" + origin + "\", \"" + linkHref + '\"]');
             }
 
         }

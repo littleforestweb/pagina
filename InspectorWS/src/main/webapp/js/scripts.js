@@ -70,11 +70,11 @@ window.addEventListener('DOMContentLoaded', async event => {
     // Enable sidebar toggle
     toggleSidebar();
 
-    // Check username => Add to sidebar || Ask for user input
-    let username = await getUsername();
-    if (username === "") {
-        $("#userModal").modal("show");
-    } else {
-        document.getElementById("username").innerText = username;
-    }
+    // // Check username => Add to sidebar || Ask for user input
+    // let username = await getUsername();
+    // if (username === "") {
+    //     $("#userModal").modal("show");
+    // } else {
+    //     document.getElementById("username").innerText = username;
+    // }
 });
