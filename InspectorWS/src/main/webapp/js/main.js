@@ -511,6 +511,18 @@ async function absoluteUri(base, href) {
 
 }
 
+async function gotoLink(linkId) {
+    console.log("Goto " + linkId);
+
+    // Get iframe element
+    let pageIframe = document.getElementById("mainPage").contentWindow;
+
+    await toggleView("desktop");
+
+    // Scroll to Broken Link in htmlView
+    pageIframe.document.getElementById(linkId).scrollIntoView();
+}
+
 
 // ------------------------------------- ACCESSIBILITY REPORT ------------------------------------- //
 
@@ -954,9 +966,7 @@ async function runLinks() {
             let origin = value[1];
             let ogLink = value[2];
 
-            // Add to dataset
-            dataset.push([url, status, origin, ogLink]);
-
+            // Hightlighg Broken Link
             let links = Array.from(pageIframe.querySelectorAll('a'));
             for (let i = 0; i < links.length; i++) {
                 let linkElem = links[i];
@@ -964,12 +974,15 @@ async function runLinks() {
 
                 if (linkHref === ogLink && (status >= "400" && status < "600")) {
                     // Highlight Broken Link in HTML View
-                    linkElem.innerHTML = "<div style=' border: 2px solid red;'>" + linkElem.innerHTML + "</div>";
+                    linkElem.innerHTML = "<div id='blink_" + brokenLinksCount + "' style=' border: 2px solid red;'>" + linkElem.innerHTML + "</div>";
 
                     // Update error color on html Code
                     codeIframe.documentElement.innerHTML = codeIframe.documentElement.innerHTML.replaceAll(linkHref, "<span style='outline: 2px solid red'>" + linkHref + "</span>");
                 }
             }
+
+            // Add to dataset
+            dataset.push([url, status, origin]);
 
             // Set links counters
             totalLinksCount += 1;
@@ -979,6 +992,7 @@ async function runLinks() {
                 intLinksCount += 1;
             }
             if (status >= "400" && status < "600") {
+                dataset[dataset.length - 1].push("blink_" + brokenLinksCount);
                 brokenLinksCount += 1;
             }
 
@@ -1026,6 +1040,15 @@ async function runLinks() {
             {
                 "width": "20%", "targets": 2, "render": function (data, type, row) {
                     return "<span>" + data + "</span>";
+                },
+            },
+            {
+                "width": "20%", "targets": 3, "render": function (data, type, row) {
+                    if (data !== undefined) {
+                        return "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoLink(\"" + data + "\")'><b>View in Page</b></button>";
+                    } else {
+                        return "";
+                    }
                 },
             }
         ]
@@ -1478,7 +1501,7 @@ async function runMain(url, mainURL, mainLang) {
             // Auto Run
             // await toggleView("spelling");
             // await toggleView("lighthouse");
-            // await toggleView("links");
+            await toggleView("links");
             // await toggleView("accessibility");
             // await toggleView("cookies");
             // await toggleView("technologies");

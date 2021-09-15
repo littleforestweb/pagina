@@ -407,6 +407,7 @@ Author : xhico
                                 <th>URL</th>
                                 <th>Status</th>
                                 <th>Origin</th>
+                                <th>Action</th>
                             </tr>
                             </thead>
                             <tbody id="linksTableBody"></tbody>
@@ -415,6 +416,7 @@ Author : xhico
                                 <th>URL</th>
                                 <th>Status</th>
                                 <th>Origin</th>
+                                <th>Action</th>
                             </tr>
                             </tfoot>
                         </table>
