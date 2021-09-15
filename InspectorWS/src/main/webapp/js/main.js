@@ -974,7 +974,8 @@ async function runLinks() {
 
                 if (linkHref === ogLink && (status >= "400" && status < "600")) {
                     // Highlight Broken Link in HTML View
-                    linkElem.innerHTML = "<div id='blink_" + brokenLinksCount + "' style=' border: 2px solid red;'>" + linkElem.innerHTML + "</div>";
+                    linkElem.style.cssText += 'outline: 2px solid red;';
+                    linkElem.id = "blink_" + brokenLinksCount;
 
                     // Update error color on html Code
                     codeIframe.documentElement.innerHTML = codeIframe.documentElement.innerHTML.replaceAll(linkHref, "<span style='outline: 2px solid red'>" + linkHref + "</span>");
@@ -1501,7 +1502,7 @@ async function runMain(url, mainURL, mainLang) {
             // Auto Run
             // await toggleView("spelling");
             // await toggleView("lighthouse");
-            await toggleView("links");
+            // await toggleView("links");
             // await toggleView("accessibility");
             // await toggleView("cookies");
             // await toggleView("technologies");
