@@ -3,6 +3,10 @@
     Author     : xhico
 */
 
+/* ------------------------------------------------ */
+/*                      Spelling                    */
+/* ------------------------------------------------ */
+
 spellerror {
     font-weight: bold;
     padding: 4px;
@@ -14,4 +18,28 @@ spellerror.shiny_red {
 
 spellerror.shiny_orange {
     background-color: orange;
+}
+
+/* ------------------------------------------------ */
+/*                  Accessibility                   */
+/* ------------------------------------------------ */
+
+.accessibilityerror_shiny_red {
+    outline: 2px dashed red !important;
+    box-shadow: 0 0 10px red;
+    animation: pulse-red 2s infinite;
+}
+
+@keyframes pulse-red {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 82, 82, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(255, 82, 82, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 82, 82, 0);
+    }
 }

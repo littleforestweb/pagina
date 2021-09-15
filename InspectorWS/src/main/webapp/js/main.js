@@ -531,6 +531,18 @@ async function toggleAccessibilityView(view) {
     }
 }
 
+async function gotoAccessibilityError(accessibilityError) {
+    console.log("Goto " + accessibilityError);
+
+    // Get iframe element
+    let pageIframe = document.getElementById("mainPage").contentWindow;
+
+    await toggleView("desktop");
+
+    // Scroll to Accessibility Error Errors in htmlView
+    pageIframe.document.getElementById(accessibilityError).scrollIntoView();
+}
+
 
 // ------------------------------------- RERUN REPORTS ------------------------------------- //
 
@@ -934,6 +946,7 @@ async function runLinks() {
     // Iterate over every link
     let linksInfo = linkJSON["linksInfo"];
     let dataset = [];
+
     for (let i = 0; i < linksInfo.length; i++) {
         Object.entries(linksInfo[i]).forEach(([key, value]) => {
             let url = key;
@@ -949,12 +962,12 @@ async function runLinks() {
                 let linkElem = links[i];
                 let linkHref = linkElem.href
 
-                if (linkHref === ogLink && (status === "404" || status === "-1" || status === "999")) {
+                if (linkHref === ogLink && (status >= "400" && status < "600")) {
                     // Highlight Broken Link in HTML View
                     linkElem.innerHTML = "<div style=' border: 2px solid red;'>" + linkElem.innerHTML + "</div>";
 
                     // Update error color on html Code
-                    // codeIframe.innerHTML = codeIframe.innerHTML.replaceAll(linkHref, "<span style='border: 2px solid red'>" + linkHref + "</span>");
+                    codeIframe.documentElement.innerHTML = codeIframe.documentElement.innerHTML.replaceAll(linkHref, "<span style='outline: 2px solid red'>" + linkHref + "</span>");
                 }
             }
 
@@ -965,7 +978,7 @@ async function runLinks() {
             } else if (origin === "Internal") {
                 intLinksCount += 1;
             }
-            if (status === "404" || status === "-1" || status === "999") {
+            if (status >= "400" && status < "600") {
                 brokenLinksCount += 1;
             }
 
@@ -978,7 +991,7 @@ async function runLinks() {
         buttons: [{text: 'Export', extend: 'csv', filename: 'Links Report'}],
         paginate: false,
         "oLanguage": {"sSearch": "Filter:"},
-        "language": {"emptyTable": "Congratulations! We didn't find any possible spelling mistakes in the last scan."},
+        "language": {"emptyTable": "No data available in table"},
         "order": [[0, "asc"]],
         data: dataset,
         "autoWidth": false,
@@ -995,13 +1008,17 @@ async function runLinks() {
                     let colorClass;
                     status.forEach(function (code) {
                         if (code.includes("20")) {
-                            colorClass = "link200"
+                            colorClass = " class='link200'"
                         } else if (code.includes("30")) {
-                            colorClass = "link301"
+                            colorClass = " class='link301'"
+                        } else if (code.includes("40") || code.includes("50")) {
+                            colorClass = " class='link404'"
                         } else {
-                            colorClass = "link404"
+                            colorClass = "";
+                            code = "Couldn't get status code";
                         }
-                        html += "<span class='" + colorClass + "'>" + code + "</span>";
+
+                        html += "<span" + colorClass + ">" + code + "</span>";
                     });
                     return html;
                 },
@@ -1041,6 +1058,10 @@ async function runAccessibility() {
     // Get siteUrl
     let siteUrl = await getSiteUrl();
 
+    // Get pageIframe, codeIframe
+    let pageIframe = document.getElementById('mainPage').contentWindow.document;
+    let codeIframe = document.getElementById('mainCode').contentWindow.document;
+
     // Get WCAG Level
     let WCAGLevel = document.getElementById("WCAG-level-list").value;
 
@@ -1057,6 +1078,7 @@ async function runAccessibility() {
     let errorsDataset = [];
     let noticesDataset = [];
     let warningsDataset = [];
+    let errorsCounter = 0;
 
     // Iterate over every entry on the category
     for (let i = 0; i < snifferCategories.length; i++) {
@@ -1073,12 +1095,22 @@ async function runAccessibility() {
             let tag = ((entry["Tag"] !== "null") ? entry["Tag"] : "N/A");
             let code = ((entry["Code"] !== "null") ? entry["Code"] : "N/A");
 
+            // Add entry to respective dataset
             if (category === "Errors") {
                 errorsDataset.push([guideline, message, tag]);
             } else if (category === "Notices") {
                 noticesDataset.push([guideline, message, tag]);
             } else if (category === "Warnings") {
                 warningsDataset.push([guideline, message, tag]);
+            }
+
+            // Highlight div on Desktop View
+            if (code !== "N/A" && category === "Errors" && (!(code.includes("<html>") || code.includes("<head>") || code.includes("<body>")))) {
+                errorsCounter += 1;
+                console.log(code);
+                pageIframe.body.innerHTML = pageIframe.body.innerHTML.replace(code, code.split(">")[0] + "id='accessibilityerror_" + errorsCounter + "'>");
+                pageIframe.getElementById("accessibilityerror_" + errorsCounter).classList.add("accessibilityerror_shiny_red");
+                errorsDataset[errorsDataset.length - 1].push("accessibilityerror_" + errorsCounter);
             }
         }
     }
@@ -1119,24 +1151,33 @@ async function runAccessibility() {
         buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Errors Report'}],
         paginate: false,
         "oLanguage": {"sSearch": "Filter:"},
-        "language": {"emptyTable": "Congratulations! We didn't find any possible spelling mistakes in the last scan."},
+        "language": {"emptyTable": "Congratulations! We didn't find any errors in the last scan."},
         "order": [[0, "asc"]],
         data: errorsDataset,
         "autoWidth": false,
         "columnDefs": [
             {
-                "width": "30%", "targets": 0, "render": function (data, type, row) {
+                "width": "25%", "targets": 0, "render": function (data, type, row) {
                     return "<span>" + data + "</span>";
                 },
             },
             {
-                "width": "60%", "targets": 1, "render": function (data, type, row) {
+                "width": "45%", "targets": 1, "render": function (data, type, row) {
                     return "<span>" + data + "</span>";
                 },
             },
             {
                 "width": "10%", "targets": 2, "render": function (data, type, row) {
                     return "<span>" + data + "</span>";
+                },
+            },
+            {
+                "width": "10%", "targets": 3, "render": function (data, type, row) {
+                    if (data !== undefined) {
+                        return "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoAccessibilityError(\"" + data + "\")'><b>View in Page</b></button>";
+                    } else {
+                        return "";
+                    }
                 },
             }
         ]
@@ -1148,7 +1189,7 @@ async function runAccessibility() {
         buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Notices Report'}],
         paginate: false,
         "oLanguage": {"sSearch": "Filter:"},
-        "language": {"emptyTable": "Congratulations! We didn't find any possible spelling mistakes in the last scan."},
+        "language": {"emptyTable": "Congratulations! We didn't find any notices in the last scan."},
         "order": [[0, "asc"]],
         data: noticesDataset,
         "autoWidth": false,
@@ -1177,7 +1218,7 @@ async function runAccessibility() {
         buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Warnings Report'}],
         paginate: false,
         "oLanguage": {"sSearch": "Filter:"},
-        "language": {"emptyTable": "Congratulations! We didn't find any possible spelling mistakes in the last scan."},
+        "language": {"emptyTable": "Congratulations! We didn't find any warnings in the last scan."},
         "order": [[0, "asc"]],
         data: warningsDataset,
         "autoWidth": false,
@@ -1242,7 +1283,7 @@ async function runCookies() {
         buttons: [{text: 'Export', extend: 'csv', filename: 'Cookies Report'}],
         paginate: false,
         "oLanguage": {"sSearch": "Filter:"},
-        "language": {"emptyTable": "Congratulations! We didn't find any possible spelling mistakes in the last scan."},
+        "language": {"emptyTable": "No data available in table"},
         "order": [[0, "asc"]],
         data: dataset,
         "autoWidth": false,
@@ -1437,7 +1478,7 @@ async function runMain(url, mainURL, mainLang) {
             // Auto Run
             // await toggleView("spelling");
             // await toggleView("lighthouse");
-            await toggleView("links");
+            // await toggleView("links");
             // await toggleView("accessibility");
             // await toggleView("cookies");
             // await toggleView("technologies");

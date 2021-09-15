@@ -153,15 +153,14 @@ Author : xhico
             </select>
             <div class="btn-group me-2" role="group">
                 <button hidden></button>
-                <button class="btn active" type="button" onclick="gotoNewPage()"><span class="me-2">Inspect</span><i
-                        class="fas fa-play"></i></button>
-                <button class="btn active" type="button" onclick="resetPage()"><span class="me-2">Clear</span><i
-                        class="fas fa-trash"></i></button>
+                <button class="btn active" type="button" onclick="gotoNewPage()">
+                    <span class="me-2">Inspect</span><i class="fas fa-play"></i></button>
+                <button class="btn active" type="button" onclick="resetPage()">
+                    <span class="me-2">Clear</span><i class="fas fa-trash"></i></button>
             </div>
 
             <div class="btn-group me-2" role="group">
-                <a hidden href="#" target="_blank" id="editPageBtn" class="btn active" type="button"><span class="me-2">Edit Page</span><i
-                        class="fas fa-edit"></i></a>
+                <a hidden href="#" target="_blank" id="editPageBtn" class="btn active" type="button"><span class="me-2">Edit Page</span><i class="fas fa-edit"></i></a>
             </div>
         </div>
     </div>
@@ -501,6 +500,7 @@ Author : xhico
                                 <th>Guideline</th>
                                 <th>Message</th>
                                 <th>Tag</th>
+                                <th>Action</th>
                             </tr>
                             </thead>
                             <tbody></tbody>
@@ -509,6 +509,7 @@ Author : xhico
                                 <th>Guideline</th>
                                 <th>Message</th>
                                 <th>Tag</th>
+                                <th>Action</th>
                             </tr>
                             </tfoot>
                         </table>

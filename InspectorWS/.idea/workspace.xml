@@ -43,7 +43,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="ToolWindowServices.ShowToolbar" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../NodeScripts/helpers.js" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../BrighterBox/www/brighterbox" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -189,7 +189,13 @@
       <workItem from="1631197905376" duration="661000" />
       <workItem from="1631286821260" duration="1581000" />
       <workItem from="1631370579677" duration="5000" />
-      <workItem from="1631520519448" duration="2684000" />
+      <workItem from="1631520519448" duration="4483000" />
+      <workItem from="1631526469930" duration="5000" />
+      <workItem from="1631528919455" duration="61000" />
+      <workItem from="1631605252949" duration="1303000" />
+      <workItem from="1631622808504" duration="64000" />
+      <workItem from="1631693062848" duration="8093000" />
+      <workItem from="1631710879028" duration="6142000" />
     </task>
     <servers />
   </component>
