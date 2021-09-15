@@ -1473,7 +1473,7 @@ async function runMain(url, mainURL, mainLang) {
             await chechCMS()
 
             // Remove overlay
-            overlay("removeOverlay", "", "");
+            await overlay("removeOverlay", "", "");
 
             // Auto Run
             // await toggleView("spelling");
