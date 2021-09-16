@@ -123,26 +123,6 @@ async function toggleView(view) {
                 document.getElementById("mainSpellingDiv").hidden = false;
             }
             break;
-        case 'lighthouse':
-            if (!checkLighthouse) {
-                await runLighthouse();
-                checkLighthouse = true;
-            } else {
-                console.log("Already runLighthouse");
-            }
-            document.getElementById("mainPageDiv").hidden = true;
-            document.getElementById("mainLighthouseDiv").hidden = false;
-            break;
-        case 'links':
-            if (!checkLinks) {
-                await runLinks();
-                checkLinks = true;
-            } else {
-                console.log("Already runLinks");
-            }
-            document.getElementById("mainPageDiv").hidden = true;
-            document.getElementById("mainLinksDiv").hidden = false;
-            break;
         case 'accessibility':
             if (!checkAccessibility) {
                 await runAccessibility();
@@ -171,6 +151,29 @@ async function toggleView(view) {
                 console.log("Already runTechnologies");
                 document.getElementById("mainPageDiv").hidden = true;
                 document.getElementById("mainTechnologiesDiv").hidden = false;
+            }
+            break;
+        case 'lighthouse':
+            console.log(checkLighthouse);
+            if (checkLighthouse !== "running") {
+                if (!checkLighthouse) {
+                    $("#lighthouseModal").modal("show");
+                } else {
+                    console.log("Already runLighthouse");
+                    document.getElementById("mainPageDiv").hidden = true;
+                    document.getElementById("mainLighthouseDiv").hidden = false;
+                }
+            }
+            break;
+        case 'links':
+            if (checkLinks !== "running") {
+                if (!checkLinks) {
+                    $("#linksModal").modal("show");
+                } else {
+                    console.log("Already runLinks");
+                    document.getElementById("mainPageDiv").hidden = true;
+                    document.getElementById("mainLinksDiv").hidden = false;
+                }
             }
             break;
         default:
@@ -600,10 +603,7 @@ async function rerunTechnologies() {
 
 async function runLanguageTool() {
     console.log("-------------------");
-    console.log("runLanguageTool()");
-
-    // Insert overlay
-    // await overlay("addOverlay", "Running Spell Check", "");
+    console.log("runLanguageTool");
 
     // Get pageIframe, codeIframe
     let pageIframe = document.getElementById('mainPage').contentWindow.document;
@@ -850,8 +850,6 @@ async function runLanguageTool() {
 
     await toggleSpellView("errorsTableDiv");
 
-    // Remove overlay
-    // await overlay("removeOverlay", "", "");
     document.getElementById("overlay_spelling_mark").style.color = "rgba(var(--lfi-green-rgb)";
 
     console.log("-------------------");
@@ -861,11 +859,11 @@ async function runLighthouse() {
     console.log("-------------------------");
     console.log("runLighthouse");
 
+    checkLighthouse = "running";
+    $("#lighthouseModal").modal("hide");
+
     // Get siteUrl
     let siteUrl = await getSiteUrl();
-
-    // Insert overlay
-    await overlay("addOverlay", "Running Lighthouse Report", "");
 
     console.log("siteUrl: " + siteUrl);
     console.log("Device: " + device);
@@ -882,13 +880,13 @@ async function runLighthouse() {
         // Toggle Lighthouse Section
         document.getElementById("mainLighthouse").src = inspectorUrl + "/Lighthouse?" + "url=null" + "&cats=null" + "&view=" + lighthouseJson["htmlReport"];
         document.getElementById("mainLighthouse").hidden = false;
+        checkLighthouse = true;
+        $('#lighthouseNotification').toast('show');
     } catch (Ex) {
         console.log(Ex);
+        checkLighthouse = false;
         await setErrorModal("", "Lighthouse was unable to reliably load the page you requested.<br>Please try again.");
     }
-
-    // Remove overlay
-    await overlay("removeOverlay", "", "");
 
     console.log("-------------------");
 }
@@ -897,8 +895,8 @@ async function runLinks() {
     console.log("-------------------------");
     console.log("runLinks");
 
-    // Insert overlay
-    await overlay("addOverlay", "Running Links Report", "");
+    checkLinks = "running";
+    $("#linksModal").modal("hide");
 
     // Get siteUrl
     let siteUrl = await getSiteUrl();
@@ -1031,8 +1029,8 @@ async function runLinks() {
     document.getElementById("links-int").innerText = intLinksCount;
     document.getElementById("links-broken").innerText = brokenLinksCount;
 
-    // Remove overlay
-    await overlay("removeOverlay", "", "");
+    checkLinks = true;
+    $('#linksNotification').toast('show');
 
     console.log("-------------------");
 }
@@ -1474,8 +1472,6 @@ async function runMain(url, mainURL, mainLang) {
             toggleView("accessibility");
             toggleView("cookies");
             toggleView("technologies");
-            // await toggleView("lighthouse");
-            // await toggleView("links");
         }
     });
 }

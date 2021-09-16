@@ -83,14 +83,76 @@ Author : xhico
     </div>
 </div>
 
+<%-- LIGHTHOUSE MODAL --%>
+<div class="modal fade" id="lighthouseModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLighthouseTitle">Lighthouse Report</h5>
+            </div>
+            <div class="modal-body" id="modalLighthouseBody">
+                <p>Are you sure you want to run the Lighthouse report?
+                    </br>This could take a few moments.
+                    </br>Feel free to navigate the other reports.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="runLighthouse()" class="btn active">Proceed</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%-- LINKS MODAL --%>
+<div class="modal fade" id="linksModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLinksTitle">Links Report</h5>
+            </div>
+            <div class="modal-body" id="modalLinksBody">
+                <p>Are you sure you want to run the Links report?
+                    </br>This could take a few moments.
+                    </br>Feel free to navigate the other reports.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="runLinks()" class="btn active">Proceed</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%-- NOTIFICATIONS --%>
+<div class=" toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <%-- LIGHTHOUSE NOTIFICATION --%>
+    <div id="lighthouseNotification" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="me-auto">Your Lighthouse Report is ready.</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            <btn class="btn active" type="button" onclick="toggleView('lighthouse')">View</btn>
+        </div>
+    </div>
+
+    <%-- LINKS NOTIFICATION --%>
+    <div id="linksNotification" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="me-auto">Your Links Report is ready.</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            <btn class="btn active" type="button" onclick="toggleView('links')">View</btn>
+        </div>
+    </div>
+</div>
+
 <%-- NAV --%>
 <nav class="lf-topnav navbar navbar-expand navbar-light bg-light shadow">
     <!-- Navbar Brand-->
-    <a class="navbar-brand text-center" href="https://littleforest.co.uk" target="_blank"><img height="32"
-                                                                                               src="images/littleforest_logo.png"></a>
+    <a class="navbar-brand text-center" href="https://littleforest.co.uk" target="_blank"><img height="32" src="images/littleforest_logo.png"></a>
     <!-- Sidebar Toggle-->
-    <button class="btn active btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle"><i
-            class="fas fa-bars"></i></button>
+    <button class="btn active btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle">
+        <i class="fas fa-bars"></i></button>
     <!-- Navbar Search-->
     <div class="w-75 d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
         <div class="input-group">
