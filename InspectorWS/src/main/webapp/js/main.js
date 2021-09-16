@@ -193,7 +193,6 @@ async function overlay(action, message, sndMessage) {
         document.getElementById("overlay").style.display = "block";
         document.getElementById("overlayMessage").innerText = message;
         document.getElementById("overlaySndMessage").innerHTML = sndMessage + "</br>";
-        document.getElementById("overlayProgress").innerText = "";
         document.getElementById("overlay").hidden = false;
     } else if (action === "removeOverlay") {
         // // Remove overlay
@@ -902,6 +901,7 @@ async function runLanguageTool() {
 
     // Remove overlay
     // await overlay("removeOverlay", "", "");
+    document.getElementById("overlay_spelling_mark").style.color = "rgba(var(--lfi-green-rgb)";
 
     console.log("-------------------");
 }
@@ -1281,6 +1281,7 @@ async function runAccessibility() {
 
     // Remove overlay
     // await overlay("removeOverlay", "", "");
+    document.getElementById("overlay_accessibility_mark").style.color = "rgba(var(--lfi-green-rgb)";
 }
 
 async function runCookies() {
@@ -1362,6 +1363,7 @@ async function runCookies() {
 
     // Remove overlay
     // await overlay("removeOverlay", "", "");
+    document.getElementById("overlay_cookies_mark").style.color = "rgba(var(--lfi-green-rgb)";
 }
 
 async function runTechnologies() {
@@ -1460,6 +1462,7 @@ async function runTechnologies() {
 
     // Remove overlay
     // await overlay("removeOverlay", "", "");
+    document.getElementById("overlay_technologies_mark").style.color = "rgba(var(--lfi-green-rgb)";
 }
 
 async function runMain(url, mainURL, mainLang) {
@@ -1515,6 +1518,7 @@ async function runMain(url, mainURL, mainLang) {
 
             // Auto Run
             await overlay("addOverlay", "Running Reports", "");
+            document.getElementById("overlaySndMessage").innerHTML = "<p>Spelling <i id='overlay_spelling_mark' class=\"fas fa-check-square\"></i></p><p>Accessibility <i id='overlay_accessibility_mark' class=\"fas fa-check-square\"></i></p><p>Cookies <i id='overlay_cookies_mark' class=\"fas fa-check-square\"></i></p><p>Technologies <i id='overlay_technologies_mark' class=\"fas fa-check-square\"></i></p>"
             toggleView("spelling");
             toggleView("accessibility");
             toggleView("cookies");

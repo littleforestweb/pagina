@@ -230,7 +230,6 @@ Author : xhico
                 <div id="overlay_text">
                     <span id="overlayMessage"></span>
                     <span id="overlaySndMessage"></span>
-                    <span id="overlayProgress"></span>
                     Please Wait</br>
                     <div class="spinner-border text-lfi-green"></div>
                 </div>
