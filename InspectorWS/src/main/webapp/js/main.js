@@ -76,17 +76,17 @@ async function resetPage() {
 }
 
 async function toggleView(view) {
-    console.log("toggleView - " + view);
+    // console.log("toggleView - " + view);
 
-    // Set Sidebar btn Active
-    let btnId = ["desktop-btn", "mobile-btn", "code-btn", "spelling-btn", "lighthouse-btn", "links-btn", "accessibility-btn", "cookies-btn", "technologies-btn"];
-    btnId.forEach(function (btn) {
-        document.getElementById(btn).classList.remove("active");
-    });
-    let activeBtnId = view + "-btn";
-    if (btnId.includes(activeBtnId)) {
-        document.getElementById(activeBtnId).classList.add("active");
-    }
+    // // Set Sidebar btn Active
+    // let btnId = ["desktop-btn", "mobile-btn", "code-btn", "spelling-btn", "lighthouse-btn", "links-btn", "accessibility-btn", "cookies-btn", "technologies-btn"];
+    // btnId.forEach(function (btn) {
+    //     document.getElementById(btn).classList.remove("active");
+    // });
+    // let activeBtnId = view + "-btn";
+    // if (btnId.includes(activeBtnId)) {
+    //     document.getElementById(activeBtnId).classList.add("active");
+    // }
 
     // Hide all sections except mainPage
     let reportId = ["mainPageDiv", "mainCodeDiv", "mainSpellingDiv", "mainLighthouseDiv", "mainLinksDiv", "mainAccessibilityDiv", "mainCookiesDiv", "mainTechnologiesDiv"];
@@ -114,14 +114,14 @@ async function toggleView(view) {
         case 'spelling':
             if (!checkLanguageTool) {
                 pageIframe.classList.remove("iframePageMobile");
-                document.getElementById("mainPageDiv").hidden = false;
                 await runLanguageTool();
                 checkLanguageTool = true;
+
             } else {
                 console.log("Already runLanguageTool");
+                document.getElementById("mainPageDiv").hidden = true;
+                document.getElementById("mainSpellingDiv").hidden = false;
             }
-            document.getElementById("mainPageDiv").hidden = true;
-            document.getElementById("mainSpellingDiv").hidden = false;
             break;
         case 'lighthouse':
             if (!checkLighthouse) {
@@ -149,9 +149,9 @@ async function toggleView(view) {
                 checkAccessibility = true;
             } else {
                 console.log("Already runAccessibility");
+                document.getElementById("mainPageDiv").hidden = true;
+                document.getElementById("mainAccessibilityDiv").hidden = false;
             }
-            document.getElementById("mainPageDiv").hidden = true;
-            document.getElementById("mainAccessibilityDiv").hidden = false;
             break;
         case 'cookies':
             if (!checkCookies) {
@@ -159,9 +159,9 @@ async function toggleView(view) {
                 checkCookies = true;
             } else {
                 console.log("Already runCookies");
+                document.getElementById("mainPageDiv").hidden = true;
+                document.getElementById("mainCookiesDiv").hidden = false;
             }
-            document.getElementById("mainPageDiv").hidden = true;
-            document.getElementById("mainCookiesDiv").hidden = false;
             break;
         case 'technologies':
             if (!checkTechnologies) {
@@ -169,12 +169,18 @@ async function toggleView(view) {
                 checkTechnologies = true;
             } else {
                 console.log("Already runTechnologies");
+                document.getElementById("mainPageDiv").hidden = true;
+                document.getElementById("mainTechnologiesDiv").hidden = false;
             }
-            document.getElementById("mainPageDiv").hidden = true;
-            document.getElementById("mainTechnologiesDiv").hidden = false;
             break;
         default:
             console.log("Wrong view");
+    }
+
+    // Check if Report Status is True -> All reports finished running
+    if (checkLanguageTool && checkAccessibility && checkCookies && checkTechnologies) {
+        console.log("READY");
+        await overlay("removeOverlay", "", "");
     }
 }
 
@@ -210,7 +216,7 @@ async function enableDisableActions(action) {
     });
 }
 
-async function chechCMS() {
+async function checkCMS() {
     let pageIframe = document.getElementById('mainPage').contentWindow.document;
 
     // Check if WordPress | Drupal
@@ -647,7 +653,7 @@ async function runLanguageTool() {
     console.log("runLanguageTool()");
 
     // Insert overlay
-    await overlay("addOverlay", "Running Spell Check", "");
+    // await overlay("addOverlay", "Running Spell Check", "");
 
     // Get pageIframe, codeIframe
     let pageIframe = document.getElementById('mainPage').contentWindow.document;
@@ -670,7 +676,7 @@ async function runLanguageTool() {
         if (langValues.includes(detectedLang)) {
             langCode = detectedLang;
             let valueText = languages_list.options[langValues.indexOf(langCode)].text;
-            document.getElementById("overlaySndMessage").innerHTML = "</br>Detected Language: " + valueText + "</br>";
+            // document.getElementById("overlaySndMessage").innerHTML = "</br>Detected Language: " + valueText + "</br>";
         } else {
             // Try to detect the general language, if the lang attribute has only two chars ("en")
             let generalDetect = false;
@@ -679,7 +685,7 @@ async function runLanguageTool() {
                 if (langValues[i].split("-")[0] === detectedLang) {
                     langCode = langValues[i];
                     let valueText = languages_list.options[langValues.indexOf(langCode)].text;
-                    document.getElementById("overlaySndMessage").innerHTML = "</br>Detected general language: " + valueText.split(" ")[0] + "</br>Using: " + valueText + "</br>";
+                    // document.getElementById("overlaySndMessage").innerHTML = "</br>Detected general language: " + valueText.split(" ")[0] + "</br>Using: " + valueText + "</br>";
                     generalDetect = true;
                     break;
                 }
@@ -688,13 +694,13 @@ async function runLanguageTool() {
             if (!(generalDetect)) {
                 langCode = "en-GB";
                 let valueText = languages_list.options[langValues.indexOf(langCode)].text;
-                document.getElementById("overlaySndMessage").innerHTML = "</br>Couldn't detect langauage.</br> Defaulting to : " + valueText + "</br>";
+                // document.getElementById("overlaySndMessage").innerHTML = "</br>Couldn't detect langauage.</br> Defaulting to : " + valueText + "</br>";
             }
         }
     } else {
         // If the user selected a language, then just use that code
         let valueText = languages_list.options[langValues.indexOf(langCode)].text;
-        document.getElementById("overlaySndMessage").innerHTML = "</br>Selected language: " + valueText + "</br>";
+        // document.getElementById("overlaySndMessage").innerHTML = "</br>Selected language: " + valueText + "</br>";
     }
 
     // Update the language-list with the language
@@ -895,7 +901,7 @@ async function runLanguageTool() {
     await toggleSpellView("errorsTableDiv");
 
     // Remove overlay
-    await overlay("removeOverlay", "", "");
+    // await overlay("removeOverlay", "", "");
 
     console.log("-------------------");
 }
@@ -1085,7 +1091,7 @@ async function runAccessibility() {
     console.log("runAccessibility");
 
     // Insert overlay
-    await overlay("addOverlay", "Running Accessibility Report", "");
+    // await overlay("addOverlay", "Running Accessibility Report", "");
 
     // Get siteUrl
     let siteUrl = await getSiteUrl();
@@ -1139,10 +1145,9 @@ async function runAccessibility() {
             // Highlight div on Desktop View
             if (code !== "N/A" && category === "Errors" && (!(code.includes("<html>") || code.includes("<head>") || code.includes("<body>")))) {
                 errorsCounter += 1;
-                console.log(code);
-                pageIframe.body.innerHTML = pageIframe.body.innerHTML.replace(code, code.split(">")[0] + "id='accessibilityerror_" + errorsCounter + "'>");
-                pageIframe.getElementById("accessibilityerror_" + errorsCounter).classList.add("accessibilityerror_shiny_red");
-
+                pageIframe.body.innerHTML = pageIframe.body.innerHTML.replace(code.split(">")[0], code.split(">")[0] + "id='accessibilityerror_" + errorsCounter + "'");
+                let accessibilityErrorElem = pageIframe.getElementById("accessibilityerror_" + errorsCounter);
+                accessibilityErrorElem.classList.add("accessibilityerror_shiny_red");
                 errorsDataset[errorsDataset.length - 1].push("accessibilityerror_" + errorsCounter);
             }
         }
@@ -1275,7 +1280,7 @@ async function runAccessibility() {
     });
 
     // Remove overlay
-    await overlay("removeOverlay", "", "");
+    // await overlay("removeOverlay", "", "");
 }
 
 async function runCookies() {
@@ -1283,7 +1288,7 @@ async function runCookies() {
     console.log("runCookies");
 
     // Insert overlay
-    await overlay("addOverlay", "Running Cookies Report", "");
+    // await overlay("addOverlay", "Running Cookies Report", "");
 
     // Get siteUrl
     let siteUrl = await getSiteUrl();
@@ -1356,7 +1361,7 @@ async function runCookies() {
     document.getElementById("cookies-total").innerText = dataset.length.toString();
 
     // Remove overlay
-    await overlay("removeOverlay", "", "");
+    // await overlay("removeOverlay", "", "");
 }
 
 async function runTechnologies() {
@@ -1364,7 +1369,7 @@ async function runTechnologies() {
     console.log("runTechnologies");
 
     // Insert overlay
-    await overlay("addOverlay", "Running Technologies Report", "");
+    // await overlay("addOverlay", "Running Technologies Report", "");
 
     // Get siteUrl
     let siteUrl = await getSiteUrl();
@@ -1454,7 +1459,7 @@ async function runTechnologies() {
     });
 
     // Remove overlay
-    await overlay("removeOverlay", "", "");
+    // await overlay("removeOverlay", "", "");
 }
 
 async function runMain(url, mainURL, mainLang) {
@@ -1494,7 +1499,7 @@ async function runMain(url, mainURL, mainLang) {
             codeIframe.close();
 
             // HTMLCode Syntax Highlighter
-            w3CodeColor();
+            await w3CodeColor();
 
             // Add Stylesheet to iframe head Page and Code
             let iframeCSS = inspectorUrl + "/css/iframe.css";
@@ -1503,18 +1508,19 @@ async function runMain(url, mainURL, mainLang) {
             codeIframe.head.innerHTML = codeIframe.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
 
             // Check Drupal || Wordpress -> Edit Btn
-            await chechCMS()
+            await checkCMS()
 
             // Remove overlay
             await overlay("removeOverlay", "", "");
 
             // Auto Run
-            // await toggleView("spelling");
+            await overlay("addOverlay", "Running Reports", "");
+            toggleView("spelling");
+            toggleView("accessibility");
+            toggleView("cookies");
+            toggleView("technologies");
             // await toggleView("lighthouse");
             // await toggleView("links");
-            // await toggleView("accessibility");
-            // await toggleView("cookies");
-            // await toggleView("technologies");
         }
     });
 }
