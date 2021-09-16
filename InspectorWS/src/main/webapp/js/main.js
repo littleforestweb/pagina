@@ -604,6 +604,14 @@ async function rerunAccessibility() {
     $('#snifferWarningsTable').DataTable().clear().draw();
     $('#snifferWarningsTable').DataTable().destroy();
 
+    // Remove Highlight from desktop view
+    let pageIframe = document.getElementById('mainPage').contentWindow.document;
+    let accessibilityErrors = pageIframe.querySelectorAll('*[id^="accessibilityerror_"]');
+    for (let i = 0; i < accessibilityErrors.length; i++) {
+        let entry = accessibilityErrors[i];
+        entry.classList.remove("accessibilityerror_shiny_red");
+    }
+
     checkAccessibility = false;
     await toggleView("accessibility");
 }
@@ -1134,6 +1142,7 @@ async function runAccessibility() {
                 console.log(code);
                 pageIframe.body.innerHTML = pageIframe.body.innerHTML.replace(code, code.split(">")[0] + "id='accessibilityerror_" + errorsCounter + "'>");
                 pageIframe.getElementById("accessibilityerror_" + errorsCounter).classList.add("accessibilityerror_shiny_red");
+
                 errorsDataset[errorsDataset.length - 1].push("accessibilityerror_" + errorsCounter);
             }
         }
