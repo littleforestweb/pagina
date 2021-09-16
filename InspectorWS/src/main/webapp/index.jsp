@@ -189,13 +189,6 @@ Author : xhico
                     <button id="spelling-btn" onclick="toggleView('spelling')" class="nav-link bg-transparent border-0">
                         <span class="lf-nav-link-icon"><i class="fas fa-spell-check"></i></span>Spelling
                     </button>
-                    <button id="lighthouse-btn" onclick="toggleView('lighthouse')"
-                            class="nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i
-                            class="fas fa-tachometer-alt"></i></span>Lighthouse
-                    </button>
-                    <button id="links-btn" onclick="toggleView('links')" class="nav-link bg-transparent border-0"><span
-                            class="lf-nav-link-icon"><i class="fas fa-link"></i></span>Links
-                    </button>
                     <button id="accessibility-btn" onclick="toggleView('accessibility')"
                             class="nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i
                             class="fas fa-universal-access"></i></span>Accessibility
@@ -206,6 +199,13 @@ Author : xhico
                     <button id="technologies-btn" onclick="toggleView('technologies')"
                             class="nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i
                             class="fab fa-bootstrap"></i></span>Technologies
+                    </button>
+                    <button id="lighthouse-btn" onclick="toggleView('lighthouse')"
+                            class="nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i
+                            class="fas fa-tachometer-alt"></i></span>Lighthouse
+                    </button>
+                    <button id="links-btn" onclick="toggleView('links')" class="nav-link bg-transparent border-0"><span
+                            class="lf-nav-link-icon"><i class="fas fa-link"></i></span>Links
                     </button>
                 </div>
             </div>
@@ -243,11 +243,6 @@ Author : xhico
             <%-- CODE IFRAME --%>
             <div hidden id="mainCodeDiv" class="iframe-container">
                 <iframe id="mainCode"></iframe>
-            </div>
-
-            <%-- LIGHTHOUSE --%>
-            <div hidden id="mainLighthouseDiv" class="iframe-container">
-                <iframe id="mainLighthouse" src="about:blank"></iframe>
             </div>
 
             <%-- SPELLING --%>
@@ -346,75 +341,6 @@ Author : xhico
                             <tfoot>
                             <tr>
                                 <th>Error</th>
-                                <th>Action</th>
-                            </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <%-- LINKS --%>
-            <div hidden id="mainLinksDiv" class="container-fluid px-4">
-                <%-- TITLE --%>
-                <h1 class="mt-4">Links</h1>
-                <ol class="breadcrumb mb-4">
-                    <li class="breadcrumb-item active">Report</li>
-                </ol>
-                <span class="btn active mb-4" onclick="rerunLinks()">Run Again</span>
-                <%-- GENERAL INFO --%>
-                <div class="row d-flex justify-content-center">
-                    <div class="col-xl-3 col-md-6 text-center">
-                        <div id="links-card-total" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
-                            <div class="card-body">
-                                <h5 class="card-title" id="links-total">0</h5>
-                                <p class="card-text">Total</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6 text-center">
-                        <div id="links-card-ext" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
-                            <div class="card-body">
-                                <h5 class="card-title" id="links-ext">0</h5>
-                                <p class="card-text">External</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6 text-center">
-                        <div id="links-card-int" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
-                            <div class="card-body">
-                                <h5 class="card-title" id="links-int">0</h5>
-                                <p class="card-text">Internal</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6 text-center">
-                        <div id="links-card-broken" class="card mb-4 bg-danger text-white" style="width: 18rem;">
-                            <div class="card-body">
-                                <h5 class="card-title" id="links-broken">0</h5>
-                                <p class="card-text">Broken Links</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <%-- TABLES --%>
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <table id="linksTable" class="table">
-                            <thead>
-                            <tr>
-                                <th>URL</th>
-                                <th>Status</th>
-                                <th>Origin</th>
-                                <th>Action</th>
-                            </tr>
-                            </thead>
-                            <tbody id="linksTableBody"></tbody>
-                            <tfoot>
-                            <tr>
-                                <th>URL</th>
-                                <th>Status</th>
-                                <th>Origin</th>
                                 <th>Action</th>
                             </tr>
                             </tfoot>
@@ -667,6 +593,81 @@ Author : xhico
                     </div>
                 </div>
             </div>
+
+            <%-- LIGHTHOUSE --%>
+            <div hidden id="mainLighthouseDiv" class="iframe-container">
+                <iframe id="mainLighthouse" src="about:blank"></iframe>
+            </div>
+
+            <%-- LINKS --%>
+            <div hidden id="mainLinksDiv" class="container-fluid px-4">
+                <%-- TITLE --%>
+                <h1 class="mt-4">Links</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item active">Report</li>
+                </ol>
+                <span class="btn active mb-4" onclick="rerunLinks()">Run Again</span>
+                <%-- GENERAL INFO --%>
+                <div class="row d-flex justify-content-center">
+                    <div class="col-xl-3 col-md-6 text-center">
+                        <div id="links-card-total" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title" id="links-total">0</h5>
+                                <p class="card-text">Total</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 text-center">
+                        <div id="links-card-ext" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title" id="links-ext">0</h5>
+                                <p class="card-text">External</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 text-center">
+                        <div id="links-card-int" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title" id="links-int">0</h5>
+                                <p class="card-text">Internal</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 text-center">
+                        <div id="links-card-broken" class="card mb-4 bg-danger text-white" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title" id="links-broken">0</h5>
+                                <p class="card-text">Broken Links</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <%-- TABLES --%>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <table id="linksTable" class="table">
+                            <thead>
+                            <tr>
+                                <th>URL</th>
+                                <th>Status</th>
+                                <th>Origin</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody id="linksTableBody"></tbody>
+                            <tfoot>
+                            <tr>
+                                <th>URL</th>
+                                <th>Status</th>
+                                <th>Origin</th>
+                                <th>Action</th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
 </div>
