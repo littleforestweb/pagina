@@ -7,8 +7,8 @@
 // ------------------------------------- GLOBAL VARIABLES ------------------------------------- //
 
 
-// const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS";
-const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
+const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS";
+// const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
 // const inspectorUrl = "http://localhost:8080/InspectorWS";
 const nameWS = inspectorUrl.split("/")[3] + "/";
 const languageToolPost = "/" + nameWS + "LanguageTool";
@@ -78,15 +78,15 @@ async function resetPage() {
 async function toggleView(view) {
     // console.log("toggleView - " + view);
 
-    // // Set Sidebar btn Active
-    // let btnId = ["desktop-btn", "mobile-btn", "code-btn", "spelling-btn", "lighthouse-btn", "links-btn", "accessibility-btn", "cookies-btn", "technologies-btn"];
-    // btnId.forEach(function (btn) {
-    //     document.getElementById(btn).classList.remove("active");
-    // });
-    // let activeBtnId = view + "-btn";
-    // if (btnId.includes(activeBtnId)) {
-    //     document.getElementById(activeBtnId).classList.add("active");
-    // }
+    // Set Sidebar btn Active
+    let btnId = ["desktop-btn", "mobile-btn", "code-btn", "spelling-btn", "lighthouse-btn", "links-btn", "accessibility-btn", "cookies-btn", "technologies-btn"];
+    btnId.forEach(function (btn) {
+        document.getElementById(btn).classList.remove("active");
+    });
+    let activeBtnId = view + "-btn";
+    if (btnId.includes(activeBtnId)) {
+        document.getElementById(activeBtnId).classList.add("active");
+    }
 
     // Hide all sections except mainPage
     let reportId = ["mainPageDiv", "mainCodeDiv", "mainSpellingDiv", "mainLighthouseDiv", "mainLinksDiv", "mainAccessibilityDiv", "mainCookiesDiv", "mainTechnologiesDiv"];
@@ -1472,6 +1472,7 @@ async function runMain(url, mainURL, mainLang) {
             toggleView("accessibility");
             toggleView("cookies");
             toggleView("technologies");
+            toggleView("desktop");
         }
     });
 }
