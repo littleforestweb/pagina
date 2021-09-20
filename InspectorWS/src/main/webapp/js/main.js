@@ -7,8 +7,8 @@
 // ------------------------------------- GLOBAL VARIABLES ------------------------------------- //
 
 
-const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS";
-// const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
+// const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS";
+const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
 // const inspectorUrl = "http://localhost:8080/InspectorWS";
 const nameWS = inspectorUrl.split("/")[3] + "/";
 const languageToolPost = "/" + nameWS + "LanguageTool";
@@ -221,6 +221,30 @@ async function enableDisableActions(action) {
 async function checkCMS() {
     let pageIframe = document.getElementById('mainPage').contentWindow.document;
 
+    // Check if it is Opel
+    // Get siteUrl
+    let siteUrl = await getSiteUrl();
+    if (siteUrl.toLowerCase().includes("opel")) {
+        console.log("OPEL")
+
+        // Get dataLayerBasicValue Scripts
+        let scripts = pageIframe.getElementsByTagName("script");
+        for (let i = 0; i < scripts.length; i++) {
+            let entry = scripts[i];
+            if (entry.innerText.includes("virtualPageURL")) {
+                let editUrl = entry.innerText.split("virtualPageURL")[1].split(",")[0].split("\"")[2].replaceAll("\\", "");
+                if (editUrl.charAt(0) === "/") {
+                    editUrl = editUrl.substring(1);
+                }
+                document.getElementById("editPageBtn").setAttribute('href', "https://" + (new URL(siteUrl)).hostname + "/" + editUrl);
+                document.getElementById("editPageBtn").setAttribute("target", "_blank");
+                document.getElementById("editPageBtn").hidden = false;
+                break
+            }
+        }
+        return;
+    }
+
     // Check if WordPress | Drupal
     let cmsName = "null";
     let metas = pageIframe.getElementsByTagName('meta');
@@ -243,10 +267,19 @@ async function checkCMS() {
             if (linkRel[i].rel === "shortlink") {
                 console.log(linkRel[i].href);
                 if (cmsName === "WordPress") {
-                    document.getElementById("editPageBtn").setAttribute('href', linkRel[i].href + "&action=edit");
-                } else {
-                    document.getElementById("editPageBtn").setAttribute('href', linkRel[i].href + "/edit/");
+                    let editUrl = (linkRel[i].href + "&action=edit");
+                    if (editUrl.charAt(0) === "/") {
+                        editUrl = editUrl.substring(1);
+                    }
+                    document.getElementById("editPageBtn").setAttribute('href', editUrl);
+                } else if (cmsName === "Drupal") {
+                    let editUrl = (linkRel[i].href + "/edit/");
+                    if (editUrl.charAt(0) === "/") {
+                        editUrl = editUrl.substring(1);
+                    }
+                    document.getElementById("editPageBtn").setAttribute('href', editUrl);
                 }
+                document.getElementById("editPageBtn").setAttribute("target", "_blank");
                 document.getElementById("editPageBtn").hidden = false;
             }
         }
@@ -1096,8 +1129,10 @@ async function runAccessibility() {
                 errorsCounter += 1;
                 pageIframe.body.innerHTML = pageIframe.body.innerHTML.replace(code.split(">")[0], code.split(">")[0] + "id='accessibilityerror_" + errorsCounter + "'");
                 let accessibilityErrorElem = pageIframe.getElementById("accessibilityerror_" + errorsCounter);
-                accessibilityErrorElem.classList.add("accessibilityerror_shiny_red");
-                errorsDataset[errorsDataset.length - 1].push("accessibilityerror_" + errorsCounter);
+                if (accessibilityErrorElem) {
+                    accessibilityErrorElem.classList.add("accessibilityerror_shiny_red");
+                    errorsDataset[errorsDataset.length - 1].push("accessibilityerror_" + errorsCounter);
+                }
             }
         }
     }
@@ -1367,7 +1402,9 @@ async function runTechnologies() {
             return second[1] - first[1];
         });
         document.getElementById("technologies-total").innerText = dataset.length.toString();
-        document.getElementById("technologies-most").innerText = categoriesCounter[0][0];
+        if (categoriesCounter.length !== 0) {
+            document.getElementById("technologies-most").innerText = categoriesCounter[0][0];
+        }
     }
 
     // Initialize Technologies Table
@@ -1459,7 +1496,7 @@ async function runMain(url, mainURL, mainLang) {
             pageIframe.head.innerHTML = pageIframe.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
             codeIframe.head.innerHTML = codeIframe.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
 
-            // Check Drupal || Wordpress -> Edit Btn
+            // Check Drupal || Wordpress || Adobe CMS -> Edit Btn
             await checkCMS()
 
             // Remove overlay
