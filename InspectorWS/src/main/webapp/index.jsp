@@ -126,22 +126,22 @@ Author : xhico
     <%-- LIGHTHOUSE NOTIFICATION --%>
     <div id="lighthouseNotification" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="toast-header">
-            <strong class="me-auto">Your Lighthouse Report is ready.</strong>
+            <strong id="lighthouseNotificationTitle" class="me-auto"></strong>
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
-        <div class="toast-body">
-            <btn class="btn active" type="button" onclick="toggleView('lighthouse')">View</btn>
+        <div id="lighthouseNotificationBtn" class="toast-body">
+            <button class="btn active" type="button" onclick="toggleView('lighthouse')">View</button>
         </div>
     </div>
 
     <%-- LINKS NOTIFICATION --%>
     <div id="linksNotification" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="toast-header">
-            <strong class="me-auto">Your Links Report is ready.</strong>
+            <strong id="linksNotificationTitle" class="me-auto">Your Links Report is ready.</strong>
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
-        <div class="toast-body">
-            <btn class="btn active" type="button" onclick="toggleView('links')">View</btn>
+        <div id="linksNotificationBtn" class="toast-body">
+            <button class="btn active" type="button" onclick="toggleView('links')">View</button>
         </div>
     </div>
 </div>

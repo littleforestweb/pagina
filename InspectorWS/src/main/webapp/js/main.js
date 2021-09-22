@@ -895,6 +895,11 @@ async function runLighthouse() {
     checkLighthouse = "running";
     $("#lighthouseModal").modal("hide");
 
+    // Show Running Notification
+    document.getElementById("lighthouseNotificationTitle").innerText = "Your Lighthouse Report is running.";
+    document.getElementById("lighthouseNotificationBtn").hidden = true;
+    $('#lighthouseNotification').toast('show');
+
     // Get siteUrl
     let siteUrl = await getSiteUrl();
 
@@ -913,8 +918,13 @@ async function runLighthouse() {
         // Toggle Lighthouse Section
         document.getElementById("mainLighthouse").src = inspectorUrl + "/Lighthouse?" + "url=null" + "&cats=null" + "&view=" + lighthouseJson["htmlReport"];
         document.getElementById("mainLighthouse").hidden = false;
-        checkLighthouse = true;
+
+        // Show Ready Notification
+        document.getElementById("lighthouseNotificationTitle").innerText = "Your Lighthouse Report is ready.";
+        document.getElementById("lighthouseNotificationBtn").hidden = false;
         $('#lighthouseNotification').toast('show');
+
+        checkLighthouse = true;
     } catch (Ex) {
         console.log(Ex);
         checkLighthouse = false;
@@ -930,6 +940,11 @@ async function runLinks() {
 
     checkLinks = "running";
     $("#linksModal").modal("hide");
+
+    // Show Running Notification
+    document.getElementById("linksNotificationTitle").innerText = "Your Links Report is running.";
+    document.getElementById("linksNotificationBtn").hidden = true;
+    $('#linksNotification').toast('show');
 
     // Get siteUrl
     let siteUrl = await getSiteUrl();
@@ -1063,6 +1078,9 @@ async function runLinks() {
     document.getElementById("links-broken").innerText = brokenLinksCount;
 
     checkLinks = true;
+    // Show Ready Notification
+    document.getElementById("linksNotificationTitle").innerText = "Your Links Report is ready.";
+    document.getElementById("linksNotificationBtn").hidden = false;
     $('#linksNotification').toast('show');
 
     console.log("-------------------");
