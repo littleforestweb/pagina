@@ -220,7 +220,6 @@ Author : xhico
                 <button class="btn active" type="button" onclick="resetPage()">
                     <span class="me-2">Clear</span><i class="fas fa-trash"></i></button>
             </div>
-
             <div class="btn-group me-2" role="group">
                 <a hidden href="#" target="_blank" id="editPageBtn" class="btn active" type="button"><span class="me-2">Edit Page</span><i class="fas fa-edit"></i></a>
             </div>
@@ -261,6 +260,10 @@ Author : xhico
                     <button id="technologies-btn" onclick="toggleView('technologies')"
                             class="nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i
                             class="fab fa-bootstrap"></i></span>Technologies
+                    </button>
+                    <button id="images-btn" onclick="toggleView('images')"
+                            class="nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i
+                            class="fas fa-image"></i></span>Images
                     </button>
                     <button id="lighthouse-btn" onclick="toggleView('lighthouse')"
                             class="nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i
@@ -629,7 +632,7 @@ Author : xhico
                     </div>
                 </div>
                 <%-- TABLES --%>
-                <div id="snifferErrorsTableDiv" class="card mb-4">
+                <div class="card mb-4">
                     <div class="card-body">
                         <table id="technologiesTable" class="table">
                             <thead>
@@ -649,6 +652,63 @@ Author : xhico
                                 <th>Website</th>
                                 <th>Category</th>
                                 <th>Confidence</th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <%-- IMAGES --%>
+            <div hidden id="mainImagesDiv" class="container-fluid px-4">
+                <%-- TITLE --%>
+                <h1 class="mt-4">Images</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item active">Report</li>
+                </ol>
+                <span class="btn active mb-4" onclick="rerunImages()">Run Again</span>
+                <%-- GENERAL INFO --%>
+                <div class="row d-flex justify-content-center">
+                    <div class="col-xl-3 col-md-6 text-center">
+                        <div id="images-card-total" class="card mb-4 bg-lfi-blue text-white"
+                             style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title" id="images-total">0</h5>
+                                <p class="card-text">Total</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 text-center">
+                        <div id="images-card-errors" class="card mb-4 bg-lfi-blue text-white"
+                             style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title" id="images-most">None</h5>
+                                <p class="card-text">Most Frequent Format</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <%-- TABLES --%>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <table id="imagesTable" class="table">
+                            <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Width</th>
+                                <th>Height</th>
+                                <th>Channels</th>
+                                <th>Format</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                            <tr>
+                                <th>Image</th>
+                                <th>Width</th>
+                                <th>Height</th>
+                                <th>Channels</th>
+                                <th>Format</th>
                             </tr>
                             </tfoot>
                         </table>

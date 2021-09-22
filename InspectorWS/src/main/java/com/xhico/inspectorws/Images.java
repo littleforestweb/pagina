@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.xhico.inspectorws;
 
 import com.google.gson.Gson;
@@ -26,12 +21,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-/**
- * @author xhico
- */
-@WebServlet(name = "Wappalyzer", urlPatterns = {"/Wappalyzer"})
-public class Wappalyzer extends HttpServlet {
-
+@WebServlet(name = "Images", value = "/Images")
+public class Images extends HttpServlet {
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -50,14 +41,14 @@ public class Wappalyzer extends HttpServlet {
             // Get url param
             String url = request.getParameter("url");
             String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-            String folderPath = "/opt/scripts/wappalyzer/data/";
+            String folderPath = "/opt/scripts/images/data/";
             String baseFile = url.replaceAll("[^a-zA-Z0-9]", "") + "_" + timeStamp;
             String jsonFilePath = folderPath + baseFile + ".json";
 
             // Set base command
             String siteURL = "--siteUrl=" + url;
             String jsonPath = "--jsonPath=" + jsonFilePath;
-            List<String> base = Arrays.asList("node", "/opt/scripts/wappalyzer/Wappalyzer.js", siteURL, jsonPath);
+            List<String> base = Arrays.asList("python3", "/opt/scripts/images/Images.py", siteURL, jsonPath);
             List<String> cmd = new ArrayList<>(base);
 
             // Run Lighthouse Process
@@ -99,43 +90,13 @@ public class Wappalyzer extends HttpServlet {
         }.start();
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request  servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request  servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException      if an I/O error occurs
-     */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
 }

@@ -50,7 +50,7 @@ public class Lighthouse extends HttpServlet {
             String url = request.getParameter("url");
             String view = request.getParameter("view");
             String device = request.getParameter("device");
-            String folderPath = "/opt/node/lighthouse/data/";
+            String folderPath = "/opt/scripts/lighthouse/data/";
             String baseFile = url.replaceAll("[^a-zA-Z0-9]", "") + "_" + timeStamp;
             String jsonFilePath = folderPath + baseFile + ".json";
             String jsonReport = folderPath + baseFile + ".report" + ".json";

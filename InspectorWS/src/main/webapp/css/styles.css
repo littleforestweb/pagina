@@ -387,3 +387,7 @@ div.dt-buttons {
     float: right;
     padding-left: 10px;
 }
+
+table td, th {
+    vertical-align: middle;
+}

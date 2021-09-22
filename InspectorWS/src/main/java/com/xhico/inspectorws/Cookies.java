@@ -51,14 +51,14 @@ public class Cookies extends HttpServlet {
             String url = request.getParameter("url");
             String level = request.getParameter("level");
             String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-            String folderPath = "/opt/node/cookies/data/";
+            String folderPath = "/opt/scripts/cookies/data/";
             String baseFile = url.replaceAll("[^a-zA-Z0-9]", "") + "_" + timeStamp;
             String jsonFilePath = folderPath + baseFile + ".json";
 
             // Set base command
             String siteURL = "--siteUrl=" + url;
             String jsonPath = "--jsonPath=" + jsonFilePath;
-            List<String> base = Arrays.asList("node", "/opt/node/cookies/Cookies.js", siteURL, jsonPath);
+            List<String> base = Arrays.asList("node", "/opt/scripts/cookies/Cookies.js", siteURL, jsonPath);
             List<String> cmd = new ArrayList<>(base);
 
             // Run Lighthouse Process

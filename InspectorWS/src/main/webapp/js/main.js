@@ -8,7 +8,8 @@
 
 
 // const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS";
-const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
+// const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
+const inspectorUrl = "https://inspector.littleforest.co.uk/DevWS";
 // const inspectorUrl = "http://localhost:8080/InspectorWS";
 const nameWS = inspectorUrl.split("/")[3] + "/";
 const languageToolPost = "/" + nameWS + "LanguageTool";
@@ -17,6 +18,7 @@ const linksPost = "/" + nameWS + "Links";
 const accessibilityPost = "/" + nameWS + "Accessibility";
 const cookiesPost = "/" + nameWS + "Cookies";
 const wappalyzerPost = "/" + nameWS + "Wappalyzer";
+const imagesPost = "/" + nameWS + "Images";
 let spellTagsElem = [];
 let device = "desktop";
 let checkLanguageTool = false;
@@ -25,6 +27,7 @@ let checkLinks = false;
 let checkAccessibility = false;
 let checkCookies = false;
 let checkTechnologies = false;
+let checkImages = false;
 let showTimeout = setTimeout(async function () {
     let siteUrl = await getSiteUrl();
     if (siteUrl !== "") {
@@ -79,7 +82,7 @@ async function toggleView(view) {
     // console.log("toggleView - " + view);
 
     // Set Sidebar btn Active
-    let btnId = ["desktop-btn", "mobile-btn", "code-btn", "spelling-btn", "lighthouse-btn", "links-btn", "accessibility-btn", "cookies-btn", "technologies-btn"];
+    let btnId = ["desktop-btn", "mobile-btn", "code-btn", "spelling-btn", "lighthouse-btn", "links-btn", "accessibility-btn", "cookies-btn", "technologies-btn", "images-btn"];
     btnId.forEach(function (btn) {
         document.getElementById(btn).classList.remove("active");
     });
@@ -89,7 +92,7 @@ async function toggleView(view) {
     }
 
     // Hide all sections except mainPage
-    let reportId = ["mainPageDiv", "mainCodeDiv", "mainSpellingDiv", "mainLighthouseDiv", "mainLinksDiv", "mainAccessibilityDiv", "mainCookiesDiv", "mainTechnologiesDiv"];
+    let reportId = ["mainPageDiv", "mainCodeDiv", "mainSpellingDiv", "mainLighthouseDiv", "mainLinksDiv", "mainAccessibilityDiv", "mainCookiesDiv", "mainTechnologiesDiv", "mainImagesDiv"];
     reportId.forEach(function (report) {
         document.getElementById(report).hidden = true;
     });
@@ -151,6 +154,16 @@ async function toggleView(view) {
                 console.log("Already runTechnologies");
                 document.getElementById("mainPageDiv").hidden = true;
                 document.getElementById("mainTechnologiesDiv").hidden = false;
+            }
+            break;
+        case 'images':
+            if (!checkImages) {
+                await runImages();
+                checkImages = true;
+            } else {
+                console.log("Already runImages");
+                document.getElementById("mainPageDiv").hidden = true;
+                document.getElementById("mainImagesDiv").hidden = false;
             }
             break;
         case 'lighthouse':
@@ -634,6 +647,16 @@ async function rerunTechnologies() {
     await toggleView("technologies");
 }
 
+async function rerunImages() {
+    console.log("rerunImages");
+
+    // Clear Cookies table
+    $('#imagesTable').DataTable().clear().draw();
+    $('#imagesTable').DataTable().destroy();
+
+    checkImages = false;
+    await toggleView("images");
+}
 
 // ------------------------------------- MAIN ------------------------------------- //
 
@@ -1474,6 +1497,97 @@ async function runTechnologies() {
     document.getElementById("overlay_technologies_mark").style.color = "rgba(var(--lfi-green-rgb)";
 }
 
+async function runImages() {
+    console.log("-------------------------");
+    console.log("runImages");
+
+    // Insert overlay
+    // await overlay("addOverlay", "Running Images Report", "");
+
+    // Get siteUrl
+    let siteUrl = await getSiteUrl();
+
+    // Get imagesJSON
+    let imagesJSON = await $.post(imagesPost, {
+        url: siteUrl,
+    }, function (result) {
+        return result;
+    });
+
+    let dataset = [];
+    let imagesCounter = {};
+    imagesJSON = imagesJSON["images"];
+    for (let i = 0; i < imagesJSON.length; i++) {
+        let entry = imagesJSON[i];
+        let url = entry["url"];
+        let width = entry["width"];
+        let height = entry["height"];
+        let channels = entry["channels"];
+        let format = entry["format"];
+        if (format in imagesCounter) {
+            imagesCounter[format] += 1;
+        } else {
+            imagesCounter[format] = 1;
+        }
+        dataset.push([url, width, height, channels, format]);
+    }
+
+    // Update GENERAL INFO
+    // Sort the array based on the count element
+    imagesCounter = Object.keys(imagesCounter).map(function (key) {
+        return [key, imagesCounter[key]];
+    }).sort(function (first, second) {
+        return second[1] - first[1];
+    });
+    document.getElementById("images-total").innerText = dataset.length.toString();
+    if (imagesCounter.length !== 0) {
+        document.getElementById("images-most").innerText = imagesCounter[0][0];
+    }
+
+    // Initialize Errors Table
+    $('#imagesTable').DataTable({
+        dom: 'Blfrtip',
+        buttons: [{text: 'Export', extend: 'csv', filename: 'Images Report'}],
+        paginate: false,
+        "oLanguage": {"sSearch": "Filter:"},
+        "language": {"emptyTable": "No data available in table"},
+        "order": [[0, "asc"]],
+        data: dataset,
+        "autoWidth": false,
+        "columnDefs": [
+            {
+                "width": "20%", "targets": 0, "render": function (data, type, row) {
+                    return "<a href='" + data + "' target='_blank'><img width='100px' height='100px' src='" + data + "' alt='Image'/></a>";
+                },
+            },
+            {
+                "width": "20%", "targets": 1, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            },
+            {
+                "width": "20%", "targets": 2, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            },
+            {
+                "width": "20%", "targets": 3, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            },
+            {
+                "width": "20%", "targets": 4, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            }
+        ]
+    });
+
+    // Remove overlay
+    // await overlay("removeOverlay", "", "");
+    document.getElementById("overlay_images_mark").style.color = "rgba(var(--lfi-green-rgb)";
+}
+
 async function runMain(url, mainURL, mainLang) {
     // Add overlay
     await overlay("addOverlay", "Loading page", "");
@@ -1527,11 +1641,12 @@ async function runMain(url, mainURL, mainLang) {
 
             // Auto Run
             await overlay("addOverlay", "Running Reports", "");
-            document.getElementById("overlaySndMessage").innerHTML = "<p>Spelling <i id='overlay_spelling_mark' class=\"fas fa-check-square\"></i></p><p>Accessibility <i id='overlay_accessibility_mark' class=\"fas fa-check-square\"></i></p><p>Cookies <i id='overlay_cookies_mark' class=\"fas fa-check-square\"></i></p><p>Technologies <i id='overlay_technologies_mark' class=\"fas fa-check-square\"></i></p>"
+            document.getElementById("overlaySndMessage").innerHTML = "<p>Spelling <i id='overlay_spelling_mark' class=\"fas fa-check-square\"></i></p><p>Accessibility <i id='overlay_accessibility_mark' class=\"fas fa-check-square\"></i></p><p>Cookies <i id='overlay_cookies_mark' class=\"fas fa-check-square\"></i></p><p>Technologies <i id='overlay_technologies_mark' class=\"fas fa-check-square\"></i></p><p>Images <i id='overlay_images_mark' class=\"fas fa-check-square\"></i></p>"
             toggleView("spelling");
             toggleView("accessibility");
             toggleView("cookies");
             toggleView("technologies");
+            toggleView("images");
             toggleView("desktop");
         }
     });

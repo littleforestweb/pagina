@@ -50,7 +50,7 @@ public class Accessibility extends HttpServlet {
             String url = request.getParameter("url");
             String level = request.getParameter("level");
             String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-            String folderPath = "/opt/node/codesniffer/data/";
+            String folderPath = "/opt/scripts/codesniffer/data/";
             String baseFile = url.replaceAll("[^a-zA-Z0-9]", "") + "_" + timeStamp;
             String jsonFilePath = folderPath + baseFile + ".json";
 
@@ -58,7 +58,7 @@ public class Accessibility extends HttpServlet {
             String siteURL = "--siteUrl=" + url;
             String jsonPath = "--jsonPath=" + jsonFilePath;
             String WCAGLevel = "--level=" + level;
-            List<String> base = Arrays.asList("node", "/opt/node/codesniffer/HTML_CodeSniffer.js", siteURL, jsonPath, WCAGLevel);
+            List<String> base = Arrays.asList("node", "/opt/scripts/codesniffer/HTML_CodeSniffer.js", siteURL, jsonPath, WCAGLevel);
             List<String> cmd = new ArrayList<>(base);
 
             // Run Lighthouse Process
