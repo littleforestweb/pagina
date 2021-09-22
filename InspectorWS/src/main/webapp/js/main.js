@@ -163,6 +163,8 @@ async function toggleView(view) {
                     document.getElementById("mainPageDiv").hidden = true;
                     document.getElementById("mainLighthouseDiv").hidden = false;
                 }
+            } else {
+                $('#lighthouseNotification').toast('show');
             }
             break;
         case 'links':
@@ -174,6 +176,8 @@ async function toggleView(view) {
                     document.getElementById("mainPageDiv").hidden = true;
                     document.getElementById("mainLinksDiv").hidden = false;
                 }
+            } else {
+                $('#linksNotification').toast('show');
             }
             break;
         default:
@@ -1077,11 +1081,12 @@ async function runLinks() {
     document.getElementById("links-int").innerText = intLinksCount;
     document.getElementById("links-broken").innerText = brokenLinksCount;
 
-    checkLinks = true;
     // Show Ready Notification
     document.getElementById("linksNotificationTitle").innerText = "Your Links Report is ready.";
     document.getElementById("linksNotificationBtn").hidden = false;
     $('#linksNotification').toast('show');
+
+    checkLinks = true;
 
     console.log("-------------------");
 }
