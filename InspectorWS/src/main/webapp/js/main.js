@@ -11,6 +11,7 @@
 // const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
 const inspectorUrl = "https://inspector.littleforest.co.uk/DevWS";
 // const inspectorUrl = "http://localhost:8080/InspectorWS";
+const proxy = ['https://jsonp.afeld.me/?url=', 'https://cors.io/?', 'https://cors-anywhere.herokuapp.com/']
 const nameWS = inspectorUrl.split("/")[3] + "/";
 const languageToolPost = "/" + nameWS + "LanguageTool";
 const lighthousePost = "/" + nameWS + "Lighthouse";
@@ -28,15 +29,6 @@ let checkAccessibility = false;
 let checkCookies = false;
 let checkTechnologies = false;
 let checkImages = false;
-let showTimeout = setTimeout(async function () {
-    let siteUrl = await getSiteUrl();
-    if (siteUrl !== "") {
-        await setErrorModal("", "Failed to load <b>" + siteUrl + "</b> (Timeout)</br>Plase check the URL.");
-        await overlay("removeOverlay", "", "");
-        document.getElementById("mainPage").hidden = true;
-        clearTimeout(showTimeout);
-    }
-}, 10000);
 
 
 // ------------------------------------- AUX FUNCTIONS ------------------------------------- //
@@ -198,7 +190,7 @@ async function toggleView(view) {
     }
 
     // Check if Report Status is True -> All reports finished running
-    if (checkLanguageTool && checkAccessibility && checkCookies && checkTechnologies) {
+    if (checkLanguageTool && checkAccessibility && checkCookies && checkTechnologies && checkImages) {
         console.log("READY");
         await overlay("removeOverlay", "", "");
     }
@@ -303,6 +295,19 @@ async function checkCMS() {
     }
 }
 
+async function fetchProxy(url, i) {
+    return fetch(proxy[i] + url).then(res => {
+        if (!res.ok) {
+            throw new Error(`${res.status} ${res.statusText}`);
+        }
+        return res;
+    }).catch(error => {
+        if (i === proxy.length - 1) {
+            throw error;
+        }
+        return fetchProxy(url, i + 1);
+    })
+}
 
 // ------------------------------------- SPELLING REPORT ------------------------------------- //
 
@@ -1414,31 +1419,26 @@ async function runTechnologies() {
     });
 
     let dataset = [];
-    let checkError = wappalyzerJSON["Wappalyzer"]["urls"][siteUrl]["error"];
-    if (checkError) {
-        setErrorModal("", "Couldn't get technologies from server.");
-    } else {
-        let categoriesCounter = {};
-        wappalyzerJSON = wappalyzerJSON["Wappalyzer"]["technologies"];
-        for (let i = 0; i < wappalyzerJSON.length; i++) {
-            let entry = wappalyzerJSON[i];
-            let confidence = entry["confidence"].toString();
-            let icon = entry["icon"];
-            let name = entry["name"];
-            let website = entry["website"];
-            let categories = entry["categories"];
-            let categoriesName = "";
-            for (let j = 0; j < categories.length; j++) {
-                categoriesName += categories[j]["name"] + ", ";
-                if (categories[j]["name"] in categoriesCounter) {
-                    categoriesCounter[categories[j]["name"]] += 1;
-                } else {
-                    categoriesCounter[categories[j]["name"]] = 1;
-                }
+    let categoriesCounter = {};
+    wappalyzerJSON = wappalyzerJSON["Wappalyzer"]["technologies"];
+    for (let i = 0; i < wappalyzerJSON.length; i++) {
+        let entry = wappalyzerJSON[i];
+        let confidence = entry["confidence"].toString();
+        let icon = entry["icon"];
+        let name = entry["name"];
+        let website = entry["website"];
+        let categories = entry["categories"];
+        let categoriesName = "";
+        for (let j = 0; j < categories.length; j++) {
+            categoriesName += categories[j]["name"] + ", ";
+            if (categories[j]["name"] in categoriesCounter) {
+                categoriesCounter[categories[j]["name"]] += 1;
+            } else {
+                categoriesCounter[categories[j]["name"]] = 1;
             }
-            categoriesName = categoriesName.substring(0, categoriesName.length - 2);
-            dataset.push([icon, name, website, categoriesName, confidence]);
         }
+        categoriesName = categoriesName.substring(0, categoriesName.length - 2);
+        dataset.push([icon, name, website, categoriesName, confidence]);
 
         // Update GENERAL INFO
         // Sort the array based on the count element
@@ -1589,6 +1589,8 @@ async function runImages() {
 }
 
 async function runMain(url, mainURL, mainLang) {
+    console.log("-------------------------");
+
     // Add overlay
     await overlay("addOverlay", "Loading page", "");
 
@@ -1601,53 +1603,57 @@ async function runMain(url, mainURL, mainLang) {
     // Get siteUrl, pageIframe, codeIframe
     let siteUrl = await getSiteUrl();
     let pageIframe = document.getElementById('mainPage');
-    let codeIframe = document.getElementById('mainCode');
 
-    // Set iframe src to siteUrl
-    pageIframe.src = siteUrl;
+    // Load iframe
+    console.log('Loading:', siteUrl)
+    fetchProxy(siteUrl, 0).then(res => res.text()).then(async data => {
+        if (data) {
+            pageIframe.srcdoc = data.replace(/<head([^>]*)>/i, `<head$1><base href="${siteUrl}">`);
 
-    // Wait for pageIframe to load
-    pageIframe.addEventListener("load", async function () {
-        let html = pageIframe.contentWindow.document.documentElement.outerHTML;
-        if (html.length > 500) {
-            clearTimeout(showTimeout);
+            // Wait for pageIframe to load
+            pageIframe.addEventListener("load", async function () {
+                // Get pageIframe, codeIframe
+                let pageIframe = document.getElementById('mainPage');
+                let codeIframe = document.getElementById('mainCode');
 
-            // Check if redirect
-            if (url !== mainURL) {
-                await setErrorModal("Redirect found", "<b>" + url + "</b> was redirected to <b>" + mainURL + "</b>");
-            }
+                // Set codeIframe
+                codeIframe = codeIframe.contentWindow.document;
+                codeIframe.open();
+                codeIframe.write('<pre><code id="htmlCode">' + pageIframe.contentWindow.document.documentElement.outerHTML.replaceAll("<", "&lt;").replaceAll(">", "&gt;") + '</code></pre>');
+                codeIframe.close();
 
-            // Set codeIframe
-            codeIframe = codeIframe.contentWindow.document;
-            codeIframe.open();
-            html = html.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-            codeIframe.write('<pre><code id="htmlCode">' + html + '</code></pre>');
-            codeIframe.close();
+                // HTMLCode Syntax Highlighter
+                await w3CodeColor();
 
-            // HTMLCode Syntax Highlighter
-            await w3CodeColor();
+                // Add Stylesheet to iframe head Page and Code
+                let iframeCSS = inspectorUrl + "/css/iframe.css";
+                pageIframe = pageIframe.contentWindow.document;
+                pageIframe.head.innerHTML = pageIframe.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
+                codeIframe.head.innerHTML = codeIframe.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
 
-            // Add Stylesheet to iframe head Page and Code
-            let iframeCSS = inspectorUrl + "/css/iframe.css";
-            pageIframe = pageIframe.contentWindow.document;
-            pageIframe.head.innerHTML = pageIframe.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
-            codeIframe.head.innerHTML = codeIframe.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
+                // Check Drupal || Wordpress || Adobe CMS -> Edit Btn
+                await checkCMS()
 
-            // Check Drupal || Wordpress || Adobe CMS -> Edit Btn
-            await checkCMS()
+                // Remove overlay
+                await overlay("removeOverlay", "", "");
 
-            // Remove overlay
-            await overlay("removeOverlay", "", "");
-
-            // Auto Run
-            await overlay("addOverlay", "Running Reports", "");
-            document.getElementById("overlaySndMessage").innerHTML = "<p>Spelling <i id='overlay_spelling_mark' class=\"fas fa-check-square\"></i></p><p>Accessibility <i id='overlay_accessibility_mark' class=\"fas fa-check-square\"></i></p><p>Cookies <i id='overlay_cookies_mark' class=\"fas fa-check-square\"></i></p><p>Technologies <i id='overlay_technologies_mark' class=\"fas fa-check-square\"></i></p><p>Images <i id='overlay_images_mark' class=\"fas fa-check-square\"></i></p>"
-            toggleView("spelling");
-            toggleView("accessibility");
-            toggleView("cookies");
-            toggleView("technologies");
-            toggleView("images");
-            toggleView("desktop");
+                // Auto Run
+                await overlay("addOverlay", "Running Reports", "");
+                document.getElementById("overlaySndMessage").innerHTML = "<p>Spelling <i id='overlay_spelling_mark' class=\"fas fa-check-square\"></i></p><p>Accessibility <i id='overlay_accessibility_mark' class=\"fas fa-check-square\"></i></p><p>Cookies <i id='overlay_cookies_mark' class=\"fas fa-check-square\"></i></p><p>Technologies <i id='overlay_technologies_mark' class=\"fas fa-check-square\"></i></p><p>Images <i id='overlay_images_mark' class=\"fas fa-check-square\"></i></p>"
+                toggleView("spelling");
+                toggleView("accessibility");
+                toggleView("cookies");
+                toggleView("technologies");
+                toggleView("images");
+                toggleView("desktop");
+            });
         }
-    });
+    }).catch(e => {
+        // Send Failed to load
+        setErrorModal("", "Failed to load <b>" + siteUrl + "</b></br>" + e + "</br>Plase check the URL.");
+        overlay("removeOverlay", "", "");
+        document.getElementById("mainPage").hidden = true;
+    })
 }
+
+

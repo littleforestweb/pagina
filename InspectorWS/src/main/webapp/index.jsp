@@ -36,10 +36,6 @@ Author : xhico
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-    <%--  X-Frame Bypass  --%>
-    <script src="https://unpkg.com/@ungap/custom-elements-builtin"></script>
-    <script type="module" src="https://unpkg.com/x-frame-bypass"></script>
-
     <%--    Custom  --%>
     <link href="css/styles.css" rel="stylesheet"/>
 </head>
@@ -302,7 +298,7 @@ Author : xhico
 
             <%-- PAGE IFRAME --%>
             <div id="mainPageDiv" class="iframe-container">
-                <iframe is="x-frame-bypass" id="mainPage"></iframe>
+                <iframe id="mainPage" sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-same-origin allow-scripts allow-top-navigation-by-user-activation"></iframe>
             </div>
 
             <%-- CODE IFRAME --%>
@@ -789,7 +785,6 @@ Author : xhico
                     </div>
                 </div>
             </div>
-
         </main>
     </div>
 </div>

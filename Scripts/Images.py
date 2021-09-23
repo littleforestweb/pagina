@@ -92,7 +92,6 @@ def getDimensions(imgUrls):
 def main(siteUrl, jsonPath):
     print(siteUrl)
     print(jsonPath)
-    print("")
     
     # Check if siteUrl is valid
     if is_valid(siteUrl) == False:
