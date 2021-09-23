@@ -232,41 +232,37 @@ Author : xhico
             <div class="lf-sidenav-menu">
                 <div class="nav">
                     <div class="lf-sidenav-menu-heading">Views</div>
-                    <button id="desktop-btn" onclick="toggleView('desktop')"
-                            class="active nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i
-                            class="fas fa-desktop"></i></span>Desktop
+                    <button id="desktop-btn" onclick="toggleView('desktop')" class="active nav-link bg-transparent border-0">
+                        <span class="lf-nav-link-icon"><i class="fas fa-desktop"></i></span>Desktop
                     </button>
                     <button id="mobile-btn" onclick="toggleView('mobile')" class="nav-link bg-transparent border-0">
                         <span class="lf-nav-link-icon"><i class="fas fa-mobile-alt"></i></span>Mobile
                     </button>
-                    <button id="code-btn" onclick="toggleView('code')" class="nav-link bg-transparent border-0"><span
-                            class="lf-nav-link-icon"><i class="fas fa-code"></i></span>Code
+                    <button id="code-btn" onclick="toggleView('code')" class="nav-link bg-transparent border-0">
+                        <span class="lf-nav-link-icon"><i class="fas fa-code"></i></span>Code
                     </button>
+
                     <div class="lf-sidenav-menu-heading">Reports</div>
                     <button id="spelling-btn" onclick="toggleView('spelling')" class="nav-link bg-transparent border-0">
                         <span class="lf-nav-link-icon"><i class="fas fa-spell-check"></i></span>Spelling
                     </button>
-                    <button id="accessibility-btn" onclick="toggleView('accessibility')"
-                            class="nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i
-                            class="fas fa-universal-access"></i></span>Accessibility
+                    <button id="accessibility-btn" onclick="toggleView('accessibility')" class="nav-link bg-transparent border-0">
+                        <span class="lf-nav-link-icon"><i class="fas fa-universal-access"></i></span>Accessibility
                     </button>
                     <button id="cookies-btn" onclick="toggleView('cookies')" class="nav-link bg-transparent border-0">
                         <span class="lf-nav-link-icon"><i class="fas fa-cookie"></i></span>Cookies
                     </button>
-                    <button id="technologies-btn" onclick="toggleView('technologies')"
-                            class="nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i
-                            class="fab fa-bootstrap"></i></span>Technologies
+                    <button id="technologies-btn" onclick="toggleView('technologies')" class="nav-link bg-transparent border-0">
+                        <span class="lf-nav-link-icon"><i class="fab fa-bootstrap"></i></span>Technologies
                     </button>
-                    <button id="images-btn" onclick="toggleView('images')"
-                            class="nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i
-                            class="fas fa-image"></i></span>Images
+                    <button hidden id="images-btn" onclick="toggleView('images')" class="nav-link bg-transparent border-0">
+                        <span class="lf-nav-link-icon"><i class="fas fa-image"></i></span>Images
                     </button>
-                    <button id="lighthouse-btn" onclick="toggleView('lighthouse')"
-                            class="nav-link bg-transparent border-0"><span class="lf-nav-link-icon"><i
-                            class="fas fa-tachometer-alt"></i></span>Lighthouse
+                    <button id="lighthouse-btn" onclick="toggleView('lighthouse')" class="nav-link bg-transparent border-0">
+                        <span class="lf-nav-link-icon"><i class="fas fa-tachometer-alt"></i></span>Lighthouse
                     </button>
-                    <button id="links-btn" onclick="toggleView('links')" class="nav-link bg-transparent border-0"><span
-                            class="lf-nav-link-icon"><i class="fas fa-link"></i></span>Links
+                    <button id="links-btn" onclick="toggleView('links')" class="nav-link bg-transparent border-0">
+                        <span class="lf-nav-link-icon"><i class="fas fa-link"></i></span>Links
                     </button>
                 </div>
             </div>
