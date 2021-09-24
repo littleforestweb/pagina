@@ -72,18 +72,17 @@ def getDimensions(imgUrls):
         
         # Try to get img shape
         try:
-            w, h, c = img.shape
-            w, h, c = str(w), str(h), str(c)
+            w, h = img.shape
+            w, h = str(w), str(h)
             format = imghdr.what(None, imgContent)
             
         except AttributeError:
-            w, h, c, format = "null", "null", "null", "null"
+            w, h, format = "null", "null", "null"
             
         dict = {}
         dict["url"] = imgUrl
         dict["width"] = w
         dict["height"] = h
-        dict["channels"] = c
         dict["format"] = format
         jsonArr.append(dict)
         

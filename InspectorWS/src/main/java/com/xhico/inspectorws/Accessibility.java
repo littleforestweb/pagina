@@ -17,13 +17,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.text.SimpleDateFormat;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author xhico
@@ -45,121 +48,153 @@ public class Accessibility extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
-
             // Get url param
             String url = request.getParameter("url");
             String level = request.getParameter("level");
-            String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+            long timeStamp = Instant.now().toEpochMilli();
             String folderPath = "/opt/scripts/codesniffer/data/";
             String baseFile = url.replaceAll("[^a-zA-Z0-9]", "") + "_" + timeStamp;
             String jsonFilePath = folderPath + baseFile + ".json";
 
-            // Set base command
-            String siteURL = "--siteUrl=" + url;
-            String jsonPath = "--jsonPath=" + jsonFilePath;
-            String WCAGLevel = "--level=" + level;
-            List<String> base = Arrays.asList("node", "/opt/scripts/codesniffer/HTML_CodeSniffer.js", siteURL, jsonPath, WCAGLevel);
-            List<String> cmd = new ArrayList<>(base);
-
-            // Run Lighthouse Process
-            ProcessBuilder builder = new ProcessBuilder(cmd);
-            builder.redirectErrorStream(true);
-            final Process process = builder.start();
-            watch(process);
-
-            // Wait until Process is finished
-            process.waitFor();
-
-            // Get File Contents
-            ArrayList<String> fileContent = getFileContent(jsonFilePath);
-
-            // Initialize JSONObject and JSONArrays
-            JSONObject mainObj = new JSONObject();
-            JSONArray jaNotices = new JSONArray();
-            JSONArray jaWarnings = new JSONArray();
-            JSONArray jaErrors = new JSONArray();
-
-            for (String line : fileContent) {
-                if ((line.contains("[HTMLCS] Notice")) || (line.contains("[HTMLCS] Warning")) || (line.contains("[HTMLCS] Error"))) {
-
-                    // Split the line "|" to get the various fields
-                    String[] parts = line.split("\\|");
-                    List<String> list = new ArrayList<>(Arrays.asList(parts));
-                    list.remove("");
-
-                    // Initialize fields
-                    String type = list.get(0);
-                    String guideline = list.get(1);
-                    String tag = "null";
-                    String message = "null";
-                    String code = "null";
-
-                    // Set type of info
-                    if (type.contains("Notice")) {
-                        type = "Notice";
-                    } else if (type.contains("Warning")) {
-                        type = "Warning";
-                    } else {
-                        type = "Error";
+            // Get last log file if available
+            boolean useCache = false;
+            long epochFile = 0;
+            List<String> contents = List.of(Objects.requireNonNull(new File(folderPath).list()));
+            if (contents.size() != 0) {
+                List<String> result = contents.stream().filter(word -> word.startsWith(url.replaceAll("[^a-zA-Z0-9]", ""))).sorted().collect(Collectors.toList());
+                if (result.size() != 0) {
+                    String filePath = result.get(result.size() - 1);
+                    epochFile = Long.parseLong(filePath.split("_")[1].replace(".json", ""));
+                    long delta = (timeStamp - epochFile) / 60; // Milli -> Seconds
+                    if (delta <= 100) {
+                        useCache = true;
+                        jsonFilePath = folderPath + url.replaceAll("[^a-zA-Z0-9]", "") + "_" + epochFile + ".json";
                     }
-
-                    // If the tag, message or code exist -> parse
-                    for (int idx = 2; idx < list.size(); idx++) {
-
-                        // Get the text
-                        String txt = list.get(idx);
-
-                        // Check is only one word -> tag
-                        Pattern wordPattern = Pattern.compile("\\w+");
-                        Matcher wordMatcher = wordPattern.matcher(txt);
-                        if (wordMatcher.matches()) {
-                            tag = txt;
-                        } else {
-                            // Check is it's a piece of code
-                            if (txt.startsWith("<") && txt.endsWith(">")) {
-                                code = txt;
-                            } else {
-                                // Is message
-                                message = txt;
-                            }
-                        }
-                    }
-
-                    // Add fields to JSONObject
-                    JSONObject jo = new JSONObject();
-                    jo.put("Type", type);
-                    jo.put("Guideline", guideline);
-                    jo.put("Tag", tag);
-                    jo.put("Message", message);
-                    jo.put("Code", code);
-
-                    // Add JSONObject to respective JSONArray
-                    if (type.equals("Notice")) {
-                        jaNotices.put(jo);
-                    } else if (type.equals("Warning")) {
-                        jaWarnings.put(jo);
-                    } else {
-                        jaErrors.put(jo);
-                    }
-
                 }
             }
 
-            // Add each JSONArray to main JSONObject
-            mainObj.put("Errors", jaErrors);
-            mainObj.put("Notices", jaNotices);
-            mainObj.put("Warnings", jaWarnings);
+            if (!useCache) {
+                // Set base command
+                String siteURL = "--siteUrl=" + url;
+                String jsonPath = "--jsonPath=" + jsonFilePath;
+                String WCAGLevel = "--level=" + level;
+                List<String> base = Arrays.asList("node", "/opt/scripts/codesniffer/HTML_CodeSniffer.js", siteURL, jsonPath, WCAGLevel);
+                List<String> cmd = new ArrayList<>(base);
 
-            // Pretty Print JSON
+                // Run Lighthouse Process
+                ProcessBuilder builder = new ProcessBuilder(cmd);
+                builder.redirectErrorStream(true);
+                final Process process = builder.start();
+                watch(process);
+
+                // Wait until Process is finished
+                process.waitFor();
+
+                // Get File Contents
+                ArrayList<String> fileContent = getFileContent(jsonFilePath);
+
+                // Initialize JSONObject and JSONArrays
+                JSONObject mainObj = new JSONObject();
+                JSONArray jaNotices = new JSONArray();
+                JSONArray jaWarnings = new JSONArray();
+                JSONArray jaErrors = new JSONArray();
+
+                for (String line : fileContent) {
+                    if ((line.contains("[HTMLCS] Notice")) || (line.contains("[HTMLCS] Warning")) || (line.contains("[HTMLCS] Error"))) {
+
+                        // Split the line "|" to get the various fields
+                        String[] parts = line.split("\\|");
+                        List<String> list = new ArrayList<>(Arrays.asList(parts));
+                        list.remove("");
+
+                        // Initialize fields
+                        String type = list.get(0);
+                        String guideline = list.get(1);
+                        String tag = "null";
+                        String message = "null";
+                        String code = "null";
+
+                        // Set type of info
+                        if (type.contains("Notice")) {
+                            type = "Notice";
+                        } else if (type.contains("Warning")) {
+                            type = "Warning";
+                        } else {
+                            type = "Error";
+                        }
+
+                        // If the tag, message or code exist -> parse
+                        for (int idx = 2; idx < list.size(); idx++) {
+
+                            // Get the text
+                            String txt = list.get(idx);
+
+                            // Check is only one word -> tag
+                            Pattern wordPattern = Pattern.compile("\\w+");
+                            Matcher wordMatcher = wordPattern.matcher(txt);
+                            if (wordMatcher.matches()) {
+                                tag = txt;
+                            } else {
+                                // Check is it's a piece of code
+                                if (txt.startsWith("<") && txt.endsWith(">")) {
+                                    code = txt;
+                                } else {
+                                    // Is message
+                                    message = txt;
+                                }
+                            }
+                        }
+
+                        // Add fields to JSONObject
+                        JSONObject jo = new JSONObject();
+                        jo.put("Type", type);
+                        jo.put("Guideline", guideline);
+                        jo.put("Tag", tag);
+                        jo.put("Message", message);
+                        jo.put("Code", code);
+
+                        // Add JSONObject to respective JSONArray
+                        if (type.equals("Notice")) {
+                            jaNotices.put(jo);
+                        } else if (type.equals("Warning")) {
+                            jaWarnings.put(jo);
+                        } else {
+                            jaErrors.put(jo);
+                        }
+
+                    }
+                }
+
+                // Add each JSONArray to main JSONObject
+                mainObj.put("Errors", jaErrors);
+                mainObj.put("Notices", jaNotices);
+                mainObj.put("Warnings", jaWarnings);
+
+                // Pretty Print JSON
+                Gson gson = new Gson();
+                Gson gsonPP = new GsonBuilder().setPrettyPrinting().create();
+                JsonObject jsonObject = gson.fromJson(mainObj.toString(), JsonObject.class);
+                String jsonOutput = gsonPP.toJson(jsonObject);
+
+                // Save json to file
+                BufferedWriter writer = new BufferedWriter(new FileWriter(jsonFilePath));
+                writer.write(jsonOutput);
+                writer.close();
+            }
+
+
+            String jsonContent = Files.readString(Paths.get(jsonFilePath));
             Gson gson = new Gson();
             Gson gsonPP = new GsonBuilder().setPrettyPrinting().create();
-            JsonObject jsonObject = gson.fromJson(mainObj.toString(), JsonObject.class);
+            JsonObject jsonObject = gson.fromJson(jsonContent, JsonObject.class);
+            jsonObject.addProperty("useCache", useCache);
+            if (useCache) {
+                jsonObject.addProperty("epochFile", epochFile);
+            }
             String jsonOutput = gsonPP.toJson(jsonObject);
 
             // Return JSON Report
-            System.out.println(jsonOutput);
             out.println(jsonOutput);
-
         } catch (Exception ex) {
             out.println(ex);
         }

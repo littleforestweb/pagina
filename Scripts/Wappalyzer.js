@@ -47,7 +47,6 @@ async function main() {
         if (index > 1 && val.startsWith("--")) {
 
             let argArray = val.split("=");
-            console.log(argArray);
 
             if (argArray.length > 1) {
                 let name = argArray[0];

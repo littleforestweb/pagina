@@ -10,8 +10,7 @@
 // const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS";
 // const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
 const inspectorUrl = "https://inspector.littleforest.co.uk/DevWS";
-// const inspectorUrl = "http://localhost:8080/InspectorWS";
-const proxy = ['https://jsonp.afeld.me/?url=', 'https://cors.io/?', 'https://cors-anywhere.herokuapp.com/']
+const proxy = ['https://jsonp.afeld.me/?url=', 'https://cors.io/?', 'https://cors-anywhere.herokuapp.com/'];
 const nameWS = inspectorUrl.split("/")[3] + "/";
 const languageToolPost = "/" + nameWS + "LanguageTool";
 const lighthousePost = "/" + nameWS + "Lighthouse";
@@ -190,7 +189,7 @@ async function toggleView(view) {
     }
 
     // Check if Report Status is True -> All reports finished running
-    if (checkLanguageTool && checkAccessibility && checkCookies && checkTechnologies && checkImages) {
+    if (checkLanguageTool && checkAccessibility && checkCookies && checkTechnologies) {
         console.log("READY");
         await overlay("removeOverlay", "", "");
     }
@@ -1644,12 +1643,12 @@ async function runMain(url, mainURL, mainLang) {
                 toggleView("accessibility");
                 toggleView("cookies");
                 toggleView("technologies");
-                toggleView("images");
+                // toggleView("images");
                 toggleView("desktop");
             });
         }
     }).catch(e => {
-        // Send Failed to load
+        // Send Failed to load message
         setErrorModal("", "Failed to load <b>" + siteUrl + "</b></br>" + e + "</br>Plase check the URL.");
         overlay("removeOverlay", "", "");
         document.getElementById("mainPage").hidden = true;

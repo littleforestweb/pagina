@@ -14,17 +14,15 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author xhico
@@ -46,12 +44,12 @@ public class Lighthouse extends HttpServlet {
 
         try {
             // Set variables
-            String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+            long timeStamp = Instant.now().toEpochMilli();
             String url = request.getParameter("url");
             String view = request.getParameter("view");
             String device = request.getParameter("device");
             String folderPath = "/opt/scripts/lighthouse/data/";
-            String baseFile = url.replaceAll("[^a-zA-Z0-9]", "") + "_" + timeStamp;
+            String baseFile = url.replaceAll("[^a-zA-Z0-9]", "") + "_" + device + "_" + timeStamp;
             String jsonFilePath = folderPath + baseFile + ".json";
             String jsonReport = folderPath + baseFile + ".report" + ".json";
             String htmlReport = baseFile + ".report" + ".html";
@@ -59,32 +57,66 @@ public class Lighthouse extends HttpServlet {
             if (!url.equals("null")) {
                 response.setContentType("application/json");
 
-                // Set base command
-                List<String> base = Arrays.asList("lighthouse", url, "--output", "json", "--output", "html", "--output-path", jsonFilePath, "--chrome-flags='--headless --no-sandbox'", "--quiet");
-                List<String> cmd = new ArrayList<>(base);
-
-                // Set Device
-                if (device.equals("desktop")) {
-                    cmd.add("--preset=desktop");
-                } else if (device.equals("mobile")) {
-                    cmd.add("--form-factor=mobile");
+                // Get last log file if available
+                boolean useCache = false;
+                long epochFile = 0;
+                List<String> contents = List.of(Objects.requireNonNull(new File(folderPath).list()));
+                if (contents.size() != 0) {
+                    List<String> result = contents.stream().filter(word -> word.startsWith(url.replaceAll("[^a-zA-Z0-9]", "") + "_" + device)).filter(word -> word.endsWith(".json")).sorted().collect(Collectors.toList());
+                    if (result.size() != 0) {
+                        String filePath = result.get(result.size() - 1);
+                        epochFile = Long.parseLong(filePath.split("_")[2].replace(".report.json", ""));
+                        long delta = (timeStamp - epochFile) / 60; // Milli -> Seconds
+                        if (delta <= 500) {
+                            useCache = true;
+                            jsonReport = folderPath + url.replaceAll("[^a-zA-Z0-9]", "") + "_" + device + "_" + epochFile + ".report.json";
+                        }
+                    }
                 }
 
-                // Run Lighthouse Process
-                ProcessBuilder builder = new ProcessBuilder(cmd);
-                builder.redirectErrorStream(true);
-                final Process process = builder.start();
-                watch(process);
+                if (!useCache) {
+                    // Set base command
+                    List<String> base = Arrays.asList("lighthouse", url, "--output", "json", "--output", "html", "--output-path", jsonFilePath, "--chrome-flags='--headless --no-sandbox'", "--quiet");
+                    List<String> cmd = new ArrayList<>(base);
 
-                // Wait until Process is finished
-                process.waitFor();
+                    // Set Device
+                    if (device.equals("desktop")) {
+                        cmd.add("--preset=desktop");
+                    } else if (device.equals("mobile")) {
+                        cmd.add("--form-factor=mobile");
+                    }
 
-                // Reads json file && add htmlReport
+                    // Run Lighthouse Process
+                    ProcessBuilder builder = new ProcessBuilder(cmd);
+                    builder.redirectErrorStream(true);
+                    final Process process = builder.start();
+                    watch(process);
+
+                    // Wait until Process is finished
+                    process.waitFor();
+
+                    // Reads json file && add htmlReport
+                    String jsonContent = Files.readString(Paths.get(jsonReport));
+                    Gson gson = new Gson();
+                    Gson gsonPP = new GsonBuilder().setPrettyPrinting().create();
+                    JsonObject jsonObject = gson.fromJson(jsonContent, JsonObject.class);
+                    jsonObject.addProperty("htmlReport", htmlReport);
+                    String jsonOutput = gsonPP.toJson(jsonObject);
+
+                    // Save json to file
+                    BufferedWriter writer = new BufferedWriter(new FileWriter(jsonReport));
+                    writer.write(jsonOutput);
+                    writer.close();
+                }
+
                 String jsonContent = Files.readString(Paths.get(jsonReport));
                 Gson gson = new Gson();
                 Gson gsonPP = new GsonBuilder().setPrettyPrinting().create();
                 JsonObject jsonObject = gson.fromJson(jsonContent, JsonObject.class);
-                jsonObject.addProperty("htmlReport", htmlReport);
+                jsonObject.addProperty("useCache", useCache);
+                if (useCache) {
+                    jsonObject.addProperty("epochFile", epochFile);
+                }
                 String jsonOutput = gsonPP.toJson(jsonObject);
 
                 // Return JSON Report
