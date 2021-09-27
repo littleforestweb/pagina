@@ -266,7 +266,7 @@ Author : xhico
                     </button>
                 </div>
             </div>
-<%--            <div class="lf-sidenav-footer">--%>
+            <%--            <div class="lf-sidenav-footer">--%>
             <%--                <div class="small">Welcome:</div>--%>
             <%--                <span id="username">user</span>--%>
             <%--            </div>--%>

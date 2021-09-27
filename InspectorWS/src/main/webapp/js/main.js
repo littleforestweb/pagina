@@ -576,6 +576,8 @@ async function gotoAccessibilityError(accessibilityError) {
 async function rerunSpelling() {
     console.log("rerunSpelling");
 
+    document.getElementById("spelling-btn").disabled = true;
+
     // Remove spellError from iframe and htmlCode
     let pageIframe = document.getElementById('mainPage').contentWindow.document;
     let codeIframe = document.getElementById('mainCode').contentWindow.document;
@@ -592,6 +594,7 @@ async function rerunSpelling() {
     $('#dictionaryTable').DataTable().clear().draw();
     $('#dictionaryTable').DataTable().destroy();
 
+    document.getElementById("spelling-btn").disabled = false;
     checkLanguageTool = false;
     await toggleView("spelling");
 }
@@ -599,16 +602,21 @@ async function rerunSpelling() {
 async function rerunLinks() {
     console.log("rerunLinks");
 
+    document.getElementById("links-btn").disabled = false;
+
     // Clear Links table
     $('#linksTable').DataTable().clear().draw();
     $('#linksTable').DataTable().destroy();
 
+    document.getElementById("links-btn").disabled = true;
     checkLinks = false;
     await toggleView("links");
 }
 
 async function rerunAccessibility() {
     console.log("rerunAccessibility");
+
+    document.getElementById("accessibility-btn").disabled = true;
 
     // Clear Accessibility table
     $('#snifferErrorsTable').DataTable().clear().draw();
@@ -626,6 +634,7 @@ async function rerunAccessibility() {
         entry.classList.remove("accessibilityerror_shiny_red");
     }
 
+    document.getElementById("accessibility-btn").disabled = false;
     checkAccessibility = false;
     await toggleView("accessibility");
 }
@@ -633,10 +642,13 @@ async function rerunAccessibility() {
 async function rerunCookies() {
     console.log("rerunCookies");
 
+    document.getElementById("cookies-btn").disabled = true;
+
     // Clear Cookies table
     $('#cookiesTable').DataTable().clear().draw();
     $('#cookiesTable').DataTable().destroy();
 
+    document.getElementById("cookies-btn").disabled = false;
     checkCookies = false;
     await toggleView("cookies");
 }
@@ -644,10 +656,13 @@ async function rerunCookies() {
 async function rerunTechnologies() {
     console.log("rerunTechnologies");
 
+    document.getElementById("technologies-btn").disabled = true;
+
     // Clear Technologies table
     $('#technologiesTable').DataTable().clear().draw();
     $('#technologiesTable').DataTable().destroy();
 
+    document.getElementById("technologies-btn").disabled = false;
     checkTechnologies = false;
     await toggleView("technologies");
 }
@@ -655,10 +670,13 @@ async function rerunTechnologies() {
 async function rerunImages() {
     console.log("rerunImages");
 
+    document.getElementById("images-btn").disabled = true;
+
     // Clear Cookies table
     $('#imagesTable').DataTable().clear().draw();
     $('#imagesTable').DataTable().destroy();
 
+    document.getElementById("images-btn").disabled = false;
     checkImages = false;
     await toggleView("images");
 }
@@ -670,6 +688,8 @@ async function rerunImages() {
 async function runLanguageTool() {
     console.log("-------------------");
     console.log("runLanguageTool");
+
+    document.getElementById("spelling-btn").disabled = true;
 
     // Get pageIframe, codeIframe
     let pageIframe = document.getElementById('mainPage').contentWindow.document;
