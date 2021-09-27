@@ -65,7 +65,6 @@ $("#userModalInput").on('keyup', function (e) {
     }
 });
 
-
 window.addEventListener('DOMContentLoaded', async event => {
     // Enable sidebar toggle
     toggleSidebar();

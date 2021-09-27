@@ -391,3 +391,20 @@ div.dt-buttons {
 table td, th {
     vertical-align: middle;
 }
+
+.cache_tooltip .cache_tooltiptext {
+    visibility: hidden;
+    width: 300px;
+    background-color: #f0f0f0;
+    text-align: center;
+    border: 1px solid rgba(0, 0, 0, .2);
+    border-radius: .3rem;
+    padding: 5px 5px;
+    margin: 0 5px;
+    position: absolute;
+    z-index: 1;
+}
+
+.cache_tooltip:hover .cache_tooltiptext {
+    visibility: visible;
+}

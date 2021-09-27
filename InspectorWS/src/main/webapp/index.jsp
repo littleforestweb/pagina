@@ -18,6 +18,10 @@ Author : xhico
     <link rel="apple-touch-icon" href="images/lf_logo.png"/>
     <meta name="msapplication-TileImage" content="images/lf_logo.png"/>
 
+    <%--  Bootstrap  --%>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
     <%--    Font-Awesome --%>
     <script src="https://kit.fontawesome.com/a88e1b9070.js" crossorigin="anonymous"></script>
 
@@ -31,10 +35,6 @@ Author : xhico
     <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
     <link href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css" rel="stylesheet">
-
-    <%--  Bootstrap  --%>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
     <%--    Custom  --%>
     <link href="css/styles.css" rel="stylesheet"/>
@@ -255,7 +255,7 @@ Author : xhico
                     <button id="technologies-btn" onclick="toggleView('technologies')" class="nav-link bg-transparent border-0">
                         <span class="lf-nav-link-icon"><i class="fab fa-bootstrap"></i></span>Technologies
                     </button>
-                    <button hidden id="images-btn" onclick="toggleView('images')" class="nav-link bg-transparent border-0">
+                    <button id="images-btn" onclick="toggleView('images')" class="nav-link bg-transparent border-0">
                         <span class="lf-nav-link-icon"><i class="fas fa-image"></i></span>Images
                     </button>
                     <button id="lighthouse-btn" onclick="toggleView('lighthouse')" class="nav-link bg-transparent border-0">
@@ -266,10 +266,10 @@ Author : xhico
                     </button>
                 </div>
             </div>
-            <div class="lf-sidenav-footer">
-                <div class="small">Welcome:</div>
-                <span id="username">user</span>
-            </div>
+<%--            <div class="lf-sidenav-footer">--%>
+            <%--                <div class="small">Welcome:</div>--%>
+            <%--                <span id="username">user</span>--%>
+            <%--            </div>--%>
             <div class="lf-sidenav-footer" style="border-top: 1px solid rgba(0, 0, 0, 0.1)">
                 <span class="text-muted">Little Forest 2021</span></br><span
                     class="text-muted">All rights reserved</span></br>
@@ -410,10 +410,19 @@ Author : xhico
             <div hidden id="mainAccessibilityDiv" class="container-fluid px-4">
                 <%-- TITLE --%>
                 <h1 class="mt-4">Accessibility</h1>
-                <ol class="breadcrumb mb-4">
+                <%-- SUBTITLE --%>
+                <ol class="breadcrumb mb-2">
                     <li class="breadcrumb-item active">Report</li>
+                    <li hidden class="breadcrumb-item active" id="accessibility-cache">
+                        <span id="accessibility-cacheDate"></span>
+                        <span class="cache_tooltip">
+                            <i class="fas fa-info-circle"></i>
+                            <span class="cache_tooltiptext">We use cached data so that future requests for that data can be served faster</span>
+                        </span>
+                    </li>
                 </ol>
-                <span class="btn active mb-4" onclick="rerunAccessibility()">Run Again</span>
+                <%-- RERUN --%>
+                <button class="btn active mb-4" onclick="rerunAccessibility()">Run Again</button>
                 <%-- GENERAL INFO --%>
                 <div class="row d-flex justify-content-center">
                     <div class="col-xl-3 col-md-6 text-center">
@@ -551,6 +560,13 @@ Author : xhico
                 <h1 class="mt-4">Cookies</h1>
                 <ol class="breadcrumb mb-4">
                     <li class="breadcrumb-item active">Report</li>
+                    <li hidden class="breadcrumb-item active" id="cookies-cache">
+                        <span id="cookies-cacheDate"></span>
+                        <span class="cache_tooltip">
+                            <i class="fas fa-info-circle"></i>
+                            <span class="cache_tooltiptext">We use cached data so that future requests for that data can be served faster</span>
+                        </span>
+                    </li>
                 </ol>
                 <span class="btn active mb-4" onclick="rerunCookies()">Run Again</span>
                 <%-- GENERAL INFO --%>
@@ -600,6 +616,13 @@ Author : xhico
                 <h1 class="mt-4">Technologies</h1>
                 <ol class="breadcrumb mb-4">
                     <li class="breadcrumb-item active">Report</li>
+                    <li hidden class="breadcrumb-item active" id="technologies-cache">
+                        <span id="technologies-cacheDate"></span>
+                        <span class="cache_tooltip">
+                            <i class="fas fa-info-circle"></i>
+                            <span class="cache_tooltiptext">We use cached data so that future requests for that data can be served faster</span>
+                        </span>
+                    </li>
                 </ol>
                 <span class="btn active mb-4" onclick="rerunTechnologies()">Run Again</span>
                 <%-- GENERAL INFO --%>
@@ -657,6 +680,13 @@ Author : xhico
                 <h1 class="mt-4">Images</h1>
                 <ol class="breadcrumb mb-4">
                     <li class="breadcrumb-item active">Report</li>
+                    <li hidden class="breadcrumb-item active" id="images-cache">
+                        <span id="images-cacheDate"></span>
+                        <span class="cache_tooltip">
+                            <i class="fas fa-info-circle"></i>
+                            <span class="cache_tooltiptext">We use cached data so that future requests for that data can be served faster</span>
+                        </span>
+                    </li>
                 </ol>
                 <span class="btn active mb-4" onclick="rerunImages()">Run Again</span>
                 <%-- GENERAL INFO --%>
@@ -689,7 +719,6 @@ Author : xhico
                                 <th>Image</th>
                                 <th>Width</th>
                                 <th>Height</th>
-                                <th>Channels</th>
                                 <th>Format</th>
                             </tr>
                             </thead>
@@ -699,7 +728,6 @@ Author : xhico
                                 <th>Image</th>
                                 <th>Width</th>
                                 <th>Height</th>
-                                <th>Channels</th>
                                 <th>Format</th>
                             </tr>
                             </tfoot>
@@ -719,6 +747,13 @@ Author : xhico
                 <h1 class="mt-4">Links</h1>
                 <ol class="breadcrumb mb-4">
                     <li class="breadcrumb-item active">Report</li>
+                    <li hidden class="breadcrumb-item active" id="links-cache">
+                        <span id="links-cacheDate"></span>
+                        <span class="cache_tooltip">
+                            <i class="fas fa-info-circle"></i>
+                            <span class="cache_tooltiptext">We use cached data so that future requests for that data can be served faster</span>
+                        </span>
+                    </li>
                 </ol>
                 <span class="btn active mb-4" onclick="rerunLinks()">Run Again</span>
                 <%-- GENERAL INFO --%>
@@ -790,9 +825,7 @@ Author : xhico
 <script src="js/syntaxHighlighter.js"></script>
 <script src="js/scripts.js"></script>
 <script src="js/main.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
 <%-- Get url / mainURL / mainLang --%>
 <%

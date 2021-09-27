@@ -189,7 +189,7 @@ async function toggleView(view) {
     }
 
     // Check if Report Status is True -> All reports finished running
-    if (checkLanguageTool && checkAccessibility && checkCookies && checkTechnologies) {
+    if (checkLanguageTool && checkAccessibility && checkCookies && checkTechnologies && checkImages) {
         console.log("READY");
         await overlay("removeOverlay", "", "");
     }
@@ -307,6 +307,7 @@ async function fetchProxy(url, i) {
         return fetchProxy(url, i + 1);
     })
 }
+
 
 // ------------------------------------- SPELLING REPORT ------------------------------------- //
 
@@ -661,6 +662,7 @@ async function rerunImages() {
     checkImages = false;
     await toggleView("images");
 }
+
 
 // ------------------------------------- MAIN ------------------------------------- //
 
@@ -1128,9 +1130,8 @@ async function runAccessibility() {
     // Get siteUrl
     let siteUrl = await getSiteUrl();
 
-    // Get pageIframe, codeIframe
+    // Get pageIframe
     let pageIframe = document.getElementById('mainPage').contentWindow.document;
-    let codeIframe = document.getElementById('mainCode').contentWindow.document;
 
     // Get WCAG Level
     let WCAGLevel = document.getElementById("WCAG-level-list").value;
@@ -1143,7 +1144,14 @@ async function runAccessibility() {
         return result;
     });
 
-    // Iterate over all 3 1s
+    // Check is cache
+    if (accessibilityJSON["useCache"]) {
+        let cacheDate = accessibilityJSON["cacheDate"];
+        document.getElementById("accessibility-cacheDate").innerText = "Last scanned: " + cacheDate;
+        document.getElementById("accessibility-cache").hidden = false;
+    }
+
+    // Iterate over all 3 categories
     let snifferCategories = ["Errors", "Notices", "Warnings"];
     let errorsDataset = [];
     let noticesDataset = [];
@@ -1322,9 +1330,6 @@ async function runCookies() {
     console.log("-------------------------");
     console.log("runCookies");
 
-    // Insert overlay
-    // await overlay("addOverlay", "Running Cookies Report", "");
-
     // Get siteUrl
     let siteUrl = await getSiteUrl();
 
@@ -1334,6 +1339,13 @@ async function runCookies() {
     }, function (result) {
         return result;
     });
+
+    // Check is cache
+    if (cookiesJSON["useCache"]) {
+        let cacheDate = cookiesJSON["cacheDate"];
+        document.getElementById("cookies-cacheDate").innerText = "Last scanned: " + cacheDate;
+        document.getElementById("cookies-cache").hidden = false;
+    }
 
     let dataset = [];
     cookiesJSON = cookiesJSON["cookies"];
@@ -1404,9 +1416,6 @@ async function runTechnologies() {
     console.log("-------------------------");
     console.log("runTechnologies");
 
-    // Insert overlay
-    // await overlay("addOverlay", "Running Technologies Report", "");
-
     // Get siteUrl
     let siteUrl = await getSiteUrl();
 
@@ -1416,6 +1425,13 @@ async function runTechnologies() {
     }, function (result) {
         return result;
     });
+
+    // Check is cache
+    if (wappalyzerJSON["useCache"]) {
+        let cacheDate = wappalyzerJSON["cacheDate"];
+        document.getElementById("technologies-cacheDate").innerText = "Last scanned: " + cacheDate;
+        document.getElementById("technologies-cache").hidden = false;
+    }
 
     let dataset = [];
     let categoriesCounter = {};
@@ -1500,9 +1516,6 @@ async function runImages() {
     console.log("-------------------------");
     console.log("runImages");
 
-    // Insert overlay
-    // await overlay("addOverlay", "Running Images Report", "");
-
     // Get siteUrl
     let siteUrl = await getSiteUrl();
 
@@ -1513,6 +1526,13 @@ async function runImages() {
         return result;
     });
 
+    // Check is cache
+    if (imagesJSON["useCache"]) {
+        let cacheDate = imagesJSON["cacheDate"];
+        document.getElementById("images-cacheDate").innerText = "Last scanned: " + cacheDate;
+        document.getElementById("images-cache").hidden = false;
+    }
+
     let dataset = [];
     let imagesCounter = {};
     imagesJSON = imagesJSON["images"];
@@ -1521,14 +1541,13 @@ async function runImages() {
         let url = entry["url"];
         let width = entry["width"];
         let height = entry["height"];
-        let channels = entry["channels"];
         let format = entry["format"];
         if (format in imagesCounter) {
             imagesCounter[format] += 1;
         } else {
             imagesCounter[format] = 1;
         }
-        dataset.push([url, width, height, channels, format]);
+        dataset.push([url, width, height, format]);
     }
 
     // Update GENERAL INFO
@@ -1555,27 +1574,22 @@ async function runImages() {
         "autoWidth": false,
         "columnDefs": [
             {
-                "width": "20%", "targets": 0, "render": function (data, type, row) {
+                "width": "25%", "targets": 0, "render": function (data, type, row) {
                     return "<a href='" + data + "' target='_blank'><img width='100px' height='100px' src='" + data + "' alt='Image'/></a>";
                 },
             },
             {
-                "width": "20%", "targets": 1, "render": function (data, type, row) {
+                "width": "25%", "targets": 1, "render": function (data, type, row) {
                     return "<span>" + data + "</span>";
                 },
             },
             {
-                "width": "20%", "targets": 2, "render": function (data, type, row) {
+                "width": "25%", "targets": 2, "render": function (data, type, row) {
                     return "<span>" + data + "</span>";
                 },
             },
             {
-                "width": "20%", "targets": 3, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
-                },
-            },
-            {
-                "width": "20%", "targets": 4, "render": function (data, type, row) {
+                "width": "25%", "targets": 3, "render": function (data, type, row) {
                     return "<span>" + data + "</span>";
                 },
             }
@@ -1643,7 +1657,7 @@ async function runMain(url, mainURL, mainLang) {
                 toggleView("accessibility");
                 toggleView("cookies");
                 toggleView("technologies");
-                // toggleView("images");
+                toggleView("images");
                 toggleView("desktop");
             });
         }

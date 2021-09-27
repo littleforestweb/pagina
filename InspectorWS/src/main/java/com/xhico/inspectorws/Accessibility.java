@@ -19,11 +19,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -66,7 +64,7 @@ public class Accessibility extends HttpServlet {
                     String filePath = result.get(result.size() - 1);
                     epochFile = Long.parseLong(filePath.split("_")[1].replace(".json", ""));
                     long delta = (timeStamp - epochFile) / 60; // Milli -> Seconds
-                    if (delta <= 100) {
+                    if (delta <= 86400) {
                         useCache = true;
                         jsonFilePath = folderPath + url.replaceAll("[^a-zA-Z0-9]", "") + "_" + epochFile + ".json";
                     }
@@ -189,7 +187,9 @@ public class Accessibility extends HttpServlet {
             JsonObject jsonObject = gson.fromJson(jsonContent, JsonObject.class);
             jsonObject.addProperty("useCache", useCache);
             if (useCache) {
-                jsonObject.addProperty("epochFile", epochFile);
+                SimpleDateFormat sdf = new SimpleDateFormat("EEE, MMM d 'at' HH:mm a z");
+                String cacheDate = sdf.format(new Date(epochFile));
+                jsonObject.addProperty("cacheDate", cacheDate);
             }
             String jsonOutput = gsonPP.toJson(jsonObject);
 
