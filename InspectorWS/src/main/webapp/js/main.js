@@ -694,6 +694,7 @@ async function runLanguageTool() {
     // Get pageIframe, codeIframe
     let pageIframe = document.getElementById('mainPage').contentWindow.document;
     let codeIframe = document.getElementById('mainCode').contentWindow.document;
+    let siteUrl = await getSiteUrl();
 
     // Get all name from the langCodes
     let langValues = [];
@@ -755,54 +756,49 @@ async function runLanguageTool() {
     // Check if spellTagsElem is not empty (its a re-run)
     // Get all spellTagsElem ->  Empty strings -> Only spaces -> Ignore duplicates
     if (spellTagsElem.length === 0) {
-        spellTagsElem = [...new Set(pageIframe.body.innerText.split("\n").filter(e => e).filter(e => e !== " "))];
+        spellTagsElem = [...new Set(pageIframe.body.innerText.split("\n").filter(e => e).filter(e => e !== " "))].join(" ");
     }
 
-    // Iterate on every tag
-    for (let i = 0; i < spellTagsElem.length; i++) {
+    // Get SpellCheckJSON
+    let spellCheckJSON = await $.post(languageToolPost, {
+        content: spellTagsElem,
+        langCode: langCode,
+        url: siteUrl
+    }, function (result) {
+        return result;
+    });
 
-        // Set phrase from content array index
-        let tagElem = spellTagsElem[i];
+    // Check is cache
+    if (spellCheckJSON["useCache"]) {
+        let cacheDate = spellCheckJSON["cacheDate"];
+        document.getElementById("spelling-cacheDate").innerText = "Last scanned: " + cacheDate;
+        document.getElementById("spelling-cache").hidden = false;
+    }
 
-        try {
-            // Get SpellCheckJSON
-            let spellCheckJSON = await $.post(languageToolPost, {
-                content: tagElem,
-                langCode: langCode
-            }, function (result) {
-                return result;
-            });
-            // console.log(spellCheckJSON);
+    // If there is errors
+    let spellMatches = spellCheckJSON.matches;
+    if (spellMatches.length !== 0) {
 
-            // If there is errors
-            let spellMatches = spellCheckJSON.matches;
-            if (spellMatches.length !== 0) {
+        // Iterate on every error
+        for (let j = 0; j < spellMatches.length; j++) {
+            let entry = spellMatches[j];
 
-                // Iterate on every error
-                for (let j = 0; j < spellMatches.length; j++) {
-                    let entry = spellMatches[j];
+            // Set error
+            let error = entry.context.text.substring(entry.context.offset, entry.context.offset + entry.context.length);
+            let message = entry.message;
 
-                    // Set error
-                    let error = entry.context.text.substring(entry.context.offset, entry.context.offset + entry.context.length);
-                    let message = entry.message;
+            // Remove false-positive errors (three chars and whitespaces)
+            if (!(dict.includes(error)) && error.length >= 3 && !(/\s/g.test(error))) {
 
-                    // Remove false-positive errors (three chars and whitespaces)
-                    if (!(dict.includes(error)) && error.length >= 3 && !(/\s/g.test(error)) && message === "Possible spelling mistake found.") {
+                // Set message, replacements, color
+                let replacements = entry.replacements.map(reps => reps['value']).slice(0, 5).toString().replaceAll(",", ", ");
+                replacements = ((replacements === "") ? "None available" : replacements);
 
-                        // Set message, replacements, color
-                        let replacements = entry.replacements.map(reps => reps['value']).slice(0, 5).toString().replaceAll(",", ", ");
-                        replacements = ((replacements === "") ? "None available" : replacements);
-
-                        // Add key error on errorsDict
-                        if (!(error in errorsDict)) {
-                            errorsDict[error] = [message, replacements];
-                        }
-                    }
+                // Add key error on errorsDict
+                if (!(error in errorsDict)) {
+                    errorsDict[error] = [message, replacements];
                 }
             }
-
-        } catch (Ex) {
-            console.log(Ex);
         }
     }
 
@@ -1143,9 +1139,6 @@ async function runLinks() {
 async function runAccessibility() {
     console.log("-------------------------");
     console.log("runAccessibility");
-
-    // Insert overlay
-    // await overlay("addOverlay", "Running Accessibility Report", "");
 
     // Get siteUrl
     let siteUrl = await getSiteUrl();

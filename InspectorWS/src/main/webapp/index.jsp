@@ -308,6 +308,13 @@ Author : xhico
                 <h1 class="mt-4">Spelling</h1>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item active">Report</li>
+                    <li hidden class="breadcrumb-item active" id="spelling-cache">
+                        <span id="spelling-cacheDate"></span>
+                        <span class="cache_tooltip">
+                            <i class="fas fa-info-circle"></i>
+                            <span class="cache_tooltiptext">We use cached data so that future requests for that data can be served faster</span>
+                        </span>
+                    </li>
                 </ol>
                 <span class="btn active mb-4" onclick="rerunSpelling()">Run Again</span>
                 <%-- GENERAL INFO --%>

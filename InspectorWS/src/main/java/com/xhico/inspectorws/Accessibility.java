@@ -180,7 +180,6 @@ public class Accessibility extends HttpServlet {
                 writer.close();
             }
 
-
             String jsonContent = Files.readString(Paths.get(jsonFilePath));
             Gson gson = new Gson();
             Gson gsonPP = new GsonBuilder().setPrettyPrinting().create();
