@@ -117,6 +117,17 @@ Author : xhico
     </div>
 </div>
 
+<%-- IMAGES MODAL --%>
+<div class="modal fade" id="imagesModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <img src="" id="imagepreview" style="width: 100%;" alt="Image">
+            </div>
+        </div>
+    </div>
+</div>
+
 <%-- NOTIFICATIONS --%>
 <div class=" toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 11">
     <%-- LIGHTHOUSE NOTIFICATION --%>
@@ -699,8 +710,7 @@ Author : xhico
                 <%-- GENERAL INFO --%>
                 <div class="row d-flex justify-content-center">
                     <div class="col-xl-3 col-md-6 text-center">
-                        <div id="images-card-total" class="card mb-4 bg-lfi-blue text-white"
-                             style="width: 18rem;">
+                        <div id="images-card-total" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title" id="images-total">0</h5>
                                 <p class="card-text">Total</p>
@@ -708,11 +718,26 @@ Author : xhico
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6 text-center">
-                        <div id="images-card-errors" class="card mb-4 bg-lfi-blue text-white"
-                             style="width: 18rem;">
+                        <div id="images-card-most" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title" id="images-most">None</h5>
                                 <p class="card-text">Most Frequent Format</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 text-center">
+                        <div id="images-card-large" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title" id="images-large">0</h5>
+                                <p class="card-text">Large Images</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 text-center">
+                        <div id="images-card-broken" class="card mb-4 bg-danger text-white" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title" id="images-broken">0</h5>
+                                <p class="card-text">Broken Images</p>
                             </div>
                         </div>
                     </div>
@@ -724,8 +749,11 @@ Author : xhico
                             <thead>
                             <tr>
                                 <th>Image</th>
-                                <th>Width</th>
-                                <th>Height</th>
+                                <th>Filename</th>
+                                <th>Status Code</th>
+                                <th>Size (KB)</th>
+                                <th>Alt</th>
+                                <th>Dimensions</th>
                                 <th>Format</th>
                             </tr>
                             </thead>
@@ -733,8 +761,11 @@ Author : xhico
                             <tfoot>
                             <tr>
                                 <th>Image</th>
-                                <th>Width</th>
-                                <th>Height</th>
+                                <th>Filename</th>
+                                <th>Status Code</th>
+                                <th>Size (KB)</th>
+                                <th>Alt</th>
+                                <th>Dimensions</th>
                                 <th>Format</th>
                             </tr>
                             </tfoot>

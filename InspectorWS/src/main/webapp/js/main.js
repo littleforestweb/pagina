@@ -570,6 +570,15 @@ async function gotoAccessibilityError(accessibilityError) {
 }
 
 
+// ------------------------------------- IMAGES REPORT ------------------------------------- //
+
+
+async function showImage(img_url) {
+    document.getElementById("imagepreview").src = img_url;
+    $('#imagesModal').modal('show');
+}
+
+
 // ------------------------------------- RERUN REPORTS ------------------------------------- //
 
 
@@ -1548,32 +1557,56 @@ async function runImages() {
 
     let dataset = [];
     let imagesCounter = {};
+    let largeCounter = 0;
+    let brokenCounter = 0
     imagesJSON = imagesJSON["images"];
     for (let i = 0; i < imagesJSON.length; i++) {
         let entry = imagesJSON[i];
         let url = entry["url"];
-        let width = entry["width"];
-        let height = entry["height"];
+        let filename = entry["filename"];
+        let statuscode = entry["statuscode"];
+        let size = entry["size"];
+        let alt = entry["alt"];
+        let dimensions = entry["dimensions"];
         let format = entry["format"];
+
+        if (size > "500") {
+            largeCounter += 1;
+        }
+
+        if (statuscode >= "400" && statuscode < "600") {
+            brokenCounter += 1;
+            url = "images/unavailable-image.jpg";
+        }
+
         if (format in imagesCounter) {
             imagesCounter[format] += 1;
         } else {
             imagesCounter[format] = 1;
         }
-        dataset.push([url, width, height, format]);
+
+        dataset.push([url, filename, statuscode, size, alt, dimensions, format]);
     }
 
-    // Update GENERAL INFO
     // Sort the array based on the count element
     imagesCounter = Object.keys(imagesCounter).map(function (key) {
         return [key, imagesCounter[key]];
     }).sort(function (first, second) {
-        return second[1] - first[1];
+        return second[6] - first[6];
     });
     document.getElementById("images-total").innerText = dataset.length.toString();
     if (imagesCounter.length !== 0) {
         document.getElementById("images-most").innerText = imagesCounter[0][0];
     }
+
+    // Update GENERAL INFO
+    if (brokenCounter === 0) {
+        document.getElementById("images-card-broken").classList.remove("bg-lfi-blue");
+        document.getElementById("images-card-broken").classList.add("bg-lfi-green");
+        brokenCounter = "0 - Good Job!";
+    }
+    document.getElementById("images-large").innerText = largeCounter;
+    document.getElementById("images-broken").innerText = brokenCounter;
 
     // Initialize Errors Table
     $('#imagesTable').DataTable({
@@ -1587,22 +1620,59 @@ async function runImages() {
         "autoWidth": false,
         "columnDefs": [
             {
-                "width": "25%", "targets": 0, "render": function (data, type, row) {
-                    return "<a href='" + data + "' target='_blank'><img width='100px' height='100px' src='" + data + "' alt='Image'/></a>";
+                "width": "10%", "targets": 0, "render": function (data, type, row) {
+                    return "<button class='bg-transparent border-0' onclick='showImage(\"" + data + "\")'><img src='" + data + "' width='100px' height='auto' alt='Image'></button>"
                 },
             },
             {
-                "width": "25%", "targets": 1, "render": function (data, type, row) {
+                "width": "15%", "targets": 1, "render": function (data, type, row) {
                     return "<span>" + data + "</span>";
                 },
             },
             {
-                "width": "25%", "targets": 2, "render": function (data, type, row) {
+                "width": "10%", "targets": 2, "render": function (data, type, row) {
+                    let colorClass;
+                    if (data.includes("20")) {
+                        colorClass = " class='link200'"
+                    } else if (data.includes("30")) {
+                        colorClass = " class='link301'"
+                    } else if (data.includes("40") || data.includes("50")) {
+                        colorClass = " class='link404'"
+                    } else {
+                        colorClass = "";
+                        data = "Couldn't get status code";
+                    }
+
+                    return "<span" + colorClass + ">" + data + "</span>";
+                },
+            },
+            {
+                "width": "10%", "targets": 3, "render": function (data, type, row) {
+                    let color;
+                    if (data > 0 && data < 300) {
+                        color = "mediumseagreen";
+                    } else if (data >= 300 && data <= 500) {
+                        color = "orange";
+                    } else if (data > 500) {
+                        color = "red";
+                    } else {
+                        color = "white";
+                    }
+                    return "<span style='padding:4px; background-color: " + color + "'>" + data + "</span>";
+                },
+            },
+            {
+                "width": "25%", "targets": 4, "render": function (data, type, row) {
                     return "<span>" + data + "</span>";
                 },
             },
             {
-                "width": "25%", "targets": 3, "render": function (data, type, row) {
+                "width": "15%", "targets": 5, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            },
+            {
+                "width": "15%", "targets": 6, "render": function (data, type, row) {
                     return "<span>" + data + "</span>";
                 },
             }
@@ -1610,7 +1680,6 @@ async function runImages() {
     });
 
     // Remove overlay
-    // await overlay("removeOverlay", "", "");
     document.getElementById("overlay_images_mark").style.color = "rgba(var(--lfi-green-rgb)";
 }
 

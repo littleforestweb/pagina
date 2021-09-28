@@ -1,0 +1,40 @@
+{
+    "images": [
+        {
+            "url": "https://littleforest.co.uk/wp-content/uploads/2021/05/homepage_banner_wave_final.jpg",
+            "dimensions": "1890x600",
+            "format": "JPEG",
+            "alt": "None",
+            "size": "3322.3",
+            "filename": "homepage_banner_wave_final.jpg",
+            "statuscode": "200"
+        },
+        {
+            "url": "https://littleforest.co.uk/wp-content/uploads/2021/05/wave_final.jpg",
+            "dimensions": "",
+            "format": "",
+            "alt": "None",
+            "size": "",
+            "filename": "wave_final.jpg",
+            "statuscode": "404"
+        },
+        {
+            "url": "https://littleforest.co.uk/wp-content/plugins/ultimate-social-media-icons/images/visit_icons/en_US_Tweet.svg",
+            "dimensions": "",
+            "format": "SVG",
+            "alt": "None",
+            "size": "",
+            "filename": "en_US_Tweet.svg",
+            "statuscode": "200"
+        },
+        {
+            "url": "https://media.gettyimages.com/photos/surfer-in-black-wet-suit-walking-into-turbulent-waters-carrying-picture-id1131069857",
+            "dimensions": "1024x683",
+            "format": "JPEG",
+            "alt": "None",
+            "size": "2049.0",
+            "filename": "surfer-in-black-wet-suit-walking-into-turbulent-waters-carrying-picture-id1131069857",
+            "statuscode": "200"
+        }
+    ]
+}

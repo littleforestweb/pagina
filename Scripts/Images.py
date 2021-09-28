@@ -1,121 +1,123 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/python3
 
-# python3 -m pip install opencv-python requests bs4 tqdm numpy --no-cache-dir
+# python3 -m pip install Pillow requests bs4 --no-cache-dir
 
-import cv2
-import imghdr
 import json
-import numpy as np
+import os
 import requests
 import sys
-import urllib.request
+from PIL import Image
 from bs4 import BeautifulSoup as bs
-from tqdm import tqdm
+from io import BytesIO
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 from urllib.parse import urljoin, urlparse
+
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 
 def is_valid(url):
-    # Checks whether `url` is a valid URL.
-
+    # Checks whether url is a valid URL.
     parsed = urlparse(url)
     return bool(parsed.netloc) and bool(parsed.scheme)
 
 
 def get_all_images(url):
-    # Returns all image URLs on a single `url`
-
-    # Disable request warnings
-    from requests.packages.urllib3.exceptions import InsecureRequestWarning
-    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
-
     # Get URL content // Ignore SSL Certificate Warnings
     soup = bs(requests.get(url, verify=False).content, "html.parser")
-    urls = []
+    jsonArr = []
 
     # Iterate over every img tag
-    for img in tqdm(soup.find_all("img"), disable=True):
+    for img in soup.find_all("img"):
+
+        # Get src attribute
         img_url = img.attrs.get("src")
 
-        # if img does not contain src attribute, just skip
+        # Alt text attribute
+        img_alt = img.attrs.get("alt")
+        img_alt = "None" if img_alt is None else img_alt
+
+        # Filename 
+        filename = os.path.basename(urlparse(img_url).path)
+
+        # If img does not contain src attribute, just skip
         if not img_url:
             continue
 
-        # make the URL absolute by joining domain with the URL that is just extracted
+        # Make the URL absolute by joining domain with the URL that is just extracted
         img_url = urljoin(url, img_url)
 
-        # remove URLs like '/hsts-pixel.gif?c=3.2.5'
+        # Remove URLs like '/hsts-pixel.gif?c=3.2.5'
         try:
             pos = img_url.index("?")
             img_url = img_url[:pos]
         except ValueError:
             pass
 
-        # finally, if the url is valid
+        # Finally, if the url is valid
         if is_valid(img_url):
-            urls.append(img_url)
 
-    return urls
+            # Status Code
+            try:
+                r = requests.head(img_url)
+                statuscode = str(r.status_code)
+            except requests.ConnectionError:
+                statuscode = "999"
 
+            try:
+                # Downlaod imgUrl to img
+                img = Image.open(BytesIO(requests.get(img_url).content))
 
-def getDimensions(imgUrls):
-    jsonArr = []
+                # Dimensions
+                dimensions = str(img.size[0]) + "x" + str(img.size[1])
 
-    for imgUrl in imgUrls:
+                # Format
+                format = str(img.format)
 
-        # Downlaod imgUrl to img
-        imgContent = urllib.request.urlopen(imgUrl).read()
-        img = cv2.imdecode(np.asarray(bytearray(imgContent), dtype=np.uint8), -1)
+                # Size
+                size = str(round(sys.getsizeof(img.tobytes()) / 1024, 1))
+            except:
+                dimensions = "None"
+                format = "None"
+                size = "None"
 
-        # Try to get img shape
-        try:
-            w, h = str(img.shape[0]), str(img.shape[1])
-            format = imghdr.what(None, imgContent)
+                if img_url[len(img_url) - 3:len(img_url)] == "svg":
+                    format = "SVG"
 
-        except AttributeError:
-            w, h, format = "null", "null", "null"
-
-        dict = {}
-        dict["url"] = imgUrl
-        dict["width"] = w
-        dict["height"] = h
-        dict["format"] = format
+        # Add to jsonArray
+        dict = {"url": img_url, "dimensions": dimensions, "format": format, "alt": img_alt, "size": size, "filename": filename, "statuscode": statuscode}
         jsonArr.append(dict)
 
     return json.dumps({"images": jsonArr}, indent=4)
 
 
 def main(siteUrl, jsonPath):
-    print(siteUrl)
-    print(jsonPath)
+    # print(siteUrl)
+    # print(jsonPath)
 
     # Check if siteUrl is valid
     if is_valid(siteUrl) == False:
         return
 
-    # Get all img Urls
-    imgUrls = get_all_images(siteUrl)
-
     # Get IMG Info
-    jsonStr = str(getDimensions(imgUrls))
+    jsonStr = str(get_all_images(siteUrl))
     # print(jsonStr)
 
+    # Save JSON to File
     with open(jsonPath, 'w') as jsonFile:
         jsonFile.write(jsonStr)
     jsonFile.close()
 
 
 if __name__ == '__main__':
-
     if 2 <= len(sys.argv) <= 4:
         siteUrl = sys.argv[1].split("=")[1]
         jsonPath = sys.argv[2].split("=")[1]
-
         main(siteUrl, jsonPath)
     else:
         print("Wrong Args")
 
-    # siteUrl = "https://inspector.littleforest.co.uk/TestWS/test.html"
-    # siteUrl = "https://littleforest.co.uk/"
-    # jsonPath = "/home/user/images/jsonPath.json"
+    # siteUrl = "https://inspector.littleforest.co.uk/DevWS/test.html"
+    # # siteUrl = "https://littleforest.co.uk/"
+    # jsonPath = "jsonPath.json"
     # main(siteUrl, jsonPath)
