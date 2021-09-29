@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 /**
  * @author xhico
  */
-@WebServlet(name = "Cookies", urlPatterns = { "/Cookies" })
+@WebServlet(name = "Cookies", urlPatterns = {"/Cookies"})
 public class Cookies extends HttpServlet {
 
     /**

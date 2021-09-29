@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 /**
  * @author xhico
  */
-@WebServlet(name = "Accessibility", urlPatterns = { "/Accessibility" })
+@WebServlet(name = "Accessibility", urlPatterns = {"/Accessibility"})
 public class Accessibility extends HttpServlet {
 
     /**

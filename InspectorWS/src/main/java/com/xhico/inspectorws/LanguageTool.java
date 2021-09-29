@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 /**
  * @author xhico
  */
-@WebServlet(name = "LanguageTool", urlPatterns = { "/LanguageTool" })
+@WebServlet(name = "LanguageTool", urlPatterns = {"/LanguageTool"})
 public class LanguageTool extends HttpServlet {
 
     /**

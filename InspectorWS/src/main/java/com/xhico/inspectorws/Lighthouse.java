@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 /**
  * @author xhico
  */
-@WebServlet(name = "Lighthouse", urlPatterns = { "/Lighthouse" })
+@WebServlet(name = "Lighthouse", urlPatterns = {"/Lighthouse"})
 public class Lighthouse extends HttpServlet {
 
     /**

@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 /**
  * @author xhico
  */
-@WebServlet(name = "Links", urlPatterns = { "/Links" })
+@WebServlet(name = "Links", urlPatterns = {"/Links"})
 public class Links extends HttpServlet {
 
     /**

@@ -18,7 +18,7 @@ import java.net.URL;
 /**
  * @author xhico
  */
-@WebServlet(name = "Inspector", urlPatterns = { "/Inspector" })
+@WebServlet(name = "Inspector", urlPatterns = {"/Inspector"})
 public class Inspector extends HttpServlet {
 
     /**

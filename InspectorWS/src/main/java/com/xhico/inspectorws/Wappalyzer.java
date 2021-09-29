@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 /**
  * @author xhico
  */
-@WebServlet(name = "Wappalyzer", urlPatterns = { "/Wappalyzer" })
+@WebServlet(name = "Wappalyzer", urlPatterns = {"/Wappalyzer"})
 public class Wappalyzer extends HttpServlet {
 
     /**
