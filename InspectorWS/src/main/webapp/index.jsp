@@ -156,14 +156,14 @@ Author : xhico
 <%-- NAV --%>
 <nav class="lf-topnav navbar navbar-expand navbar-light bg-light shadow">
     <!-- Navbar Brand-->
-    <a class="navbar-brand text-center" href="https://littleforest.co.uk" target="_blank"><img height="32" src="images/littleforest_logo.png"></a>
+    <a class="navbar-brand text-center" href="https://littleforest.co.uk" target="_blank"><img height="32" src="images/littleforest_logo.png" alt="Little Forest Logo"></a>
     <!-- Sidebar Toggle-->
     <button class="btn active btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle">
         <i class="fas fa-bars"></i></button>
     <!-- Navbar Search-->
     <div class="w-75 d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
         <div class="input-group">
-            <input class="w-50 form-control" id="searchURL" type="text" placeholder="Insert URL to check..."
+            <input spellcheck="true" class="w-50 form-control" id="searchURL" type="text" placeholder="Insert URL to check..."
                    aria-label="Insert URL to check..." aria-describedby="btnNavbarSearch"/>
             <select class="form-select" id="languages-list">
                 <option disabled>Language</option>

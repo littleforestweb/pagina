@@ -1703,6 +1703,7 @@ async function runMain(url, mainURL, mainLang) {
     console.log('Loading:', siteUrl)
     fetchProxy(siteUrl, 0).then(res => res.text()).then(async data => {
         if (data) {
+            console.log(data);
             pageIframe.srcdoc = data.replace(/<head([^>]*)>/i, `<head$1><base href="${siteUrl}">`);
 
             // Wait for pageIframe to load
