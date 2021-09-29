@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 /**
  * @author xhico
  */
-@WebServlet(name = "Links", urlPatterns = {"/Links"})
+@WebServlet(name = "Links", urlPatterns = { "/Links" })
 public class Links extends HttpServlet {
 
     /**
@@ -37,7 +37,8 @@ public class Links extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException      if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
 
@@ -55,7 +56,9 @@ public class Links extends HttpServlet {
             long epochFile = 0;
             List<String> contents = List.of(Objects.requireNonNull(new File(folderPath).list()));
             if (contents.size() != 0) {
-                List<String> result = contents.stream().filter(word -> word.startsWith(url.replaceAll("[^a-zA-Z0-9]", ""))).sorted().collect(Collectors.toList());
+                List<String> result = contents.stream()
+                        .filter(word -> word.startsWith(url.replaceAll("[^a-zA-Z0-9]", ""))).sorted()
+                        .collect(Collectors.toList());
                 if (result.size() != 0) {
                     String filePath = result.get(result.size() - 1);
                     epochFile = Long.parseLong(filePath.split("_")[1].replace(".json", ""));
@@ -132,7 +135,8 @@ public class Links extends HttpServlet {
         }.start();
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
+    // + sign on the left to edit the code.">
 
     /**
      * Handles the HTTP <code>GET</code> method.

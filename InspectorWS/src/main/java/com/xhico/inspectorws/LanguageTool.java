@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 /**
  * @author xhico
  */
-@WebServlet(name = "LanguageTool", urlPatterns = {"/LanguageTool"})
+@WebServlet(name = "LanguageTool", urlPatterns = { "/LanguageTool" })
 public class LanguageTool extends HttpServlet {
 
     /**
@@ -37,7 +37,8 @@ public class LanguageTool extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException      if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
 
@@ -57,7 +58,9 @@ public class LanguageTool extends HttpServlet {
             long epochFile = 0;
             List<String> contents = List.of(Objects.requireNonNull(new File(folderPath).list()));
             if (contents.size() != 0) {
-                List<String> result = contents.stream().filter(word -> word.startsWith(url.replaceAll("[^a-zA-Z0-9]", ""))).filter(word -> word.endsWith(".json")).sorted().collect(Collectors.toList());
+                List<String> result = contents.stream()
+                        .filter(word -> word.startsWith(url.replaceAll("[^a-zA-Z0-9]", "")))
+                        .filter(word -> word.endsWith(".json")).sorted().collect(Collectors.toList());
                 if (result.size() != 0) {
                     String filePath = result.get(result.size() - 1);
                     epochFile = Long.parseLong(filePath.split("_")[1].replace(".json", ""));
@@ -75,7 +78,9 @@ public class LanguageTool extends HttpServlet {
                 writer.write(content);
                 writer.close();
 
-                List<String> base = Arrays.asList("java", "-jar", "/opt/LangToolHTTPServer/languagetool-commandline.jar", "-l", langCode, "--json", "-eo", "--enablecategories", "TYPOS", contentFilePath);
+                List<String> base = Arrays.asList("java", "-jar",
+                        "/opt/LangToolHTTPServer/languagetool-commandline.jar", "-l", langCode, "--json", "-eo",
+                        "--enablecategories", "TYPOS", contentFilePath);
                 List<String> cmd = new ArrayList<>(base);
 
                 // Run Lighthouse Process
@@ -125,6 +130,7 @@ public class LanguageTool extends HttpServlet {
         while (br.ready()) {
             result.add(br.readLine());
         }
+        br.close();
 
         return result;
     }
@@ -148,7 +154,8 @@ public class LanguageTool extends HttpServlet {
         }.start();
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
+    // + sign on the left to edit the code.">
 
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -159,7 +166,8 @@ public class LanguageTool extends HttpServlet {
      * @throws IOException      if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         processRequest(request, response);
     }
 
@@ -172,7 +180,8 @@ public class LanguageTool extends HttpServlet {
      * @throws IOException      if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         processRequest(request, response);
     }
 

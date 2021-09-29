@@ -18,7 +18,7 @@ import java.net.URL;
 /**
  * @author xhico
  */
-@WebServlet(name = "Inspector", urlPatterns = {"/Inspector"})
+@WebServlet(name = "Inspector", urlPatterns = { "/Inspector" })
 public class Inspector extends HttpServlet {
 
     /**
@@ -30,7 +30,8 @@ public class Inspector extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException      if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
         try (PrintWriter out = response.getWriter()) {
@@ -72,8 +73,7 @@ public class Inspector extends HttpServlet {
             con.setInstanceFollowRedirects(false);
             con.connect();
             int resCode = con.getResponseCode();
-            if (resCode == HttpURLConnection.HTTP_SEE_OTHER
-                    || resCode == HttpURLConnection.HTTP_MOVED_PERM
+            if (resCode == HttpURLConnection.HTTP_SEE_OTHER || resCode == HttpURLConnection.HTTP_MOVED_PERM
                     || resCode == HttpURLConnection.HTTP_MOVED_TEMP) {
                 String Location = con.getHeaderField("Location");
                 if (Location.startsWith("/")) {
@@ -87,7 +87,8 @@ public class Inspector extends HttpServlet {
         return url;
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
+    // + sign on the left to edit the code.">
 
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -98,7 +99,8 @@ public class Inspector extends HttpServlet {
      * @throws IOException      if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         processRequest(request, response);
     }
 
@@ -111,7 +113,8 @@ public class Inspector extends HttpServlet {
      * @throws IOException      if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         processRequest(request, response);
     }
 

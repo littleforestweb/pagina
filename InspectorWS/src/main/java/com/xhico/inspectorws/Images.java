@@ -28,7 +28,8 @@ public class Images extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException      if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
 
@@ -46,7 +47,9 @@ public class Images extends HttpServlet {
             long epochFile = 0;
             List<String> contents = List.of(Objects.requireNonNull(new File(folderPath).list()));
             if (contents.size() != 0) {
-                List<String> result = contents.stream().filter(word -> word.startsWith(url.replaceAll("[^a-zA-Z0-9]", ""))).sorted().collect(Collectors.toList());
+                List<String> result = contents.stream()
+                        .filter(word -> word.startsWith(url.replaceAll("[^a-zA-Z0-9]", ""))).sorted()
+                        .collect(Collectors.toList());
                 if (result.size() != 0) {
                     String filePath = result.get(result.size() - 1);
                     epochFile = Long.parseLong(filePath.split("_")[1].replace(".json", ""));
@@ -123,12 +126,14 @@ public class Images extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         processRequest(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         processRequest(request, response);
     }
 }

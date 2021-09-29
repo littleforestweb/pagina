@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 /**
  * @author xhico
  */
-@WebServlet(name = "Lighthouse", urlPatterns = {"/Lighthouse"})
+@WebServlet(name = "Lighthouse", urlPatterns = { "/Lighthouse" })
 public class Lighthouse extends HttpServlet {
 
     /**
@@ -37,7 +37,8 @@ public class Lighthouse extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException      if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         PrintWriter out = response.getWriter();
 
         try {
@@ -60,21 +61,25 @@ public class Lighthouse extends HttpServlet {
                 long epochFile = 0;
                 List<String> contents = List.of(Objects.requireNonNull(new File(folderPath).list()));
                 if (contents.size() != 0) {
-                    List<String> result = contents.stream().filter(word -> word.startsWith(url.replaceAll("[^a-zA-Z0-9]", "") + "_" + device)).filter(word -> word.endsWith(".json")).sorted().collect(Collectors.toList());
+                    List<String> result = contents.stream()
+                            .filter(word -> word.startsWith(url.replaceAll("[^a-zA-Z0-9]", "") + "_" + device))
+                            .filter(word -> word.endsWith(".json")).sorted().collect(Collectors.toList());
                     if (result.size() != 0) {
                         String filePath = result.get(result.size() - 1);
                         epochFile = Long.parseLong(filePath.split("_")[2].replace(".report.json", ""));
                         long delta = (timeStamp - epochFile) / 60; // Milli -> Seconds
                         if (delta <= 86400) {
                             useCache = true;
-                            jsonReport = folderPath + url.replaceAll("[^a-zA-Z0-9]", "") + "_" + device + "_" + epochFile + ".report.json";
+                            jsonReport = folderPath + url.replaceAll("[^a-zA-Z0-9]", "") + "_" + device + "_"
+                                    + epochFile + ".report.json";
                         }
                     }
                 }
 
                 if (!useCache) {
                     // Set base command
-                    List<String> base = Arrays.asList("lighthouse", url, "--output", "json", "--output", "html", "--output-path", jsonFilePath, "--chrome-flags='--headless --no-sandbox'", "--quiet");
+                    List<String> base = Arrays.asList("lighthouse", url, "--output", "json", "--output", "html",
+                            "--output-path", jsonFilePath, "--chrome-flags='--headless --no-sandbox'", "--quiet");
                     List<String> cmd = new ArrayList<>(base);
 
                     // Set Device
@@ -155,7 +160,8 @@ public class Lighthouse extends HttpServlet {
         }.start();
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
+    // + sign on the left to edit the code.">
 
     /**
      * Handles the HTTP <code>GET</code> method.

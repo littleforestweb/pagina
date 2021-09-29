@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 /**
  * @author xhico
  */
-@WebServlet(name = "Accessibility", urlPatterns = {"/Accessibility"})
+@WebServlet(name = "Accessibility", urlPatterns = { "/Accessibility" })
 public class Accessibility extends HttpServlet {
 
     /**
@@ -41,7 +41,8 @@ public class Accessibility extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException      if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
 
@@ -59,7 +60,9 @@ public class Accessibility extends HttpServlet {
             long epochFile = 0;
             List<String> contents = List.of(Objects.requireNonNull(new File(folderPath).list()));
             if (contents.size() != 0) {
-                List<String> result = contents.stream().filter(word -> word.startsWith(url.replaceAll("[^a-zA-Z0-9]", ""))).sorted().collect(Collectors.toList());
+                List<String> result = contents.stream()
+                        .filter(word -> word.startsWith(url.replaceAll("[^a-zA-Z0-9]", ""))).sorted()
+                        .collect(Collectors.toList());
                 if (result.size() != 0) {
                     String filePath = result.get(result.size() - 1);
                     epochFile = Long.parseLong(filePath.split("_")[1].replace(".json", ""));
@@ -76,7 +79,8 @@ public class Accessibility extends HttpServlet {
                 String siteURL = "--siteUrl=" + url;
                 String jsonPath = "--jsonPath=" + jsonFilePath;
                 String WCAGLevel = "--level=" + level;
-                List<String> base = Arrays.asList("node", "/opt/scripts/codesniffer/HTML_CodeSniffer.js", siteURL, jsonPath, WCAGLevel);
+                List<String> base = Arrays.asList("node", "/opt/scripts/codesniffer/HTML_CodeSniffer.js", siteURL,
+                        jsonPath, WCAGLevel);
                 List<String> cmd = new ArrayList<>(base);
 
                 // Run Lighthouse Process
@@ -98,7 +102,8 @@ public class Accessibility extends HttpServlet {
                 JSONArray jaErrors = new JSONArray();
 
                 for (String line : fileContent) {
-                    if ((line.contains("[HTMLCS] Notice")) || (line.contains("[HTMLCS] Warning")) || (line.contains("[HTMLCS] Error"))) {
+                    if ((line.contains("[HTMLCS] Notice")) || (line.contains("[HTMLCS] Warning"))
+                            || (line.contains("[HTMLCS] Error"))) {
 
                         // Split the line "|" to get the various fields
                         String[] parts = line.split("\\|");
@@ -205,6 +210,7 @@ public class Accessibility extends HttpServlet {
         while (br.ready()) {
             result.add(br.readLine());
         }
+        br.close();
 
         return result;
     }
@@ -225,7 +231,8 @@ public class Accessibility extends HttpServlet {
         }.start();
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
+    // + sign on the left to edit the code.">
 
     /**
      * Handles the HTTP <code>GET</code> method.
