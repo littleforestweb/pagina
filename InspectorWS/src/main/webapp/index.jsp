@@ -12,7 +12,7 @@ Author : xhico
     <meta name="author" content="Francisco 'xhico' Filipe @ Little Forest UK"/>
     <title>Page Inspector - Little Forest</title>
 
-    <%--    Favicon --%>
+    <%-- Favicon --%>
     <link rel="icon" href="images/lf_logo-100x100.png" sizes="32x32"/>
     <link rel="icon" href="images/lf_logo.png" sizes="192x192"/>
     <link rel="apple-touch-icon" href="images/lf_logo.png"/>
@@ -22,13 +22,13 @@ Author : xhico
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-    <%--    Font-Awesome --%>
+    <%-- Font-Awesome --%>
     <script src="https://kit.fontawesome.com/a88e1b9070.js" crossorigin="anonymous"></script>
 
-    <%--    jQuery --%>
+    <%-- jQuery --%>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-    <%--  Datatables  --%>
+    <%-- Datatables  --%>
     <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
@@ -36,7 +36,7 @@ Author : xhico
     <link href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css" rel="stylesheet">
 
-    <%--    Custom  --%>
+    <%-- Custom  --%>
     <link href="css/styles.css" rel="stylesheet"/>
 </head>
 
@@ -66,10 +66,10 @@ Author : xhico
                     username.</p>
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">@</span>
+                        <span class="input-group-text">@</span>
                     </div>
                     <input id="userModalInput" type="text" class="form-control" placeholder="Username"
-                           aria-label="Username" aria-describedby="basic-addon1">
+                           aria-label="Username">
                 </div>
             </div>
             <div class="modal-footer">
@@ -84,9 +84,9 @@ Author : xhico
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalLighthouseTitle">Lighthouse Report</h5>
+                <h5 class="modal-title">Lighthouse Report</h5>
             </div>
-            <div class="modal-body" id="modalLighthouseBody">
+            <div class="modal-body">
                 <p>Are you sure you want to run the Lighthouse report?
                     </br>This could take a few moments.
                     </br>Feel free to navigate the other reports.</p>
@@ -128,6 +128,53 @@ Author : xhico
     </div>
 </div>
 
+<%-- PUBLISH MODAL --%>
+<div class="modal fade" id="publishModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Send to a reviewer</h5>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm text-center">
+                            <button class="bg-transparent border-0" onclick="selectUserReviewer(this)">
+                                <img width="50px" src="images/usersIcons/boy.png" alt="Responsive image">
+                                <p>Gavin</p>
+                            </button>
+                        </div>
+                        <div class="col-sm text-center">
+                            <button class="bg-transparent border-0" onclick="selectUserReviewer(this)">
+                                <img width="50px" src="images/usersIcons/gamer.png" alt="Responsive image">
+                                <p>Joao</p>
+                            </button>
+                        </div>
+                        <div class="col-sm text-center">
+                            <button class="bg-transparent border-0" onclick="selectUserReviewer(this)">
+                                <img width="50px" src="images/usersIcons/woman.png" alt="Responsive image">
+                                <p>Rui</p>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">@</span>
+                    </div>
+                    <input type="text" id="selectedUsers" class="form-control" placeholder="Username"
+                           aria-label="Username"
+                           aria-describedby="basic-addon1">
+                    <button type="button" onclick="showPublishNotification()" class="btn active">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <%-- NOTIFICATIONS --%>
 <div class=" toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 11">
     <%-- LIGHTHOUSE NOTIFICATION --%>
@@ -151,19 +198,34 @@ Author : xhico
             <button class="btn active" type="button" onclick="toggleView('links')">View</button>
         </div>
     </div>
+
+    <%-- PUBLISHED NOTIFICATION --%>
+    <div id="publishedNotification" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="me-auto">Changes successively sent to review.</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
 </div>
 
 <%-- NAV --%>
 <nav class="lf-topnav navbar navbar-expand navbar-light bg-light shadow">
     <!-- Navbar Brand-->
-    <a class="navbar-brand text-center" href="https://littleforest.co.uk" target="_blank"><img height="32" src="images/littleforest_logo.png" alt="Little Forest Logo"></a>
+    <a class="navbar-brand text-center" href="https://littleforest.co.uk" target="_blank">
+        <img height="32" src="images/littleforest_logo.png" alt="Little Forest Logo"></a>
+
     <!-- Sidebar Toggle-->
     <button class="btn active btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle">
         <i class="fas fa-bars"></i></button>
+
     <!-- Navbar Search-->
     <div class="w-75 d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
         <div class="input-group">
-            <input spellcheck="true" class="w-50 form-control" id="searchURL" type="text" placeholder="Insert URL to check..."
+            <div class="input-group-prepend">
+                <span class="input-group-text">URL</span>
+            </div>
+            <input spellcheck="true" class="w-50 form-control" id="searchURL" type="text"
+                   placeholder="Insert URL to check..."
                    aria-label="Insert URL to check..." aria-describedby="btnNavbarSearch"/>
             <select class="form-select" id="languages-list">
                 <option disabled>Language</option>
@@ -228,7 +290,20 @@ Author : xhico
                     <span class="me-2">Clear</span><i class="fas fa-trash"></i></button>
             </div>
             <div class="btn-group me-2" role="group">
-                <a hidden href="#" target="_blank" id="editPageBtn" class="btn active" type="button"><span class="me-2">Edit Page</span><i class="fas fa-edit"></i></a>
+                <%-- Edit CMS --%>
+                <a hidden href="#" target="_blank" id="editPageCMSBtn" class="btn active" type="button">
+                    <span class="me-2">Edit Page</span><i class="fas fa-edit"></i></a>
+                <%-- Edit Page --%>
+                <button hidden id="editPageBtn" class="btn active" type="button" onclick="editPage()">
+                    <span class="me-2">Edit Page</span><i class="fas fa-edit"></i></button>
+                <%-- Save Page --%>
+                <button hidden id="savePageBtn" class="btn active bg-warning text-dark" type="button"
+                        onclick="savePage()">
+                    <span class="me-2">Save Page</span><i class="fas fa-edit"></i></button>
+                <%-- Publish Page --%>
+                <button hidden id="publishPageBtn" class="btn active" type="button"
+                        onclick="publishPage()">
+                    <span class="me-2">Publish Page</span><i class="fas fa-edit"></i></button>
             </div>
         </div>
     </div>
@@ -243,7 +318,8 @@ Author : xhico
             <div class="lf-sidenav-menu">
                 <div class="nav">
                     <div class="lf-sidenav-menu-heading">Views</div>
-                    <button id="desktop-btn" onclick="toggleView('desktop')" class="active nav-link bg-transparent border-0">
+                    <button id="desktop-btn" onclick="toggleView('desktop')"
+                            class="active nav-link bg-transparent border-0">
                         <span class="lf-nav-link-icon"><i class="fas fa-desktop"></i></span>Desktop
                     </button>
                     <button id="mobile-btn" onclick="toggleView('mobile')" class="nav-link bg-transparent border-0">
@@ -257,19 +333,22 @@ Author : xhico
                     <button id="spelling-btn" onclick="toggleView('spelling')" class="nav-link bg-transparent border-0">
                         <span class="lf-nav-link-icon"><i class="fas fa-spell-check"></i></span>Spelling
                     </button>
-                    <button id="accessibility-btn" onclick="toggleView('accessibility')" class="nav-link bg-transparent border-0">
+                    <button id="accessibility-btn" onclick="toggleView('accessibility')"
+                            class="nav-link bg-transparent border-0">
                         <span class="lf-nav-link-icon"><i class="fas fa-universal-access"></i></span>Accessibility
                     </button>
                     <button id="cookies-btn" onclick="toggleView('cookies')" class="nav-link bg-transparent border-0">
                         <span class="lf-nav-link-icon"><i class="fas fa-cookie"></i></span>Cookies
                     </button>
-                    <button id="technologies-btn" onclick="toggleView('technologies')" class="nav-link bg-transparent border-0">
+                    <button id="technologies-btn" onclick="toggleView('technologies')"
+                            class="nav-link bg-transparent border-0">
                         <span class="lf-nav-link-icon"><i class="fab fa-bootstrap"></i></span>Technologies
                     </button>
                     <button id="images-btn" onclick="toggleView('images')" class="nav-link bg-transparent border-0">
                         <span class="lf-nav-link-icon"><i class="fas fa-image"></i></span>Images
                     </button>
-                    <button id="lighthouse-btn" onclick="toggleView('lighthouse')" class="nav-link bg-transparent border-0">
+                    <button id="lighthouse-btn" onclick="toggleView('lighthouse')"
+                            class="nav-link bg-transparent border-0">
                         <span class="lf-nav-link-icon"><i class="fas fa-tachometer-alt"></i></span>Lighthouse
                     </button>
                     <button id="links-btn" onclick="toggleView('links')" class="nav-link bg-transparent border-0">
@@ -305,7 +384,8 @@ Author : xhico
 
             <%-- PAGE IFRAME --%>
             <div id="mainPageDiv" class="iframe-container">
-                <iframe id="mainPage" sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-same-origin allow-scripts allow-top-navigation-by-user-activation"></iframe>
+                <iframe id="mainPage"
+                        sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-same-origin allow-scripts allow-top-navigation-by-user-activation"></iframe>
             </div>
 
             <%-- CODE IFRAME --%>
@@ -322,9 +402,9 @@ Author : xhico
                     <li hidden class="breadcrumb-item active" id="spelling-cache">
                         <span id="spelling-cacheDate"></span>
                         <span class="cache_tooltip">
-                            <i class="fas fa-info-circle"></i>
-                            <span class="cache_tooltiptext">We use cached data so that future requests for that data can be served faster</span>
-                        </span>
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="cache_tooltiptext">We use cached data so that future requests for that data can be served faster</span>
+                                </span>
                     </li>
                 </ol>
                 <span class="btn active mb-4" onclick="rerunSpelling()">Run Again</span>
@@ -434,9 +514,9 @@ Author : xhico
                     <li hidden class="breadcrumb-item active" id="accessibility-cache">
                         <span id="accessibility-cacheDate"></span>
                         <span class="cache_tooltip">
-                            <i class="fas fa-info-circle"></i>
-                            <span class="cache_tooltiptext">We use cached data so that future requests for that data can be served faster</span>
-                        </span>
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="cache_tooltiptext">We use cached data so that future requests for that data can be served faster</span>
+                                </span>
                     </li>
                 </ol>
                 <%-- RERUN --%>
@@ -581,9 +661,9 @@ Author : xhico
                     <li hidden class="breadcrumb-item active" id="cookies-cache">
                         <span id="cookies-cacheDate"></span>
                         <span class="cache_tooltip">
-                            <i class="fas fa-info-circle"></i>
-                            <span class="cache_tooltiptext">We use cached data so that future requests for that data can be served faster</span>
-                        </span>
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="cache_tooltiptext">We use cached data so that future requests for that data can be served faster</span>
+                                </span>
                     </li>
                 </ol>
                 <span class="btn active mb-4" onclick="rerunCookies()">Run Again</span>
@@ -637,9 +717,9 @@ Author : xhico
                     <li hidden class="breadcrumb-item active" id="technologies-cache">
                         <span id="technologies-cacheDate"></span>
                         <span class="cache_tooltip">
-                            <i class="fas fa-info-circle"></i>
-                            <span class="cache_tooltiptext">We use cached data so that future requests for that data can be served faster</span>
-                        </span>
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="cache_tooltiptext">We use cached data so that future requests for that data can be served faster</span>
+                                </span>
                     </li>
                 </ol>
                 <span class="btn active mb-4" onclick="rerunTechnologies()">Run Again</span>
@@ -701,9 +781,9 @@ Author : xhico
                     <li hidden class="breadcrumb-item active" id="images-cache">
                         <span id="images-cacheDate"></span>
                         <span class="cache_tooltip">
-                            <i class="fas fa-info-circle"></i>
-                            <span class="cache_tooltiptext">We use cached data so that future requests for that data can be served faster</span>
-                        </span>
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="cache_tooltiptext">We use cached data so that future requests for that data can be served faster</span>
+                                </span>
                     </li>
                 </ol>
                 <span class="btn active mb-4" onclick="rerunImages()">Run Again</span>
@@ -788,9 +868,9 @@ Author : xhico
                     <li hidden class="breadcrumb-item active" id="links-cache">
                         <span id="links-cacheDate"></span>
                         <span class="cache_tooltip">
-                            <i class="fas fa-info-circle"></i>
-                            <span class="cache_tooltiptext">We use cached data so that future requests for that data can be served faster</span>
-                        </span>
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="cache_tooltiptext">We use cached data so that future requests for that data can be served faster</span>
+                                </span>
                     </li>
                 </ol>
                 <span class="btn active mb-4" onclick="rerunLinks()">Run Again</span>
@@ -863,7 +943,9 @@ Author : xhico
 <script src="js/syntaxHighlighter.js"></script>
 <script src="js/scripts.js"></script>
 <script src="js/main.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
 
 <%-- Get url / mainURL / mainLang --%>
 <%
@@ -896,9 +978,10 @@ Author : xhico
     document.getElementById("WCAG-level-list").disabled = false;
 
     <%-- If a URL Param is present => runMain --%>
-    <% if (!(mainURL.equals("null"))) { %>
+    <% if (!(mainURL.equals("null"))) {%>
+    // Run main
     runMain("<%=url%>", "<%=mainURL%>", "<%=mainLang%>");
-    <% } %>
+    <% }%>
 </script>
 
 </body>

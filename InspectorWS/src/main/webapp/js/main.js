@@ -28,6 +28,7 @@ let checkAccessibility = false;
 let checkCookies = false;
 let checkTechnologies = false;
 let checkImages = false;
+let ogEditable = [];
 
 
 // ------------------------------------- AUX FUNCTIONS ------------------------------------- //
@@ -244,9 +245,9 @@ async function checkCMS() {
                 if (editUrl.charAt(0) === "/") {
                     editUrl = editUrl.substring(1);
                 }
-                document.getElementById("editPageBtn").setAttribute('href', "https://" + (new URL(siteUrl)).hostname + "/" + editUrl);
-                document.getElementById("editPageBtn").setAttribute("target", "_blank");
-                document.getElementById("editPageBtn").hidden = false;
+                document.getElementById("editPageCMSBtn").setAttribute('href', "https://" + (new URL(siteUrl)).hostname + "/" + editUrl);
+                document.getElementById("editPageCMSBtn").setAttribute("target", "_blank");
+                document.getElementById("editPageCMSBtn").hidden = false;
                 break
             }
         }
@@ -279,16 +280,16 @@ async function checkCMS() {
                     if (editUrl.charAt(0) === "/") {
                         editUrl = editUrl.substring(1);
                     }
-                    document.getElementById("editPageBtn").setAttribute('href', editUrl);
+                    document.getElementById("editPageCMSBtn").setAttribute('href', editUrl);
                 } else if (cmsName === "Drupal") {
                     let editUrl = (linkRel[i].href + "/edit/");
                     if (editUrl.charAt(0) === "/") {
                         editUrl = editUrl.substring(1);
                     }
-                    document.getElementById("editPageBtn").setAttribute('href', editUrl);
+                    document.getElementById("editPageCMSBtn").setAttribute('href', editUrl);
                 }
-                document.getElementById("editPageBtn").setAttribute("target", "_blank");
-                document.getElementById("editPageBtn").hidden = false;
+                document.getElementById("editPageCMSBtn").setAttribute("target", "_blank");
+                document.getElementById("editPageCMSBtn").hidden = false;
             }
         }
     }
@@ -306,6 +307,88 @@ async function fetchProxy(url, i) {
         }
         return fetchProxy(url, i + 1);
     })
+}
+
+async function editPage() {
+    // Get pageIframe, codeIframe
+    let pageIframe = document.getElementById('mainPage').contentWindow.document;
+
+    // Get editable content divs
+    let editableElems = pageIframe.getElementsByClassName("uos-tier uos-tier-secondary");
+
+    // Iterate over every div
+    for (let i = 0; i < editableElems.length; i++) {
+        let elem = editableElems[i];
+        ogEditable.push([elem, elem.innerHTML, elem.innerText]);
+        elem.contentEditable = "true";
+    }
+
+    document.getElementById("editPageBtn").hidden = true;
+    document.getElementById("savePageBtn").hidden = false;
+}
+
+async function savePage() {
+    // Keep track of changes JSON
+    let editedChanges = '{"changes":[';
+    let hasChanges = false;
+
+    // Iterate over every editableElem
+    for (let i = 0; i < ogEditable.length; i++) {
+        let elem = ogEditable[i][0];
+        elem.contentEditable = "false";
+
+        // Check to see if is different => Add to JSON
+        if (ogEditable[i][2] !== elem.innerText) {
+            hasChanges = true;
+
+            let ogInnerHTML = ogEditable[i][1].replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+            let editedInnerHTML = elem.innerHTML.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+            editedChanges += '{"original":"' + ogInnerHTML + '","edited":"' + editedInnerHTML + '" },'
+        }
+    }
+
+    // If hasChanges => End JSON => Download JSON File
+    if (hasChanges) {
+        // Remove last "," => Add end JSON
+        editedChanges = editedChanges.slice(0, -1);
+        editedChanges += ']}';
+
+        // Download JSON File
+        let element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(editedChanges.replace(/(\r\n|\n|\r)/gm, " ")));
+        element.setAttribute('download', "changes.json");
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+    }
+
+    document.getElementById("savePageBtn").hidden = true;
+    document.getElementById("publishPageBtn").hidden = false;
+}
+
+async function publishPage() {
+    console.log("publishPage");
+    $('#publishModal').modal('show');
+}
+
+async function selectUserReviewer(user) {
+    if (user.style.backgroundColor === "rgb(222, 226, 230)") {
+        user.classList.add("bg-transparent");
+        user.style.backgroundColor = "";
+        document.getElementById("selectedUsers").value = document.getElementById("selectedUsers").value.replace(user.innerText + ", ", "");
+    } else {
+        document.getElementById("selectedUsers").value += user.innerText + ", ";
+        user.classList.remove("bg-transparent");
+        user.style.backgroundColor = "rgb(222, 226, 230)";
+    }
+}
+
+async function showPublishNotification() {
+    console.log("showPublishNotification");
+    $('#publishModal').modal('hide');
+    document.getElementById("publishPageBtn").hidden = true;
+    document.getElementById("publishPageBtn").innerText = "Published";
+    $('#publishedNotification').toast('show');
 }
 
 
@@ -432,7 +515,8 @@ async function addDictionary(row) {
     spellErrors.forEach(function (elem) {
         if (elem.innerText === error) {
             let parent = elem.parentNode;
-            while (elem.firstChild) parent.insertBefore(elem.firstChild, elem);
+            while (elem.firstChild)
+                parent.insertBefore(elem.firstChild, elem);
             parent.removeChild(elem);
         }
     });
@@ -1695,18 +1779,18 @@ async function runMain(url, mainURL, mainLang) {
     // Set Language on Languages Dropdown list
     document.getElementById("languages-list").value = mainLang;
 
-    // Get siteUrl, pageIframe, codeIframe
-    let siteUrl = await getSiteUrl();
+    // Get pageIframe
     let pageIframe = document.getElementById('mainPage');
 
     // Load iframe
-    console.log('Loading:', siteUrl)
-    fetchProxy(siteUrl, 0).then(res => res.text()).then(async data => {
+    console.log('Loading:', mainURL);
+    fetchProxy(mainURL, 0).then(res => res.text()).then(async data => {
         if (data) {
-            console.log(data);
-            pageIframe.srcdoc = data.replace(/<head([^>]*)>/i, `<head$1><base href="${siteUrl}">`);
+            // Replace href to abs hrefs
+            data = data.replace(/<head([^>]*)>/i, `<head$1><base href="${mainURL}">`);
 
             // Wait for pageIframe to load
+            pageIframe.srcdoc = data;
             pageIframe.addEventListener("load", async function () {
                 // Get pageIframe, codeIframe
                 let pageIframe = document.getElementById('mainPage');
@@ -1727,29 +1811,35 @@ async function runMain(url, mainURL, mainLang) {
                 pageIframe.head.innerHTML = pageIframe.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
                 codeIframe.head.innerHTML = codeIframe.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
 
-                // Check Drupal || Wordpress || Adobe CMS -> Edit Btn
-                await checkCMS()
+                // Edit Page for Southampton
+                let siteUrl = await getSiteUrl();
+                if (siteUrl.toLowerCase().includes("https://www.southampton.ac.uk/")) {
+                    document.getElementById("editPageBtn").hidden = false;
+                } else {
+                    // Check Drupal || Wordpress || Adobe CMS -> Edit Btn
+                    await checkCMS();
+                }
 
                 // Remove overlay
                 await overlay("removeOverlay", "", "");
 
-                // Auto Run
-                await overlay("addOverlay", "Running Reports", "");
-                document.getElementById("overlaySndMessage").innerHTML = "<p>Spelling <i id='overlay_spelling_mark' class=\"fas fa-check-square\"></i></p><p>Accessibility <i id='overlay_accessibility_mark' class=\"fas fa-check-square\"></i></p><p>Cookies <i id='overlay_cookies_mark' class=\"fas fa-check-square\"></i></p><p>Technologies <i id='overlay_technologies_mark' class=\"fas fa-check-square\"></i></p><p>Images <i id='overlay_images_mark' class=\"fas fa-check-square\"></i></p>"
-                toggleView("spelling");
-                toggleView("accessibility");
-                toggleView("cookies");
-                toggleView("technologies");
-                toggleView("images");
-                toggleView("desktop");
+                // // Auto Run
+                // await overlay("addOverlay", "Running Reports", "");
+                // document.getElementById("overlaySndMessage").innerHTML = "<p>Spelling <i id='overlay_spelling_mark' class=\"fas fa-check-square\"></i></p><p>Accessibility <i id='overlay_accessibility_mark' class=\"fas fa-check-square\"></i></p><p>Cookies <i id='overlay_cookies_mark' class=\"fas fa-check-square\"></i></p><p>Technologies <i id='overlay_technologies_mark' class=\"fas fa-check-square\"></i></p><p>Images <i id='overlay_images_mark' class=\"fas fa-check-square\"></i></p>"
+                // toggleView("spelling");
+                // toggleView("accessibility");
+                // toggleView("cookies");
+                // toggleView("technologies");
+                // toggleView("images");
+                // toggleView("desktop");
             });
         }
     }).catch(e => {
         // Send Failed to load message
-        setErrorModal("", "Failed to load <b>" + siteUrl + "</b></br>" + e + "</br>Plase check the URL.");
+        setErrorModal("", "Failed to load <b>" + mainURL + "</b></br>" + e + "</br>Plase check the URL.");
         overlay("removeOverlay", "", "");
         document.getElementById("mainPage").hidden = true;
-    })
+    });
 }
 
 

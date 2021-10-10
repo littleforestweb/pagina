@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        How to Download files Using JavaScript
+    </title>
+</head>
+
+<body>
+
+<div id="text">DelftStack<span> xhcio was</span> there</div>
+<br/>
+<input type="button" id="btn" value="Download"/>
+<script>
+    function download(filename, textInput) {
+        var element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8, ' + encodeURIComponent(textInput));
+        element.setAttribute('download', filename);
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+    }
+
+    document.getElementById("btn").addEventListener("click", function () {
+        var text = document.getElementById("text").outerHTML;
+        var filename = "output.txt";
+        download(filename, text);
+    }, false);
+</script>
+</body>
+
+</html>
