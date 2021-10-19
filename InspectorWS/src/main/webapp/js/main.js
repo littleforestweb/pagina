@@ -651,7 +651,10 @@ async function gotoAccessibilityError(view, accessibilityError) {
         await toggleView("desktop");
 
         // Scroll to Accessibility Error Errors in htmlView
+        pageIframe.document.getElementById(accessibilityError).classList.add("accessibilityerror_blink");
         pageIframe.document.getElementById(accessibilityError).scrollIntoView();
+        await new Promise(r => setTimeout(r, 5000));
+        pageIframe.document.getElementById(accessibilityError).classList.remove("accessibilityerror_blink");
     } else {
         // Get iframe element
         let codeIframe = document.getElementById("mainCode").contentWindow;
@@ -659,7 +662,10 @@ async function gotoAccessibilityError(view, accessibilityError) {
         await toggleView("code");
 
         // Scroll to Accessibility Error Errors in htmlView
+        codeIframe.document.getElementById(accessibilityError).classList.add("accessibilityerror_blink");
         codeIframe.document.getElementById(accessibilityError).scrollIntoView();
+        await new Promise(r => setTimeout(r, 5000));
+        codeIframe.document.getElementById(accessibilityError).classList.remove("accessibilityerror_blink");
     }
 
 }
