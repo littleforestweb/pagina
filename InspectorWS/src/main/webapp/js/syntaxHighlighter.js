@@ -5,9 +5,9 @@
  */
 
 
-function w3CodeColor(mode) {
-    var lang = (mode || "html");
-    var elmntObj = document.getElementById('mainCode').contentWindow.document.getElementById("htmlCode");
+function w3CodeColor(elem) {
+    var lang = ("html");
+    var elmntObj = elem;
     var elmntTxt = elmntObj.innerHTML;
     var tagcolor = "mediumblue";
     var tagnamecolor = "brown";

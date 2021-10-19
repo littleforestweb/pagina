@@ -408,3 +408,11 @@ table td, th {
 .cache_tooltip:hover .cache_tooltiptext {
     visibility: visible;
 }
+
+.card {
+    background-color: #f5f5f5;
+}
+
+.card-title {
+    font-weight: bolder;
+}

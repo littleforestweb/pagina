@@ -372,6 +372,7 @@ Author : xhico
     <%-- MAIN CONTENT --%>
     <div id="layoutSidenav_content">
         <main>
+
             <%-- OVERLAY --%>
             <div id="overlay">
                 <div id="overlay_text">
@@ -393,6 +394,11 @@ Author : xhico
                 <iframe id="mainCode"></iframe>
             </div>
 
+            <%-- TMP CODE IFRAME --%>
+            <div hidden id="tmpCodeDiv" class="iframe-container">
+                <iframe id="tmpCode"></iframe>
+            </div>
+
             <%-- SPELLING --%>
             <div hidden id="mainSpellingDiv" class="container-fluid px-4">
                 <%-- TITLE --%>
@@ -411,21 +417,21 @@ Author : xhico
                 <%-- GENERAL INFO --%>
                 <div class="row d-flex justify-content-center">
                     <div class="col-xl-3 col-md-6 text-center">
-                        <div id="spell-card-total" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                        <div class="card mb-4" style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title" id="spelling-total-errors">0</h5>
                                 <p class="card-text">Total Errors</p>
                             </div>
                             <div class="card-footer d-flex align-items-center justify-content-between">
                                 <button id="spelling-errors-btn" onclick="toggleSpellView('errorsTableDiv')"
-                                        class="small text-white stretched-link border-0 bg-transparent">View Details
+                                        class="small stretched-link border-0 bg-transparent">View Details
                                 </button>
-                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                <div class="small"><i class="fas fa-angle-right"></i></div>
                             </div>
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6 text-center">
-                        <div id="spell-card-most" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                        <div class="card mb-4" style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title" id="spelling-most-errors">None</h5>
                                 <p class="card-text">Most Frequent</p>
@@ -433,7 +439,7 @@ Author : xhico
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6 text-center">
-                        <div id="spell-card-least" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                        <div class="card mb-4" style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title" id="spelling-least-errors">None</h5>
                                 <p class="card-text">Least Frequent</p>
@@ -441,16 +447,16 @@ Author : xhico
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6 text-center">
-                        <div id="spell-card-dictionary" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                        <div class="card mb-4" style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title" id="spelling-total-dictionary">0</h5>
                                 <p class="card-text">Dictionary</p>
                             </div>
                             <div class="card-footer d-flex align-items-center justify-content-between">
                                 <button id="spelling-dictionary-btn" onclick="toggleSpellView('dictionaryTableDiv')"
-                                        class="small text-white stretched-link border-0 bg-transparent">View Details
+                                        class="small stretched-link border-0 bg-transparent">View Details
                                 </button>
-                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                <div class="small"><i class="fas fa-angle-right"></i></div>
                             </div>
                         </div>
                     </div>
@@ -524,8 +530,7 @@ Author : xhico
                 <%-- GENERAL INFO --%>
                 <div class="row d-flex justify-content-center">
                     <div class="col-xl-3 col-md-6 text-center">
-                        <div id="accessibility-card-total" class="card mb-4 bg-lfi-blue text-white"
-                             style="width: 18rem;">
+                        <div class="card mb-4" style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title" id="accessibility-total">0</h5>
                                 <p class="card-text">Total</p>
@@ -533,8 +538,7 @@ Author : xhico
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6 text-center">
-                        <div id="accessibility-card-errors" class="card mb-4 bg-lfi-blue text-white"
-                             style="width: 18rem;">
+                        <div class="card mb-4" style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title" id="accessibility-errors">0</h5>
                                 <p class="card-text">Errors</p>
@@ -542,15 +546,14 @@ Author : xhico
                             <div class="card-footer d-flex align-items-center justify-content-between">
                                 <button id="accessibility-errors-btn"
                                         onclick="toggleAccessibilityView('snifferErrorsTableDiv')"
-                                        class="small text-white stretched-link border-0 bg-transparent">View Details
+                                        class="small stretched-link border-0 bg-transparent">View Details
                                 </button>
-                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                <div class="small"><i class="fas fa-angle-right"></i></div>
                             </div>
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6 text-center">
-                        <div id="accessibility-card-notices" class="card mb-4 bg-lfi-blue text-white"
-                             style="width: 18rem;">
+                        <div class="card mb-4" style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title" id="accessibility-notices">0</h5>
                                 <p class="card-text">Notices</p>
@@ -558,15 +561,14 @@ Author : xhico
                             <div class="card-footer d-flex align-items-center justify-content-between">
                                 <button id="accessibility-notices-btn"
                                         onclick="toggleAccessibilityView('snifferNoticesTableDiv')"
-                                        class="small text-white stretched-link border-0 bg-transparent">View Details
+                                        class="small stretched-link border-0 bg-transparent">View Details
                                 </button>
-                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                <div class="small"><i class="fas fa-angle-right"></i></div>
                             </div>
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6 text-center">
-                        <div id="accessibility-card-warnings" class="card mb-4 bg-lfi-blue text-white"
-                             style="width: 18rem;">
+                        <div class="card mb-4" style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title" id="accessibility-warnings">0</h5>
                                 <p class="card-text">Warnings</p>
@@ -574,9 +576,9 @@ Author : xhico
                             <div class="card-footer d-flex align-items-center justify-content-between">
                                 <button id="accessibility-warnings-btn"
                                         onclick="toggleAccessibilityView('snifferWarningsTableDiv')"
-                                        class="small text-white stretched-link border-0 bg-transparent">View Details
+                                        class="small stretched-link border-0 bg-transparent">View Details
                                 </button>
-                                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                <div class="small"><i class="fas fa-angle-right"></i></div>
                             </div>
                         </div>
                     </div>
@@ -670,7 +672,7 @@ Author : xhico
                 <%-- GENERAL INFO --%>
                 <div class="row d-flex justify-content-center">
                     <div class="col-xl-3 col-md-6 text-center">
-                        <div id="cookies-card-total" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                        <div class="card mb-4" style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title" id="cookies-total">0</h5>
                                 <p class="card-text">Total</p>
@@ -726,8 +728,7 @@ Author : xhico
                 <%-- GENERAL INFO --%>
                 <div class="row d-flex justify-content-center">
                     <div class="col-xl-3 col-md-6 text-center">
-                        <div id="technologies-card-total" class="card mb-4 bg-lfi-blue text-white"
-                             style="width: 18rem;">
+                        <div class="card mb-4" style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title" id="technologies-total">0</h5>
                                 <p class="card-text">Total</p>
@@ -735,8 +736,7 @@ Author : xhico
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6 text-center">
-                        <div id="technologies-card-errors" class="card mb-4 bg-lfi-blue text-white"
-                             style="width: 18rem;">
+                        <div class="card mb-4" style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title" id="technologies-most">None</h5>
                                 <p class="card-text">Most Frequent Category</p>
@@ -790,7 +790,7 @@ Author : xhico
                 <%-- GENERAL INFO --%>
                 <div class="row d-flex justify-content-center">
                     <div class="col-xl-3 col-md-6 text-center">
-                        <div id="images-card-total" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                        <div class="card mb-4" style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title" id="images-total">0</h5>
                                 <p class="card-text">Total</p>
@@ -798,7 +798,7 @@ Author : xhico
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6 text-center">
-                        <div id="images-card-most" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                        <div class="card mb-4" style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title" id="images-most">None</h5>
                                 <p class="card-text">Most Frequent Format</p>
@@ -806,7 +806,7 @@ Author : xhico
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6 text-center">
-                        <div id="images-card-large" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                        <div class="card mb-4" style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title" id="images-large">0</h5>
                                 <p class="card-text">Large Images</p>
@@ -814,7 +814,7 @@ Author : xhico
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6 text-center">
-                        <div id="images-card-broken" class="card mb-4 bg-danger text-white" style="width: 18rem;">
+                        <div class="card mb-4" style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title" id="images-broken">0</h5>
                                 <p class="card-text">Broken Images</p>
@@ -877,7 +877,7 @@ Author : xhico
                 <%-- GENERAL INFO --%>
                 <div class="row d-flex justify-content-center">
                     <div class="col-xl-3 col-md-6 text-center">
-                        <div id="links-card-total" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                        <div class="card mb-4" style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title" id="links-total">0</h5>
                                 <p class="card-text">Total</p>
@@ -885,7 +885,7 @@ Author : xhico
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6 text-center">
-                        <div id="links-card-ext" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                        <div class="card mb-4" style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title" id="links-ext">0</h5>
                                 <p class="card-text">External</p>
@@ -893,7 +893,7 @@ Author : xhico
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6 text-center">
-                        <div id="links-card-int" class="card mb-4 bg-lfi-blue text-white" style="width: 18rem;">
+                        <div class="card mb-4" style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title" id="links-int">0</h5>
                                 <p class="card-text">Internal</p>
@@ -901,7 +901,7 @@ Author : xhico
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6 text-center">
-                        <div id="links-card-broken" class="card mb-4 bg-danger text-white" style="width: 18rem;">
+                        <div class="card mb-4" style="width: 18rem;">
                             <div class="card-body">
                                 <h5 class="card-title" id="links-broken">0</h5>
                                 <p class="card-text">Broken Links</p>
@@ -981,7 +981,11 @@ Author : xhico
     <% if (!(mainURL.equals("null"))) {%>
     // Run main
     runMain("<%=url%>", "<%=mainURL%>", "<%=mainLang%>");
-    <% }%>
+    <% } else { %>
+    document.getElementById("modalErrorTitle").innerHTML = ((title !== "") ? title : "Something went wrong!");
+    document.getElementById("modalErrorBody").innerHTML = "Failed to load URL - " + "<%=url%>";
+    $("#errorModal").modal("show");
+    <% } %>
 </script>
 
 </body>

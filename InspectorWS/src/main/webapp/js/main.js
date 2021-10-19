@@ -641,16 +641,27 @@ async function toggleAccessibilityView(view) {
     }
 }
 
-async function gotoAccessibilityError(accessibilityError) {
-    console.log("Goto " + accessibilityError);
+async function gotoAccessibilityError(view, accessibilityError) {
+    console.log("Goto " + accessibilityError + " - " + view);
 
-    // Get iframe element
-    let pageIframe = document.getElementById("mainPage").contentWindow;
+    if (view === "desktop") {
+        // Get iframe element
+        let pageIframe = document.getElementById("mainPage").contentWindow;
 
-    await toggleView("desktop");
+        await toggleView("desktop");
 
-    // Scroll to Accessibility Error Errors in htmlView
-    pageIframe.document.getElementById(accessibilityError).scrollIntoView();
+        // Scroll to Accessibility Error Errors in htmlView
+        pageIframe.document.getElementById(accessibilityError).scrollIntoView();
+    } else {
+        // Get iframe element
+        let codeIframe = document.getElementById("mainCode").contentWindow;
+
+        await toggleView("code");
+
+        // Scroll to Accessibility Error Errors in htmlView
+        codeIframe.document.getElementById(accessibilityError).scrollIntoView();
+    }
+
 }
 
 
@@ -852,181 +863,219 @@ async function runLanguageTool() {
         spellTagsElem = [...new Set(pageIframe.body.innerText.split("\n").filter(e => e).filter(e => e !== " "))].join(" ");
     }
 
+
     // Get SpellCheckJSON
-    let spellCheckJSON = await $.post(languageToolPost, {
-        content: spellTagsElem,
-        langCode: langCode,
-        url: siteUrl
-    }, function (result) {
-        return result;
-    });
+    try {
+        let spellCheckJSON = await $.post(languageToolPost, {
+            content: spellTagsElem,
+            langCode: langCode,
+            url: siteUrl
+        }, function (result) {
+            return result;
+        });
 
-    // Check is cache
-    if (spellCheckJSON["useCache"]) {
-        let cacheDate = spellCheckJSON["cacheDate"];
-        document.getElementById("spelling-cacheDate").innerText = "Last scanned: " + cacheDate;
-        document.getElementById("spelling-cache").hidden = false;
-    }
+        // Check is cache
+        if (spellCheckJSON["useCache"]) {
+            let cacheDate = spellCheckJSON["cacheDate"];
+            document.getElementById("spelling-cacheDate").innerText = "Last scanned: " + cacheDate;
+            document.getElementById("spelling-cache").hidden = false;
+        }
 
-    // If there is errors
-    let spellMatches = spellCheckJSON.matches;
-    if (spellMatches.length !== 0) {
+        // If there is errors
+        let spellMatches = spellCheckJSON.matches;
+        if (spellMatches.length !== 0) {
 
-        // Iterate on every error
-        for (let j = 0; j < spellMatches.length; j++) {
-            let entry = spellMatches[j];
+            // Iterate on every error
+            for (let j = 0; j < spellMatches.length; j++) {
+                let entry = spellMatches[j];
 
-            // Set error
-            let error = entry.context.text.substring(entry.context.offset, entry.context.offset + entry.context.length);
-            let message = entry.message;
+                // Set error
+                let error = entry.context.text.substring(entry.context.offset, entry.context.offset + entry.context.length);
+                let message = entry.message;
 
-            // Remove false-positive errors (three chars and whitespaces)
-            if (!(dict.includes(error)) && error.length >= 3 && !(/\s/g.test(error))) {
+                // Remove false-positive errors (three chars and whitespaces)
+                if (!(dict.includes(error)) && error.length >= 3 && !(/\s/g.test(error))) {
 
-                // Set message, replacements, color
-                let replacements = entry.replacements.map(reps => reps['value']).slice(0, 5).toString().replaceAll(",", ", ");
-                replacements = ((replacements === "") ? "None available" : replacements);
+                    // Set message, replacements, color
+                    let replacements = entry.replacements.map(reps => reps['value']).slice(0, 5).toString().replaceAll(",", ", ");
+                    replacements = ((replacements === "") ? "None available" : replacements);
 
-                // Add key error on errorsDict
-                if (!(error in errorsDict)) {
-                    errorsDict[error] = [message, replacements];
+                    // Add key error on errorsDict
+                    if (!(error in errorsDict)) {
+                        errorsDict[error] = [message, replacements];
+                    }
                 }
             }
         }
-    }
 
-    // Sort the array based on the length of the error
-    let sortedDict = Object.keys(errorsDict).map(function (key) {
-        return [key, errorsDict[key]];
-    }).sort(function (first, second) {
-        return second[0].length - first[0].length;
-    });
-
-    for (let i = 0; i < sortedDict.length; i++) {
-        let entry = sortedDict[i];
-        let error = entry[0];
-
-        // Highlight Spelling Errors on Page View
-        findAndReplaceDOMText(pageIframe.body, {
-            preset: 'prose',
-            find: error,
-            wrap: 'spellerror',
-            wrapClass: "shiny_red",
-            wrapId: "spell_" + error
+        // Sort the array based on the length of the error
+        let sortedDict = Object.keys(errorsDict).map(function (key) {
+            return [key, errorsDict[key]];
+        }).sort(function (first, second) {
+            return second[0].length - first[0].length;
         });
 
-        // Highlight Spelling Errors on Code View
-        findAndReplaceDOMText(codeIframe.getElementById("htmlCode"), {
-            preset: 'prose',
-            find: error,
-            wrap: 'spellerror',
-            wrapClass: "shiny_red",
-            wrapId: "spell_" + error
-        });
-    }
+        for (let i = 0; i < sortedDict.length; i++) {
+            let entry = sortedDict[i];
+            let error = entry[0];
 
-    // Count how many spellerror per error
-    Object.keys(errorsDict).forEach(function (entry) {
-        let key = entry;
-        let value = errorsDict[entry];
-        let count = 0;
-        let spellErrors = pageIframe.querySelectorAll("spellerror");
-        for (let i = 0; i < spellErrors.length; i++) {
-            let entry = spellErrors[i];
-            if (entry.innerText === key) {
-                count += 1;
-            }
+            // Highlight Spelling Errors on Page View
+            findAndReplaceDOMText(pageIframe.body, {
+                preset: 'prose',
+                find: error,
+                wrap: 'spellerror',
+                wrapClass: "shiny_red",
+                wrapId: "spell_" + error
+            });
+
+            // Highlight Spelling Errors on Code View
+            findAndReplaceDOMText(codeIframe.getElementById("htmlCode"), {
+                preset: 'prose',
+                find: error,
+                wrap: 'spellerror',
+                wrapClass: "shiny_red",
+                wrapId: "spell_" + error
+            });
         }
-        errorsDict[key] = [count, value[0], value[1]];
-    });
 
-    // Sort the array based on the count element
-    let items = Object.keys(errorsDict).map(function (key) {
-        return [key, errorsDict[key]];
-    }).sort(function (first, second) {
-        return second[1][0] - first[1][0];
-    });
-
-    // Highlight Spelling Errors on Page and Code View
-    // Add Spelling Errors to sidebar
-    let dataset = [];
-    for (let i = 0; i < items.length; i++) {
-        let entry = items[i];
-        let error = entry[0];
-        let count = entry[1][0];
-        let message = entry[1][1];
-        let replacements = entry[1][2];
-
-        // Add to dataset
-        dataset.push([error, replacements, message, count]);
-    }
-
-    // Initialize Errors Table
-    $('#errorsTable').DataTable({
-        dom: 'Blfrtip',
-        buttons: [{text: 'Export', extend: 'csv', filename: 'Spelling Errors'}],
-        paginate: false,
-        "oLanguage": {"sSearch": "Filter:"},
-        "language": {"emptyTable": "Congratulations! We didn't find any possible spelling mistakes."},
-        "order": [[3, "desc"]],
-        data: dataset,
-        "autoWidth": false,
-        "columnDefs": [
-            {
-                "width": "20%", "targets": 0, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
-                },
-            },
-            {
-                "width": "25%", "targets": 1, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
-                },
-            },
-            {
-                "width": "25%", "targets": 2, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
-                },
-            },
-            {
-                "width": "15%", "targets": 3, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
-                },
-            },
-            {
-                "width": "15%", "targets": 4, "render": function (data, type, row) {
-                    return "<button class='addDictionary bg-transparent border-0 text-lfi-green' onclick='addDictionary(\"" + row + "\")'><b>Add to Dictionary</b></button>" + "|" + "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoSpellError(\"spell_" + row[0] + "\")'><b>View in Page</b></button>";
-                },
+        // Count how many spellerror per error
+        Object.keys(errorsDict).forEach(function (entry) {
+            let key = entry;
+            let value = errorsDict[entry];
+            let count = 0;
+            let spellErrors = pageIframe.querySelectorAll("spellerror");
+            for (let i = 0; i < spellErrors.length; i++) {
+                let entry = spellErrors[i];
+                if (entry.innerText === key) {
+                    count += 1;
+                }
             }
-        ]
-    });
+            errorsDict[key] = [count, value[0], value[1]];
+        });
 
-    // Update GENERAL INFO
-    let mostError = "Good Job!";
-    let leastError = "Good Job!";
-    let totalError = "0 - Good Job!"
-    if (dataset.length === 0) {
-        document.getElementById("spell-card-total").classList.remove("bg-lfi-blue");
-        document.getElementById("spell-card-total").classList.add("bg-lfi-green");
-        document.getElementById("spell-card-most").classList.remove("bg-lfi-blue");
-        document.getElementById("spell-card-most").classList.add("bg-lfi-green");
-        document.getElementById("spell-card-least").classList.remove("bg-lfi-blue");
-        document.getElementById("spell-card-least").classList.add("bg-lfi-green");
-    } else {
-        document.getElementById("spell-card-total").classList.add("bg-lfi-blue");
-        document.getElementById("spell-card-most").classList.add("bg-lfi-blue");
-        document.getElementById("spell-card-least").classList.add("bg-lfi-blue");
-        totalError = dataset.length.toString();
-        mostError = dataset[0][0];
-        leastError = dataset[dataset.length - 1][0];
+        // Sort the array based on the count element
+        let items = Object.keys(errorsDict).map(function (key) {
+            return [key, errorsDict[key]];
+        }).sort(function (first, second) {
+            return second[1][0] - first[1][0];
+        });
+
+        // Highlight Spelling Errors on Page and Code View
+        // Add Spelling Errors to sidebar
+        let dataset = [];
+        for (let i = 0; i < items.length; i++) {
+            let entry = items[i];
+            let error = entry[0];
+            let count = entry[1][0];
+            let message = entry[1][1];
+            let replacements = entry[1][2];
+
+            // Add to dataset
+            dataset.push([error, replacements, message, count]);
+        }
+
+        // Initialize Errors Table
+        $('#errorsTable').DataTable({
+            dom: 'Blfrtip',
+            buttons: [{text: 'Export', extend: 'csv', filename: 'Spelling Errors'}],
+            paginate: false,
+            "oLanguage": {"sSearch": "Filter:"},
+            "language": {"emptyTable": "Congratulations! We didn't find any possible spelling mistakes."},
+            "order": [[3, "desc"]],
+            data: dataset,
+            "autoWidth": false,
+            "columnDefs": [
+                {
+                    "width": "20%", "targets": 0, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "25%", "targets": 1, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "25%", "targets": 2, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "15%", "targets": 3, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "15%", "targets": 4, "render": function (data, type, row) {
+                        return "<button class='addDictionary bg-transparent border-0 text-lfi-green' onclick='addDictionary(\"" + row + "\")'><b>Add to Dictionary</b></button>" + "|" + "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoSpellError(\"spell_" + row[0] + "\")'><b>View in Page</b></button>";
+                    },
+                }
+            ]
+        });
+
+        // Update GENERAL INFO
+        let mostError = "Good Job!";
+        let leastError = "Good Job!";
+        let totalError = "0 - Good Job!"
+        if (dataset.length === 0) {
+            document.getElementById("spelling-total-errors").style.color = "green";
+        } else {
+            document.getElementById("spelling-total-errors").style.color = "red";
+            totalError = dataset.length.toString();
+            mostError = dataset[0][0];
+            leastError = dataset[dataset.length - 1][0];
+
+            document.getElementById("spelling-total-errors").innerText = totalError;
+            document.getElementById("spelling-most-errors").innerText = mostError;
+            document.getElementById("spelling-least-errors").innerText = leastError;
+        }
+    } catch (Ex) {
+        // Initialize Errors Table
+        $('#errorsTable').DataTable({
+            dom: 'Blfrtip',
+            buttons: [{text: 'Export', extend: 'csv', filename: 'Spelling Errors'}],
+            paginate: false,
+            "oLanguage": {"sSearch": "Filter:"},
+            "language": {"emptyTable": "Failed to load information."},
+            "order": [[3, "desc"]],
+            data: [],
+            "autoWidth": false,
+            "columnDefs": [
+                {
+                    "width": "20%", "targets": 0, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "25%", "targets": 1, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "25%", "targets": 2, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "15%", "targets": 3, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "15%", "targets": 4, "render": function (data, type, row) {
+                        return "<button class='addDictionary bg-transparent border-0 text-lfi-green' onclick='addDictionary(\"" + row + "\")'><b>Add to Dictionary</b></button>" + "|" + "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoSpellError(\"spell_" + row[0] + "\")'><b>View in Page</b></button>";
+                    },
+                }
+            ]
+        });
+        document.getElementById("spelling-total-errors").innerText = "None";
+        document.getElementById("spelling-most-errors").innerText = "None";
+        document.getElementById("spelling-least-errors").innerText = "None";
     }
-    document.getElementById("spelling-total-errors").innerText = totalError;
-    document.getElementById("spelling-most-errors").innerText = mostError;
-    document.getElementById("spelling-least-errors").innerText = leastError;
+
 
     await toggleSpellView("errorsTableDiv");
-
     document.getElementById("overlay_spelling_mark").style.color = "rgba(var(--lfi-green-rgb)";
-
     console.log("-------------------");
 }
 
@@ -1101,131 +1150,199 @@ async function runLinks() {
     let intLinksCount = 0;
     let brokenLinksCount = 0;
 
-    // Check if broken link
-    let linkJSON = await $.post(linksPost, {
-        url: siteUrl,
-    }, function (result) {
-        return result;
-    });
-
-    // Iterate over every link
-    let linksInfo = linkJSON["linksInfo"];
-    let dataset = [];
-
-    for (let i = 0; i < linksInfo.length; i++) {
-        Object.entries(linksInfo[i]).forEach(([key, value]) => {
-            let url = key;
-            let status = value[0];
-            let origin = value[1];
-            let ogLink = value[2];
-
-            // Hightlighg Broken Link
-            let links = Array.from(pageIframe.querySelectorAll('a'));
-            for (let i = 0; i < links.length; i++) {
-                let linkElem = links[i];
-                let linkHref = linkElem.href
-
-                if (linkHref === ogLink && (status >= "400" && status < "600")) {
-                    // Highlight Broken Link in HTML View
-                    linkElem.style.cssText += 'outline: 2px solid red;';
-                    linkElem.id = "blink_" + brokenLinksCount;
-
-                    // Update error color on html Code
-                    codeIframe.documentElement.innerHTML = codeIframe.documentElement.innerHTML.replaceAll(linkHref, "<span style='outline: 2px solid red'>" + linkHref + "</span>");
-                }
-            }
-
-            // Add to dataset
-            dataset.push([url, status, origin]);
-
-            // Set links counters
-            totalLinksCount += 1;
-            if (origin === "External") {
-                extLinksCount += 1;
-            } else if (origin === "Internal") {
-                intLinksCount += 1;
-            }
-            if (status >= "400" && status < "600") {
-                dataset[dataset.length - 1].push("blink_" + brokenLinksCount);
-                brokenLinksCount += 1;
-            }
-
+    try {
+        // Check if broken link
+        let linkJSON = await $.post(linksPost, {
+            url: siteUrl,
+        }, function (result) {
+            return result;
         });
-    }
 
-    // Initialize Errors Table
-    $('#linksTable').DataTable({
-        dom: 'Blfrtip',
-        buttons: [{text: 'Export', extend: 'csv', filename: 'Links Report'}],
-        paginate: false,
-        "oLanguage": {"sSearch": "Filter:"},
-        "language": {"emptyTable": "No data available in table"},
-        "order": [[0, "asc"]],
-        data: dataset,
-        "autoWidth": false,
-        "columnDefs": [
-            {
-                "width": "40%", "className": "truncate", "targets": 0, "render": function (data, type, row) {
-                    return "<a target='_blank' href='" + data + "'>" + data + "</a>";
-                },
-            },
-            {
-                "width": "20%", "targets": 1, "render": function (data, type, row) {
-                    let status = data.split(",");
-                    let html = "";
-                    let colorClass;
-                    status.forEach(function (code) {
-                        if (code.includes("20")) {
-                            colorClass = " class='link200'"
-                        } else if (code.includes("30")) {
-                            colorClass = " class='link301'"
-                        } else if (code.includes("40") || code.includes("50")) {
-                            colorClass = " class='link404'"
-                        } else {
-                            colorClass = "";
-                            code = "Couldn't get status code";
-                        }
+        // Iterate over every link
+        let linksInfo = linkJSON["linksInfo"];
+        let dataset = [];
 
-                        html += "<span" + colorClass + ">" + code + "</span>";
-                    });
-                    return html;
-                },
-            },
-            {
-                "width": "20%", "targets": 2, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
-                },
-            },
-            {
-                "width": "20%", "targets": 3, "render": function (data, type, row) {
-                    if (data !== undefined) {
-                        return "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoLink(\"" + data + "\")'><b>View in Page</b></button>";
-                    } else {
-                        return "";
+        for (let i = 0; i < linksInfo.length; i++) {
+            Object.entries(linksInfo[i]).forEach(([key, value]) => {
+                let url = key;
+                let status = value[0];
+                let origin = value[1];
+                let ogLink = value[2];
+
+                // Hightlighg Broken Link
+                let links = Array.from(pageIframe.querySelectorAll('a'));
+                for (let i = 0; i < links.length; i++) {
+                    let linkElem = links[i];
+                    let linkHref = linkElem.href
+
+                    if (linkHref === ogLink && (status >= "400" && status < "600")) {
+                        // Highlight Broken Link in HTML View
+                        linkElem.style.cssText += 'outline: 2px solid red;';
+                        linkElem.id = "blink_" + brokenLinksCount;
+
+                        // Update error color on html Code
+                        codeIframe.documentElement.innerHTML = codeIframe.documentElement.innerHTML.replaceAll(linkHref, "<span style='outline: 2px solid red'>" + linkHref + "</span>");
                     }
+                }
+
+                // Add to dataset
+                dataset.push([url, status, origin]);
+
+                // Set links counters
+                totalLinksCount += 1;
+                if (origin === "External") {
+                    extLinksCount += 1;
+                } else if (origin === "Internal") {
+                    intLinksCount += 1;
+                }
+                if (status >= "400" && status < "600") {
+                    dataset[dataset.length - 1].push("blink_" + brokenLinksCount);
+                    brokenLinksCount += 1;
+                }
+
+            });
+        }
+
+        // Initialize Errors Table
+        $('#linksTable').DataTable({
+            dom: 'Blfrtip',
+            buttons: [{text: 'Export', extend: 'csv', filename: 'Links Report'}],
+            paginate: false,
+            "oLanguage": {"sSearch": "Filter:"},
+            "language": {"emptyTable": "No data available in table"},
+            "order": [[0, "asc"]],
+            data: dataset,
+            "autoWidth": false,
+            "columnDefs": [
+                {
+                    "width": "40%", "className": "truncate", "targets": 0, "render": function (data, type, row) {
+                        return "<a target='_blank' href='" + data + "'>" + data + "</a>";
+                    },
                 },
-            }
-        ]
-    });
+                {
+                    "width": "20%", "targets": 1, "render": function (data, type, row) {
+                        let status = data.split(",");
+                        let html = "";
+                        let colorClass;
+                        status.forEach(function (code) {
+                            if (code.includes("20")) {
+                                colorClass = " class='link200'"
+                            } else if (code.includes("30")) {
+                                colorClass = " class='link301'"
+                            } else if (code.includes("40") || code.includes("50")) {
+                                colorClass = " class='link404'"
+                            } else {
+                                colorClass = "";
+                                code = "Couldn't get status code";
+                            }
 
-    // Update GENERAL INFO
-    if (brokenLinksCount === 0) {
-        brokenLinksCount = "0 - Great Job!"
-        document.getElementById("links-card-broken").classList.remove("bg-danger");
-        document.getElementById("links-card-broken").classList.add("bg-lfi-green");
+                            html += "<span" + colorClass + ">" + code + "</span>";
+                        });
+                        return html;
+                    },
+                },
+                {
+                    "width": "20%", "targets": 2, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "20%", "targets": 3, "render": function (data, type, row) {
+                        if (data !== undefined) {
+                            return "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoLink(\"" + data + "\")'><b>View in Page</b></button>";
+                        } else {
+                            return "";
+                        }
+                    },
+                }
+            ]
+        });
+
+        // Update GENERAL INFO
+        if (brokenLinksCount === 0) {
+            brokenLinksCount = "0 - Great Job!"
+            document.getElementById("links-broken").style.color = "green";
+        } else {
+            document.getElementById("links-broken").style.color = "red";
+        }
+
+        document.getElementById("links-total").innerText = totalLinksCount;
+        document.getElementById("links-ext").innerText = extLinksCount;
+        document.getElementById("links-int").innerText = intLinksCount;
+        document.getElementById("links-broken").innerText = brokenLinksCount;
+
+        // Show Ready Notification
+        document.getElementById("linksNotificationTitle").innerText = "Your Links Report is ready.";
+        document.getElementById("linksNotificationBtn").hidden = false;
+        $('#linksNotification').toast('show');
+
+    } catch (Ex) {
+        // Initialize Errors Table
+        $('#linksTable').DataTable({
+            dom: 'Blfrtip',
+            buttons: [{text: 'Export', extend: 'csv', filename: 'Links Report'}],
+            paginate: false,
+            "oLanguage": {"sSearch": "Filter:"},
+            "language": {"emptyTable": "Failed to load information."},
+            "order": [[0, "asc"]],
+            data: [],
+            "autoWidth": false,
+            "columnDefs": [
+                {
+                    "width": "40%", "className": "truncate", "targets": 0, "render": function (data, type, row) {
+                        return "<a target='_blank' href='" + data + "'>" + data + "</a>";
+                    },
+                },
+                {
+                    "width": "20%", "targets": 1, "render": function (data, type, row) {
+                        let status = data.split(",");
+                        let html = "";
+                        let colorClass;
+                        status.forEach(function (code) {
+                            if (code.includes("20")) {
+                                colorClass = " class='link200'"
+                            } else if (code.includes("30")) {
+                                colorClass = " class='link301'"
+                            } else if (code.includes("40") || code.includes("50")) {
+                                colorClass = " class='link404'"
+                            } else {
+                                colorClass = "";
+                                code = "Couldn't get status code";
+                            }
+
+                            html += "<span" + colorClass + ">" + code + "</span>";
+                        });
+                        return html;
+                    },
+                },
+                {
+                    "width": "20%", "targets": 2, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "20%", "targets": 3, "render": function (data, type, row) {
+                        if (data !== undefined) {
+                            return "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoLink(\"" + data + "\")'><b>View in Page</b></button>";
+                        } else {
+                            return "";
+                        }
+                    },
+                }
+            ]
+        });
+        document.getElementById("links-total").innerText = "None";
+        document.getElementById("links-ext").innerText = "None";
+        document.getElementById("links-int").innerText = "None";
+        document.getElementById("links-broken").innerText = "None";
+
+        // Show Ready Notification
+        document.getElementById("linksNotificationTitle").innerText = "Your Links Report failed to load information.";
+        document.getElementById("linksNotificationBtn").hidden = false;
+        $('#linksNotification').toast('show');
     }
-    document.getElementById("links-total").innerText = totalLinksCount;
-    document.getElementById("links-ext").innerText = extLinksCount;
-    document.getElementById("links-int").innerText = intLinksCount;
-    document.getElementById("links-broken").innerText = brokenLinksCount;
-
-    // Show Ready Notification
-    document.getElementById("linksNotificationTitle").innerText = "Your Links Report is ready.";
-    document.getElementById("linksNotificationBtn").hidden = false;
-    $('#linksNotification').toast('show');
 
     checkLinks = true;
-
     console.log("-------------------");
 }
 
@@ -1239,193 +1356,327 @@ async function runAccessibility() {
     // Get pageIframe
     let pageIframe = document.getElementById('mainPage').contentWindow.document;
 
+    // Get codeIframe
+    let codeIframe = document.getElementById('mainCode').contentWindow.document;
+
     // Get WCAG Level
     let WCAGLevel = document.getElementById("WCAG-level-list").value;
 
-    // Get accessibilityJSON
-    let accessibilityJSON = await $.post(accessibilityPost, {
-        url: siteUrl,
-        level: WCAGLevel
-    }, function (result) {
-        return result;
-    });
+    try {
+        // Get accessibilityJSON
+        let accessibilityJSON = await $.post(accessibilityPost, {
+            url: siteUrl,
+            level: WCAGLevel
+        }, function (result) {
+            return result;
+        });
 
-    // Check is cache
-    if (accessibilityJSON["useCache"]) {
-        let cacheDate = accessibilityJSON["cacheDate"];
-        document.getElementById("accessibility-cacheDate").innerText = "Last scanned: " + cacheDate;
-        document.getElementById("accessibility-cache").hidden = false;
-    }
+        // Check is cache
+        if (accessibilityJSON["useCache"]) {
+            let cacheDate = accessibilityJSON["cacheDate"];
+            document.getElementById("accessibility-cacheDate").innerText = "Last scanned: " + cacheDate;
+            document.getElementById("accessibility-cache").hidden = false;
+        }
 
-    // Iterate over all 3 categories
-    let snifferCategories = ["Errors", "Notices", "Warnings"];
-    let errorsDataset = [];
-    let noticesDataset = [];
-    let warningsDataset = [];
-    let errorsCounter = 0;
+        // Iterate over all 3 categories
+        let snifferCategories = ["Errors", "Notices", "Warnings"];
+        let errorsDataset = [];
+        let noticesDataset = [];
+        let warningsDataset = [];
+        let errorsCounter = 0;
 
-    // Iterate over every entry on the category
-    for (let i = 0; i < snifferCategories.length; i++) {
-        let category = snifferCategories[i];
+        // Iterate over every entry on the category
+        for (let i = 0; i < snifferCategories.length; i++) {
+            let category = snifferCategories[i];
 
-        // Get category JSON
-        let snifferCategory = accessibilityJSON[category];
+            // Get category JSON
+            let snifferCategory = accessibilityJSON[category];
 
-        // Add entry to Table
-        for (let j = 0; j < snifferCategory.length; j++) {
-            let entry = snifferCategory[j];
-            let guideline = ((entry["Guideline"] !== "null") ? entry["Guideline"].replaceAll(".", " ") : "N/A");
-            let message = ((entry["Message"] !== "null") ? entry["Message"] : "N/A");
-            let tag = ((entry["Tag"] !== "null") ? entry["Tag"] : "N/A");
-            let code = ((entry["Code"] !== "null") ? entry["Code"] : "N/A");
+            // Add entry to Table
+            for (let j = 0; j < snifferCategory.length; j++) {
+                let entry = snifferCategory[j];
+                let guideline = ((entry["Guideline"] !== "null") ? entry["Guideline"].replaceAll(".", " ") : "N/A");
+                let message = ((entry["Message"] !== "null") ? entry["Message"] : "N/A");
+                let tag = ((entry["Tag"] !== "null") ? entry["Tag"] : "N/A");
+                let code = ((entry["Code"] !== "null") ? entry["Code"] : "N/A");
 
-            // Add entry to respective dataset
-            if (category === "Errors") {
-                errorsDataset.push([guideline, message, tag]);
-            } else if (category === "Notices") {
-                noticesDataset.push([guideline, message, tag]);
-            } else if (category === "Warnings") {
-                warningsDataset.push([guideline, message, tag]);
-            }
+                // Add entry to respective dataset
+                if (category === "Errors") {
+                    errorsDataset.push([guideline, message, tag]);
+                } else if (category === "Notices") {
+                    noticesDataset.push([guideline, message, tag]);
+                } else if (category === "Warnings") {
+                    warningsDataset.push([guideline, message, tag]);
+                }
 
-            // Highlight div on Desktop View
-            if (code !== "N/A" && category === "Errors" && (!(code.includes("<html>") || code.includes("<head>") || code.includes("<body>")))) {
-                errorsCounter += 1;
-                pageIframe.body.innerHTML = pageIframe.body.innerHTML.replace(code.split(">")[0], code.split(">")[0] + "id='accessibilityerror_" + errorsCounter + "'");
-                let accessibilityErrorElem = pageIframe.getElementById("accessibilityerror_" + errorsCounter);
-                if (accessibilityErrorElem) {
-                    accessibilityErrorElem.classList.add("accessibilityerror_shiny_red");
-                    errorsDataset[errorsDataset.length - 1].push("accessibilityerror_" + errorsCounter);
+                // Highlight div on Desktop View && Code View
+                if (code !== "N/A" && category === "Errors" && (!(code.includes("<html>") || code.includes("<head>") || code.includes("<body>")))) {
+                    errorsCounter += 1;
+
+                    // Desktop View
+                    pageIframe.body.innerHTML = pageIframe.body.innerHTML.replace(code.split(">")[0], code.split(">")[0] + "id='accessibilityerror_" + errorsCounter + "'");
+                    let accessibilityErrorElemDesktop = pageIframe.getElementById("accessibilityerror_" + errorsCounter);
+                    if (accessibilityErrorElemDesktop) {
+                        accessibilityErrorElemDesktop.classList.add("accessibilityerror_shiny_red");
+                        errorsDataset[errorsDataset.length - 1].push("accessibilityerror_" + errorsCounter);
+                    }
+
+                    // Code View
+                    let tmpIframe = document.getElementById('tmpCode');
+                    tmpIframe = tmpIframe.contentWindow.document;
+                    tmpIframe.open();
+                    tmpIframe.write('<pre><code id="tmphtmlCode">' + code.replaceAll("<", "&lt;").replaceAll(">", "&gt;") + '</code></pre>');
+                    tmpIframe.close();
+                    await w3CodeColor(document.getElementById('tmpCode').contentWindow.document.getElementById("tmphtmlCode"));
+                    let tmpElem = document.getElementById('tmpCode').contentWindow.document.getElementById("tmphtmlCode").firstElementChild;
+                    let newElem = tmpElem.cloneNode(true);
+                    newElem.id = "accessibilityerror_" + errorsCounter;
+                    newElem.classList.add("accessibilityerror_shiny_red");
+                    if (newElem) {
+                        codeIframe.getElementById("htmlCode").innerHTML = codeIframe.getElementById("htmlCode").innerHTML.replaceAll(tmpElem.outerHTML, newElem.outerHTML);
+                    }
                 }
             }
         }
-    }
 
-    // Update GENERAL INFO
-    let total = errorsDataset.length + noticesDataset.length + warningsDataset.length
-    let errors = errorsDataset.length
-    let notices = noticesDataset.length
-    let warnings = warningsDataset.length
-    if (total === 0) {
-        total = "0 - Good Job!";
-        document.getElementById("accessibility-card-total").classList.remove("bg-lfi-blue");
-        document.getElementById("accessibility-card-total").classList.add("bg-lfi-green");
-    }
-    if (errors === 0) {
-        errors = "0 - Good Job!";
-        document.getElementById("accessibility-card-errors").classList.remove("bg-lfi-blue");
-        document.getElementById("accessibility-card-errors").classList.add("bg-lfi-green");
-    }
-    if (notices === 0) {
-        notices = "0 - Good Job!";
-        document.getElementById("accessibility-card-notices").classList.remove("bg-lfi-blue");
-        document.getElementById("accessibility-card-notices").classList.add("bg-lfi-green");
-    }
-    if (warnings === 0) {
-        warnings = "0 - Good Job!";
-        document.getElementById("accessibility-card-warnings").classList.remove("bg-lfi-blue");
-        document.getElementById("accessibility-card-warnings").classList.add("bg-lfi-green");
-    }
-    document.getElementById("accessibility-total").innerText = total.toString();
-    document.getElementById("accessibility-errors").innerText = errors.toString();
-    document.getElementById("accessibility-notices").innerText = notices.toString();
-    document.getElementById("accessibility-warnings").innerText = warnings.toString();
+        // Update GENERAL INFO
+        let total = errorsDataset.length + noticesDataset.length + warningsDataset.length
+        let errors = errorsDataset.length
+        let notices = noticesDataset.length
+        let warnings = warningsDataset.length
+        if (total === 0) {
+            total = "0 - Good Job!";
+            document.getElementById("accessibility-total").style.color = "green";
+        } else {
+            document.getElementById("accessibility-total").style.color = "red";
+        }
 
-    // Initialize Errors Table
-    $('#snifferErrorsTable').DataTable({
-        dom: 'Blfrtip',
-        buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Errors Report'}],
-        paginate: false,
-        "oLanguage": {"sSearch": "Filter:"},
-        "language": {"emptyTable": "Congratulations! We didn't find any errors in the last scan."},
-        "order": [[0, "asc"]],
-        data: errorsDataset,
-        "autoWidth": false,
-        "columnDefs": [
-            {
-                "width": "25%", "targets": 0, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
-                },
-            },
-            {
-                "width": "45%", "targets": 1, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
-                },
-            },
-            {
-                "width": "10%", "targets": 2, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
-                },
-            },
-            {
-                "width": "10%", "targets": 3, "render": function (data, type, row) {
-                    if (data !== undefined) {
-                        return "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoAccessibilityError(\"" + data + "\")'><b>View in Page</b></button>";
-                    } else {
-                        return "";
-                    }
-                },
-            }
-        ]
-    });
+        if (errors === 0) {
+            errors = "0 - Good Job!";
+            document.getElementById("accessibility-errors").style.color = "green";
+        } else {
+            document.getElementById("accessibility-errors").style.color = "red";
+        }
 
-    // Initialize Errors Table
-    $('#snifferNoticesTable').DataTable({
-        dom: 'Blfrtip',
-        buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Notices Report'}],
-        paginate: false,
-        "oLanguage": {"sSearch": "Filter:"},
-        "language": {"emptyTable": "Congratulations! We didn't find any notices in the last scan."},
-        "order": [[0, "asc"]],
-        data: noticesDataset,
-        "autoWidth": false,
-        "columnDefs": [
-            {
-                "width": "30%", "targets": 0, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
-                },
-            },
-            {
-                "width": "60%", "targets": 1, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
-                },
-            },
-            {
-                "width": "10%", "targets": 2, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
-                },
-            }
-        ]
-    });
+        if (notices === 0) {
+            notices = "0 - Good Job!";
+            document.getElementById("accessibility-notices").style.color = "green";
+        } else {
+            document.getElementById("accessibility-notices").style.color = "red";
+        }
 
-    // Initialize Errors Table
-    $('#snifferWarningsTable').DataTable({
-        dom: 'Blfrtip',
-        buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Warnings Report'}],
-        paginate: false,
-        "oLanguage": {"sSearch": "Filter:"},
-        "language": {"emptyTable": "Congratulations! We didn't find any warnings in the last scan."},
-        "order": [[0, "asc"]],
-        data: warningsDataset,
-        "autoWidth": false,
-        "columnDefs": [
-            {
-                "width": "30%", "targets": 0, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
+        if (warnings === 0) {
+            warnings = "0 - Good Job!";
+            document.getElementById("accessibility-warnings").style.color = "green";
+        } else {
+            document.getElementById("accessibility-warnings").style.color = "red";
+        }
+
+        document.getElementById("accessibility-total").innerText = total.toString();
+        document.getElementById("accessibility-errors").innerText = errors.toString();
+        document.getElementById("accessibility-notices").innerText = notices.toString();
+        document.getElementById("accessibility-warnings").innerText = warnings.toString();
+
+        // Initialize Errors Table
+        $('#snifferErrorsTable').DataTable({
+            dom: 'Blfrtip',
+            buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Errors Report'}],
+            paginate: false,
+            "oLanguage": {"sSearch": "Filter:"},
+            "language": {"emptyTable": "Congratulations! We didn't find any errors in the last scan."},
+            "order": [[0, "asc"]],
+            data: errorsDataset,
+            "autoWidth": false,
+            "columnDefs": [
+                {
+                    "width": "25%", "targets": 0, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
                 },
-            },
-            {
-                "width": "60%", "targets": 1, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
+                {
+                    "width": "45%", "targets": 1, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
                 },
-            },
-            {
-                "width": "10%", "targets": 2, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
+                {
+                    "width": "10%", "targets": 2, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
                 },
-            }
-        ]
-    });
+                {
+                    "width": "10%", "targets": 3, "render": function (data, type, row) {
+                        if (data !== undefined) {
+                            return "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoAccessibilityError(\"desktop\", \"" + data + "\")'><b>View in Page</b></button>" + "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoAccessibilityError(\"code\", \"" + data + "\")'><b>View in Code</b></button>";
+                        } else {
+                            return "";
+                        }
+                    },
+                }
+            ]
+        });
+
+        // Initialize Errors Table
+        $('#snifferNoticesTable').DataTable({
+            dom: 'Blfrtip',
+            buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Notices Report'}],
+            paginate: false,
+            "oLanguage": {"sSearch": "Filter:"},
+            "language": {"emptyTable": "Congratulations! We didn't find any notices in the last scan."},
+            "order": [[0, "asc"]],
+            data: noticesDataset,
+            "autoWidth": false,
+            "columnDefs": [
+                {
+                    "width": "30%", "targets": 0, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "60%", "targets": 1, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "10%", "targets": 2, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                }
+            ]
+        });
+
+        // Initialize Errors Table
+        $('#snifferWarningsTable').DataTable({
+            dom: 'Blfrtip',
+            buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Warnings Report'}],
+            paginate: false,
+            "oLanguage": {"sSearch": "Filter:"},
+            "language": {"emptyTable": "Congratulations! We didn't find any warnings in the last scan."},
+            "order": [[0, "asc"]],
+            data: warningsDataset,
+            "autoWidth": false,
+            "columnDefs": [
+                {
+                    "width": "30%", "targets": 0, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "60%", "targets": 1, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "10%", "targets": 2, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                }
+            ]
+        });
+
+    } catch (Ex) {
+        console.log(Ex);
+
+        // Initialize Errors Table
+        $('#snifferErrorsTable').DataTable({
+            dom: 'Blfrtip',
+            buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Errors Report'}],
+            paginate: false,
+            "oLanguage": {"sSearch": "Filter:"},
+            "language": {"emptyTable": "Failed to load information."},
+            "order": [[0, "asc"]],
+            data: [],
+            "autoWidth": false,
+            "columnDefs": [
+                {
+                    "width": "25%", "targets": 0, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "45%", "targets": 1, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "10%", "targets": 2, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "10%", "targets": 3, "render": function (data, type, row) {
+                        if (data !== undefined) {
+                            return "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoAccessibilityError(\"desktop\", \"" + data + "\")'><b>View in Page</b></button>";
+                        } else {
+                            return "";
+                        }
+                    },
+                }
+            ]
+        });
+
+        // Initialize Errors Table
+        $('#snifferNoticesTable').DataTable({
+            dom: 'Blfrtip',
+            buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Notices Report'}],
+            paginate: false,
+            "oLanguage": {"sSearch": "Filter:"},
+            "language": {"emptyTable": "Failed to load information."},
+            "order": [[0, "asc"]],
+            data: [],
+            "autoWidth": false,
+            "columnDefs": [
+                {
+                    "width": "30%", "targets": 0, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "60%", "targets": 1, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "10%", "targets": 2, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                }
+            ]
+        });
+
+        // Initialize Errors Table
+        $('#snifferWarningsTable').DataTable({
+            dom: 'Blfrtip',
+            buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Warnings Report'}],
+            paginate: false,
+            "oLanguage": {"sSearch": "Filter:"},
+            "language": {"emptyTable": "Failed to load information."},
+            "order": [[0, "asc"]],
+            data: [],
+            "autoWidth": false,
+            "columnDefs": [
+                {
+                    "width": "30%", "targets": 0, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "60%", "targets": 1, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "10%", "targets": 2, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                }
+            ]
+        });
+
+        document.getElementById("accessibility-total").innerText = "None";
+        document.getElementById("accessibility-errors").innerText = "None";
+        document.getElementById("accessibility-notices").innerText = "None";
+        document.getElementById("accessibility-warnings").innerText = "None";
+    }
 
     // Remove overlay
     // await overlay("removeOverlay", "", "");
@@ -1439,79 +1690,126 @@ async function runCookies() {
     // Get siteUrl
     let siteUrl = await getSiteUrl();
 
-    // Get cookiesJSON
-    let cookiesJSON = await $.post(cookiesPost, {
-        url: siteUrl,
-    }, function (result) {
-        return result;
-    });
+    try {
+        // Get cookiesJSON
+        let cookiesJSON = await $.post(cookiesPost, {
+            url: siteUrl,
+        }, function (result) {
+            return result;
+        });
 
-    // Check is cache
-    if (cookiesJSON["useCache"]) {
-        let cacheDate = cookiesJSON["cacheDate"];
-        document.getElementById("cookies-cacheDate").innerText = "Last scanned: " + cacheDate;
-        document.getElementById("cookies-cache").hidden = false;
+        // Check is cache
+        if (cookiesJSON["useCache"]) {
+            let cacheDate = cookiesJSON["cacheDate"];
+            document.getElementById("cookies-cacheDate").innerText = "Last scanned: " + cacheDate;
+            document.getElementById("cookies-cache").hidden = false;
+        }
+
+        let dataset = [];
+        cookiesJSON = cookiesJSON["cookies"];
+        for (let i = 0; i < cookiesJSON.length; i++) {
+            let entry = cookiesJSON[i];
+            let name = entry["name"];
+            let domain = entry["domain"];
+            let expires = new Date(0);
+            expires.setUTCSeconds(new Date(entry["expires"]));
+            expires = '' + expires;
+            let httpOnly = entry["httpOnly"];
+            let secure = entry["secure"];
+            let sourcePort = entry["sourcePort"];
+            dataset.push([name, domain, expires, httpOnly, secure, sourcePort]);
+        }
+
+        // Initialize Errors Table
+        $('#cookiesTable').DataTable({
+            dom: 'Blfrtip',
+            buttons: [{text: 'Export', extend: 'csv', filename: 'Cookies Report'}],
+            paginate: false,
+            "oLanguage": {"sSearch": "Filter:"},
+            "language": {"emptyTable": "No data available in table"},
+            "order": [[0, "asc"]],
+            data: dataset,
+            "autoWidth": false,
+            "columnDefs": [
+                {
+                    "width": "10%", "targets": 0, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "20%", "targets": 1, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "40%", "targets": 2, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "10%", "targets": 3, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "10%", "targets": 4, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "10%", "targets": 5, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                }
+            ]
+        });
+        document.getElementById("cookies-total").innerText = dataset.length.toString();
+    } catch (Ex) {
+        // Initialize Errors Table
+        $('#cookiesTable').DataTable({
+            dom: 'Blfrtip',
+            buttons: [{text: 'Export', extend: 'csv', filename: 'Cookies Report'}],
+            paginate: false,
+            "oLanguage": {"sSearch": "Filter:"},
+            "language": {"emptyTable": "Failed to load information."},
+            "order": [[0, "asc"]],
+            data: [],
+            "autoWidth": false,
+            "columnDefs": [
+                {
+                    "width": "10%", "targets": 0, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "20%", "targets": 1, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "40%", "targets": 2, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "10%", "targets": 3, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "10%", "targets": 4, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "10%", "targets": 5, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                }
+            ]
+        });
+        document.getElementById("cookies-total").innerText = "None";
     }
-
-    let dataset = [];
-    cookiesJSON = cookiesJSON["cookies"];
-    for (let i = 0; i < cookiesJSON.length; i++) {
-        let entry = cookiesJSON[i];
-        let name = entry["name"];
-        let domain = entry["domain"];
-        let expires = new Date(0);
-        expires.setUTCSeconds(new Date(entry["expires"]));
-        expires = '' + expires;
-        let httpOnly = entry["httpOnly"];
-        let secure = entry["secure"];
-        let sourcePort = entry["sourcePort"];
-        dataset.push([name, domain, expires, httpOnly, secure, sourcePort]);
-    }
-
-    // Initialize Errors Table
-    $('#cookiesTable').DataTable({
-        dom: 'Blfrtip',
-        buttons: [{text: 'Export', extend: 'csv', filename: 'Cookies Report'}],
-        paginate: false,
-        "oLanguage": {"sSearch": "Filter:"},
-        "language": {"emptyTable": "No data available in table"},
-        "order": [[0, "asc"]],
-        data: dataset,
-        "autoWidth": false,
-        "columnDefs": [
-            {
-                "width": "10%", "targets": 0, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
-                },
-            },
-            {
-                "width": "20%", "targets": 1, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
-                },
-            },
-            {
-                "width": "40%", "targets": 2, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
-                },
-            },
-            {
-                "width": "10%", "targets": 3, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
-                },
-            },
-            {
-                "width": "10%", "targets": 4, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
-                },
-            },
-            {
-                "width": "10%", "targets": 5, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
-                },
-            }
-        ]
-    });
-    document.getElementById("cookies-total").innerText = dataset.length.toString();
 
     // Remove overlay
     // await overlay("removeOverlay", "", "");
@@ -1525,93 +1823,137 @@ async function runTechnologies() {
     // Get siteUrl
     let siteUrl = await getSiteUrl();
 
-    // Get cookiesJSON
-    let wappalyzerJSON = await $.post(wappalyzerPost, {
-        url: siteUrl,
-    }, function (result) {
-        return result;
-    });
+    try {
+        // Get cookiesJSON
+        let wappalyzerJSON = await $.post(wappalyzerPost, {
+            url: siteUrl,
+        }, function (result) {
+            return result;
+        });
 
-    // Check is cache
-    if (wappalyzerJSON["useCache"]) {
-        let cacheDate = wappalyzerJSON["cacheDate"];
-        document.getElementById("technologies-cacheDate").innerText = "Last scanned: " + cacheDate;
-        document.getElementById("technologies-cache").hidden = false;
-    }
+        // Check is cache
+        if (wappalyzerJSON["useCache"]) {
+            let cacheDate = wappalyzerJSON["cacheDate"];
+            document.getElementById("technologies-cacheDate").innerText = "Last scanned: " + cacheDate;
+            document.getElementById("technologies-cache").hidden = false;
+        }
 
-    let dataset = [];
-    let categoriesCounter = {};
-    wappalyzerJSON = wappalyzerJSON["Wappalyzer"]["technologies"];
-    for (let i = 0; i < wappalyzerJSON.length; i++) {
-        let entry = wappalyzerJSON[i];
-        let confidence = entry["confidence"].toString();
-        let icon = entry["icon"];
-        let name = entry["name"];
-        let website = entry["website"];
-        let categories = entry["categories"];
-        let categoriesName = "";
-        for (let j = 0; j < categories.length; j++) {
-            categoriesName += categories[j]["name"] + ", ";
-            if (categories[j]["name"] in categoriesCounter) {
-                categoriesCounter[categories[j]["name"]] += 1;
-            } else {
-                categoriesCounter[categories[j]["name"]] = 1;
+        let dataset = [];
+        let categoriesCounter = {};
+        wappalyzerJSON = wappalyzerJSON["Wappalyzer"]["technologies"];
+        for (let i = 0; i < wappalyzerJSON.length; i++) {
+            let entry = wappalyzerJSON[i];
+            let confidence = entry["confidence"].toString();
+            let icon = entry["icon"];
+            let name = entry["name"];
+            let website = entry["website"];
+            let categories = entry["categories"];
+            let categoriesName = "";
+            for (let j = 0; j < categories.length; j++) {
+                categoriesName += categories[j]["name"] + ", ";
+                if (categories[j]["name"] in categoriesCounter) {
+                    categoriesCounter[categories[j]["name"]] += 1;
+                } else {
+                    categoriesCounter[categories[j]["name"]] = 1;
+                }
+            }
+            categoriesName = categoriesName.substring(0, categoriesName.length - 2);
+            dataset.push([icon, name, website, categoriesName, confidence]);
+
+            // Update GENERAL INFO
+            // Sort the array based on the count element
+            categoriesCounter = Object.keys(categoriesCounter).map(function (key) {
+                return [key, categoriesCounter[key]];
+            }).sort(function (first, second) {
+                return second[1] - first[1];
+            });
+            document.getElementById("technologies-total").innerText = dataset.length.toString();
+            if (categoriesCounter.length !== 0) {
+                document.getElementById("technologies-most").innerText = categoriesCounter[0][0];
             }
         }
-        categoriesName = categoriesName.substring(0, categoriesName.length - 2);
-        dataset.push([icon, name, website, categoriesName, confidence]);
 
-        // Update GENERAL INFO
-        // Sort the array based on the count element
-        categoriesCounter = Object.keys(categoriesCounter).map(function (key) {
-            return [key, categoriesCounter[key]];
-        }).sort(function (first, second) {
-            return second[1] - first[1];
+        // Initialize Technologies Table
+        $('#technologiesTable').DataTable({
+            dom: 'Blfrtip',
+            buttons: [{text: 'Export', extend: 'csv', filename: 'Technologies Report'}],
+            paginate: false,
+            "oLanguage": {"sSearch": "Filter:"},
+            "language": {"emptyTable": "No data available in table"},
+            "order": [[0, "asc"]],
+            data: dataset,
+            "autoWidth": false,
+            "columnDefs": [
+                {
+                    "width": "5%", "targets": 0, "render": function (data, type, row) {
+                        return "<img width='30px' height='30px' src='https://www.wappalyzer.com/images/icons/" + data + "' alt='" + data + " Icon'/>";
+                    },
+                },
+                {
+                    "width": "20%", "targets": 1, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "20%", "targets": 2, "render": function (data, type, row) {
+                        return "<a target='_blank' href='" + data + "'>" + data + "</a>";
+                    },
+                },
+                {
+                    "width": "40%", "targets": 3, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "15%", "targets": 4, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+            ]
         });
-        document.getElementById("technologies-total").innerText = dataset.length.toString();
-        if (categoriesCounter.length !== 0) {
-            document.getElementById("technologies-most").innerText = categoriesCounter[0][0];
-        }
-    }
 
-    // Initialize Technologies Table
-    $('#technologiesTable').DataTable({
-        dom: 'Blfrtip',
-        buttons: [{text: 'Export', extend: 'csv', filename: 'Technologies Report'}],
-        paginate: false,
-        "oLanguage": {"sSearch": "Filter:"},
-        "language": {"emptyTable": "No data available in table"},
-        "order": [[0, "asc"]],
-        data: dataset,
-        "autoWidth": false,
-        "columnDefs": [
-            {
-                "width": "5%", "targets": 0, "render": function (data, type, row) {
-                    return "<img width='30px' height='30px' src='https://www.wappalyzer.com/images/icons/" + data + "' alt='" + data + " Icon'/>";
+    } catch (Ex) {
+        // Initialize Technologies Table
+        $('#technologiesTable').DataTable({
+            dom: 'Blfrtip',
+            buttons: [{text: 'Export', extend: 'csv', filename: 'Technologies Report'}],
+            paginate: false,
+            "oLanguage": {"sSearch": "Filter:"},
+            "language": {"emptyTable": "Failed to load information"},
+            "order": [[0, "asc"]],
+            data: [],
+            "autoWidth": false,
+            "columnDefs": [
+                {
+                    "width": "5%", "targets": 0, "render": function (data, type, row) {
+                        return "<img width='30px' height='30px' src='https://www.wappalyzer.com/images/icons/" + data + "' alt='" + data + " Icon'/>";
+                    },
                 },
-            },
-            {
-                "width": "20%", "targets": 1, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
+                {
+                    "width": "20%", "targets": 1, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
                 },
-            },
-            {
-                "width": "20%", "targets": 2, "render": function (data, type, row) {
-                    return "<a target='_blank' href='" + data + "'>" + data + "</a>";
+                {
+                    "width": "20%", "targets": 2, "render": function (data, type, row) {
+                        return "<a target='_blank' href='" + data + "'>" + data + "</a>";
+                    },
                 },
-            },
-            {
-                "width": "40%", "targets": 3, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
+                {
+                    "width": "40%", "targets": 3, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
                 },
-            },
-            {
-                "width": "15%", "targets": 4, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
+                {
+                    "width": "15%", "targets": 4, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
                 },
-            },
-        ]
-    });
+            ]
+        });
+        document.getElementById("technologies-most").innerText = "None";
+        document.getElementById("technologies-total").innerText = "None";
+    }
 
     // Remove overlay
     // await overlay("removeOverlay", "", "");
@@ -1625,143 +1967,234 @@ async function runImages() {
     // Get siteUrl
     let siteUrl = await getSiteUrl();
 
-    // Get imagesJSON
-    let imagesJSON = await $.post(imagesPost, {
-        url: siteUrl,
-    }, function (result) {
-        return result;
-    });
+    try {
+        // Get imagesJSON
+        let imagesJSON = await $.post(imagesPost, {
+            url: siteUrl,
+        }, function (result) {
+            return result;
+        });
 
-    // Check is cache
-    if (imagesJSON["useCache"]) {
-        let cacheDate = imagesJSON["cacheDate"];
-        document.getElementById("images-cacheDate").innerText = "Last scanned: " + cacheDate;
-        document.getElementById("images-cache").hidden = false;
-    }
-
-    let dataset = [];
-    let imagesCounter = {};
-    let largeCounter = 0;
-    let brokenCounter = 0
-    imagesJSON = imagesJSON["images"];
-    for (let i = 0; i < imagesJSON.length; i++) {
-        let entry = imagesJSON[i];
-        let url = entry["url"];
-        let filename = entry["filename"];
-        let statuscode = entry["statuscode"];
-        let size = entry["size"];
-        let alt = entry["alt"];
-        let dimensions = entry["dimensions"];
-        let format = entry["format"];
-
-        if (size > "500") {
-            largeCounter += 1;
+        // Check is cache
+        if (imagesJSON["useCache"]) {
+            let cacheDate = imagesJSON["cacheDate"];
+            document.getElementById("images-cacheDate").innerText = "Last scanned: " + cacheDate;
+            document.getElementById("images-cache").hidden = false;
         }
 
-        if (statuscode >= "400" && statuscode < "600") {
-            brokenCounter += 1;
-            url = "images/unavailable-image.jpg";
-        }
+        let dataset = [];
+        let imagesCounter = {};
+        let largeCounter = 0;
+        let brokenCounter = 0
+        imagesJSON = imagesJSON["images"];
+        for (let i = 0; i < imagesJSON.length; i++) {
+            let entry = imagesJSON[i];
+            let url = entry["url"];
+            let filename = entry["filename"];
+            let statuscode = entry["statuscode"];
+            let size = entry["size"];
+            let alt = entry["alt"];
+            let dimensions = entry["dimensions"];
+            let format = entry["format"];
 
-        if (format in imagesCounter) {
-            imagesCounter[format] += 1;
-        } else {
-            imagesCounter[format] = 1;
-        }
-
-        dataset.push([url, filename, statuscode, size, alt, dimensions, format]);
-    }
-
-    // Sort the array based on the count element
-    imagesCounter = Object.keys(imagesCounter).map(function (key) {
-        return [key, imagesCounter[key]];
-    }).sort(function (first, second) {
-        return second[6] - first[6];
-    });
-    document.getElementById("images-total").innerText = dataset.length.toString();
-    if (imagesCounter.length !== 0) {
-        document.getElementById("images-most").innerText = imagesCounter[0][0];
-    }
-
-    // Update GENERAL INFO
-    if (brokenCounter === 0) {
-        document.getElementById("images-card-broken").classList.remove("bg-lfi-blue");
-        document.getElementById("images-card-broken").classList.add("bg-lfi-green");
-        brokenCounter = "0 - Good Job!";
-    }
-    document.getElementById("images-large").innerText = largeCounter;
-    document.getElementById("images-broken").innerText = brokenCounter;
-
-    // Initialize Errors Table
-    $('#imagesTable').DataTable({
-        dom: 'Blfrtip',
-        buttons: [{text: 'Export', extend: 'csv', filename: 'Images Report'}],
-        paginate: false,
-        "oLanguage": {"sSearch": "Filter:"},
-        "language": {"emptyTable": "No data available in table"},
-        "order": [[0, "asc"]],
-        data: dataset,
-        "autoWidth": false,
-        "columnDefs": [
-            {
-                "width": "10%", "targets": 0, "render": function (data, type, row) {
-                    return "<button class='bg-transparent border-0' onclick='showImage(\"" + data + "\")'><img src='" + data + "' width='100px' height='auto' alt='Image'></button>"
-                },
-            },
-            {
-                "width": "15%", "targets": 1, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
-                },
-            },
-            {
-                "width": "10%", "targets": 2, "render": function (data, type, row) {
-                    let colorClass;
-                    if (data.includes("20")) {
-                        colorClass = " class='link200'"
-                    } else if (data.includes("30")) {
-                        colorClass = " class='link301'"
-                    } else if (data.includes("40") || data.includes("50")) {
-                        colorClass = " class='link404'"
-                    } else {
-                        colorClass = "";
-                        data = "Couldn't get status code";
-                    }
-
-                    return "<span" + colorClass + ">" + data + "</span>";
-                },
-            },
-            {
-                "width": "10%", "targets": 3, "render": function (data, type, row) {
-                    let color;
-                    if (data > 0 && data < 300) {
-                        color = "mediumseagreen";
-                    } else if (data >= 300 && data <= 500) {
-                        color = "orange";
-                    } else if (data > 500) {
-                        color = "red";
-                    } else {
-                        color = "white";
-                    }
-                    return "<span style='padding:4px; background-color: " + color + "'>" + data + "</span>";
-                },
-            },
-            {
-                "width": "25%", "targets": 4, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
-                },
-            },
-            {
-                "width": "15%", "targets": 5, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
-                },
-            },
-            {
-                "width": "15%", "targets": 6, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
-                },
+            if (size > "500") {
+                largeCounter += 1;
             }
-        ]
-    });
+
+            if (statuscode >= "400" && statuscode < "600") {
+                brokenCounter += 1;
+                url = "images/unavailable-image.jpg";
+            }
+
+            if (format in imagesCounter) {
+                imagesCounter[format] += 1;
+            } else {
+                imagesCounter[format] = 1;
+            }
+
+            dataset.push([url, filename, statuscode, size, alt, dimensions, format]);
+        }
+
+        // Sort the array based on the count element
+        imagesCounter = Object.keys(imagesCounter).map(function (key) {
+            return [key, imagesCounter[key]];
+        }).sort(function (first, second) {
+            return second[6] - first[6];
+        });
+        document.getElementById("images-total").innerText = dataset.length.toString();
+        if (imagesCounter.length !== 0) {
+            document.getElementById("images-most").innerText = imagesCounter[0][0];
+        }
+
+        // Update GENERAL INFO
+        if (brokenCounter === 0) {
+            brokenCounter = "0 - Good Job!";
+            document.getElementById("images-broken").style.color = "green";
+        } else {
+            document.getElementById("images-broken").style.color = "red";
+        }
+
+        document.getElementById("images-large").innerText = largeCounter.toString();
+        document.getElementById("images-broken").innerText = brokenCounter.toString();
+
+        // Initialize Errors Table
+        $('#imagesTable').DataTable({
+            dom: 'Blfrtip',
+            buttons: [{text: 'Export', extend: 'csv', filename: 'Images Report'}],
+            paginate: false,
+            "oLanguage": {"sSearch": "Filter:"},
+            "language": {"emptyTable": "No data available in table"},
+            "order": [[0, "asc"]],
+            data: dataset,
+            "autoWidth": false,
+            "columnDefs": [
+                {
+                    "width": "10%", "targets": 0, "render": function (data, type, row) {
+                        return "<button class='bg-transparent border-0' onclick='showImage(\"" + data + "\")'><img src='" + data + "' width='100px' height='auto' alt='Image'></button>"
+                    },
+                },
+                {
+                    "width": "15%", "targets": 1, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "10%", "targets": 2, "render": function (data, type, row) {
+                        let colorClass;
+                        if (data.includes("20")) {
+                            colorClass = " class='link200'"
+                        } else if (data.includes("30")) {
+                            colorClass = " class='link301'"
+                        } else if (data.includes("40") || data.includes("50")) {
+                            colorClass = " class='link404'"
+                        } else {
+                            colorClass = "";
+                            data = "Couldn't get status code";
+                        }
+
+                        return "<span" + colorClass + ">" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "10%", "targets": 3, "render": function (data, type, row) {
+                        let color;
+                        if (data > 0 && data < 300) {
+                            color = "mediumseagreen";
+                        } else if (data >= 300 && data <= 500) {
+                            color = "orange";
+                        } else if (data > 500) {
+                            color = "red";
+                        } else {
+                            color = "white";
+                        }
+                        return "<span style='padding:4px; background-color: " + color + "'>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "25%", "targets": 4, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "15%", "targets": 5, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "15%", "targets": 6, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                }
+            ]
+        });
+
+    } catch (Ex) {
+        // Update GENERAL INFO
+        // document.getElementById("images-card-total").classList.remove("bg-lfi-blue");
+        // document.getElementById("images-card-total").classList.add("bg-danger");
+        // document.getElementById("images-card-most").classList.remove("bg-lfi-blue");
+        // document.getElementById("images-card-most").classList.add("bg-danger");
+        // document.getElementById("images-card-large").classList.remove("bg-lfi-blue");
+        // document.getElementById("images-card-large").classList.add("bg-danger");
+        // document.getElementById("images-card-broken").classList.remove("bg-lfi-blue");
+        // document.getElementById("images-card-broken").classList.add("bg-danger");
+        document.getElementById("images-total").innerText = "None";
+        document.getElementById("images-most").innerText = "None";
+        document.getElementById("images-large").innerText = "None";
+        document.getElementById("images-broken").innerText = "None";
+
+        // Initialize Errors Table
+        $('#imagesTable').DataTable({
+            dom: 'Blfrtip',
+            buttons: [{text: 'Export', extend: 'csv', filename: 'Images Report'}],
+            paginate: false,
+            "oLanguage": {"sSearch": "Filter:"},
+            "language": {"emptyTable": "Failed to load information."},
+            "order": [[0, "asc"]],
+            data: [],
+            "autoWidth": false,
+            "columnDefs": [
+                {
+                    "width": "10%", "targets": 0, "render": function (data, type, row) {
+                        return "<button class='bg-transparent border-0' onclick='showImage(\"" + data + "\")'><img src='" + data + "' width='100px' height='auto' alt='Image'></button>"
+                    },
+                },
+                {
+                    "width": "15%", "targets": 1, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "10%", "targets": 2, "render": function (data, type, row) {
+                        let colorClass;
+                        if (data.includes("20")) {
+                            colorClass = " class='link200'"
+                        } else if (data.includes("30")) {
+                            colorClass = " class='link301'"
+                        } else if (data.includes("40") || data.includes("50")) {
+                            colorClass = " class='link404'"
+                        } else {
+                            colorClass = "";
+                            data = "Couldn't get status code";
+                        }
+
+                        return "<span" + colorClass + ">" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "10%", "targets": 3, "render": function (data, type, row) {
+                        let color;
+                        if (data > 0 && data < 300) {
+                            color = "mediumseagreen";
+                        } else if (data >= 300 && data <= 500) {
+                            color = "orange";
+                        } else if (data > 500) {
+                            color = "red";
+                        } else {
+                            color = "white";
+                        }
+                        return "<span style='padding:4px; background-color: " + color + "'>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "25%", "targets": 4, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "15%", "targets": 5, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                },
+                {
+                    "width": "15%", "targets": 6, "render": function (data, type, row) {
+                        return "<span>" + data + "</span>";
+                    },
+                }
+            ]
+        });
+    }
+
 
     // Remove overlay
     document.getElementById("overlay_images_mark").style.color = "rgba(var(--lfi-green-rgb)";
@@ -1803,7 +2236,7 @@ async function runMain(url, mainURL, mainLang) {
                 codeIframe.close();
 
                 // HTMLCode Syntax Highlighter
-                await w3CodeColor();
+                await w3CodeColor(document.getElementById('mainCode').contentWindow.document.getElementById("htmlCode"));
 
                 // Add Stylesheet to iframe head Page and Code
                 let iframeCSS = inspectorUrl + "/css/iframe.css";
@@ -1824,19 +2257,19 @@ async function runMain(url, mainURL, mainLang) {
                 await overlay("removeOverlay", "", "");
 
                 // // Auto Run
-                // await overlay("addOverlay", "Running Reports", "");
-                // document.getElementById("overlaySndMessage").innerHTML = "<p>Spelling <i id='overlay_spelling_mark' class=\"fas fa-check-square\"></i></p><p>Accessibility <i id='overlay_accessibility_mark' class=\"fas fa-check-square\"></i></p><p>Cookies <i id='overlay_cookies_mark' class=\"fas fa-check-square\"></i></p><p>Technologies <i id='overlay_technologies_mark' class=\"fas fa-check-square\"></i></p><p>Images <i id='overlay_images_mark' class=\"fas fa-check-square\"></i></p>"
-                // toggleView("spelling");
-                // toggleView("accessibility");
-                // toggleView("cookies");
-                // toggleView("technologies");
-                // toggleView("images");
-                // toggleView("desktop");
+                await overlay("addOverlay", "Running Reports", "");
+                document.getElementById("overlaySndMessage").innerHTML = "<p>Spelling <i id='overlay_spelling_mark' class=\"fas fa-check-square\"></i></p><p>Accessibility <i id='overlay_accessibility_mark' class=\"fas fa-check-square\"></i></p><p>Cookies <i id='overlay_cookies_mark' class=\"fas fa-check-square\"></i></p><p>Technologies <i id='overlay_technologies_mark' class=\"fas fa-check-square\"></i></p><p>Images <i id='overlay_images_mark' class=\"fas fa-check-square\"></i></p>"
+                toggleView("spelling");
+                toggleView("accessibility");
+                toggleView("cookies");
+                toggleView("technologies");
+                toggleView("images");
+                toggleView("desktop");
             });
         }
     }).catch(e => {
         // Send Failed to load message
-        setErrorModal("", "Failed to load <b>" + mainURL + "</b></br>" + e + "</br>Plase check the URL.");
+        setErrorModal("", "Failed to load <b>" + mainURL + "</b></br>" + e + "</br>Please check the URL.");
         overlay("removeOverlay", "", "");
         document.getElementById("mainPage").hidden = true;
     });
