@@ -2091,7 +2091,7 @@ async function runImages() {
                         } else if (data > 500) {
                             color = "red";
                         } else {
-                            color = "white";
+                            color = "";
                         }
                         return "<span style='padding:4px; background-color: " + color + "'>" + data + "</span>";
                     },
