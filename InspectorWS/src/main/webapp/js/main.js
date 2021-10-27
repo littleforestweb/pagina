@@ -7,7 +7,7 @@
 // ------------------------------------- GLOBAL VARIABLES ------------------------------------- //
 
 
-// const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS";
+//const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS";
 // const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
 const inspectorUrl = "https://inspector.littleforest.co.uk/DevWS";
 const proxy = ['https://jsonp.afeld.me/?url=', 'https://cors.io/?', 'https://cors-anywhere.herokuapp.com/'];
@@ -234,7 +234,7 @@ async function checkCMS() {
     // Get siteUrl
     let siteUrl = await getSiteUrl();
     if (siteUrl.toLowerCase().includes("opel")) {
-        console.log("OPEL")
+        console.log("OPEL");
 
         // Get dataLayerBasicValue Scripts
         let scripts = pageIframe.getElementsByTagName("script");
@@ -481,12 +481,12 @@ async function loadDictionaryList() {
             {
                 "width": "50%", "targets": 0, "render": function (data, type, row) {
                     return "<span>" + data + "</span>";
-                },
+                }
             },
             {
                 "width": "50%", "targets": 1, "render": function (data, type, row) {
                     return "<button href='#/' class='removeDictionary bg-transparent border-0 text-lfi-green' onclick='removeDictionary(\"" + data + "\")'><b>Remove from Dictionary</b></button>";
-                },
+                }
             }
         ]
     });
@@ -533,7 +533,7 @@ async function addDictionary(row) {
     });
     let mostError = "Good Job!";
     let leastError = "Good Job!";
-    let totalError = "0 - Good Job!"
+    let totalError = "0 - Good Job!";
     if (n_dataset.length === 0) {
         document.getElementById("spell-card-total").classList.remove("bg-lfi-blue");
         document.getElementById("spell-card-total").classList.add("bg-lfi-green");
@@ -1204,7 +1204,7 @@ async function runLinks() {
                 if (status >= "400" && status < "600") {
                     dataset[dataset.length - 1].push("blink_" + brokenLinksCount);
                     brokenLinksCount += 1;
-                }
+            }
 
             });
         }
