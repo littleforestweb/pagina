@@ -6,7 +6,7 @@ LanguageTool
 <br />
 Args: Content, Language Code
 <br />
-URL - https://127.0.0.1/InspectorWS/LanguageTool?content=text_to_analize&langCode=en-gb
+URL - https://127.0.0.1/InspectorWS/LanguageTool?&url=https://example.com&content=text_to_analize&langCode=en-gb
 <br />
 <br />
 Lighthouse
