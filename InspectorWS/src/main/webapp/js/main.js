@@ -7,9 +7,9 @@
 // ------------------------------------- GLOBAL VARIABLES ------------------------------------- //
 
 
-//const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS";
+const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS";
 // const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
-const inspectorUrl = "https://inspector.littleforest.co.uk/DevWS";
+// const inspectorUrl = "https://inspector.littleforest.co.uk/DevWS";
 const proxy = ['https://jsonp.afeld.me/?url=', 'https://cors.io/?', 'https://cors-anywhere.herokuapp.com/'];
 const nameWS = inspectorUrl.split("/")[3] + "/";
 const languageToolPost = "/" + nameWS + "LanguageTool";
@@ -54,16 +54,25 @@ async function gotoNewPage() {
     // Get siteUrl
     let siteUrl = await getSiteUrl();
 
-    if (siteUrl === "") {
+    // Check protocol
+    if (siteUrl.substring(0, 8) !== 'https://') {
+        siteUrl = 'https://' + siteUrl;
+    }
+
+    // Check for a valid URL
+    try {
+        url = new URL(siteUrl);
+    } catch (_) {
         // Set Error Message in MODAL
         await setErrorModal("", "Please insert a valid URL");
-    } else {
-        // Get selected Language
-        let language = document.getElementById("languages-list").value;
-
-        // Launch new Inspector
-        window.location.href = inspectorUrl + "/Inspector?url=" + siteUrl + "&lang=" + language;
+        return false;
     }
+
+    // Get selected Language
+    let language = document.getElementById("languages-list").value;
+
+    // Launch new Inspector
+    window.location.href = inspectorUrl + "/Inspector?url=" + siteUrl + "&lang=" + language;
 }
 
 async function resetPage() {
@@ -218,8 +227,7 @@ async function overlay(action, message, sndMessage) {
 
 async function enableDisableActions(action) {
     // Set all elemId
-    let elemId = ["searchURL", "desktop-btn", "mobile-btn", "code-btn", "spelling-btn", "languages-list", "lighthouse-btn", "links-btn",
-        "accessibility-btn", "WCAG-level-list", "cookies-btn", "technologies-btn"];
+    let elemId = ["searchURL", "desktop-btn", "mobile-btn", "code-btn", "spelling-btn", "languages-list", "lighthouse-btn", "links-btn", "accessibility-btn", "WCAG-level-list", "cookies-btn", "technologies-btn"];
 
     // Set disabled status
     elemId.forEach(function (id) {
@@ -477,18 +485,15 @@ async function loadDictionaryList() {
         "order": [[0, "desc"]],
         data: dataset,
         "autoWidth": false,
-        "columnDefs": [
-            {
-                "width": "50%", "targets": 0, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
-                }
-            },
-            {
-                "width": "50%", "targets": 1, "render": function (data, type, row) {
-                    return "<button href='#/' class='removeDictionary bg-transparent border-0 text-lfi-green' onclick='removeDictionary(\"" + data + "\")'><b>Remove from Dictionary</b></button>";
-                }
+        "columnDefs": [{
+            "width": "50%", "targets": 0, "render": function (data, type, row) {
+                return "<span>" + data + "</span>";
             }
-        ]
+        }, {
+            "width": "50%", "targets": 1, "render": function (data, type, row) {
+                return "<button href='#/' class='removeDictionary bg-transparent border-0 text-lfi-green' onclick='removeDictionary(\"" + data + "\")'><b>Remove from Dictionary</b></button>";
+            }
+        }]
     });
 }
 
@@ -515,8 +520,7 @@ async function addDictionary(row) {
     spellErrors.forEach(function (elem) {
         if (elem.innerText === error) {
             let parent = elem.parentNode;
-            while (elem.firstChild)
-                parent.insertBefore(elem.firstChild, elem);
+            while (elem.firstChild) parent.insertBefore(elem.firstChild, elem);
             parent.removeChild(elem);
         }
     });
@@ -873,9 +877,7 @@ async function runLanguageTool() {
     // Get SpellCheckJSON
     try {
         let spellCheckJSON = await $.post(languageToolPost, {
-            content: spellTagsElem,
-            langCode: langCode,
-            url: siteUrl
+            content: spellTagsElem, langCode: langCode, url: siteUrl
         }, function (result) {
             return result;
         });
@@ -927,20 +929,12 @@ async function runLanguageTool() {
 
             // Highlight Spelling Errors on Page View
             findAndReplaceDOMText(pageIframe.body, {
-                preset: 'prose',
-                find: error,
-                wrap: 'spellerror',
-                wrapClass: "shiny_red",
-                wrapId: "spell_" + error
+                preset: 'prose', find: error, wrap: 'spellerror', wrapClass: "shiny_red", wrapId: "spell_" + error
             });
 
             // Highlight Spelling Errors on Code View
             findAndReplaceDOMText(codeIframe.getElementById("htmlCode"), {
-                preset: 'prose',
-                find: error,
-                wrap: 'spellerror',
-                wrapClass: "shiny_red",
-                wrapId: "spell_" + error
+                preset: 'prose', find: error, wrap: 'spellerror', wrapClass: "shiny_red", wrapId: "spell_" + error
             });
         }
 
@@ -990,33 +984,27 @@ async function runLanguageTool() {
             "order": [[3, "desc"]],
             data: dataset,
             "autoWidth": false,
-            "columnDefs": [
-                {
-                    "width": "20%", "targets": 0, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            "columnDefs": [{
+                "width": "20%", "targets": 0, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "25%", "targets": 1, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "25%", "targets": 1, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "25%", "targets": 2, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "25%", "targets": 2, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "15%", "targets": 3, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "15%", "targets": 3, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "15%", "targets": 4, "render": function (data, type, row) {
-                        return "<button class='addDictionary bg-transparent border-0 text-lfi-green' onclick='addDictionary(\"" + row + "\")'><b>Add to Dictionary</b></button>" + "|" + "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoSpellError(\"spell_" + row[0] + "\")'><b>View in Page</b></button>";
-                    },
-                }
-            ]
+            }, {
+                "width": "15%", "targets": 4, "render": function (data, type, row) {
+                    return "<button class='addDictionary bg-transparent border-0 text-lfi-green' onclick='addDictionary(\"" + row + "\")'><b>Add to Dictionary</b></button>" + "|" + "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoSpellError(\"spell_" + row[0] + "\")'><b>View in Page</b></button>";
+                },
+            }]
         });
 
         // Update GENERAL INFO
@@ -1046,33 +1034,27 @@ async function runLanguageTool() {
             "order": [[3, "desc"]],
             data: [],
             "autoWidth": false,
-            "columnDefs": [
-                {
-                    "width": "20%", "targets": 0, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            "columnDefs": [{
+                "width": "20%", "targets": 0, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "25%", "targets": 1, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "25%", "targets": 1, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "25%", "targets": 2, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "25%", "targets": 2, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "15%", "targets": 3, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "15%", "targets": 3, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "15%", "targets": 4, "render": function (data, type, row) {
-                        return "<button class='addDictionary bg-transparent border-0 text-lfi-green' onclick='addDictionary(\"" + row + "\")'><b>Add to Dictionary</b></button>" + "|" + "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoSpellError(\"spell_" + row[0] + "\")'><b>View in Page</b></button>";
-                    },
-                }
-            ]
+            }, {
+                "width": "15%", "targets": 4, "render": function (data, type, row) {
+                    return "<button class='addDictionary bg-transparent border-0 text-lfi-green' onclick='addDictionary(\"" + row + "\")'><b>Add to Dictionary</b></button>" + "|" + "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoSpellError(\"spell_" + row[0] + "\")'><b>View in Page</b></button>";
+                },
+            }]
         });
         document.getElementById("spelling-total-errors").innerText = "None";
         document.getElementById("spelling-most-errors").innerText = "None";
@@ -1106,8 +1088,7 @@ async function runLighthouse() {
     try {
         // Get lighthouseJson
         let lighthouseJson = await $.post(lighthousePost, {
-            url: siteUrl,
-            device: device
+            url: siteUrl, device: device
         }, function (result) {
             return result;
         });
@@ -1204,7 +1185,7 @@ async function runLinks() {
                 if (status >= "400" && status < "600") {
                     dataset[dataset.length - 1].push("blink_" + brokenLinksCount);
                     brokenLinksCount += 1;
-            }
+                }
 
             });
         }
@@ -1219,49 +1200,44 @@ async function runLinks() {
             "order": [[0, "asc"]],
             data: dataset,
             "autoWidth": false,
-            "columnDefs": [
-                {
-                    "width": "40%", "className": "truncate", "targets": 0, "render": function (data, type, row) {
-                        return "<a target='_blank' href='" + data + "'>" + data + "</a>";
-                    },
+            "columnDefs": [{
+                "width": "40%", "className": "truncate", "targets": 0, "render": function (data, type, row) {
+                    return "<a target='_blank' href='" + data + "'>" + data + "</a>";
                 },
-                {
-                    "width": "20%", "targets": 1, "render": function (data, type, row) {
-                        let status = data.split(",");
-                        let html = "";
-                        let colorClass;
-                        status.forEach(function (code) {
-                            if (code.includes("20")) {
-                                colorClass = " class='link200'"
-                            } else if (code.includes("30")) {
-                                colorClass = " class='link301'"
-                            } else if (code.includes("40") || code.includes("50")) {
-                                colorClass = " class='link404'"
-                            } else {
-                                colorClass = "";
-                                code = "Couldn't get status code";
-                            }
-
-                            html += "<span" + colorClass + ">" + code + "</span>";
-                        });
-                        return html;
-                    },
-                },
-                {
-                    "width": "20%", "targets": 2, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
-                },
-                {
-                    "width": "20%", "targets": 3, "render": function (data, type, row) {
-                        if (data !== undefined) {
-                            return "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoLink(\"" + data + "\")'><b>View in Page</b></button>";
+            }, {
+                "width": "20%", "targets": 1, "render": function (data, type, row) {
+                    let status = data.split(",");
+                    let html = "";
+                    let colorClass;
+                    status.forEach(function (code) {
+                        if (code.includes("20")) {
+                            colorClass = " class='link200'"
+                        } else if (code.includes("30")) {
+                            colorClass = " class='link301'"
+                        } else if (code.includes("40") || code.includes("50")) {
+                            colorClass = " class='link404'"
                         } else {
-                            return "";
+                            colorClass = "";
+                            code = "Couldn't get status code";
                         }
-                    },
-                }
-            ]
+
+                        html += "<span" + colorClass + ">" + code + "</span>";
+                    });
+                    return html;
+                },
+            }, {
+                "width": "20%", "targets": 2, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            }, {
+                "width": "20%", "targets": 3, "render": function (data, type, row) {
+                    if (data !== undefined) {
+                        return "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoLink(\"" + data + "\")'><b>View in Page</b></button>";
+                    } else {
+                        return "";
+                    }
+                },
+            }]
         });
 
         // Update GENERAL INFO
@@ -1293,49 +1269,44 @@ async function runLinks() {
             "order": [[0, "asc"]],
             data: [],
             "autoWidth": false,
-            "columnDefs": [
-                {
-                    "width": "40%", "className": "truncate", "targets": 0, "render": function (data, type, row) {
-                        return "<a target='_blank' href='" + data + "'>" + data + "</a>";
-                    },
+            "columnDefs": [{
+                "width": "40%", "className": "truncate", "targets": 0, "render": function (data, type, row) {
+                    return "<a target='_blank' href='" + data + "'>" + data + "</a>";
                 },
-                {
-                    "width": "20%", "targets": 1, "render": function (data, type, row) {
-                        let status = data.split(",");
-                        let html = "";
-                        let colorClass;
-                        status.forEach(function (code) {
-                            if (code.includes("20")) {
-                                colorClass = " class='link200'"
-                            } else if (code.includes("30")) {
-                                colorClass = " class='link301'"
-                            } else if (code.includes("40") || code.includes("50")) {
-                                colorClass = " class='link404'"
-                            } else {
-                                colorClass = "";
-                                code = "Couldn't get status code";
-                            }
-
-                            html += "<span" + colorClass + ">" + code + "</span>";
-                        });
-                        return html;
-                    },
-                },
-                {
-                    "width": "20%", "targets": 2, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
-                },
-                {
-                    "width": "20%", "targets": 3, "render": function (data, type, row) {
-                        if (data !== undefined) {
-                            return "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoLink(\"" + data + "\")'><b>View in Page</b></button>";
+            }, {
+                "width": "20%", "targets": 1, "render": function (data, type, row) {
+                    let status = data.split(",");
+                    let html = "";
+                    let colorClass;
+                    status.forEach(function (code) {
+                        if (code.includes("20")) {
+                            colorClass = " class='link200'"
+                        } else if (code.includes("30")) {
+                            colorClass = " class='link301'"
+                        } else if (code.includes("40") || code.includes("50")) {
+                            colorClass = " class='link404'"
                         } else {
-                            return "";
+                            colorClass = "";
+                            code = "Couldn't get status code";
                         }
-                    },
-                }
-            ]
+
+                        html += "<span" + colorClass + ">" + code + "</span>";
+                    });
+                    return html;
+                },
+            }, {
+                "width": "20%", "targets": 2, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            }, {
+                "width": "20%", "targets": 3, "render": function (data, type, row) {
+                    if (data !== undefined) {
+                        return "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoLink(\"" + data + "\")'><b>View in Page</b></button>";
+                    } else {
+                        return "";
+                    }
+                },
+            }]
         });
         document.getElementById("links-total").innerText = "None";
         document.getElementById("links-ext").innerText = "None";
@@ -1371,8 +1342,7 @@ async function runAccessibility() {
     try {
         // Get accessibilityJSON
         let accessibilityJSON = await $.post(accessibilityPost, {
-            url: siteUrl,
-            level: WCAGLevel
+            url: siteUrl, level: WCAGLevel
         }, function (result) {
             return result;
         });
@@ -1493,32 +1463,27 @@ async function runAccessibility() {
             "order": [[0, "asc"]],
             data: errorsDataset,
             "autoWidth": false,
-            "columnDefs": [
-                {
-                    "width": "25%", "targets": 0, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            "columnDefs": [{
+                "width": "25%", "targets": 0, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "45%", "targets": 1, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "45%", "targets": 1, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "10%", "targets": 2, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "10%", "targets": 2, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "10%", "targets": 3, "render": function (data, type, row) {
-                        if (data !== undefined) {
-                            return "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoAccessibilityError(\"desktop\", \"" + data + "\")'><b>View in Page</b></button>" + "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoAccessibilityError(\"code\", \"" + data + "\")'><b>View in Code</b></button>";
-                        } else {
-                            return "";
-                        }
-                    },
-                }
-            ]
+            }, {
+                "width": "10%", "targets": 3, "render": function (data, type, row) {
+                    if (data !== undefined) {
+                        return "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoAccessibilityError(\"desktop\", \"" + data + "\")'><b>View in Page</b></button>" + "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoAccessibilityError(\"code\", \"" + data + "\")'><b>View in Code</b></button>";
+                    } else {
+                        return "";
+                    }
+                },
+            }]
         });
 
         // Initialize Errors Table
@@ -1531,23 +1496,19 @@ async function runAccessibility() {
             "order": [[0, "asc"]],
             data: noticesDataset,
             "autoWidth": false,
-            "columnDefs": [
-                {
-                    "width": "30%", "targets": 0, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            "columnDefs": [{
+                "width": "30%", "targets": 0, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "60%", "targets": 1, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "60%", "targets": 1, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "10%", "targets": 2, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
-                }
-            ]
+            }, {
+                "width": "10%", "targets": 2, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            }]
         });
 
         // Initialize Errors Table
@@ -1560,23 +1521,19 @@ async function runAccessibility() {
             "order": [[0, "asc"]],
             data: warningsDataset,
             "autoWidth": false,
-            "columnDefs": [
-                {
-                    "width": "30%", "targets": 0, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            "columnDefs": [{
+                "width": "30%", "targets": 0, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "60%", "targets": 1, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "60%", "targets": 1, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "10%", "targets": 2, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
-                }
-            ]
+            }, {
+                "width": "10%", "targets": 2, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            }]
         });
 
     } catch (Ex) {
@@ -1592,32 +1549,27 @@ async function runAccessibility() {
             "order": [[0, "asc"]],
             data: [],
             "autoWidth": false,
-            "columnDefs": [
-                {
-                    "width": "25%", "targets": 0, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            "columnDefs": [{
+                "width": "25%", "targets": 0, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "45%", "targets": 1, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "45%", "targets": 1, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "10%", "targets": 2, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "10%", "targets": 2, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "10%", "targets": 3, "render": function (data, type, row) {
-                        if (data !== undefined) {
-                            return "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoAccessibilityError(\"desktop\", \"" + data + "\")'><b>View in Page</b></button>";
-                        } else {
-                            return "";
-                        }
-                    },
-                }
-            ]
+            }, {
+                "width": "10%", "targets": 3, "render": function (data, type, row) {
+                    if (data !== undefined) {
+                        return "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoAccessibilityError(\"desktop\", \"" + data + "\")'><b>View in Page</b></button>";
+                    } else {
+                        return "";
+                    }
+                },
+            }]
         });
 
         // Initialize Errors Table
@@ -1630,23 +1582,19 @@ async function runAccessibility() {
             "order": [[0, "asc"]],
             data: [],
             "autoWidth": false,
-            "columnDefs": [
-                {
-                    "width": "30%", "targets": 0, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            "columnDefs": [{
+                "width": "30%", "targets": 0, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "60%", "targets": 1, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "60%", "targets": 1, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "10%", "targets": 2, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
-                }
-            ]
+            }, {
+                "width": "10%", "targets": 2, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            }]
         });
 
         // Initialize Errors Table
@@ -1659,23 +1607,19 @@ async function runAccessibility() {
             "order": [[0, "asc"]],
             data: [],
             "autoWidth": false,
-            "columnDefs": [
-                {
-                    "width": "30%", "targets": 0, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            "columnDefs": [{
+                "width": "30%", "targets": 0, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "60%", "targets": 1, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "60%", "targets": 1, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "10%", "targets": 2, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
-                }
-            ]
+            }, {
+                "width": "10%", "targets": 2, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            }]
         });
 
         document.getElementById("accessibility-total").innerText = "None";
@@ -1736,38 +1680,31 @@ async function runCookies() {
             "order": [[0, "asc"]],
             data: dataset,
             "autoWidth": false,
-            "columnDefs": [
-                {
-                    "width": "10%", "targets": 0, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            "columnDefs": [{
+                "width": "10%", "targets": 0, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "20%", "targets": 1, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "20%", "targets": 1, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "40%", "targets": 2, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "40%", "targets": 2, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "10%", "targets": 3, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "10%", "targets": 3, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "10%", "targets": 4, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "10%", "targets": 4, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "10%", "targets": 5, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
-                }
-            ]
+            }, {
+                "width": "10%", "targets": 5, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            }]
         });
         document.getElementById("cookies-total").innerText = dataset.length.toString();
     } catch (Ex) {
@@ -1781,38 +1718,31 @@ async function runCookies() {
             "order": [[0, "asc"]],
             data: [],
             "autoWidth": false,
-            "columnDefs": [
-                {
-                    "width": "10%", "targets": 0, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            "columnDefs": [{
+                "width": "10%", "targets": 0, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "20%", "targets": 1, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "20%", "targets": 1, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "40%", "targets": 2, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "40%", "targets": 2, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "10%", "targets": 3, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "10%", "targets": 3, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "10%", "targets": 4, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "10%", "targets": 4, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "10%", "targets": 5, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
-                }
-            ]
+            }, {
+                "width": "10%", "targets": 5, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            }]
         });
         document.getElementById("cookies-total").innerText = "None";
     }
@@ -1889,33 +1819,27 @@ async function runTechnologies() {
             "order": [[0, "asc"]],
             data: dataset,
             "autoWidth": false,
-            "columnDefs": [
-                {
-                    "width": "5%", "targets": 0, "render": function (data, type, row) {
-                        return "<img width='30px' height='30px' src='https://www.wappalyzer.com/images/icons/" + data + "' alt='" + data + " Icon'/>";
-                    },
+            "columnDefs": [{
+                "width": "5%", "targets": 0, "render": function (data, type, row) {
+                    return "<img width='30px' height='30px' src='https://www.wappalyzer.com/images/icons/" + data + "' alt='" + data + " Icon'/>";
                 },
-                {
-                    "width": "20%", "targets": 1, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "20%", "targets": 1, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "20%", "targets": 2, "render": function (data, type, row) {
-                        return "<a target='_blank' href='" + data + "'>" + data + "</a>";
-                    },
+            }, {
+                "width": "20%", "targets": 2, "render": function (data, type, row) {
+                    return "<a target='_blank' href='" + data + "'>" + data + "</a>";
                 },
-                {
-                    "width": "40%", "targets": 3, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "40%", "targets": 3, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "15%", "targets": 4, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "15%", "targets": 4, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-            ]
+            },]
         });
 
     } catch (Ex) {
@@ -1929,33 +1853,27 @@ async function runTechnologies() {
             "order": [[0, "asc"]],
             data: [],
             "autoWidth": false,
-            "columnDefs": [
-                {
-                    "width": "5%", "targets": 0, "render": function (data, type, row) {
-                        return "<img width='30px' height='30px' src='https://www.wappalyzer.com/images/icons/" + data + "' alt='" + data + " Icon'/>";
-                    },
+            "columnDefs": [{
+                "width": "5%", "targets": 0, "render": function (data, type, row) {
+                    return "<img width='30px' height='30px' src='https://www.wappalyzer.com/images/icons/" + data + "' alt='" + data + " Icon'/>";
                 },
-                {
-                    "width": "20%", "targets": 1, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "20%", "targets": 1, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "20%", "targets": 2, "render": function (data, type, row) {
-                        return "<a target='_blank' href='" + data + "'>" + data + "</a>";
-                    },
+            }, {
+                "width": "20%", "targets": 2, "render": function (data, type, row) {
+                    return "<a target='_blank' href='" + data + "'>" + data + "</a>";
                 },
-                {
-                    "width": "40%", "targets": 3, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "40%", "targets": 3, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "15%", "targets": 4, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "15%", "targets": 4, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-            ]
+            },]
         });
         document.getElementById("technologies-most").innerText = "None";
         document.getElementById("technologies-total").innerText = "None";
@@ -2053,65 +1971,57 @@ async function runImages() {
             "order": [[0, "asc"]],
             data: dataset,
             "autoWidth": false,
-            "columnDefs": [
-                {
-                    "width": "10%", "targets": 0, "render": function (data, type, row) {
-                        return "<button class='bg-transparent border-0' onclick='showImage(\"" + data + "\")'><img src='" + data + "' width='100px' height='auto' alt='Image'></button>"
-                    },
+            "columnDefs": [{
+                "width": "10%", "targets": 0, "render": function (data, type, row) {
+                    return "<button class='bg-transparent border-0' onclick='showImage(\"" + data + "\")'><img src='" + data + "' width='100px' height='auto' alt='Image'></button>"
                 },
-                {
-                    "width": "15%", "targets": 1, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "15%", "targets": 1, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "10%", "targets": 2, "render": function (data, type, row) {
-                        let colorClass;
-                        if (data.includes("20")) {
-                            colorClass = " class='link200'"
-                        } else if (data.includes("30")) {
-                            colorClass = " class='link301'"
-                        } else if (data.includes("40") || data.includes("50")) {
-                            colorClass = " class='link404'"
-                        } else {
-                            colorClass = "";
-                            data = "Couldn't get status code";
-                        }
+            }, {
+                "width": "10%", "targets": 2, "render": function (data, type, row) {
+                    let colorClass;
+                    if (data.includes("20")) {
+                        colorClass = " class='link200'"
+                    } else if (data.includes("30")) {
+                        colorClass = " class='link301'"
+                    } else if (data.includes("40") || data.includes("50")) {
+                        colorClass = " class='link404'"
+                    } else {
+                        colorClass = "";
+                        data = "Couldn't get status code";
+                    }
 
-                        return "<span" + colorClass + ">" + data + "</span>";
-                    },
+                    return "<span" + colorClass + ">" + data + "</span>";
                 },
-                {
-                    "width": "10%", "targets": 3, "render": function (data, type, row) {
-                        let color;
-                        if (data > 0 && data < 300) {
-                            color = "mediumseagreen";
-                        } else if (data >= 300 && data <= 500) {
-                            color = "orange";
-                        } else if (data > 500) {
-                            color = "red";
-                        } else {
-                            color = "";
-                        }
-                        return "<span style='padding:4px; background-color: " + color + "'>" + data + "</span>";
-                    },
+            }, {
+                "width": "10%", "targets": 3, "render": function (data, type, row) {
+                    let color;
+                    if (data > 0 && data < 300) {
+                        color = "mediumseagreen";
+                    } else if (data >= 300 && data <= 500) {
+                        color = "orange";
+                    } else if (data > 500) {
+                        color = "red";
+                    } else {
+                        color = "";
+                    }
+                    return "<span style='padding:4px; background-color: " + color + "'>" + data + "</span>";
                 },
-                {
-                    "width": "25%", "targets": 4, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "25%", "targets": 4, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "15%", "targets": 5, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "15%", "targets": 5, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "15%", "targets": 6, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
-                }
-            ]
+            }, {
+                "width": "15%", "targets": 6, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            }]
         });
 
     } catch (Ex) {
@@ -2139,65 +2049,57 @@ async function runImages() {
             "order": [[0, "asc"]],
             data: [],
             "autoWidth": false,
-            "columnDefs": [
-                {
-                    "width": "10%", "targets": 0, "render": function (data, type, row) {
-                        return "<button class='bg-transparent border-0' onclick='showImage(\"" + data + "\")'><img src='" + data + "' width='100px' height='auto' alt='Image'></button>"
-                    },
+            "columnDefs": [{
+                "width": "10%", "targets": 0, "render": function (data, type, row) {
+                    return "<button class='bg-transparent border-0' onclick='showImage(\"" + data + "\")'><img src='" + data + "' width='100px' height='auto' alt='Image'></button>"
                 },
-                {
-                    "width": "15%", "targets": 1, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "15%", "targets": 1, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "10%", "targets": 2, "render": function (data, type, row) {
-                        let colorClass;
-                        if (data.includes("20")) {
-                            colorClass = " class='link200'"
-                        } else if (data.includes("30")) {
-                            colorClass = " class='link301'"
-                        } else if (data.includes("40") || data.includes("50")) {
-                            colorClass = " class='link404'"
-                        } else {
-                            colorClass = "";
-                            data = "Couldn't get status code";
-                        }
+            }, {
+                "width": "10%", "targets": 2, "render": function (data, type, row) {
+                    let colorClass;
+                    if (data.includes("20")) {
+                        colorClass = " class='link200'"
+                    } else if (data.includes("30")) {
+                        colorClass = " class='link301'"
+                    } else if (data.includes("40") || data.includes("50")) {
+                        colorClass = " class='link404'"
+                    } else {
+                        colorClass = "";
+                        data = "Couldn't get status code";
+                    }
 
-                        return "<span" + colorClass + ">" + data + "</span>";
-                    },
+                    return "<span" + colorClass + ">" + data + "</span>";
                 },
-                {
-                    "width": "10%", "targets": 3, "render": function (data, type, row) {
-                        let color;
-                        if (data > 0 && data < 300) {
-                            color = "mediumseagreen";
-                        } else if (data >= 300 && data <= 500) {
-                            color = "orange";
-                        } else if (data > 500) {
-                            color = "red";
-                        } else {
-                            color = "white";
-                        }
-                        return "<span style='padding:4px; background-color: " + color + "'>" + data + "</span>";
-                    },
+            }, {
+                "width": "10%", "targets": 3, "render": function (data, type, row) {
+                    let color;
+                    if (data > 0 && data < 300) {
+                        color = "mediumseagreen";
+                    } else if (data >= 300 && data <= 500) {
+                        color = "orange";
+                    } else if (data > 500) {
+                        color = "red";
+                    } else {
+                        color = "white";
+                    }
+                    return "<span style='padding:4px; background-color: " + color + "'>" + data + "</span>";
                 },
-                {
-                    "width": "25%", "targets": 4, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "25%", "targets": 4, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "15%", "targets": 5, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
+            }, {
+                "width": "15%", "targets": 5, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
                 },
-                {
-                    "width": "15%", "targets": 6, "render": function (data, type, row) {
-                        return "<span>" + data + "</span>";
-                    },
-                }
-            ]
+            }, {
+                "width": "15%", "targets": 6, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            }]
         });
     }
 
