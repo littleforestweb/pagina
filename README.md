@@ -55,6 +55,5 @@ Token
 <br />
 Args: accountId, loginUrl, username, usernameSelector, password, passwordSelector, submitBtn
 <br />
-URL - https://127.0.0.1/InspectorWS/Images?url=https://littleforest.co.uk
 URL - https://127.0.0.1/InspectorWS/GetToken?accountId=123&loginUrl=https://littleforest.co.uk/admin_login/&username=xhico&usernameSelector=user_login&password=xhico123&passwordSelector=#user_pass&submitBtn=#wp-submit
 
