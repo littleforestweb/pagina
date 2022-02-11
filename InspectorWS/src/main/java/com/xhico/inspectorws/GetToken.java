@@ -5,22 +5,33 @@
  */
 package com.xhico.inspectorws;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import org.json.JSONObject;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.transform.sax.SAXSource;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.SecureRandom;
+import java.text.SimpleDateFormat;
+import java.util.Base64;
+import java.util.Date;
+
 
 /**
  * @author xhico
  */
-@WebServlet(name = "Inspector", urlPatterns = {"/Inspector"})
-public class Inspector extends HttpServlet {
+@WebServlet(name = "GetToken", urlPatterns = {"/GetToken"})
+public class GetToken extends HttpServlet {
+
+    private static final SecureRandom secureRandom = new SecureRandom();
+    private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,56 +47,48 @@ public class Inspector extends HttpServlet {
 
         try (PrintWriter out = response.getWriter()) {
 
-            // Get url && lang && view from URL args
-            String url = request.getParameter("url");
-            String lang = request.getParameter("lang");
+            // Get params
+            String accountId = request.getParameter("accountId");
+            String loginUrl = request.getParameter("loginUrl");
+            String username = request.getParameter("username");
+            String usernameSelector = request.getParameter("usernameSelector");
+            String password = request.getParameter("password");
+            String passwordSelector = request.getParameter("passwordSelector");
+            String submitBtn = request.getParameter("submitBtn");
+//            System.out.println("accountId: " + accountId);
+//            System.out.println("loginUrl: " + loginUrl);
+//            System.out.println("username: " + username);
+//            System.out.println("usernameSelector: " + usernameSelector);
+//            System.out.println("password: " + password);
+//            System.out.println("passwordSelector: " + passwordSelector);
+//            System.out.println("submitBtn: " + submitBtn);
 
-            // Initialize mainURL && mainLang variables
-            String mainURL = "null";
-            String mainLang = "null";
+            // Generate Token
+            String token = generateNewToken();
 
-            // Check if URL is passed as arg
-            if (!(url == null)) {
-                mainURL = getFinalURL(new URL(url)).toString();
-            }
+            // Set JSON Token
+            JSONObject jo = new JSONObject();
+            jo.put("token", token);
 
-            // Check if Lang is passed as arg
-            if (!(lang == null)) {
-                mainLang = lang;
-            }
+            // Pretty Print JSON
+            Gson gson = new Gson();
+            Gson gsonPP = new GsonBuilder().setPrettyPrinting().create();
+            JsonObject jsonObject = gson.fromJson(jo.toString(), JsonObject.class);
+            String jsonOutput = gsonPP.toJson(jsonObject);
+            System.out.println(jsonOutput);
 
-            System.out.println("");
-            System.out.println("url - " + url);
-            System.out.println("mainURL - " + mainURL);
-            System.out.println("mainLang - " + mainLang);
-
-            // Set attributes mainURL && mainLang
-            request.setAttribute("url", url);
-            request.setAttribute("mainURL", mainURL);
-            request.setAttribute("mainLang", mainLang);
-            request.getRequestDispatcher("/index.jsp").forward(request, response);
+            // Return JSON Report
+            out.println(jsonOutput);
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
     }
 
-    public static URL getFinalURL(URL url) {
-        try {
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setInstanceFollowRedirects(false);
-            con.connect();
-            int resCode = con.getResponseCode();
-            if (resCode == HttpURLConnection.HTTP_SEE_OTHER || resCode == HttpURLConnection.HTTP_MOVED_PERM || resCode == HttpURLConnection.HTTP_MOVED_TEMP) {
-                String Location = con.getHeaderField("Location");
-                if (Location.startsWith("/")) {
-                    Location = url.getProtocol() + "://" + url.getHost() + Location;
-                }
-                return getFinalURL(new URL(Location));
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        return url;
+
+    public static String generateNewToken() {
+        byte[] randomBytes = new byte[24];
+        secureRandom.nextBytes(randomBytes);
+        return base64Encoder.encodeToString(randomBytes);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the

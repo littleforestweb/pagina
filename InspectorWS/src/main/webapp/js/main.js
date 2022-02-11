@@ -877,7 +877,9 @@ async function runLanguageTool() {
     // Get SpellCheckJSON
     try {
         let spellCheckJSON = await $.post(languageToolPost, {
-            content: spellTagsElem, langCode: langCode, url: siteUrl
+            content: spellTagsElem,
+            langCode: langCode,
+            url: siteUrl
         }, function (result) {
             return result;
         });
@@ -1698,7 +1700,13 @@ async function runCookies() {
                 },
             }, {
                 "width": "10%", "targets": 4, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
+                    let color;
+                    if (data === "false") {
+                        color = "red";
+                    } else {
+                        color = "green";
+                    }
+                    return "<span style='color: " + color + "'>" + data + "</span>";
                 },
             }, {
                 "width": "10%", "targets": 5, "render": function (data, type, row) {
