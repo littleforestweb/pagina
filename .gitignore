@@ -3,3 +3,4 @@ InspectorWS/target/
 InspectorWS/.idea/
 InspectorWS/.settinggs/
 
+*.properties
