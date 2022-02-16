@@ -7,11 +7,11 @@
 // ------------------------------------- GLOBAL VARIABLES ------------------------------------- //
 
 
-const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS";
+// const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS";
 // const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
-// const inspectorUrl = "https://inspector.littleforest.co.uk/DevWS";
-const proxy = ['https://jsonp.afeld.me/?url=', 'https://cors.io/?', 'https://cors-anywhere.herokuapp.com/'];
+const inspectorUrl = "https://inspector.littleforest.co.uk/DevWS";
 const nameWS = inspectorUrl.split("/")[3] + "/";
+const downloaderPost = "/" + nameWS + "Downloader";
 const languageToolPost = "/" + nameWS + "LanguageTool";
 const lighthousePost = "/" + nameWS + "Lighthouse";
 const linksPost = "/" + nameWS + "Links";
@@ -798,7 +798,6 @@ async function rerunImages() {
 
 // ------------------------------------- MAIN ------------------------------------- //
 
-
 async function runLanguageTool() {
     console.log("-------------------");
     console.log("runLanguageTool");
@@ -877,9 +876,7 @@ async function runLanguageTool() {
     // Get SpellCheckJSON
     try {
         let spellCheckJSON = await $.post(languageToolPost, {
-            content: spellTagsElem,
-            langCode: langCode,
-            url: siteUrl
+            content: spellTagsElem, langCode: langCode, url: siteUrl
         }, function (result) {
             return result;
         });
@@ -2133,61 +2130,68 @@ async function runMain(url, mainURL, mainLang) {
 
     // Load iframe
     console.log('Loading:', mainURL);
-    fetchProxy(mainURL, 0).then(res => res.text()).then(async data => {
-        if (data) {
-            // Replace href to abs hrefs
-            data = data.replace(/<head([^>]*)>/i, `<head$1><base href="${mainURL}">`);
-
-            // Wait for pageIframe to load
-            pageIframe.srcdoc = data;
-            pageIframe.addEventListener("load", async function () {
-                // Get pageIframe, codeIframe
-                let pageIframe = document.getElementById('mainPage');
-                let codeIframe = document.getElementById('mainCode');
-
-                // Set codeIframe
-                codeIframe = codeIframe.contentWindow.document;
-                codeIframe.open();
-                codeIframe.write('<pre><code id="htmlCode">' + pageIframe.contentWindow.document.documentElement.outerHTML.replaceAll("<", "&lt;").replaceAll(">", "&gt;") + '</code></pre>');
-                codeIframe.close();
-
-                // HTMLCode Syntax Highlighter
-                await w3CodeColor(document.getElementById('mainCode').contentWindow.document.getElementById("htmlCode"));
-
-                // Add Stylesheet to iframe head Page and Code
-                let iframeCSS = inspectorUrl + "/css/iframe.css";
-                pageIframe = pageIframe.contentWindow.document;
-                pageIframe.head.innerHTML = pageIframe.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
-                codeIframe.head.innerHTML = codeIframe.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
-
-                // Edit Page for Southampton
-                let siteUrl = await getSiteUrl();
-                if (siteUrl.toLowerCase().includes("https://www.southampton.ac.uk/")) {
-                    document.getElementById("editPageBtn").hidden = false;
-                } else {
-                    // Check Drupal || Wordpress || Adobe CMS -> Edit Btn
-                    await checkCMS();
-                }
-
-                // Remove overlay
-                await overlay("removeOverlay", "", "");
-
-                // // Auto Run
-                await overlay("addOverlay", "Running Reports", "");
-                document.getElementById("overlaySndMessage").innerHTML = "<p>Spelling <i id='overlay_spelling_mark' class=\"fas fa-check-square\"></i></p><p>Accessibility <i id='overlay_accessibility_mark' class=\"fas fa-check-square\"></i></p><p>Cookies <i id='overlay_cookies_mark' class=\"fas fa-check-square\"></i></p><p>Technologies <i id='overlay_technologies_mark' class=\"fas fa-check-square\"></i></p><p>Images <i id='overlay_images_mark' class=\"fas fa-check-square\"></i></p>"
-                toggleView("spelling");
-                toggleView("accessibility");
-                toggleView("cookies");
-                toggleView("technologies");
-                toggleView("images");
-                toggleView("desktop");
-            });
-        }
-    }).catch(e => {
-        // Send Failed to load message
-        setErrorModal("", "Failed to load <b>" + mainURL + "</b></br>" + e + "</br>Please check the URL.");
-        overlay("removeOverlay", "", "");
-        document.getElementById("mainPage").hidden = true;
+    let data = await $.getJSON(downloaderPost + "?url=" + encodeURIComponent(mainURL), function (htmlContent) {
+        return htmlContent;
     });
+    data = data.contents;
+
+    if (data === null) {
+        // Remove overlay
+        await overlay("removeOverlay", "", "");
+
+        // Set Error Message
+        await setErrorModal("Something went wrong", "Sorry, we couldn't load this page </br><b>" + mainURL + "</b></br>Please check you URL");
+    } else {
+
+        // Replace href to abs hrefs
+        data = data.replace(/<head([^>]*)>/i, `<head$1><base href="${mainURL}">`);
+
+        // Set iframe srcdoc
+        pageIframe.srcdoc = data;
+
+        // Wait for pageIframe to load
+        pageIframe.addEventListener("load", async function () {
+            // Get pageIframe, codeIframe
+            let pageIframe = document.getElementById('mainPage');
+            let codeIframe = document.getElementById('mainCode');
+
+            // Set codeIframe
+            codeIframe = codeIframe.contentWindow.document;
+            codeIframe.open();
+            codeIframe.write('<pre><code id="htmlCode">' + pageIframe.contentWindow.document.documentElement.outerHTML.replaceAll("<", "&lt;").replaceAll(">", "&gt;") + '</code></pre>');
+            codeIframe.close();
+
+            // HTMLCode Syntax Highlighter
+            await w3CodeColor(document.getElementById('mainCode').contentWindow.document.getElementById("htmlCode"));
+
+            // Add Stylesheet to iframe head Page and Code
+            let iframeCSS = inspectorUrl + "/css/iframe.css";
+            pageIframe = pageIframe.contentWindow.document;
+            pageIframe.head.innerHTML = pageIframe.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
+            codeIframe.head.innerHTML = codeIframe.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
+
+            // Edit Page for Southampton
+            let siteUrl = await getSiteUrl();
+            if (siteUrl.toLowerCase().includes("https://www.southampton.ac.uk/")) {
+                document.getElementById("editPageBtn").hidden = false;
+            } else {
+                // Check Drupal || Wordpress || Adobe CMS -> Edit Btn
+                await checkCMS();
+            }
+
+            // Remove overlay
+            await overlay("removeOverlay", "", "");
+
+            // Auto Run
+            await overlay("addOverlay", "Running Reports", "");
+            document.getElementById("overlaySndMessage").innerHTML = "<p>Spelling <i id='overlay_spelling_mark' class=\"fas fa-check-square\"></i></p><p>Accessibility <i id='overlay_accessibility_mark' class=\"fas fa-check-square\"></i></p><p>Cookies <i id='overlay_cookies_mark' class=\"fas fa-check-square\"></i></p><p>Technologies <i id='overlay_technologies_mark' class=\"fas fa-check-square\"></i></p><p>Images <i id='overlay_images_mark' class=\"fas fa-check-square\"></i></p>"
+            toggleView("spelling");
+            toggleView("accessibility");
+            toggleView("cookies");
+            toggleView("technologies");
+            toggleView("images");
+            toggleView("desktop");
+        });
+    }
 }
 

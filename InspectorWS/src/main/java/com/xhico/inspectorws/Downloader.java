@@ -51,7 +51,7 @@ public class Downloader extends HttpServlet {
             String htmlFilePath = folderPath + baseFile + ".html";
 
             // Set base command
-            List<String> base = Arrays.asList("single-file", url, htmlFilePath);
+            List<String> base = Arrays.asList("sh", "/opt/scripts/downloader/Downloader.sh", url, htmlFilePath);
             List<String> cmd = new ArrayList<>(base);
 
             // Run Cookies Process
@@ -99,8 +99,7 @@ public class Downloader extends HttpServlet {
      * @throws IOException      if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 
@@ -113,8 +112,7 @@ public class Downloader extends HttpServlet {
      * @throws IOException      if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 

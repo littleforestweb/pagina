@@ -19,7 +19,8 @@ let reportInfo = "";
 async function main() {
 
     // Set Puppeteer args
-    args = ['--no-treekill',
+    args = ['--incognito',
+        '--no-treekill',
         '--disable-gpu',
         '--no-sandbox',
         '--disable-setuid-sandbox',
