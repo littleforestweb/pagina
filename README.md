@@ -11,11 +11,19 @@ The amazing web page analyser and patcher, for free from Little Forest
 * <a href="#Images">Images</a>
 * <a href="#token">Token</a>
 
+## Usage
+Params:
+  * URL
+  * Language Code [optional]
+```
+https://127.0.0.1/InspectorWS/Inspector?url=https://example.com&content=text_to_analize&langCode=en-gb
+```
+
 ## LanguageTool
 Params:
   * URL
   * Content
-  * Language Code
+  * Language Code (langCode)
 ```
 https://127.0.0.1/InspectorWS/LanguageTool?url=https://example.com&content=text_to_analize&langCode=en-gb
 ```
