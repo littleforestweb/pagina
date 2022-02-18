@@ -2189,11 +2189,11 @@ async function runMain(url, mainURL, mainLang) {
             await overlay("addOverlay", "Running Reports", "");
             document.getElementById("overlaySndMessage").innerHTML = "<p>Spelling <i id='overlay_spelling_mark' class=\"fas fa-check-square\"></i></p><p>Accessibility <i id='overlay_accessibility_mark' class=\"fas fa-check-square\"></i></p><p>Cookies <i id='overlay_cookies_mark' class=\"fas fa-check-square\"></i></p><p>Technologies <i id='overlay_technologies_mark' class=\"fas fa-check-square\"></i></p><p>Images <i id='overlay_images_mark' class=\"fas fa-check-square\"></i></p>"
             toggleView("spelling");
-            // toggleView("accessibility");
-            // toggleView("cookies");
-            // toggleView("technologies");
-            // toggleView("images");
-            // toggleView("desktop");
+            toggleView("accessibility");
+            toggleView("cookies");
+            toggleView("technologies");
+            toggleView("images");
+            toggleView("desktop");
         });
     }
 }
