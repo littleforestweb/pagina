@@ -236,7 +236,7 @@ Author : xhico
                    aria-label="Insert URL to check..." aria-describedby="btnNavbarSearch"/>
             <select class="form-select" id="languages-list">
                 <option disabled>Language</option>
-                <option selected value=auto>Auto-Detect</option>
+                <option value=auto>Auto-Detect</option>
                 <option value=ar>Arabic</option>
                 <option value=ast-ES>Asturian</option>
                 <option value=be-BY>Belarusian</option>

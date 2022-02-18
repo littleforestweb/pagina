@@ -2123,7 +2123,11 @@ async function runMain(url, mainURL, mainLang) {
     document.getElementById("searchURL").value = mainURL;
 
     // Set Language on Languages Dropdown list
-    document.getElementById("languages-list").value = mainLang;
+    if (mainLang === "null") {
+        document.getElementById("languages-list").value = "auto";
+    } else {
+        document.getElementById("languages-list").value = mainLang;
+    }
 
     // Get pageIframe
     let pageIframe = document.getElementById('mainPage');
@@ -2142,7 +2146,6 @@ async function runMain(url, mainURL, mainLang) {
         // Set Error Message
         await setErrorModal("Something went wrong", "Sorry, we couldn't load this page </br><b>" + mainURL + "</b></br>Please check you URL");
     } else {
-
         // Replace href to abs hrefs
         data = data.replace(/<head([^>]*)>/i, `<head$1><base href="${mainURL}">`);
 
@@ -2186,11 +2189,11 @@ async function runMain(url, mainURL, mainLang) {
             await overlay("addOverlay", "Running Reports", "");
             document.getElementById("overlaySndMessage").innerHTML = "<p>Spelling <i id='overlay_spelling_mark' class=\"fas fa-check-square\"></i></p><p>Accessibility <i id='overlay_accessibility_mark' class=\"fas fa-check-square\"></i></p><p>Cookies <i id='overlay_cookies_mark' class=\"fas fa-check-square\"></i></p><p>Technologies <i id='overlay_technologies_mark' class=\"fas fa-check-square\"></i></p><p>Images <i id='overlay_images_mark' class=\"fas fa-check-square\"></i></p>"
             toggleView("spelling");
-            toggleView("accessibility");
-            toggleView("cookies");
-            toggleView("technologies");
-            toggleView("images");
-            toggleView("desktop");
+            // toggleView("accessibility");
+            // toggleView("cookies");
+            // toggleView("technologies");
+            // toggleView("images");
+            // toggleView("desktop");
         });
     }
 }
