@@ -1698,7 +1698,6 @@ async function runCookies() {
             }, {
                 "width": "10%", "targets": 4, "render": function (data, type, row) {
                     let colorClass = "";
-                    console.log(data);
                     if (data === false) {
                         colorClass = " class='dataRed'";
                     } else if (data === true) {
@@ -2017,6 +2016,9 @@ async function runImages() {
                 },
             }, {
                 "width": "25%", "targets": 4, "render": function (data, type, row) {
+                    if (!(data)) {
+                        data = "None";
+                    }
                     return "<span>" + data + "</span>";
                 },
             }, {
