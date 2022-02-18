@@ -120,7 +120,7 @@ let imagesJSON = await $.post("https://127.0.0.1/InspectorWS/Images", {
 });
 ```
 
-## Token
+## Token [In development]
 Params:
   * accountId
   * loginUrl
