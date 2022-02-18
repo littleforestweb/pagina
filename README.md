@@ -11,7 +11,7 @@ The amazing web page analyser and patcher, for free from Little Forest
 * <a href="#Images">Images</a>
 * <a href="#token">Token</a>
 
-## Usage
+## Live
 Params:
   * URL
   * Language Code [optional]
