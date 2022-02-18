@@ -352,21 +352,21 @@ body * {
     text-overflow: ellipsis;
 }
 
-.link200 {
+.dataGreen {
     background-color: mediumseagreen;
     padding: 4px;
     margin-left: 4px;
     margin-right: 4px;
 }
 
-.link301 {
+.dataOrange {
     background-color: orange;
     padding: 4px;
     margin-left: 4px;
     margin-right: 4px;
 }
 
-.link404 {
+.dataRed {
     background-color: red;
     padding: 4px;
     margin-left: 4px;

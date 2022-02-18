@@ -1210,11 +1210,11 @@ async function runLinks() {
                     let colorClass;
                     status.forEach(function (code) {
                         if (code.includes("20")) {
-                            colorClass = " class='link200'"
+                            colorClass = " class='dataGreen'"
                         } else if (code.includes("30")) {
-                            colorClass = " class='link301'"
+                            colorClass = " class='dataOrange'"
                         } else if (code.includes("40") || code.includes("50")) {
-                            colorClass = " class='link404'"
+                            colorClass = " class='dataRed'"
                         } else {
                             colorClass = "";
                             code = "Couldn't get status code";
@@ -1279,11 +1279,11 @@ async function runLinks() {
                     let colorClass;
                     status.forEach(function (code) {
                         if (code.includes("20")) {
-                            colorClass = " class='link200'"
+                            colorClass = " class='dataGreen'"
                         } else if (code.includes("30")) {
-                            colorClass = " class='link301'"
+                            colorClass = " class='dataOrange'"
                         } else if (code.includes("40") || code.includes("50")) {
-                            colorClass = " class='link404'"
+                            colorClass = " class='dataRed'"
                         } else {
                             colorClass = "";
                             code = "Couldn't get status code";
@@ -1697,13 +1697,14 @@ async function runCookies() {
                 },
             }, {
                 "width": "10%", "targets": 4, "render": function (data, type, row) {
-                    let color;
-                    if (data === "false") {
-                        color = "red";
-                    } else {
-                        color = "green";
+                    let colorClass = "";
+                    console.log(data);
+                    if (data === false) {
+                        colorClass = " class='dataRed'";
+                    } else if (data === true) {
+                        colorClass = " class='dataGreen'";
                     }
-                    return "<span style='color: " + color + "'>" + data + "</span>";
+                    return "<span" + colorClass + ">" + data + "</span>";
                 },
             }, {
                 "width": "10%", "targets": 5, "render": function (data, type, row) {
@@ -1988,11 +1989,11 @@ async function runImages() {
                 "width": "10%", "targets": 2, "render": function (data, type, row) {
                     let colorClass;
                     if (data.includes("20")) {
-                        colorClass = " class='link200'"
+                        colorClass = " class='dataGreen'"
                     } else if (data.includes("30")) {
-                        colorClass = " class='link301'"
+                        colorClass = " class='dataOrange'"
                     } else if (data.includes("40") || data.includes("50")) {
-                        colorClass = " class='link404'"
+                        colorClass = " class='dataRed'"
                     } else {
                         colorClass = "";
                         data = "Couldn't get status code";
@@ -2066,11 +2067,11 @@ async function runImages() {
                 "width": "10%", "targets": 2, "render": function (data, type, row) {
                     let colorClass;
                     if (data.includes("20")) {
-                        colorClass = " class='link200'"
+                        colorClass = " class='dataGreen'"
                     } else if (data.includes("30")) {
-                        colorClass = " class='link301'"
+                        colorClass = " class='dataOrange'"
                     } else if (data.includes("40") || data.includes("50")) {
-                        colorClass = " class='link404'"
+                        colorClass = " class='dataRed'"
                     } else {
                         colorClass = "";
                         data = "Couldn't get status code";
