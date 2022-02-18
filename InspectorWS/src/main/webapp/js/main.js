@@ -7,10 +7,8 @@
 // ------------------------------------- GLOBAL VARIABLES ------------------------------------- //
 
 
-// const inspectorUrl = "https://inspector.littleforest.co.uk/InspectorWS";
-// const inspectorUrl = "https://inspector.littleforest.co.uk/TestWS";
-const inspectorUrl = "https://inspector.littleforest.co.uk/DevWS";
-const nameWS = inspectorUrl.split("/")[3] + "/";
+const inspectorUrl = "https://" + window.location.hostname + window.location.pathname.replace("/Inspector", "");
+const nameWS = window.location.pathname.replace("Inspector", "").replaceAll("/", "") + "/";
 const downloaderPost = "/" + nameWS + "Downloader";
 const languageToolPost = "/" + nameWS + "LanguageTool";
 const lighthousePost = "/" + nameWS + "Lighthouse";
