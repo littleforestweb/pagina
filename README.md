@@ -2,14 +2,14 @@
 The amazing web page analyser and patcher, for free from Little Forest
 
 ## Sections
-* <a href="https://github.com/littleforestweb/pagina/edit/main/README.md#LanguageTool">LanguageTool</a>
-* <a href="https://github.com/littleforestweb/pagina/edit/main/README.md#Lighthouse">Lighthouse</a>
-* <a href="https://github.com/littleforestweb/pagina/edit/main/README.md#Links">Links</a>
-* <a href="https://github.com/littleforestweb/pagina/edit/main/README.md#Accessibility">Accessibility</a>
-* <a href="https://github.com/littleforestweb/pagina/edit/main/README.md#Cookies">Cookies</a>
-* <a href="https://github.com/littleforestweb/pagina/edit/main/README.md#Technologies">Technologies</a>
-* <a href="https://github.com/littleforestweb/pagina/edit/main/README.md#Images">Images</a>
-* <a href="https://github.com/littleforestweb/pagina/edit/main/README.md#token">Token</a>
+* <a href="#LanguageTool">LanguageTool</a>
+* <a href="#Lighthouse">Lighthouse</a>
+* <a href="#Links">Links</a>
+* <a href="#Accessibility">Accessibility</a>
+* <a href="#Cookies">Cookies</a>
+* <a href="#Technologies">Technologies</a>
+* <a href="#Images">Images</a>
+* <a href="#token">Token</a>
 
 ## LanguageTool
 Params:
@@ -120,7 +120,7 @@ let imagesJSON = await $.post("https://127.0.0.1/InspectorWS/Images", {
 });
 ```
 
-## Token
+## Token [In development]
 Params:
   * accountId
   * loginUrl
