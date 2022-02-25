@@ -55,6 +55,7 @@ public class GetToken extends HttpServlet {
             String password = request.getParameter("password");
             String passwordSelector = request.getParameter("passwordSelector");
             String submitBtn = request.getParameter("submitBtn");
+
 //            System.out.println("accountId: " + accountId);
 //            System.out.println("loginUrl: " + loginUrl);
 //            System.out.println("username: " + username);
@@ -85,7 +86,7 @@ public class GetToken extends HttpServlet {
     }
 
 
-    public static String generateNewToken() {
+    public String generateNewToken() {
         byte[] randomBytes = new byte[24];
         secureRandom.nextBytes(randomBytes);
         return base64Encoder.encodeToString(randomBytes);

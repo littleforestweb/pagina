@@ -48,10 +48,17 @@ public class Downloader extends HttpServlet {
             long timeStamp = Instant.now().toEpochMilli();
             String folderPath = "/opt/scripts/downloader/data/";
             String baseFile = url.replaceAll("[^a-zA-Z0-9]", "") + "_" + timeStamp;
-            String htmlFilePath = folderPath + baseFile + ".html";
+            String jsonFilePath = folderPath + baseFile + ".json";
+            String params = "url=" + url;
+
+            // Check if token in passed
+            String token = request.getParameter("token");
+            if (!(token == null)) {
+                params += "&" + "token=" + token;
+            }
 
             // Set base command
-            List<String> base = Arrays.asList("sh", "/opt/scripts/downloader/Downloader.sh", url, htmlFilePath);
+            List<String> base = Arrays.asList("sh", "/opt/scripts/downloader/Downloader.sh", params, jsonFilePath);
             List<String> cmd = new ArrayList<>(base);
 
             // Run Cookies Process
@@ -64,7 +71,7 @@ public class Downloader extends HttpServlet {
             process.waitFor();
 
             // Reads json file && add htmlReport
-            String htmlContent = Files.readString(Paths.get(htmlFilePath));
+            String htmlContent = Files.readString(Paths.get(jsonFilePath));
             out.println(htmlContent);
         } catch (Exception ex) {
             out.println(ex);

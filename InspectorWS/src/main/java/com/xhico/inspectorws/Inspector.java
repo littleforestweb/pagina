@@ -39,10 +39,12 @@ public class Inspector extends HttpServlet {
             // Get url && lang && view from URL args
             String url = request.getParameter("url");
             String lang = request.getParameter("lang");
+            String token = request.getParameter("token");
 
             // Initialize mainURL && mainLang variables
             String mainURL = "null";
             String mainLang = "null";
+            String mainToken = "null";
 
             // Check if URL is passed as arg
             if (!(url == null)) {
@@ -54,15 +56,22 @@ public class Inspector extends HttpServlet {
                 mainLang = lang;
             }
 
+            // Check if token is passed as arg
+            if (!(token == null)) {
+                mainToken = token;
+            }
+
             System.out.println("");
             System.out.println("url - " + url);
             System.out.println("mainURL - " + mainURL);
             System.out.println("mainLang - " + mainLang);
+            System.out.println("mainToken - " + mainToken);
 
             // Set attributes mainURL && mainLang
             request.setAttribute("url", url);
             request.setAttribute("mainURL", mainURL);
             request.setAttribute("mainLang", mainLang);
+            request.setAttribute("mainToken", mainToken);
             request.getRequestDispatcher("/index.jsp").forward(request, response);
         } catch (Exception ex) {
             System.out.println(ex.getMessage());

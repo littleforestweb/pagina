@@ -7,16 +7,20 @@
 // ------------------------------------- GLOBAL VARIABLES ------------------------------------- //
 
 
-const inspectorUrl = "https://" + window.location.hostname + window.location.pathname.replace("/Inspector", "");
-const nameWS = window.location.pathname.replace("Inspector", "").replaceAll("/", "") + "/";
-const downloaderPost = "/" + nameWS + "Downloader";
-const languageToolPost = "/" + nameWS + "LanguageTool";
-const lighthousePost = "/" + nameWS + "Lighthouse";
-const linksPost = "/" + nameWS + "Links";
-const accessibilityPost = "/" + nameWS + "Accessibility";
-const cookiesPost = "/" + nameWS + "Cookies";
-const wappalyzerPost = "/" + nameWS + "Wappalyzer";
-const imagesPost = "/" + nameWS + "Images";
+let nameWS = "InspectorWS";
+if (!(window.location.pathname.includes("InspectorWS"))) {
+    nameWS = window.location.pathname.replace("Inspector", "").replaceAll("/", "");
+}
+
+const inspectorUrl = "https://" + window.location.hostname + "/" + nameWS;
+const downloaderPost = "/" + nameWS + "/" + "Downloader";
+const languageToolPost = "/" + nameWS + "/" + "LanguageTool";
+const lighthousePost = "/" + nameWS + "/" + "Lighthouse";
+const linksPost = "/" + nameWS + "/" + "Links";
+const accessibilityPost = "/" + nameWS + "/" + "Accessibility";
+const cookiesPost = "/" + nameWS + "/" + "Cookies";
+const wappalyzerPost = "/" + nameWS + "/" + "Wappalyzer";
+const imagesPost = "/" + nameWS + "/" + "Images";
 let spellTagsElem = [];
 let device = "desktop";
 let checkLanguageTool = false;
@@ -2114,8 +2118,12 @@ async function runImages() {
     document.getElementById("overlay_images_mark").style.color = "rgba(var(--lfi-green-rgb)";
 }
 
-async function runMain(url, mainURL, mainLang) {
+async function runMain(url, mainURL, mainLang, mainToken) {
     console.log("-------------------------");
+    console.log('url:', url);
+    console.log("mainURL:", mainURL);
+    console.log('mainLang:', mainLang);
+    console.log("mainToken:", mainToken);
 
     // Add overlay
     await overlay("addOverlay", "Loading page", "");
@@ -2134,8 +2142,7 @@ async function runMain(url, mainURL, mainLang) {
     let pageIframe = document.getElementById('mainPage');
 
     // Load iframe
-    console.log('Loading:', mainURL);
-    let data = await $.getJSON(downloaderPost + "?url=" + encodeURIComponent(mainURL), function (htmlContent) {
+    let data = await $.getJSON(downloaderPost + "?url=" + encodeURIComponent(mainURL) + "&token=" + mainToken, function (htmlContent) {
         return htmlContent;
     });
     data = data.contents;

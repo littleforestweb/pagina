@@ -959,6 +959,7 @@ Author : xhico
     String url;
     String mainURL;
     String mainLang;
+    String mainToken;
     try {
         url = request.getAttribute("url").toString();
     } catch (Exception ex) {
@@ -975,6 +976,11 @@ Author : xhico
     } catch (Exception ex) {
         mainLang = "null";
     }
+    try {
+        mainToken = request.getAttribute("mainToken").toString();
+    } catch (Exception ex) {
+        mainToken = "null";
+    }
 %>
 
 <script>
@@ -987,7 +993,7 @@ Author : xhico
     <%-- If a URL Param is present => runMain --%>
     <% if (!(mainURL.equals("null"))) {%>
     // Run main
-    runMain("<%=url%>", "<%=mainURL%>", "<%=mainLang%>");
+    runMain("<%=url%>", "<%=mainURL%>", "<%=mainLang%>", "<%=mainToken%>");
     <% } %>
 </script>
 
