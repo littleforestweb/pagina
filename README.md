@@ -128,7 +128,11 @@ let imagesJSON = await $.post("https://127.0.0.1/InspectorWS/Images", {
 });
 ```
 
-## Token [In development]
+## Token
+<b>[In development]</b>
+</br>
+
+<b>Set Token</b>
 Params:
   * accountId
   * loginUrl
