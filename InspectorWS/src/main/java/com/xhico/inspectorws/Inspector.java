@@ -37,41 +37,30 @@ public class Inspector extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
 
             // Get url && lang && view from URL args
+            String reqUrl = request.getRequestURL().toString();
             String url = request.getParameter("url");
             String lang = request.getParameter("lang");
             String token = request.getParameter("token");
 
-            // Initialize mainURL && mainLang variables
-            String mainURL = "null";
-            String mainLang = "null";
-            String mainToken = "null";
-
             // Check if URL is passed as arg
-            if (!(url == null)) {
-                mainURL = getFinalURL(new URL(url)).toString();
-            }
+            String mainURL = (!(url == null)) ? getFinalURL(new URL(url)).toString() : "null";
+            url = (!(url == null)) ? url : "null";
+            lang = (!(lang == null)) ? lang : "null";
+            token = (!(token == null)) ? token : "null";
 
-            // Check if Lang is passed as arg
-            if (!(lang == null)) {
-                mainLang = lang;
-            }
-
-            // Check if token is passed as arg
-            if (!(token == null)) {
-                mainToken = token;
-            }
-
+            // Prints!
             System.out.println("");
+            System.out.println("reqUrl - " + reqUrl);
             System.out.println("url - " + url);
             System.out.println("mainURL - " + mainURL);
-            System.out.println("mainLang - " + mainLang);
-            System.out.println("mainToken - " + mainToken);
+            System.out.println("lang - " + lang);
+            System.out.println("token - " + token);
 
             // Set attributes mainURL && mainLang
             request.setAttribute("url", url);
             request.setAttribute("mainURL", mainURL);
-            request.setAttribute("mainLang", mainLang);
-            request.setAttribute("mainToken", mainToken);
+            request.setAttribute("lang", lang);
+            request.setAttribute("token", token);
             request.getRequestDispatcher("/index.jsp").forward(request, response);
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
