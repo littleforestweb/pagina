@@ -2118,12 +2118,12 @@ async function runImages() {
     document.getElementById("overlay_images_mark").style.color = "rgba(var(--lfi-green-rgb)";
 }
 
-async function runMain(url, mainURL, mainLang, mainToken) {
+async function runMain(url, mainURL, lang, token) {
     console.log("-------------------------");
     console.log('url:', url);
     console.log("mainURL:", mainURL);
-    console.log('mainLang:', mainLang);
-    console.log("mainToken:", mainToken);
+    console.log('url:', url);
+    console.log("token:", token);
 
     // Add overlay
     await overlay("addOverlay", "Loading page", "");
@@ -2132,22 +2132,22 @@ async function runMain(url, mainURL, mainLang, mainToken) {
     document.getElementById("searchURL").value = mainURL;
 
     // Set Language on Languages Dropdown list
-    if (mainLang === "null") {
+    if (lang === "null") {
         document.getElementById("languages-list").value = "auto";
     } else {
-        document.getElementById("languages-list").value = mainLang;
+        document.getElementById("languages-list").value = lang;
     }
 
     // Get pageIframe
     let pageIframe = document.getElementById('mainPage');
 
     // Load iframe
-    let data = await $.getJSON(downloaderPost + "?url=" + encodeURIComponent(mainURL) + "&token=" + mainToken, function (htmlContent) {
+    let data = await $.getJSON(downloaderPost + "?url=" + encodeURIComponent(mainURL) + "&token=" + token, function (htmlContent) {
         return htmlContent;
     });
     data = data.contents;
 
-    if (data === null) {
+    if (data === null || data === "null") {
         // Remove overlay
         await overlay("removeOverlay", "", "");
 

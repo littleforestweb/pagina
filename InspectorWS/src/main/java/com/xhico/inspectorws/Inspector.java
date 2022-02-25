@@ -10,11 +10,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.transform.sax.SAXSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * @author xhico
@@ -35,9 +36,16 @@ public class Inspector extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
 
         try (PrintWriter out = response.getWriter()) {
+            System.out.println("\n# ----------------------------------- #");
+
+            // Get Date
+            LocalDateTime myDateObj = LocalDateTime.now();
+            DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+            String formattedDate = myDateObj.format(myFormatObj);
+            System.out.println("Date: " + formattedDate);
 
             // Get url && lang && view from URL args
-            String reqUrl = request.getRequestURL().toString();
+            String reqURI = request.getRequestURI();
             String url = request.getParameter("url");
             String lang = request.getParameter("lang");
             String token = request.getParameter("token");
@@ -49,8 +57,7 @@ public class Inspector extends HttpServlet {
             token = (!(token == null)) ? token : "null";
 
             // Prints!
-            System.out.println("");
-            System.out.println("reqUrl - " + reqUrl);
+            System.out.println("reqURI - " + reqURI);
             System.out.println("url - " + url);
             System.out.println("mainURL - " + mainURL);
             System.out.println("lang - " + lang);
@@ -62,6 +69,8 @@ public class Inspector extends HttpServlet {
             request.setAttribute("lang", lang);
             request.setAttribute("token", token);
             request.getRequestDispatcher("/index.jsp").forward(request, response);
+
+            System.out.println("# ----------------------------------- #\n");
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
