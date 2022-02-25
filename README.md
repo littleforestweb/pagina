@@ -9,7 +9,6 @@ The amazing web page analyser and patcher, for free from Little Forest
 * <a href="#Cookies">Cookies</a>
 * <a href="#Technologies">Technologies</a>
 * <a href="#Images">Images</a>
-* <a href="#token">Token</a>
 
 ## Live
 Params:
@@ -125,46 +124,5 @@ let imagesJSON = await $.post("https://127.0.0.1/InspectorWS/Images", {
     url: siteUrl,
 }, function (result) {
     return result;
-});
-```
-
-## Token
-<b>[In development]</b>
-</br>
-</br>
-
-<b>Set Token</b>
-</br>
-Params:
-  * accountId
-  * loginUrl
-  * username
-  * usernameSelector
-  * password
-  * passwordSelector
-  * submitBtn
-```
-https://127.0.0.1/InspectorWS/GetToken?accountId=123&loginUrl=https://example.com/&username=xhico&usernameSelector=user_login&password=xhico123&passwordSelector=user_pass&submitBtn=submitBtn
-```
-```
-let tokenURL = "https://127.0.0.1/InspectorWS/GetToken";
-let accountId = "123";
-let loginUrl = "https://example.com/";
-let username = "xhico";
-let usernameSelector = "#user_login";
-let password = "xhico123";
-let passwordSelector = "#user_pass";
-let submitBtn = "#submitBtn";
-
-let tokenJSON = await $.post(tokenURL, {
-	accountId: accountId,
-	loginUrl: loginUrl,
-	username: username,
-	usernameSelector: usernameSelector,
-	password: password,
-	passwordSelector: passwordSelector,
-	submitBtn: submitBtn
-}, function (result) {
-	return result;
 });
 ```
