@@ -1965,11 +1965,11 @@ async function runImages() {
             data: dataset,
             "autoWidth": false,
             "columnDefs": [{
-                "width": "10%", "className": "truncate", "targets": 0, "render": function (data, type, row) {
+                "width": "10%", "targets": 0, "render": function (data, type, row) {
                     return "<button class='bg-transparent border-0' onclick='showImage(\"" + data + "\")'><img src='" + data + "' width='100px' height='auto' alt='Image'></button>"
                 },
             }, {
-                "width": "15%", "targets": 1, "render": function (data, type, row) {
+                "width": "15%", "className": "truncate", "targets": 1, "render": function (data, type, row) {
                     return "<span>" + data + "</span>";
                 },
             }, {
