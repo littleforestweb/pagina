@@ -305,20 +305,6 @@ async function checkCMS() {
     }
 }
 
-async function fetchProxy(url, i) {
-    return fetch(proxy[i] + url).then(res => {
-        if (!res.ok) {
-            throw new Error(`${res.status} ${res.statusText}`);
-        }
-        return res;
-    }).catch(error => {
-        if (i === proxy.length - 1) {
-            throw error;
-        }
-        return fetchProxy(url, i + 1);
-    })
-}
-
 async function editPage() {
     // Get pageIframe, codeIframe
     let pageIframe = document.getElementById('mainPage').contentWindow.document;
@@ -1979,7 +1965,7 @@ async function runImages() {
             data: dataset,
             "autoWidth": false,
             "columnDefs": [{
-                "width": "10%", "targets": 0, "render": function (data, type, row) {
+                "width": "10%", "className": "truncate", "targets": 0, "render": function (data, type, row) {
                     return "<button class='bg-transparent border-0' onclick='showImage(\"" + data + "\")'><img src='" + data + "' width='100px' height='auto' alt='Image'></button>"
                 },
             }, {

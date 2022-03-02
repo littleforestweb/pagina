@@ -29,7 +29,12 @@ async function main() {
         '--ignore-certificate-errors-spki-list'];
 
     // Set browser
-    browser = await puppeteer.launch({executablePath: '/usr/bin/google-chrome', ignoreHTTPSErrors: true, headless: true, args: args});
+    browser = await puppeteer.launch({
+        executablePath: '/usr/bin/google-chrome',
+        ignoreHTTPSErrors: true,
+        headless: true,
+        args: args
+    });
 
     // Load page
     const page = await browser.newPage();
