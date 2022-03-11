@@ -24,13 +24,14 @@ const imagesPost = "/" + nameWS + "/" + "Images";
 let spellTagsElem = [];
 let device = "desktop";
 let checkLanguageTool = false;
-let checkLighthouse = false;
-let checkLinks = false;
 let checkAccessibility = false;
 let checkCookies = false;
 let checkTechnologies = false;
 let checkImages = false;
+let checkLighthouse = false;
+let checkLinks = false;
 let ogEditable = [];
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 
 // ------------------------------------- AUX FUNCTIONS ------------------------------------- //
@@ -41,6 +42,7 @@ $("#searchURL").on('keyup', function (e) {
         gotoNewPage();
     }
 });
+
 
 async function getSiteUrl() {
     return document.getElementById("searchURL").value;
@@ -229,7 +231,7 @@ async function overlay(action, message, sndMessage) {
 
 async function enableDisableActions(action) {
     // Set all elemId
-    let elemId = ["searchURL", "desktop-btn", "mobile-btn", "code-btn", "spelling-btn", "languages-list", "lighthouse-btn", "links-btn", "accessibility-btn", "WCAG-level-list", "cookies-btn", "technologies-btn"];
+    let elemId = ["searchURL", "languages-list", "WCAG-level-list", "desktop-btn", "mobile-btn", "code-btn", "spelling-btn", "accessibility-btn", "cookies-btn", "technologies-btn", "images-btn", "lighthouse-btn", "links-btn"];
 
     // Set disabled status
     elemId.forEach(function (id) {
@@ -385,6 +387,10 @@ async function showPublishNotification() {
     document.getElementById("publishPageBtn").hidden = true;
     document.getElementById("publishPageBtn").innerText = "Published";
     $('#publishedNotification').toast('show');
+}
+
+async function checkReports() {
+    return (checkLanguageTool && checkAccessibility && checkCookies && checkTechnologies && checkImages);
 }
 
 
@@ -1051,262 +1057,6 @@ async function runLanguageTool() {
 
     await toggleSpellView("errorsTableDiv");
     document.getElementById("overlay_spelling_mark").style.color = "rgba(var(--lfi-green-rgb)";
-    console.log("-------------------");
-}
-
-async function runLighthouse() {
-    console.log("-------------------------");
-    console.log("runLighthouse");
-
-    checkLighthouse = "running";
-    $("#lighthouseModal").modal("hide");
-
-    // Show Running Notification
-    document.getElementById("lighthouseNotificationTitle").innerText = "Your Lighthouse Report is running.";
-    document.getElementById("lighthouseNotificationBtn").hidden = true;
-    $('#lighthouseNotification').toast('show');
-
-    // Get siteUrl
-    let siteUrl = await getSiteUrl();
-
-    console.log("siteUrl: " + siteUrl);
-    console.log("Device: " + device);
-
-    try {
-        // Get lighthouseJson
-        let lighthouseJson = await $.post(lighthousePost, {
-            url: siteUrl, device: device
-        }, function (result) {
-            return result;
-        });
-
-        // Toggle Lighthouse Section
-        document.getElementById("mainLighthouse").src = inspectorUrl + "/Lighthouse?" + "url=null" + "&cats=null" + "&view=" + lighthouseJson["htmlReport"];
-        document.getElementById("mainLighthouse").hidden = false;
-
-        // Show Ready Notification
-        document.getElementById("lighthouseNotificationTitle").innerText = "Your Lighthouse Report is ready.";
-        document.getElementById("lighthouseNotificationBtn").hidden = false;
-        $('#lighthouseNotification').toast('show');
-
-        checkLighthouse = true;
-    } catch (Ex) {
-        console.log(Ex);
-        checkLighthouse = false;
-        await setErrorModal("", "Lighthouse was unable to reliably load the page you requested.<br>Please try again.");
-    }
-
-    console.log("-------------------");
-}
-
-async function runLinks() {
-    console.log("-------------------------");
-    console.log("runLinks");
-
-    checkLinks = "running";
-    $("#linksModal").modal("hide");
-
-    // Show Running Notification
-    document.getElementById("linksNotificationTitle").innerText = "Your Links Report is running.";
-    document.getElementById("linksNotificationBtn").hidden = true;
-    $('#linksNotification').toast('show');
-
-    // Get siteUrl
-    let siteUrl = await getSiteUrl();
-
-    // Get pageIframe, codeIframe
-    let pageIframe = document.getElementById('mainPage').contentWindow.document;
-    let codeIframe = document.getElementById('mainCode').contentWindow.document;
-
-    // Set links counter
-    let totalLinksCount = 0;
-    let extLinksCount = 0;
-    let intLinksCount = 0;
-    let brokenLinksCount = 0;
-
-    try {
-        // Check if broken link
-        let linkJSON = await $.post(linksPost, {
-            url: siteUrl,
-        }, function (result) {
-            return result;
-        });
-
-        // Iterate over every link
-        let linksInfo = linkJSON["linksInfo"];
-        let dataset = [];
-
-        for (let i = 0; i < linksInfo.length; i++) {
-            Object.entries(linksInfo[i]).forEach(([key, value]) => {
-                let url = key;
-                let status = value[0];
-                let origin = value[1];
-                let ogLink = value[2];
-
-                // Hightlighg Broken Link
-                let links = Array.from(pageIframe.querySelectorAll('a'));
-                for (let i = 0; i < links.length; i++) {
-                    let linkElem = links[i];
-                    let linkHref = linkElem.href
-
-                    if (linkHref === ogLink && (status >= "400" && status < "600")) {
-                        // Highlight Broken Link in HTML View
-                        linkElem.style.cssText += 'outline: 2px solid red;';
-                        linkElem.id = "blink_" + brokenLinksCount;
-
-                        // Update error color on html Code
-                        codeIframe.documentElement.innerHTML = codeIframe.documentElement.innerHTML.replaceAll(linkHref, "<span style='outline: 2px solid red'>" + linkHref + "</span>");
-                    }
-                }
-
-                // Add to dataset
-                dataset.push([url, status, origin]);
-
-                // Set links counters
-                totalLinksCount += 1;
-                if (origin === "External") {
-                    extLinksCount += 1;
-                } else if (origin === "Internal") {
-                    intLinksCount += 1;
-                }
-                if (status >= "400" && status < "600") {
-                    dataset[dataset.length - 1].push("blink_" + brokenLinksCount);
-                    brokenLinksCount += 1;
-                }
-
-            });
-        }
-
-        // Initialize Errors Table
-        $('#linksTable').DataTable({
-            dom: 'Blfrtip',
-            buttons: [{text: 'Export', extend: 'csv', filename: 'Links Report'}],
-            paginate: false,
-            "oLanguage": {"sSearch": "Filter:"},
-            "language": {"emptyTable": "No data available in table"},
-            "order": [[0, "asc"]],
-            data: dataset,
-            "autoWidth": false,
-            "columnDefs": [{
-                "width": "40%", "className": "truncate", "targets": 0, "render": function (data, type, row) {
-                    return "<a target='_blank' href='" + data + "'>" + data + "</a>";
-                },
-            }, {
-                "width": "20%", "targets": 1, "render": function (data, type, row) {
-                    let status = data.split(",");
-                    let html = "";
-                    let colorClass;
-                    status.forEach(function (code) {
-                        if (code.includes("20")) {
-                            colorClass = " class='dataGreen'"
-                        } else if (code.includes("30")) {
-                            colorClass = " class='dataOrange'"
-                        } else if (code.includes("40") || code.includes("50")) {
-                            colorClass = " class='dataRed'"
-                        } else {
-                            colorClass = "";
-                            code = "Couldn't get status code";
-                        }
-
-                        html += "<span" + colorClass + ">" + code + "</span>";
-                    });
-                    return html;
-                },
-            }, {
-                "width": "20%", "targets": 2, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
-                },
-            }, {
-                "width": "20%", "targets": 3, "render": function (data, type, row) {
-                    if (data !== undefined) {
-                        return "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoLink(\"" + data + "\")'><b>View in Page</b></button>";
-                    } else {
-                        return "";
-                    }
-                },
-            }]
-        });
-
-        // Update GENERAL INFO
-        if (brokenLinksCount === 0) {
-            brokenLinksCount = "0 - Great Job!"
-            document.getElementById("links-broken").style.color = "green";
-        } else {
-            document.getElementById("links-broken").style.color = "red";
-        }
-
-        document.getElementById("links-total").innerText = totalLinksCount;
-        document.getElementById("links-ext").innerText = extLinksCount;
-        document.getElementById("links-int").innerText = intLinksCount;
-        document.getElementById("links-broken").innerText = brokenLinksCount;
-
-        // Show Ready Notification
-        document.getElementById("linksNotificationTitle").innerText = "Your Links Report is ready.";
-        document.getElementById("linksNotificationBtn").hidden = false;
-        $('#linksNotification').toast('show');
-
-    } catch (Ex) {
-        // Initialize Errors Table
-        $('#linksTable').DataTable({
-            dom: 'Blfrtip',
-            buttons: [{text: 'Export', extend: 'csv', filename: 'Links Report'}],
-            paginate: false,
-            "oLanguage": {"sSearch": "Filter:"},
-            "language": {"emptyTable": "Failed to load information."},
-            "order": [[0, "asc"]],
-            data: [],
-            "autoWidth": false,
-            "columnDefs": [{
-                "width": "40%", "className": "truncate", "targets": 0, "render": function (data, type, row) {
-                    return "<a target='_blank' href='" + data + "'>" + data + "</a>";
-                },
-            }, {
-                "width": "20%", "targets": 1, "render": function (data, type, row) {
-                    let status = data.split(",");
-                    let html = "";
-                    let colorClass;
-                    status.forEach(function (code) {
-                        if (code.includes("20")) {
-                            colorClass = " class='dataGreen'"
-                        } else if (code.includes("30")) {
-                            colorClass = " class='dataOrange'"
-                        } else if (code.includes("40") || code.includes("50")) {
-                            colorClass = " class='dataRed'"
-                        } else {
-                            colorClass = "";
-                            code = "Couldn't get status code";
-                        }
-
-                        html += "<span" + colorClass + ">" + code + "</span>";
-                    });
-                    return html;
-                },
-            }, {
-                "width": "20%", "targets": 2, "render": function (data, type, row) {
-                    return "<span>" + data + "</span>";
-                },
-            }, {
-                "width": "20%", "targets": 3, "render": function (data, type, row) {
-                    if (data !== undefined) {
-                        return "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoLink(\"" + data + "\")'><b>View in Page</b></button>";
-                    } else {
-                        return "";
-                    }
-                },
-            }]
-        });
-        document.getElementById("links-total").innerText = "None";
-        document.getElementById("links-ext").innerText = "None";
-        document.getElementById("links-int").innerText = "None";
-        document.getElementById("links-broken").innerText = "None";
-
-        // Show Ready Notification
-        document.getElementById("linksNotificationTitle").innerText = "Your Links Report failed to load information.";
-        document.getElementById("linksNotificationBtn").hidden = false;
-        $('#linksNotification').toast('show');
-    }
-
-    checkLinks = true;
     console.log("-------------------");
 }
 
@@ -2104,12 +1854,270 @@ async function runImages() {
     document.getElementById("overlay_images_mark").style.color = "rgba(var(--lfi-green-rgb)";
 }
 
-async function runMain(url, mainURL, lang, token) {
+async function runLighthouse() {
+    console.log("-------------------------");
+    console.log("runLighthouse");
+
+    checkLighthouse = "running";
+    $("#lighthouseModal").modal("hide");
+
+    // Show Running Notification
+    document.getElementById("lighthouseNotificationTitle").innerText = "Your Lighthouse Report is running.";
+    document.getElementById("lighthouseNotificationBtn").hidden = true;
+    $('#lighthouseNotification').toast('show');
+
+    // Get siteUrl
+    let siteUrl = await getSiteUrl();
+
+    console.log("siteUrl: " + siteUrl);
+    console.log("Device: " + device);
+
+    try {
+        // Get lighthouseJson
+        let lighthouseJson = await $.post(lighthousePost, {
+            url: siteUrl, device: device
+        }, function (result) {
+            return result;
+        });
+
+        // Toggle Lighthouse Section
+        document.getElementById("mainLighthouse").src = inspectorUrl + "/Lighthouse?" + "url=null" + "&cats=null" + "&view=" + lighthouseJson["htmlReport"];
+        document.getElementById("mainLighthouse").hidden = false;
+
+        // Show Ready Notification
+        document.getElementById("lighthouseNotificationTitle").innerText = "Your Lighthouse Report is ready.";
+        document.getElementById("lighthouseNotificationBtn").hidden = false;
+        $('#lighthouseNotification').toast('show');
+
+        checkLighthouse = true;
+    } catch (Ex) {
+        console.log(Ex);
+        checkLighthouse = false;
+        await setErrorModal("", "Lighthouse was unable to reliably load the page you requested.<br>Please try again.");
+    }
+
+    console.log("-------------------");
+}
+
+async function runLinks() {
+    console.log("-------------------------");
+    console.log("runLinks");
+
+    checkLinks = "running";
+    $("#linksModal").modal("hide");
+
+    // Show Running Notification
+    document.getElementById("linksNotificationTitle").innerText = "Your Links Report is running.";
+    document.getElementById("linksNotificationBtn").hidden = true;
+    $('#linksNotification').toast('show');
+
+    // Get siteUrl
+    let siteUrl = await getSiteUrl();
+
+    // Get pageIframe, codeIframe
+    let pageIframe = document.getElementById('mainPage').contentWindow.document;
+    let codeIframe = document.getElementById('mainCode').contentWindow.document;
+
+    // Set links counter
+    let totalLinksCount = 0;
+    let extLinksCount = 0;
+    let intLinksCount = 0;
+    let brokenLinksCount = 0;
+
+    try {
+        // Check if broken link
+        let linkJSON = await $.post(linksPost, {
+            url: siteUrl,
+        }, function (result) {
+            return result;
+        });
+
+        // Iterate over every link
+        let linksInfo = linkJSON["linksInfo"];
+        let dataset = [];
+
+        for (let i = 0; i < linksInfo.length; i++) {
+            Object.entries(linksInfo[i]).forEach(([key, value]) => {
+                let url = key;
+                let status = value[0];
+                let origin = value[1];
+                let ogLink = value[2];
+
+                // Hightlighg Broken Link
+                let links = Array.from(pageIframe.querySelectorAll('a'));
+                for (let i = 0; i < links.length; i++) {
+                    let linkElem = links[i];
+                    let linkHref = linkElem.href
+
+                    if (linkHref === ogLink && (status >= "400" && status < "600")) {
+                        // Highlight Broken Link in HTML View
+                        linkElem.style.cssText += 'outline: 2px solid red;';
+                        linkElem.id = "blink_" + brokenLinksCount;
+
+                        // Update error color on html Code
+                        codeIframe.documentElement.innerHTML = codeIframe.documentElement.innerHTML.replaceAll(linkHref, "<span style='outline: 2px solid red'>" + linkHref + "</span>");
+                    }
+                }
+
+                // Add to dataset
+                dataset.push([url, status, origin]);
+
+                // Set links counters
+                totalLinksCount += 1;
+                if (origin === "External") {
+                    extLinksCount += 1;
+                } else if (origin === "Internal") {
+                    intLinksCount += 1;
+                }
+                if (status >= "400" && status < "600") {
+                    dataset[dataset.length - 1].push("blink_" + brokenLinksCount);
+                    brokenLinksCount += 1;
+                }
+
+            });
+        }
+
+        // Initialize Errors Table
+        $('#linksTable').DataTable({
+            dom: 'Blfrtip',
+            buttons: [{text: 'Export', extend: 'csv', filename: 'Links Report'}],
+            paginate: false,
+            "oLanguage": {"sSearch": "Filter:"},
+            "language": {"emptyTable": "No data available in table"},
+            "order": [[0, "asc"]],
+            data: dataset,
+            "autoWidth": false,
+            "columnDefs": [{
+                "width": "40%", "className": "truncate", "targets": 0, "render": function (data, type, row) {
+                    return "<a target='_blank' href='" + data + "'>" + data + "</a>";
+                },
+            }, {
+                "width": "20%", "targets": 1, "render": function (data, type, row) {
+                    let status = data.split(",");
+                    let html = "";
+                    let colorClass;
+                    status.forEach(function (code) {
+                        if (code.includes("20")) {
+                            colorClass = " class='dataGreen'"
+                        } else if (code.includes("30")) {
+                            colorClass = " class='dataOrange'"
+                        } else if (code.includes("40") || code.includes("50")) {
+                            colorClass = " class='dataRed'"
+                        } else {
+                            colorClass = "";
+                            code = "Couldn't get status code";
+                        }
+
+                        html += "<span" + colorClass + ">" + code + "</span>";
+                    });
+                    return html;
+                },
+            }, {
+                "width": "20%", "targets": 2, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            }, {
+                "width": "20%", "targets": 3, "render": function (data, type, row) {
+                    if (data !== undefined) {
+                        return "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoLink(\"" + data + "\")'><b>View in Page</b></button>";
+                    } else {
+                        return "";
+                    }
+                },
+            }]
+        });
+
+        // Update GENERAL INFO
+        if (brokenLinksCount === 0) {
+            brokenLinksCount = "0 - Great Job!"
+            document.getElementById("links-broken").style.color = "green";
+        } else {
+            document.getElementById("links-broken").style.color = "red";
+        }
+
+        document.getElementById("links-total").innerText = totalLinksCount;
+        document.getElementById("links-ext").innerText = extLinksCount;
+        document.getElementById("links-int").innerText = intLinksCount;
+        document.getElementById("links-broken").innerText = brokenLinksCount;
+
+        // Show Ready Notification
+        document.getElementById("linksNotificationTitle").innerText = "Your Links Report is ready.";
+        document.getElementById("linksNotificationBtn").hidden = false;
+        $('#linksNotification').toast('show');
+
+    } catch (Ex) {
+        // Initialize Errors Table
+        $('#linksTable').DataTable({
+            dom: 'Blfrtip',
+            buttons: [{text: 'Export', extend: 'csv', filename: 'Links Report'}],
+            paginate: false,
+            "oLanguage": {"sSearch": "Filter:"},
+            "language": {"emptyTable": "Failed to load information."},
+            "order": [[0, "asc"]],
+            data: [],
+            "autoWidth": false,
+            "columnDefs": [{
+                "width": "40%", "className": "truncate", "targets": 0, "render": function (data, type, row) {
+                    return "<a target='_blank' href='" + data + "'>" + data + "</a>";
+                },
+            }, {
+                "width": "20%", "targets": 1, "render": function (data, type, row) {
+                    let status = data.split(",");
+                    let html = "";
+                    let colorClass;
+                    status.forEach(function (code) {
+                        if (code.includes("20")) {
+                            colorClass = " class='dataGreen'"
+                        } else if (code.includes("30")) {
+                            colorClass = " class='dataOrange'"
+                        } else if (code.includes("40") || code.includes("50")) {
+                            colorClass = " class='dataRed'"
+                        } else {
+                            colorClass = "";
+                            code = "Couldn't get status code";
+                        }
+
+                        html += "<span" + colorClass + ">" + code + "</span>";
+                    });
+                    return html;
+                },
+            }, {
+                "width": "20%", "targets": 2, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            }, {
+                "width": "20%", "targets": 3, "render": function (data, type, row) {
+                    if (data !== undefined) {
+                        return "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoLink(\"" + data + "\")'><b>View in Page</b></button>";
+                    } else {
+                        return "";
+                    }
+                },
+            }]
+        });
+        document.getElementById("links-total").innerText = "None";
+        document.getElementById("links-ext").innerText = "None";
+        document.getElementById("links-int").innerText = "None";
+        document.getElementById("links-broken").innerText = "None";
+
+        // Show Ready Notification
+        document.getElementById("linksNotificationTitle").innerText = "Your Links Report failed to load information.";
+        document.getElementById("linksNotificationBtn").hidden = false;
+        $('#linksNotification').toast('show');
+    }
+
+    checkLinks = true;
+    console.log("-------------------");
+}
+
+async function runMain(url, mainURL, lang, token, edit, view) {
     console.log("-------------------------");
     console.log('url:', url);
     console.log("mainURL:", mainURL);
     console.log('url:', url);
     console.log("token:", token);
+    console.log("edit:", edit);
+    console.log("view:", view);
 
     // Add overlay
     await overlay("addOverlay", "Loading page", "");
@@ -2179,6 +2187,17 @@ async function runMain(url, mainURL, lang, token) {
             // Remove overlay
             await overlay("removeOverlay", "", "");
 
+            if (edit === "true") {
+                // Disable goBtn
+                let elemId = ["spelling-btn", "lighthouse-btn", "links-btn", "accessibility-btn", "cookies-btn", "technologies-btn", "images-btn"];
+
+                // Set disabled status
+                elemId.forEach(function (id) {
+                    document.getElementById(id).disabled = true;
+                });
+                return;
+            }
+
             // Auto Run
             await overlay("addOverlay", "Running Reports", "");
             document.getElementById("overlaySndMessage").innerHTML = "<p>Spelling <i id='overlay_spelling_mark' class=\"fas fa-check-square\"></i></p><p>Accessibility <i id='overlay_accessibility_mark' class=\"fas fa-check-square\"></i></p><p>Cookies <i id='overlay_cookies_mark' class=\"fas fa-check-square\"></i></p><p>Technologies <i id='overlay_technologies_mark' class=\"fas fa-check-square\"></i></p><p>Images <i id='overlay_images_mark' class=\"fas fa-check-square\"></i></p>"
@@ -2188,6 +2207,16 @@ async function runMain(url, mainURL, lang, token) {
             toggleView("technologies");
             toggleView("images");
             toggleView("desktop");
+
+            // Wait for reports to finish running
+            while (await checkReports() === false) {
+                await sleep(1);
+            }
+
+            // Check if default view is passed
+            if (["spelling", "accessibility", "cookies", "technologies", "images", "desktop", "mobile", "code"].includes(view)) {
+                await toggleView(view);
+            }
         });
     }
 }

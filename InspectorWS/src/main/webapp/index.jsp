@@ -231,7 +231,7 @@ Author : xhico
             <div class="input-group-prepend">
                 <span class="input-group-text">URL</span>
             </div>
-            <input spellcheck="true" class="w-50 form-control" id="searchURL" type="text"
+            <input spellcheck="true" class="w-30 form-control" id="searchURL" type="text"
                    placeholder="Insert URL to check..."
                    aria-label="Insert URL to check..." aria-describedby="btnNavbarSearch"/>
             <select class="form-select" id="languages-list">
@@ -960,6 +960,8 @@ Author : xhico
     String mainURL = request.getAttribute("mainURL").toString();
     String lang = request.getAttribute("lang").toString();
     String token = request.getAttribute("token").toString();
+    String edit = request.getAttribute("edit").toString();
+    String view = request.getAttribute("view").toString();
 %>
 
 <script>
@@ -972,7 +974,7 @@ Author : xhico
     <%-- If a URL Param is present => runMain --%>
     <% if (!(mainURL.equals("null"))) {%>
     // Run main
-    runMain("<%=url%>", "<%=mainURL%>", "<%=lang%>", "<%=token%>");
+    runMain("<%=url%>", "<%=mainURL%>", "<%=lang%>", "<%=token%>", "<%=edit%>", "<%=view%>");
     <% } %>
 </script>
 

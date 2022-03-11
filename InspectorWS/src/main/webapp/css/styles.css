@@ -416,3 +416,7 @@ table td, th {
 .card-title {
     font-weight: bolder;
 }
+
+.w-30 {
+    width: 30% !important;
+}
