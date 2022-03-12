@@ -2200,7 +2200,7 @@ async function runMain(url, mainURL, lang, token, edit, view) {
 
             // Auto Run
             await overlay("addOverlay", "Running Reports", "");
-            document.getElementById("overlaySndMessage").innerHTML = "<p>Spelling <i id='overlay_spelling_mark' class=\"fas fa-check-square\"></i></p><p>Accessibility <i id='overlay_accessibility_mark' class=\"fas fa-check-square\"></i></p><p>Cookies <i id='overlay_cookies_mark' class=\"fas fa-check-square\"></i></p><p>Technologies <i id='overlay_technologies_mark' class=\"fas fa-check-square\"></i></p><p>Images <i id='overlay_images_mark' class=\"fas fa-check-square\"></i></p>"
+            document.getElementById("overlaySndMessage").innerHTML = "<p>Spelling <i id='overlay_spelling_mark' class='fas fa-check-square'></i></p><p>Accessibility <i id='overlay_accessibility_mark' class='fas fa-check-square'></i></p><p>Cookies <i id='overlay_cookies_mark' class='fas fa-check-square'></i></p><p>Technologies <i id='overlay_technologies_mark' class='fas fa-check-square'></i></p><p>Images <i id='overlay_images_mark' class='fas fa-check-square'></i></p>"
             toggleView("spelling");
             toggleView("accessibility");
             toggleView("cookies");
