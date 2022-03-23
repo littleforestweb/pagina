@@ -15,7 +15,7 @@ Params:
   * URL
   * Language Code [optional]
 ```
-https://127.0.0.1/InspectorWS/Inspector?url=https://example.com&content=text_to_analize&langCode=en-gb
+https://127.0.0.1/InspectorWS/Inspector?url=https://example.com
 ```
 
 ## LanguageTool
