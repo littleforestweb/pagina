@@ -104,7 +104,7 @@ Params:
 https://127.0.0.1/InspectorWS/DomainDiscovery?url=https://littleforest.co.uk
 ```
 ```
-let imagesJSON = await $.post("https://127.0.0.1/InspectorWS/DomainDiscovery", {
+let domainsJSON = await $.post("https://127.0.0.1/InspectorWS/DomainDiscovery", {
     url: siteUrl,
 }, function (result) {
     return result;
