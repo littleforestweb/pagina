@@ -354,6 +354,9 @@ Author : xhico
                     <button id="images-btn" onclick="toggleView('images')" class="nav-link bg-transparent border-0">
                         <span class="lf-nav-link-icon"><i class="fas fa-image"></i></span>Images
                     </button>
+                    <button id="domains-btn" onclick="toggleView('domains')" class="nav-link bg-transparent border-0">
+                        <span class="lf-nav-link-icon"><i class="fas fa-globe"></i></span>Domains
+                    </button>
                     <button id="lighthouse-btn" onclick="toggleView('lighthouse')"
                             class="nav-link bg-transparent border-0">
                         <span class="lf-nav-link-icon"><i class="fas fa-tachometer-alt"></i></span>Lighthouse
@@ -854,6 +857,60 @@ Author : xhico
                                 <th>Alt</th>
                                 <th>Dimensions</th>
                                 <th>Format</th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <%-- DOMAINS --%>
+            <div hidden id="mainDomainsDiv" class="container-fluid px-4">
+                <%-- TITLE --%>
+                <h1 class="mt-4">Domains</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item active">Report</li>
+                    <li hidden class="breadcrumb-item active" id="domains-cache">
+                        <span id="domains-cacheDate"></span>
+                        <span class="cache_tooltip">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span class="cache_tooltiptext">We use cached data so that future requests for that data can be served faster</span>
+                                </span>
+                    </li>
+                </ol>
+                <span class="btn active mb-4" onclick="rerunDomains()">Run Again</span>
+                <%-- GENERAL INFO --%>
+                <div class="row d-flex justify-content-center">
+                    <div class="col-xl-3 col-md-6 text-center">
+                        <div class="card mb-4" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title" id="domains-total">0</h5>
+                                <p class="card-text">Total</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <%-- TABLES --%>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <table id="domainsTable" class="table">
+                            <thead>
+                            <tr>
+                                <th>CA ID</th>
+                                <th>CA Name</th>
+                                <th>Common Name</th>
+                                <th>Name Value</th>
+                                <th>Entry Timestamp</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                            <tr>
+                                <th>CA ID</th>
+                                <th>CA Name</th>
+                                <th>Common Name</th>
+                                <th>Name Value</th>
+                                <th>Entry Timestamp</th>
                             </tr>
                             </tfoot>
                         </table>

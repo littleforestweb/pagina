@@ -6,12 +6,12 @@ module.exports = processRequest
 async function processRequest(req, res) {
     const params = {requestMethod: req.method, ...req.query, ...req.params}
     let page;
+    console.log("token: " + params.token);
+    console.log("url: " + params.url);
 
     if (params.token === "null") {
         page = await getPage(params);
     } else {
-        console.log("token: " + params.token);
-        console.log("url: " + params.url);
         page = await usePuppeteer(params.url);
     }
 

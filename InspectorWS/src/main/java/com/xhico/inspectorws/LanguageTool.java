@@ -36,8 +36,7 @@ public class LanguageTool extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException      if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
 
@@ -46,27 +45,29 @@ public class LanguageTool extends HttpServlet {
             String url = request.getParameter("url");
             String content = request.getParameter("content");
             String langCode = request.getParameter("langCode");
+            String cache = request.getParameter("cache");
             long timeStamp = Instant.now().toEpochMilli();
             String folderPath = "/opt/scripts/languagetool/data/";
             String baseFile = url.replaceAll("[^a-zA-Z0-9]", "") + "_" + timeStamp;
             String jsonFilePath = folderPath + baseFile + ".json";
-            String contentFilePath = folderPath + baseFile + ".txt";
+            String contentFilePath = "/opt/scripts/languagetool/content/" + baseFile + ".txt";
 
-            // Get last log file if available
             boolean useCache = false;
             long epochFile = 0;
-            List<String> contents = List.of(Objects.requireNonNull(new File(folderPath).list()));
-            if (contents.size() != 0) {
-                List<String> result = contents.stream()
-                        .filter(word -> word.startsWith(url.replaceAll("[^a-zA-Z0-9]", "")))
-                        .filter(word -> word.endsWith(".json")).sorted().collect(Collectors.toList());
-                if (result.size() != 0) {
-                    String filePath = result.get(result.size() - 1);
-                    epochFile = Long.parseLong(filePath.split("_")[1].replace(".json", ""));
-                    long delta = (timeStamp - epochFile) / 60; // Milli -> Seconds
-                    if (delta <= 86400) {
-                        useCache = true;
-                        jsonFilePath = folderPath + url.replaceAll("[^a-zA-Z0-9]", "") + "_" + epochFile + ".json";
+            cache = (!(cache == null)) ? cache : "null";
+            if (cache.equalsIgnoreCase("true") || cache.equalsIgnoreCase("null")) {
+                // Get last log file if available
+                List<String> contents = List.of(Objects.requireNonNull(new File(folderPath).list()));
+                if (contents.size() != 0) {
+                    List<String> result = contents.stream().filter(word -> word.startsWith(url.replaceAll("[^a-zA-Z0-9]", ""))).sorted().collect(Collectors.toList());
+                    if (result.size() != 0) {
+                        String filePath = result.get(result.size() - 1);
+                        epochFile = Long.parseLong(filePath.split("_")[1].replace(".json", ""));
+                        long delta = (timeStamp - epochFile) / 60; // Milli -> Seconds
+                        if (delta <= 86400) {
+                            useCache = true;
+                            jsonFilePath = folderPath + url.replaceAll("[^a-zA-Z0-9]", "") + "_" + epochFile + ".json";
+                        }
                     }
                 }
             }
@@ -77,12 +78,10 @@ public class LanguageTool extends HttpServlet {
                 writer.write(content);
                 writer.close();
 
-                List<String> base = Arrays.asList("java", "-jar",
-                        "/opt/LangToolHTTPServer/languagetool-commandline.jar", "-l", langCode, "--json", "-eo",
-                        "--enablecategories", "TYPOS", contentFilePath);
+                List<String> base = Arrays.asList("java", "-jar", "/opt/LangToolHTTPServer/languagetool-commandline.jar", "-l", langCode, "--json", "-eo", "--enablecategories", "TYPOS", contentFilePath);
                 List<String> cmd = new ArrayList<>(base);
 
-                // Run Lighthouse Process
+                // Run LanguageTool Process
                 ProcessBuilder builder = new ProcessBuilder(cmd);
                 builder.redirectErrorStream(true);
                 final Process process = builder.start();
@@ -110,7 +109,7 @@ public class LanguageTool extends HttpServlet {
             JsonObject jsonObject = gson.fromJson(jsonContent, JsonObject.class);
             jsonObject.addProperty("useCache", useCache);
             if (useCache) {
-                SimpleDateFormat sdf = new SimpleDateFormat("EEE, MMM d 'at' HH:mm a z");
+                SimpleDateFormat sdf = new SimpleDateFormat("EEE, MMM d 'at' HH:mm:ss a z");
                 String cacheDate = sdf.format(new Date(epochFile));
                 jsonObject.addProperty("cacheDate", cacheDate);
             }
@@ -165,8 +164,7 @@ public class LanguageTool extends HttpServlet {
      * @throws IOException      if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 
@@ -179,8 +177,7 @@ public class LanguageTool extends HttpServlet {
      * @throws IOException      if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 

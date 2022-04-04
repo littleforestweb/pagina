@@ -21,15 +21,11 @@ const accessibilityPost = "/" + nameWS + "/" + "Accessibility";
 const cookiesPost = "/" + nameWS + "/" + "Cookies";
 const wappalyzerPost = "/" + nameWS + "/" + "Wappalyzer";
 const imagesPost = "/" + nameWS + "/" + "Images";
+const domainsPost = "/" + nameWS + "/" + "DomainDiscovery";
 let spellTagsElem = [];
 let device = "desktop";
-let checkLanguageTool = false;
-let checkAccessibility = false;
-let checkCookies = false;
-let checkTechnologies = false;
-let checkImages = false;
-let checkLighthouse = false;
-let checkLinks = false;
+let checkLanguageTool, checkAccessibility, checkCookies, checkTechnologies, checkImages, checkDomains, checkLighthouse, checkLinks = false;
+let useCacheLanguageTool, useCacheAccessibility, useCacheCookies, useCacheTechnologies, useCacheImages, useCacheDomains, useCacheLighthouse, useCacheLinks = true;
 let ogEditable = [];
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
@@ -42,7 +38,6 @@ $("#searchURL").on('keyup', function (e) {
         gotoNewPage();
     }
 });
-
 
 async function getSiteUrl() {
     return document.getElementById("searchURL").value;
@@ -80,14 +75,14 @@ async function gotoNewPage() {
 }
 
 async function resetPage() {
-    window.location.href = inspectorUrl;
+    window.location.href = inspectorUrl + "/" + "Inspector";
 }
 
 async function toggleView(view) {
     // console.log("toggleView - " + view);
 
     // Set Sidebar btn Active
-    let btnId = ["desktop-btn", "mobile-btn", "code-btn", "spelling-btn", "lighthouse-btn", "links-btn", "accessibility-btn", "cookies-btn", "technologies-btn", "images-btn"];
+    let btnId = ["desktop-btn", "mobile-btn", "code-btn", "spelling-btn", "accessibility-btn", "cookies-btn", "technologies-btn", "images-btn", "domains-btn", "lighthouse-btn", "links-btn"];
     btnId.forEach(function (btn) {
         document.getElementById(btn).classList.remove("active");
     });
@@ -97,7 +92,7 @@ async function toggleView(view) {
     }
 
     // Hide all sections except mainPage
-    let reportId = ["mainPageDiv", "mainCodeDiv", "mainSpellingDiv", "mainLighthouseDiv", "mainLinksDiv", "mainAccessibilityDiv", "mainCookiesDiv", "mainTechnologiesDiv", "mainImagesDiv"];
+    let reportId = ["mainPageDiv", "mainCodeDiv", "mainSpellingDiv", "mainAccessibilityDiv", "mainCookiesDiv", "mainTechnologiesDiv", "mainImagesDiv", "mainDomainsDiv", "mainLighthouseDiv", "mainLinksDiv"];
     reportId.forEach(function (report) {
         document.getElementById(report).hidden = true;
     });
@@ -124,7 +119,6 @@ async function toggleView(view) {
                 pageIframe.classList.remove("iframePageMobile");
                 await runLanguageTool();
                 checkLanguageTool = true;
-
             } else {
                 console.log("Already runLanguageTool");
                 document.getElementById("mainPageDiv").hidden = true;
@@ -171,6 +165,16 @@ async function toggleView(view) {
                 document.getElementById("mainImagesDiv").hidden = false;
             }
             break;
+        case 'domains':
+            if (!checkDomains) {
+                await runDomains();
+                checkDomains = true;
+            } else {
+                console.log("Already runDomains");
+                document.getElementById("mainPageDiv").hidden = true;
+                document.getElementById("mainDomainsDiv").hidden = false;
+            }
+            break;
         case 'lighthouse':
             console.log(checkLighthouse);
             if (checkLighthouse !== "running") {
@@ -203,7 +207,7 @@ async function toggleView(view) {
     }
 
     // Check if Report Status is True -> All reports finished running
-    if (checkLanguageTool && checkAccessibility && checkCookies && checkTechnologies && checkImages) {
+    if (checkLanguageTool && checkAccessibility && checkCookies && checkTechnologies && checkImages && checkDomains) {
         console.log("READY");
         await overlay("removeOverlay", "", "");
     }
@@ -231,7 +235,7 @@ async function overlay(action, message, sndMessage) {
 
 async function enableDisableActions(action) {
     // Set all elemId
-    let elemId = ["searchURL", "languages-list", "WCAG-level-list", "desktop-btn", "mobile-btn", "code-btn", "spelling-btn", "accessibility-btn", "cookies-btn", "technologies-btn", "images-btn", "lighthouse-btn", "links-btn"];
+    let elemId = ["searchURL", "languages-list", "WCAG-level-list", "desktop-btn", "mobile-btn", "code-btn", "spelling-btn", "accessibility-btn", "cookies-btn", "technologies-btn", "images-btn", "domains-btn", "lighthouse-btn", "links-btn"];
 
     // Set disabled status
     elemId.forEach(function (id) {
@@ -245,25 +249,29 @@ async function checkCMS() {
     // Check if it is Opel
     // Get siteUrl
     let siteUrl = await getSiteUrl();
-    if (siteUrl.toLowerCase().includes("opel")) {
-        console.log("OPEL");
+    siteUrl = siteUrl.toLowerCase();
+    if (siteUrl.includes("www.opel") || siteUrl.includes("www.citroen") || siteUrl.includes("www.peugeot")) {
 
-        // Get dataLayerBasicValue Scripts
-        let scripts = pageIframe.getElementsByTagName("script");
-        for (let i = 0; i < scripts.length; i++) {
-            let entry = scripts[i];
-            if (entry.innerText.includes("virtualPageURL")) {
-                let editUrl = entry.innerText.split("virtualPageURL")[1].split(",")[0].split("\"")[2].replaceAll("\\", "");
-                if (editUrl.charAt(0) === "/") {
-                    editUrl = editUrl.substring(1);
-                }
-                document.getElementById("editPageCMSBtn").setAttribute('href', "https://" + (new URL(siteUrl)).hostname + "/" + editUrl);
-                document.getElementById("editPageCMSBtn").setAttribute("target", "_blank");
-                document.getElementById("editPageCMSBtn").hidden = false;
-                break
-            }
+        try {
+            // Get CMS path
+            let metaTagContent = pageIframe.getElementsByName("path")[0].getAttribute('content').slice(0, -7);
+
+            // Decode b64
+            metaTagContent = decodeURIComponent(escape(window.atob(metaTagContent)));
+            console.log(metaTagContent);
+
+            // Build full edit URL
+            let editUrl = "https://author-opel-automobile-65-prod.adobecqms.net/editor.html" + metaTagContent + ".html";
+            console.log(editUrl);
+            document.getElementById("editPageCMSBtn").setAttribute('href', editUrl);
+            document.getElementById("editPageCMSBtn").setAttribute("target", "_blank");
+            document.getElementById("editPageCMSBtn").hidden = false;
+        } catch (e) {
+            console.log("No meta tag");
+            console.log(e);
+        } finally {
+            return;
         }
-        return;
     }
 
     // Check if WordPress | Drupal
@@ -390,7 +398,7 @@ async function showPublishNotification() {
 }
 
 async function checkReports() {
-    return (checkLanguageTool && checkAccessibility && checkCookies && checkTechnologies && checkImages);
+    return (checkLanguageTool && checkAccessibility && checkCookies && checkTechnologies && checkImages && checkDomains);
 }
 
 
@@ -471,15 +479,7 @@ async function loadDictionaryList() {
 
     // Initialize Dictionary Table
     $('#dictionaryTable').DataTable({
-        dom: 'Blfrtip',
-        buttons: [{text: 'Export', extend: 'csv', filename: 'Spelling Errors'}],
-        paginate: false,
-        "oLanguage": {"sSearch": "Filter:"},
-        "language": {"emptyTable": "There is no words on your dictionary."},
-        "order": [[0, "desc"]],
-        data: dataset,
-        "autoWidth": false,
-        "columnDefs": [{
+        dom: 'Blfrtip', buttons: [{text: 'Export', extend: 'csv', filename: 'Spelling Errors'}], paginate: false, "oLanguage": {"sSearch": "Filter:"}, "language": {"emptyTable": "There is no words on your dictionary."}, "order": [[0, "desc"]], data: dataset, "autoWidth": false, "columnDefs": [{
             "width": "50%", "targets": 0, "render": function (data, type, row) {
                 return "<span>" + data + "</span>";
             }
@@ -704,6 +704,10 @@ async function rerunSpelling() {
 
     document.getElementById("spelling-btn").disabled = false;
     checkLanguageTool = false;
+    useCacheLanguageTool = false;
+    await overlay("addOverlay", "Running Spelling", "");
+    await toggleView("spelling");
+    await overlay("removeOverlay", "", "");
     await toggleView("spelling");
 }
 
@@ -718,6 +722,10 @@ async function rerunLinks() {
 
     document.getElementById("links-btn").disabled = true;
     checkLinks = false;
+    useCacheLinks = false;
+    await overlay("addOverlay", "Running Links", "");
+    await toggleView("links");
+    await overlay("removeOverlay", "", "");
     await toggleView("links");
 }
 
@@ -744,6 +752,10 @@ async function rerunAccessibility() {
 
     document.getElementById("accessibility-btn").disabled = false;
     checkAccessibility = false;
+    useCacheAccessibility = false;
+    await overlay("addOverlay", "Running Accessibility", "");
+    await toggleView("accessibility");
+    await overlay("removeOverlay", "", "");
     await toggleView("accessibility");
 }
 
@@ -758,6 +770,10 @@ async function rerunCookies() {
 
     document.getElementById("cookies-btn").disabled = false;
     checkCookies = false;
+    useCacheCookies = false;
+    await overlay("addOverlay", "Running Cookies", "");
+    await toggleView("cookies");
+    await overlay("removeOverlay", "", "");
     await toggleView("cookies");
 }
 
@@ -772,6 +788,10 @@ async function rerunTechnologies() {
 
     document.getElementById("technologies-btn").disabled = false;
     checkTechnologies = false;
+    useCacheTechnologies = false;
+    await overlay("addOverlay", "Running Technologies", "");
+    await toggleView("technologies");
+    await overlay("removeOverlay", "", "");
     await toggleView("technologies");
 }
 
@@ -786,7 +806,29 @@ async function rerunImages() {
 
     document.getElementById("images-btn").disabled = false;
     checkImages = false;
+    useCacheImages = false;
+    await overlay("addOverlay", "Running Images", "");
     await toggleView("images");
+    await overlay("removeOverlay", "", "");
+    await toggleView("images");
+}
+
+async function rerunDomains() {
+    console.log("rerunDomains");
+
+    document.getElementById("domains-btn").disabled = true;
+
+    // Clear Cookies table
+    $('#domainsTable').DataTable().clear().draw();
+    $('#domainsTable').DataTable().destroy();
+
+    document.getElementById("domains-btn").disabled = false;
+    checkDomains = false;
+    useCacheDomains = false;
+    await overlay("addOverlay", "Running Domains", "");
+    await toggleView("domains");
+    await overlay("removeOverlay", "", "");
+    await toggleView("domains");
 }
 
 
@@ -819,32 +861,18 @@ async function runLanguageTool() {
         // If the full lang code is present on the list ("en-GB" not "en")
         if (langValues.includes(detectedLang)) {
             langCode = detectedLang;
-            let valueText = languages_list.options[langValues.indexOf(langCode)].text;
-            // document.getElementById("overlaySndMessage").innerHTML = "</br>Detected Language: " + valueText + "</br>";
         } else {
             // Try to detect the general language, if the lang attribute has only two chars ("en")
-            let generalDetect = false;
             for (let i = 0; i < langValues.length; i++) {
                 // If detected general lang use the first variant on the list
                 if (langValues[i].split("-")[0] === detectedLang) {
                     langCode = langValues[i];
-                    let valueText = languages_list.options[langValues.indexOf(langCode)].text;
-                    // document.getElementById("overlaySndMessage").innerHTML = "</br>Detected general language: " + valueText.split(" ")[0] + "</br>Using: " + valueText + "</br>";
-                    generalDetect = true;
                     break;
                 }
-            }
-            // If it didn't find a general lang, default to en-GB
-            if (!(generalDetect)) {
+                // If it didn't find a general lang, default to en-GB
                 langCode = "en-GB";
-                let valueText = languages_list.options[langValues.indexOf(langCode)].text;
-                // document.getElementById("overlaySndMessage").innerHTML = "</br>Couldn't detect langauage.</br> Defaulting to : " + valueText + "</br>";
             }
         }
-    } else {
-        // If the user selected a language, then just use that code
-        let valueText = languages_list.options[langValues.indexOf(langCode)].text;
-        // document.getElementById("overlaySndMessage").innerHTML = "</br>Selected language: " + valueText + "</br>";
     }
 
     // Update the language-list with the language
@@ -860,17 +888,13 @@ async function runLanguageTool() {
     // Set errorsDict where key => error and value => [count, color]
     let errorsDict = {};
 
-    // Check if spellTagsElem is not empty (its a re-run)
     // Get all spellTagsElem ->  Empty strings -> Only spaces -> Ignore duplicates
-    if (spellTagsElem.length === 0) {
-        spellTagsElem = [...new Set(pageIframe.body.innerText.split("\n").filter(e => e).filter(e => e !== " "))].join(" ");
-    }
-
+    spellTagsElem = [...new Set(pageIframe.body.innerText.split("\n").filter(e => e).filter(e => e !== " "))].join(" ");
 
     // Get SpellCheckJSON
     try {
         let spellCheckJSON = await $.post(languageToolPost, {
-            content: spellTagsElem, langCode: langCode, url: siteUrl
+            content: spellTagsElem, langCode: langCode, url: siteUrl, cache: useCacheLanguageTool
         }, function (result) {
             return result;
         });
@@ -880,6 +904,8 @@ async function runLanguageTool() {
             let cacheDate = spellCheckJSON["cacheDate"];
             document.getElementById("spelling-cacheDate").innerText = "Last scanned: " + cacheDate;
             document.getElementById("spelling-cache").hidden = false;
+        } else {
+            document.getElementById("spelling-cache").hidden = true;
         }
 
         // If there is errors
@@ -969,15 +995,7 @@ async function runLanguageTool() {
 
         // Initialize Errors Table
         $('#errorsTable').DataTable({
-            dom: 'Blfrtip',
-            buttons: [{text: 'Export', extend: 'csv', filename: 'Spelling Errors'}],
-            paginate: false,
-            "oLanguage": {"sSearch": "Filter:"},
-            "language": {"emptyTable": "Congratulations! We didn't find any possible spelling mistakes."},
-            "order": [[3, "desc"]],
-            data: dataset,
-            "autoWidth": false,
-            "columnDefs": [{
+            dom: 'Blfrtip', buttons: [{text: 'Export', extend: 'csv', filename: 'Spelling Errors'}], paginate: false, "oLanguage": {"sSearch": "Filter:"}, "language": {"emptyTable": "Congratulations! We didn't find any possible spelling mistakes."}, "order": [[3, "desc"]], data: dataset, "autoWidth": false, "columnDefs": [{
                 "width": "20%", "targets": 0, "render": function (data, type, row) {
                     return "<span>" + data + "</span>";
                 },
@@ -1019,15 +1037,7 @@ async function runLanguageTool() {
     } catch (Ex) {
         // Initialize Errors Table
         $('#errorsTable').DataTable({
-            dom: 'Blfrtip',
-            buttons: [{text: 'Export', extend: 'csv', filename: 'Spelling Errors'}],
-            paginate: false,
-            "oLanguage": {"sSearch": "Filter:"},
-            "language": {"emptyTable": "Failed to load information."},
-            "order": [[3, "desc"]],
-            data: [],
-            "autoWidth": false,
-            "columnDefs": [{
+            dom: 'Blfrtip', buttons: [{text: 'Export', extend: 'csv', filename: 'Spelling Errors'}], paginate: false, "oLanguage": {"sSearch": "Filter:"}, "language": {"emptyTable": "Failed to load information."}, "order": [[3, "desc"]], data: [], "autoWidth": false, "columnDefs": [{
                 "width": "20%", "targets": 0, "render": function (data, type, row) {
                     return "<span>" + data + "</span>";
                 },
@@ -1045,7 +1055,7 @@ async function runLanguageTool() {
                 },
             }, {
                 "width": "15%", "targets": 4, "render": function (data, type, row) {
-                    return "<button class='addDictionary bg-transparent border-0 text-lfi-green' onclick='addDictionary(\"" + row + "\")'><b>Add to Dictionary</b></button>" + "|" + "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoSpellError(\"spell_" + row[0] + "\")'><b>View in Page</b></button>";
+                    return "<span>" + data + "</span>";
                 },
             }]
         });
@@ -1056,7 +1066,11 @@ async function runLanguageTool() {
 
 
     await toggleSpellView("errorsTableDiv");
-    document.getElementById("overlay_spelling_mark").style.color = "rgba(var(--lfi-green-rgb)";
+    try {
+        document.getElementById("overlay_spelling_mark").style.color = "rgba(var(--lfi-green-rgb)";
+    } catch (e) {
+    }
+
     console.log("-------------------");
 }
 
@@ -1079,7 +1093,7 @@ async function runAccessibility() {
     try {
         // Get accessibilityJSON
         let accessibilityJSON = await $.post(accessibilityPost, {
-            url: siteUrl, level: WCAGLevel
+            url: siteUrl, level: WCAGLevel, cache: useCacheAccessibility
         }, function (result) {
             return result;
         });
@@ -1089,6 +1103,8 @@ async function runAccessibility() {
             let cacheDate = accessibilityJSON["cacheDate"];
             document.getElementById("accessibility-cacheDate").innerText = "Last scanned: " + cacheDate;
             document.getElementById("accessibility-cache").hidden = false;
+        } else {
+            document.getElementById("accessibility-cache").hidden = true;
         }
 
         // Iterate over all 3 categories
@@ -1192,15 +1208,7 @@ async function runAccessibility() {
 
         // Initialize Errors Table
         $('#snifferErrorsTable').DataTable({
-            dom: 'Blfrtip',
-            buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Errors Report'}],
-            paginate: false,
-            "oLanguage": {"sSearch": "Filter:"},
-            "language": {"emptyTable": "Congratulations! We didn't find any errors in the last scan."},
-            "order": [[0, "asc"]],
-            data: errorsDataset,
-            "autoWidth": false,
-            "columnDefs": [{
+            dom: 'Blfrtip', buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Errors Report'}], paginate: false, "oLanguage": {"sSearch": "Filter:"}, "language": {"emptyTable": "Congratulations! We didn't find any errors in the last scan."}, "order": [[0, "asc"]], data: errorsDataset, "autoWidth": false, "columnDefs": [{
                 "width": "25%", "targets": 0, "render": function (data, type, row) {
                     return "<span>" + data + "</span>";
                 },
@@ -1225,15 +1233,7 @@ async function runAccessibility() {
 
         // Initialize Errors Table
         $('#snifferNoticesTable').DataTable({
-            dom: 'Blfrtip',
-            buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Notices Report'}],
-            paginate: false,
-            "oLanguage": {"sSearch": "Filter:"},
-            "language": {"emptyTable": "Congratulations! We didn't find any notices in the last scan."},
-            "order": [[0, "asc"]],
-            data: noticesDataset,
-            "autoWidth": false,
-            "columnDefs": [{
+            dom: 'Blfrtip', buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Notices Report'}], paginate: false, "oLanguage": {"sSearch": "Filter:"}, "language": {"emptyTable": "Congratulations! We didn't find any notices in the last scan."}, "order": [[0, "asc"]], data: noticesDataset, "autoWidth": false, "columnDefs": [{
                 "width": "30%", "targets": 0, "render": function (data, type, row) {
                     return "<span>" + data + "</span>";
                 },
@@ -1250,15 +1250,7 @@ async function runAccessibility() {
 
         // Initialize Errors Table
         $('#snifferWarningsTable').DataTable({
-            dom: 'Blfrtip',
-            buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Warnings Report'}],
-            paginate: false,
-            "oLanguage": {"sSearch": "Filter:"},
-            "language": {"emptyTable": "Congratulations! We didn't find any warnings in the last scan."},
-            "order": [[0, "asc"]],
-            data: warningsDataset,
-            "autoWidth": false,
-            "columnDefs": [{
+            dom: 'Blfrtip', buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Warnings Report'}], paginate: false, "oLanguage": {"sSearch": "Filter:"}, "language": {"emptyTable": "Congratulations! We didn't find any warnings in the last scan."}, "order": [[0, "asc"]], data: warningsDataset, "autoWidth": false, "columnDefs": [{
                 "width": "30%", "targets": 0, "render": function (data, type, row) {
                     return "<span>" + data + "</span>";
                 },
@@ -1278,15 +1270,7 @@ async function runAccessibility() {
 
         // Initialize Errors Table
         $('#snifferErrorsTable').DataTable({
-            dom: 'Blfrtip',
-            buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Errors Report'}],
-            paginate: false,
-            "oLanguage": {"sSearch": "Filter:"},
-            "language": {"emptyTable": "Failed to load information."},
-            "order": [[0, "asc"]],
-            data: [],
-            "autoWidth": false,
-            "columnDefs": [{
+            dom: 'Blfrtip', buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Errors Report'}], paginate: false, "oLanguage": {"sSearch": "Filter:"}, "language": {"emptyTable": "Failed to load information."}, "order": [[0, "asc"]], data: [], "autoWidth": false, "columnDefs": [{
                 "width": "25%", "targets": 0, "render": function (data, type, row) {
                     return "<span>" + data + "</span>";
                 },
@@ -1300,26 +1284,14 @@ async function runAccessibility() {
                 },
             }, {
                 "width": "10%", "targets": 3, "render": function (data, type, row) {
-                    if (data !== undefined) {
-                        return "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoAccessibilityError(\"desktop\", \"" + data + "\")'><b>View in Page</b></button>";
-                    } else {
-                        return "";
-                    }
+                    return "<span>" + data + "</span>";
                 },
             }]
         });
 
         // Initialize Errors Table
         $('#snifferNoticesTable').DataTable({
-            dom: 'Blfrtip',
-            buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Notices Report'}],
-            paginate: false,
-            "oLanguage": {"sSearch": "Filter:"},
-            "language": {"emptyTable": "Failed to load information."},
-            "order": [[0, "asc"]],
-            data: [],
-            "autoWidth": false,
-            "columnDefs": [{
+            dom: 'Blfrtip', buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Notices Report'}], paginate: false, "oLanguage": {"sSearch": "Filter:"}, "language": {"emptyTable": "Failed to load information."}, "order": [[0, "asc"]], data: [], "autoWidth": false, "columnDefs": [{
                 "width": "30%", "targets": 0, "render": function (data, type, row) {
                     return "<span>" + data + "</span>";
                 },
@@ -1336,15 +1308,7 @@ async function runAccessibility() {
 
         // Initialize Errors Table
         $('#snifferWarningsTable').DataTable({
-            dom: 'Blfrtip',
-            buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Warnings Report'}],
-            paginate: false,
-            "oLanguage": {"sSearch": "Filter:"},
-            "language": {"emptyTable": "Failed to load information."},
-            "order": [[0, "asc"]],
-            data: [],
-            "autoWidth": false,
-            "columnDefs": [{
+            dom: 'Blfrtip', buttons: [{text: 'Export', extend: 'csv', filename: 'Accessibility Warnings Report'}], paginate: false, "oLanguage": {"sSearch": "Filter:"}, "language": {"emptyTable": "Failed to load information."}, "order": [[0, "asc"]], data: [], "autoWidth": false, "columnDefs": [{
                 "width": "30%", "targets": 0, "render": function (data, type, row) {
                     return "<span>" + data + "</span>";
                 },
@@ -1365,9 +1329,10 @@ async function runAccessibility() {
         document.getElementById("accessibility-warnings").innerText = "None";
     }
 
-    // Remove overlay
-    // await overlay("removeOverlay", "", "");
-    document.getElementById("overlay_accessibility_mark").style.color = "rgba(var(--lfi-green-rgb)";
+    try {
+        document.getElementById("overlay_accessibility_mark").style.color = "rgba(var(--lfi-green-rgb)";
+    } catch (e) {
+    }
 }
 
 async function runCookies() {
@@ -1380,7 +1345,7 @@ async function runCookies() {
     try {
         // Get cookiesJSON
         let cookiesJSON = await $.post(cookiesPost, {
-            url: siteUrl,
+            url: siteUrl, cache: useCacheCookies
         }, function (result) {
             return result;
         });
@@ -1390,6 +1355,8 @@ async function runCookies() {
             let cacheDate = cookiesJSON["cacheDate"];
             document.getElementById("cookies-cacheDate").innerText = "Last scanned: " + cacheDate;
             document.getElementById("cookies-cache").hidden = false;
+        } else {
+            document.getElementById("cookies-cache").hidden = true;
         }
 
         let dataset = [];
@@ -1409,15 +1376,7 @@ async function runCookies() {
 
         // Initialize Errors Table
         $('#cookiesTable').DataTable({
-            dom: 'Blfrtip',
-            buttons: [{text: 'Export', extend: 'csv', filename: 'Cookies Report'}],
-            paginate: false,
-            "oLanguage": {"sSearch": "Filter:"},
-            "language": {"emptyTable": "No data available in table"},
-            "order": [[0, "asc"]],
-            data: dataset,
-            "autoWidth": false,
-            "columnDefs": [{
+            dom: 'Blfrtip', buttons: [{text: 'Export', extend: 'csv', filename: 'Cookies Report'}], paginate: false, "oLanguage": {"sSearch": "Filter:"}, "language": {"emptyTable": "No data available in table"}, "order": [[0, "asc"]], data: dataset, "autoWidth": false, "columnDefs": [{
                 "width": "10%", "targets": 0, "render": function (data, type, row) {
                     return "<span>" + data + "</span>";
                 },
@@ -1453,15 +1412,7 @@ async function runCookies() {
     } catch (Ex) {
         // Initialize Errors Table
         $('#cookiesTable').DataTable({
-            dom: 'Blfrtip',
-            buttons: [{text: 'Export', extend: 'csv', filename: 'Cookies Report'}],
-            paginate: false,
-            "oLanguage": {"sSearch": "Filter:"},
-            "language": {"emptyTable": "Failed to load information."},
-            "order": [[0, "asc"]],
-            data: [],
-            "autoWidth": false,
-            "columnDefs": [{
+            dom: 'Blfrtip', buttons: [{text: 'Export', extend: 'csv', filename: 'Cookies Report'}], paginate: false, "oLanguage": {"sSearch": "Filter:"}, "language": {"emptyTable": "Failed to load information."}, "order": [[0, "asc"]], data: [], "autoWidth": false, "columnDefs": [{
                 "width": "10%", "targets": 0, "render": function (data, type, row) {
                     return "<span>" + data + "</span>";
                 },
@@ -1490,9 +1441,10 @@ async function runCookies() {
         document.getElementById("cookies-total").innerText = "None";
     }
 
-    // Remove overlay
-    // await overlay("removeOverlay", "", "");
-    document.getElementById("overlay_cookies_mark").style.color = "rgba(var(--lfi-green-rgb)";
+    try {
+        document.getElementById("overlay_cookies_mark").style.color = "rgba(var(--lfi-green-rgb)";
+    } catch (e) {
+    }
 }
 
 async function runTechnologies() {
@@ -1505,7 +1457,7 @@ async function runTechnologies() {
     try {
         // Get cookiesJSON
         let wappalyzerJSON = await $.post(wappalyzerPost, {
-            url: siteUrl,
+            url: siteUrl, cache: useCacheTechnologies
         }, function (result) {
             return result;
         });
@@ -1515,6 +1467,8 @@ async function runTechnologies() {
             let cacheDate = wappalyzerJSON["cacheDate"];
             document.getElementById("technologies-cacheDate").innerText = "Last scanned: " + cacheDate;
             document.getElementById("technologies-cache").hidden = false;
+        } else {
+            document.getElementById("technologies-cache").hidden = true;
         }
 
         let dataset = [];
@@ -1538,31 +1492,25 @@ async function runTechnologies() {
             }
             categoriesName = categoriesName.substring(0, categoriesName.length - 2);
             dataset.push([icon, name, website, categoriesName, confidence]);
-
-            // Update GENERAL INFO
-            // Sort the array based on the count element
-            categoriesCounter = Object.keys(categoriesCounter).map(function (key) {
-                return [key, categoriesCounter[key]];
-            }).sort(function (first, second) {
-                return second[1] - first[1];
-            });
-            document.getElementById("technologies-total").innerText = dataset.length.toString();
-            if (categoriesCounter.length !== 0) {
-                document.getElementById("technologies-most").innerText = categoriesCounter[0][0];
-            }
         }
+
+        // Update GENERAL INFO
+        // Sort the array based on the count element
+        categoriesCounter = Object.keys(categoriesCounter).map(function (key) {
+            return [key, categoriesCounter[key]];
+        }).sort(function (first, second) {
+            return second[1] - first[1];
+        });
+
+        document.getElementById("technologies-total").innerText = dataset.length.toString();
+        if (categoriesCounter.length !== 0) {
+            document.getElementById("technologies-most").innerText = categoriesCounter[0][0];
+        }
+
 
         // Initialize Technologies Table
         $('#technologiesTable').DataTable({
-            dom: 'Blfrtip',
-            buttons: [{text: 'Export', extend: 'csv', filename: 'Technologies Report'}],
-            paginate: false,
-            "oLanguage": {"sSearch": "Filter:"},
-            "language": {"emptyTable": "No data available in table"},
-            "order": [[0, "asc"]],
-            data: dataset,
-            "autoWidth": false,
-            "columnDefs": [{
+            dom: 'Blfrtip', buttons: [{text: 'Export', extend: 'csv', filename: 'Technologies Report'}], paginate: false, "oLanguage": {"sSearch": "Filter:"}, "language": {"emptyTable": "No data available in table"}, "order": [[0, "asc"]], data: dataset, "autoWidth": false, "columnDefs": [{
                 "width": "5%", "targets": 0, "render": function (data, type, row) {
                     return "<img width='30px' height='30px' src='https://www.wappalyzer.com/images/icons/" + data + "' alt='" + data + " Icon'/>";
                 },
@@ -1588,17 +1536,9 @@ async function runTechnologies() {
     } catch (Ex) {
         // Initialize Technologies Table
         $('#technologiesTable').DataTable({
-            dom: 'Blfrtip',
-            buttons: [{text: 'Export', extend: 'csv', filename: 'Technologies Report'}],
-            paginate: false,
-            "oLanguage": {"sSearch": "Filter:"},
-            "language": {"emptyTable": "Failed to load information"},
-            "order": [[0, "asc"]],
-            data: [],
-            "autoWidth": false,
-            "columnDefs": [{
+            dom: 'Blfrtip', buttons: [{text: 'Export', extend: 'csv', filename: 'Technologies Report'}], paginate: false, "oLanguage": {"sSearch": "Filter:"}, "language": {"emptyTable": "Failed to load information"}, "order": [[0, "asc"]], data: [], "autoWidth": false, "columnDefs": [{
                 "width": "5%", "targets": 0, "render": function (data, type, row) {
-                    return "<img width='30px' height='30px' src='https://www.wappalyzer.com/images/icons/" + data + "' alt='" + data + " Icon'/>";
+                    return "<span>" + data + "</span>";
                 },
             }, {
                 "width": "20%", "targets": 1, "render": function (data, type, row) {
@@ -1606,7 +1546,7 @@ async function runTechnologies() {
                 },
             }, {
                 "width": "20%", "targets": 2, "render": function (data, type, row) {
-                    return "<a target='_blank' href='" + data + "'>" + data + "</a>";
+                    return "<span>" + data + "</span>";
                 },
             }, {
                 "width": "40%", "targets": 3, "render": function (data, type, row) {
@@ -1618,13 +1558,15 @@ async function runTechnologies() {
                 },
             },]
         });
-        document.getElementById("technologies-most").innerText = "None";
         document.getElementById("technologies-total").innerText = "None";
+        document.getElementById("technologies-most").innerText = "None";
     }
 
-    // Remove overlay
-    // await overlay("removeOverlay", "", "");
-    document.getElementById("overlay_technologies_mark").style.color = "rgba(var(--lfi-green-rgb)";
+    try {
+        document.getElementById("overlay_technologies_mark").style.color = "rgba(var(--lfi-green-rgb)";
+    } catch (e) {
+    }
+
 }
 
 async function runImages() {
@@ -1637,7 +1579,7 @@ async function runImages() {
     try {
         // Get imagesJSON
         let imagesJSON = await $.post(imagesPost, {
-            url: siteUrl,
+            url: siteUrl, cache: useCacheImages
         }, function (result) {
             return result;
         });
@@ -1647,6 +1589,8 @@ async function runImages() {
             let cacheDate = imagesJSON["cacheDate"];
             document.getElementById("images-cacheDate").innerText = "Last scanned: " + cacheDate;
             document.getElementById("images-cache").hidden = false;
+        } else {
+            document.getElementById("images-cache").hidden = true;
         }
 
         let dataset = [];
@@ -1706,15 +1650,7 @@ async function runImages() {
 
         // Initialize Errors Table
         $('#imagesTable').DataTable({
-            dom: 'Blfrtip',
-            buttons: [{text: 'Export', extend: 'csv', filename: 'Images Report'}],
-            paginate: false,
-            "oLanguage": {"sSearch": "Filter:"},
-            "language": {"emptyTable": "No data available in table"},
-            "order": [[0, "asc"]],
-            data: dataset,
-            "autoWidth": false,
-            "columnDefs": [{
+            dom: 'Blfrtip', buttons: [{text: 'Export', extend: 'csv', filename: 'Images Report'}], paginate: false, "oLanguage": {"sSearch": "Filter:"}, "language": {"emptyTable": "No data available in table"}, "order": [[0, "asc"]], data: dataset, "autoWidth": false, "columnDefs": [{
                 "width": "10%", "targets": 0, "render": function (data, type, row) {
                     return "<button class='bg-transparent border-0' onclick='showImage(\"" + data + "\")'><img src='" + data + "' width='100px' height='auto' alt='Image'></button>"
                 },
@@ -1772,14 +1708,6 @@ async function runImages() {
 
     } catch (Ex) {
         // Update GENERAL INFO
-        // document.getElementById("images-card-total").classList.remove("bg-lfi-blue");
-        // document.getElementById("images-card-total").classList.add("bg-danger");
-        // document.getElementById("images-card-most").classList.remove("bg-lfi-blue");
-        // document.getElementById("images-card-most").classList.add("bg-danger");
-        // document.getElementById("images-card-large").classList.remove("bg-lfi-blue");
-        // document.getElementById("images-card-large").classList.add("bg-danger");
-        // document.getElementById("images-card-broken").classList.remove("bg-lfi-blue");
-        // document.getElementById("images-card-broken").classList.add("bg-danger");
         document.getElementById("images-total").innerText = "None";
         document.getElementById("images-most").innerText = "None";
         document.getElementById("images-large").innerText = "None";
@@ -1787,17 +1715,9 @@ async function runImages() {
 
         // Initialize Errors Table
         $('#imagesTable').DataTable({
-            dom: 'Blfrtip',
-            buttons: [{text: 'Export', extend: 'csv', filename: 'Images Report'}],
-            paginate: false,
-            "oLanguage": {"sSearch": "Filter:"},
-            "language": {"emptyTable": "Failed to load information."},
-            "order": [[0, "asc"]],
-            data: [],
-            "autoWidth": false,
-            "columnDefs": [{
+            dom: 'Blfrtip', buttons: [{text: 'Export', extend: 'csv', filename: 'Images Report'}], paginate: false, "oLanguage": {"sSearch": "Filter:"}, "language": {"emptyTable": "Failed to load information."}, "order": [[0, "asc"]], data: [], "autoWidth": false, "columnDefs": [{
                 "width": "10%", "targets": 0, "render": function (data, type, row) {
-                    return "<button class='bg-transparent border-0' onclick='showImage(\"" + data + "\")'><img src='" + data + "' width='100px' height='auto' alt='Image'></button>"
+                    return "<span>" + data + "</span>";
                 },
             }, {
                 "width": "15%", "targets": 1, "render": function (data, type, row) {
@@ -1805,33 +1725,11 @@ async function runImages() {
                 },
             }, {
                 "width": "10%", "targets": 2, "render": function (data, type, row) {
-                    let colorClass;
-                    if (data.includes("20")) {
-                        colorClass = " class='dataGreen'"
-                    } else if (data.includes("30")) {
-                        colorClass = " class='dataOrange'"
-                    } else if (data.includes("40") || data.includes("50")) {
-                        colorClass = " class='dataRed'"
-                    } else {
-                        colorClass = "";
-                        data = "Couldn't get status code";
-                    }
-
-                    return "<span" + colorClass + ">" + data + "</span>";
+                    return "<span>" + data + "</span>";
                 },
             }, {
                 "width": "10%", "targets": 3, "render": function (data, type, row) {
-                    let color;
-                    if (data > 0 && data < 300) {
-                        color = "mediumseagreen";
-                    } else if (data >= 300 && data <= 500) {
-                        color = "orange";
-                    } else if (data > 500) {
-                        color = "red";
-                    } else {
-                        color = "white";
-                    }
-                    return "<span style='padding:4px; background-color: " + color + "'>" + data + "</span>";
+                    return "<span>" + data + "</span>";
                 },
             }, {
                 "width": "25%", "targets": 4, "render": function (data, type, row) {
@@ -1850,8 +1748,108 @@ async function runImages() {
     }
 
 
-    // Remove overlay
-    document.getElementById("overlay_images_mark").style.color = "rgba(var(--lfi-green-rgb)";
+    try {
+        document.getElementById("overlay_images_mark").style.color = "rgba(var(--lfi-green-rgb)";
+    } catch (e) {
+    }
+
+}
+
+async function runDomains() {
+    console.log("-------------------------");
+    console.log("runDomains");
+
+    // Get siteUrl
+    let siteUrl = await getSiteUrl();
+
+    try {
+        // Get imagesJSON
+        let domainsJSON = await $.post(domainsPost, {
+            url: siteUrl, cache: useCacheDomains
+        }, function (result) {
+            return result;
+        });
+
+        // Check is cache
+        if (domainsJSON["useCache"]) {
+            let cacheDate = domainsJSON["cacheDate"];
+            document.getElementById("domains-cacheDate").innerText = "Last scanned: " + cacheDate;
+            document.getElementById("domains-cache").hidden = false;
+        } else {
+            document.getElementById("domains-cache").hidden = true;
+        }
+
+        let dataset = [];
+        domainsJSON = domainsJSON["domains"];
+        for (let i = 0; i < domainsJSON.length; i++) {
+            let entry = domainsJSON[i];
+            let issuer_ca_id = entry["issuer_ca_id"];
+            let issuer_name = entry["issuer_name"];
+            let common_name = entry["common_name"];
+            let name_value = entry["name_value"];
+            let entry_timestamp = entry["entry_timestamp"];
+            dataset.push([issuer_ca_id, issuer_name, common_name, name_value, entry_timestamp]);
+        }
+        document.getElementById("domains-total").innerText = dataset.length.toString();
+
+        // Initialize Domains Table
+        $('#domainsTable').DataTable({
+            dom: 'Blfrtip', buttons: [{text: 'Export', extend: 'csv', filename: 'Domains Report'}], paginate: false, "oLanguage": {"sSearch": "Filter:"}, "language": {"emptyTable": "No data available in table"}, "order": [[0, "asc"]], data: dataset, "autoWidth": false, "columnDefs": [{
+                "width": "10%", "targets": 0, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            }, {
+                "width": "30%", "targets": 1, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            }, {
+                "width": "20%", "targets": 2, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            }, {
+                "width": "30%", "targets": 3, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            }, {
+                "width": "10%", "targets": 4, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            }]
+        });
+
+    } catch (Ex) {
+        document.getElementById("domains-total").innerText = "None";
+
+        // Initialize Errors Table
+        $('#domainsTable').DataTable({
+            dom: 'Blfrtip', buttons: [{text: 'Export', extend: 'csv', filename: 'Domains Report'}], paginate: false, "oLanguage": {"sSearch": "Filter:"}, "language": {"emptyTable": "Failed to load information."}, "order": [[0, "asc"]], data: [], "autoWidth": false, "columnDefs": [{
+                "width": "10%", "targets": 0, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            }, {
+                "width": "30%", "targets": 1, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            }, {
+                "width": "20%", "targets": 2, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            }, {
+                "width": "30%", "targets": 3, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            }, {
+                "width": "10%", "targets": 4, "render": function (data, type, row) {
+                    return "<span>" + data + "</span>";
+                },
+            }]
+        });
+    }
+
+    try {
+        document.getElementById("overlay_domains_mark").style.color = "rgba(var(--lfi-green-rgb)";
+    } catch (e) {
+    }
 }
 
 async function runLighthouse() {
@@ -1875,7 +1873,7 @@ async function runLighthouse() {
     try {
         // Get lighthouseJson
         let lighthouseJson = await $.post(lighthousePost, {
-            url: siteUrl, device: device
+            url: siteUrl, device: device, cache: useCacheLighthouse
         }, function (result) {
             return result;
         });
@@ -1927,7 +1925,7 @@ async function runLinks() {
     try {
         // Check if broken link
         let linkJSON = await $.post(linksPost, {
-            url: siteUrl,
+            url: siteUrl, cache: useCacheLinks
         }, function (result) {
             return result;
         });
@@ -1979,15 +1977,7 @@ async function runLinks() {
 
         // Initialize Errors Table
         $('#linksTable').DataTable({
-            dom: 'Blfrtip',
-            buttons: [{text: 'Export', extend: 'csv', filename: 'Links Report'}],
-            paginate: false,
-            "oLanguage": {"sSearch": "Filter:"},
-            "language": {"emptyTable": "No data available in table"},
-            "order": [[0, "asc"]],
-            data: dataset,
-            "autoWidth": false,
-            "columnDefs": [{
+            dom: 'Blfrtip', buttons: [{text: 'Export', extend: 'csv', filename: 'Links Report'}], paginate: true, "oLanguage": {"sSearch": "Filter:"}, "language": {"emptyTable": "No data available in table"}, "order": [[0, "asc"]], data: dataset, "autoWidth": false, "columnDefs": [{
                 "width": "40%", "className": "truncate", "targets": 0, "render": function (data, type, row) {
                     return "<a target='_blank' href='" + data + "'>" + data + "</a>";
                 },
@@ -2048,38 +2038,13 @@ async function runLinks() {
     } catch (Ex) {
         // Initialize Errors Table
         $('#linksTable').DataTable({
-            dom: 'Blfrtip',
-            buttons: [{text: 'Export', extend: 'csv', filename: 'Links Report'}],
-            paginate: false,
-            "oLanguage": {"sSearch": "Filter:"},
-            "language": {"emptyTable": "Failed to load information."},
-            "order": [[0, "asc"]],
-            data: [],
-            "autoWidth": false,
-            "columnDefs": [{
+            dom: 'Blfrtip', buttons: [{text: 'Export', extend: 'csv', filename: 'Links Report'}], paginate: false, "oLanguage": {"sSearch": "Filter:"}, "language": {"emptyTable": "Failed to load information."}, "order": [[0, "asc"]], data: [], "autoWidth": false, "columnDefs": [{
                 "width": "40%", "className": "truncate", "targets": 0, "render": function (data, type, row) {
-                    return "<a target='_blank' href='" + data + "'>" + data + "</a>";
+                    return "<span>" + data + "</span>";
                 },
             }, {
                 "width": "20%", "targets": 1, "render": function (data, type, row) {
-                    let status = data.split(",");
-                    let html = "";
-                    let colorClass;
-                    status.forEach(function (code) {
-                        if (code.includes("20")) {
-                            colorClass = " class='dataGreen'"
-                        } else if (code.includes("30")) {
-                            colorClass = " class='dataOrange'"
-                        } else if (code.includes("40") || code.includes("50")) {
-                            colorClass = " class='dataRed'"
-                        } else {
-                            colorClass = "";
-                            code = "Couldn't get status code";
-                        }
-
-                        html += "<span" + colorClass + ">" + code + "</span>";
-                    });
-                    return html;
+                    return "<span>" + data + "</span>";
                 },
             }, {
                 "width": "20%", "targets": 2, "render": function (data, type, row) {
@@ -2087,11 +2052,7 @@ async function runLinks() {
                 },
             }, {
                 "width": "20%", "targets": 3, "render": function (data, type, row) {
-                    if (data !== undefined) {
-                        return "<button class='bg-transparent border-0 text-lfi-green' onclick='gotoLink(\"" + data + "\")'><b>View in Page</b></button>";
-                    } else {
-                        return "";
-                    }
+                    return "<span>" + data + "</span>";
                 },
             }]
         });
@@ -2136,7 +2097,7 @@ async function runMain(url, mainURL, lang, token, edit, view) {
     let pageIframe = document.getElementById('mainPage');
 
     // Load iframe
-    let data = await $.getJSON(downloaderPost + "?url=" + encodeURIComponent(mainURL) + "&token=" + token, function (htmlContent) {
+    let data = await $.get(downloaderPost + "?url=" + encodeURIComponent(mainURL) + "&token=" + token, function (htmlContent) {
         return htmlContent;
     });
     data = data.contents;
@@ -2175,37 +2136,33 @@ async function runMain(url, mainURL, lang, token, edit, view) {
             pageIframe.head.innerHTML = pageIframe.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
             codeIframe.head.innerHTML = codeIframe.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
 
-            // Edit Page for Southampton
-            let siteUrl = await getSiteUrl();
-            if (siteUrl.toLowerCase().includes("https://www.southampton.ac.uk/")) {
-                document.getElementById("editPageBtn").hidden = false;
-            } else {
-                // Check Drupal || Wordpress || Adobe CMS -> Edit Btn
-                await checkCMS();
-            }
+            // Check Drupal || Wordpress || Adobe CMS -> Edit Btn
+            await checkCMS();
 
             // Remove overlay
             await overlay("removeOverlay", "", "");
 
-            if (edit === "true") {
-                // Disable goBtn
-                let elemId = ["spelling-btn", "lighthouse-btn", "links-btn", "accessibility-btn", "cookies-btn", "technologies-btn", "images-btn"];
-
-                // Set disabled status
-                elemId.forEach(function (id) {
-                    document.getElementById(id).disabled = true;
-                });
-                return;
-            }
+            // if (edit === "true") {
+            //     // Disable goBtn
+            //     let elemId = ["spelling-btn", "lighthouse-btn", "links-btn", "accessibility-btn", "cookies-btn", "technologies-btn", "images-btn", "domains-btn"];
+            //
+            //     // Set disabled status
+            //     elemId.forEach(function (id) {
+            //         document.getElementById(id).disabled = true;
+            //     });
+            //     editPage();
+            //     return;
+            // }
 
             // Auto Run
             await overlay("addOverlay", "Running Reports", "");
-            document.getElementById("overlaySndMessage").innerHTML = "<p>Spelling <i id='overlay_spelling_mark' class='fas fa-check-square'></i></p><p>Accessibility <i id='overlay_accessibility_mark' class='fas fa-check-square'></i></p><p>Cookies <i id='overlay_cookies_mark' class='fas fa-check-square'></i></p><p>Technologies <i id='overlay_technologies_mark' class='fas fa-check-square'></i></p><p>Images <i id='overlay_images_mark' class='fas fa-check-square'></i></p>"
+            document.getElementById("overlaySndMessage").innerHTML = "<p>Spelling <i id='overlay_spelling_mark' class='fas fa-check-square'></i></p><p>Accessibility <i id='overlay_accessibility_mark' class='fas fa-check-square'></i></p><p>Cookies <i id='overlay_cookies_mark' class='fas fa-check-square'></i></p><p>Technologies <i id='overlay_technologies_mark' class='fas fa-check-square'></i></p><p>Images <i id='overlay_images_mark' class='fas fa-check-square'></i></p><p>Domains <i id='overlay_domains_mark' class='fas fa-check-square'></i></p>"
             toggleView("spelling");
             toggleView("accessibility");
             toggleView("cookies");
             toggleView("technologies");
             toggleView("images");
+            toggleView("domains");
             toggleView("desktop");
 
             // Wait for reports to finish running
@@ -2214,7 +2171,7 @@ async function runMain(url, mainURL, lang, token, edit, view) {
             }
 
             // Check if default view is passed
-            if (["spelling", "accessibility", "cookies", "technologies", "images", "desktop", "mobile", "code"].includes(view)) {
+            if (["spelling", "accessibility", "cookies", "technologies", "images", "domains", "desktop", "mobile", "code"].includes(view)) {
                 await toggleView(view);
             }
         });

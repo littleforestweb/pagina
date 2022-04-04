@@ -5,11 +5,6 @@
  */
 package com.xhico.inspectorws;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,10 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author xhico
@@ -39,7 +32,7 @@ public class Downloader extends HttpServlet {
      * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/html");
+        response.setContentType("application/json; charset=UTF-8");
         PrintWriter out = response.getWriter();
 
         try {
@@ -71,8 +64,8 @@ public class Downloader extends HttpServlet {
             process.waitFor();
 
             // Reads json file && add htmlReport
-            String htmlContent = Files.readString(Paths.get(jsonFilePath));
-            out.println(htmlContent);
+            String content = Files.readString(Paths.get(jsonFilePath));
+            out.println(content);
         } catch (Exception ex) {
             out.println(ex);
         }

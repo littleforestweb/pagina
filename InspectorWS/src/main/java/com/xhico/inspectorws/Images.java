@@ -38,26 +38,28 @@ public class Images extends HttpServlet {
 
             // Get url param
             String url = request.getParameter("url");
+            String cache = request.getParameter("cache");
             long timeStamp = Instant.now().toEpochMilli();
             String folderPath = "/opt/scripts/images/data/";
             String baseFile = url.replaceAll("[^a-zA-Z0-9]", "") + "_" + timeStamp;
             String jsonFilePath = folderPath + baseFile + ".json";
 
-            // Get last log file if available
             boolean useCache = false;
             long epochFile = 0;
-            List<String> contents = List.of(Objects.requireNonNull(new File(folderPath).list()));
-            if (contents.size() != 0) {
-                List<String> result = contents.stream()
-                        .filter(word -> word.startsWith(url.replaceAll("[^a-zA-Z0-9]", ""))).sorted()
-                        .collect(Collectors.toList());
-                if (result.size() != 0) {
-                    String filePath = result.get(result.size() - 1);
-                    epochFile = Long.parseLong(filePath.split("_")[1].replace(".json", ""));
-                    long delta = (timeStamp - epochFile) / 60; // Milli -> Seconds
-                    if (delta <= 86400) {
-                        useCache = true;
-                        jsonFilePath = folderPath + url.replaceAll("[^a-zA-Z0-9]", "") + "_" + epochFile + ".json";
+            cache = (!(cache == null)) ? cache : "null";
+            if (cache.equalsIgnoreCase("true") || cache.equalsIgnoreCase("null")) {
+                // Get last log file if available
+                List<String> contents = List.of(Objects.requireNonNull(new File(folderPath).list()));
+                if (contents.size() != 0) {
+                    List<String> result = contents.stream().filter(word -> word.startsWith(url.replaceAll("[^a-zA-Z0-9]", ""))).sorted().collect(Collectors.toList());
+                    if (result.size() != 0) {
+                        String filePath = result.get(result.size() - 1);
+                        epochFile = Long.parseLong(filePath.split("_")[1].replace(".json", ""));
+                        long delta = (timeStamp - epochFile) / 60; // Milli -> Seconds
+                        if (delta <= 86400) {
+                            useCache = true;
+                            jsonFilePath = folderPath + url.replaceAll("[^a-zA-Z0-9]", "") + "_" + epochFile + ".json";
+                        }
                     }
                 }
             }
@@ -97,7 +99,7 @@ public class Images extends HttpServlet {
             jsonObject.addProperty("useCache", useCache);
 
             if (useCache) {
-                SimpleDateFormat sdf = new SimpleDateFormat("EEE, MMM d 'at' HH:mm a z");
+                SimpleDateFormat sdf = new SimpleDateFormat("EEE, MMM d 'at' HH:mm:ss a z");
                 String cacheDate = sdf.format(new Date(epochFile));
                 jsonObject.addProperty("cacheDate", cacheDate);
             }

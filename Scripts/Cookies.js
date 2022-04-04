@@ -38,6 +38,7 @@ async function main() {
 
     // Load page
     const page = await browser.newPage();
+
     await page.goto(siteUrl, {waitUntil: 'networkidle2'});
 
     // Get Cookies

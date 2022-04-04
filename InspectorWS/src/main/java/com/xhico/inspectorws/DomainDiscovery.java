@@ -7,7 +7,10 @@ package com.xhico.inspectorws;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,6 +18,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -25,20 +29,19 @@ import java.util.stream.Collectors;
 /**
  * @author xhico
  */
-@WebServlet(name = "Cookies", urlPatterns = {"/Cookies"})
-public class Cookies extends HttpServlet {
+@WebServlet(name = "DomainDiscovery", urlPatterns = {"/DomainDiscovery"})
+public class DomainDiscovery extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
 
@@ -47,10 +50,14 @@ public class Cookies extends HttpServlet {
             // Get url param
             String url = request.getParameter("url");
             String cache = request.getParameter("cache");
+            URI uri = new URI(url);
+            String domain = uri.getHost();
+            url = domain.startsWith("www.") ? domain.substring(4) : domain;
             long timeStamp = Instant.now().toEpochMilli();
-            String folderPath = "/opt/scripts/cookies/data/";
+            String folderPath = "/opt/scripts/domaindiscovery/data/";
             String baseFile = url.replaceAll("[^a-zA-Z0-9]", "") + "_" + timeStamp;
             String jsonFilePath = folderPath + baseFile + ".json";
+
 
             boolean useCache = false;
             long epochFile = 0;
@@ -59,7 +66,8 @@ public class Cookies extends HttpServlet {
                 // Get last log file if available
                 List<String> contents = List.of(Objects.requireNonNull(new File(folderPath).list()));
                 if (contents.size() != 0) {
-                    List<String> result = contents.stream().filter(word -> word.startsWith(url.replaceAll("[^a-zA-Z0-9]", ""))).sorted().collect(Collectors.toList());
+                    String finalUrl = url;
+                    List<String> result = contents.stream().filter(word -> word.startsWith(finalUrl.replaceAll("[^a-zA-Z0-9]", ""))).sorted().collect(Collectors.toList());
                     if (result.size() != 0) {
                         String filePath = result.get(result.size() - 1);
                         epochFile = Long.parseLong(filePath.split("_")[1].replace(".json", ""));
@@ -72,11 +80,10 @@ public class Cookies extends HttpServlet {
                 }
             }
 
+
             if (!useCache) {
                 // Set base command
-                String siteURL = "--siteUrl=" + url;
-                String jsonPath = "--jsonPath=" + jsonFilePath;
-                List<String> base = Arrays.asList("node", "/opt/scripts/cookies/Cookies.js", siteURL, jsonPath);
+                List<String> base = Arrays.asList("sh", "/opt/scripts/domaindiscovery/DomainDiscovery.sh", jsonFilePath, url);
                 List<String> cmd = new ArrayList<>(base);
 
                 // Run Cookies Process
@@ -87,25 +94,15 @@ public class Cookies extends HttpServlet {
 
                 // Wait until Process is finished
                 process.waitFor();
-
-                // Reads json file && add htmlReport
-                String jsonContent = Files.readString(Paths.get(jsonFilePath));
-                Gson gson = new Gson();
-                Gson gsonPP = new GsonBuilder().setPrettyPrinting().create();
-                JsonObject jsonObject = gson.fromJson(jsonContent, JsonObject.class);
-                String jsonOutput = gsonPP.toJson(jsonObject);
-
-                // Save json to file
-                BufferedWriter writer = new BufferedWriter(new FileWriter(jsonFilePath));
-                writer.write(jsonOutput);
-                writer.close();
             }
 
-            String jsonContent = Files.readString(Paths.get(jsonFilePath));
             Gson gson = new Gson();
             Gson gsonPP = new GsonBuilder().setPrettyPrinting().create();
+            String jsonContent = Files.readString(Paths.get(jsonFilePath));
+            jsonContent = "{'domains':" + jsonContent + "}";
             JsonObject jsonObject = gson.fromJson(jsonContent, JsonObject.class);
             jsonObject.addProperty("useCache", useCache);
+            jsonObject.addProperty("host", url);
             if (useCache) {
                 SimpleDateFormat sdf = new SimpleDateFormat("EEE, MMM d 'at' HH:mm:ss a z");
                 String cacheDate = sdf.format(new Date(epochFile));
@@ -138,31 +135,30 @@ public class Cookies extends HttpServlet {
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
     // + sign on the left to edit the code.">
+
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 

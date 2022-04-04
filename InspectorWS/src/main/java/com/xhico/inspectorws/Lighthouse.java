@@ -47,6 +47,7 @@ public class Lighthouse extends HttpServlet {
             String url = request.getParameter("url");
             String view = request.getParameter("view");
             String device = request.getParameter("device");
+            String cache = request.getParameter("cache");
             String folderPath = "/opt/scripts/lighthouse/data/";
             String baseFile = url.replaceAll("[^a-zA-Z0-9]", "") + "_" + device + "_" + timeStamp;
             String jsonFilePath = folderPath + baseFile + ".json";
@@ -56,22 +57,22 @@ public class Lighthouse extends HttpServlet {
             if (!url.equals("null")) {
                 response.setContentType("application/json");
 
-                // Get last log file if available
                 boolean useCache = false;
                 long epochFile = 0;
-                List<String> contents = List.of(Objects.requireNonNull(new File(folderPath).list()));
-                if (contents.size() != 0) {
-                    List<String> result = contents.stream()
-                            .filter(word -> word.startsWith(url.replaceAll("[^a-zA-Z0-9]", "") + "_" + device))
-                            .filter(word -> word.endsWith(".json")).sorted().collect(Collectors.toList());
-                    if (result.size() != 0) {
-                        String filePath = result.get(result.size() - 1);
-                        epochFile = Long.parseLong(filePath.split("_")[2].replace(".report.json", ""));
-                        long delta = (timeStamp - epochFile) / 60; // Milli -> Seconds
-                        if (delta <= 86400) {
-                            useCache = true;
-                            jsonReport = folderPath + url.replaceAll("[^a-zA-Z0-9]", "") + "_" + device + "_"
-                                    + epochFile + ".report.json";
+                cache = (!(cache == null)) ? cache : "null";
+                if (cache.equalsIgnoreCase("true") || cache.equalsIgnoreCase("null")) {
+                    // Get last log file if available
+                    List<String> contents = List.of(Objects.requireNonNull(new File(folderPath).list()));
+                    if (contents.size() != 0) {
+                        List<String> result = contents.stream().filter(word -> word.startsWith(url.replaceAll("[^a-zA-Z0-9]", ""))).sorted().collect(Collectors.toList());
+                        if (result.size() != 0) {
+                            String filePath = result.get(result.size() - 1);
+                            epochFile = Long.parseLong(filePath.split("_")[1].replace(".json", ""));
+                            long delta = (timeStamp - epochFile) / 60; // Milli -> Seconds
+                            if (delta <= 86400) {
+                                useCache = true;
+                                jsonFilePath = folderPath + url.replaceAll("[^a-zA-Z0-9]", "") + "_" + epochFile + ".json";
+                            }
                         }
                     }
                 }
@@ -118,7 +119,7 @@ public class Lighthouse extends HttpServlet {
                 JsonObject jsonObject = gson.fromJson(jsonContent, JsonObject.class);
                 jsonObject.addProperty("useCache", useCache);
                 if (useCache) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("EEE, MMM d 'at' HH:mm a z");
+                    SimpleDateFormat sdf = new SimpleDateFormat("EEE, MMM d 'at' HH:mm:ss a z");
                     String cacheDate = sdf.format(new Date(epochFile));
                     jsonObject.addProperty("cacheDate", cacheDate);
                 }
