@@ -7,7 +7,7 @@ The amazing web page analyser and patcher, for free from Little Forest
 * <a href="#Cookies">Cookies</a>
 * <a href="#Technologies">Technologies</a>
 * <a href="#Images">Images</a>
-* <a href="#Domains">Subdomains</a>
+* <a href="#Subdomains">Subdomains</a>
 * <a href="#Lighthouse">Lighthouse</a>
 * <a href="#Links">Links</a>
 
