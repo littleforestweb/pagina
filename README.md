@@ -3,12 +3,13 @@ The amazing web page analyser and patcher, for free from Little Forest
 
 ## Sections
 * <a href="#LanguageTool">LanguageTool</a>
-* <a href="#Lighthouse">Lighthouse</a>
-* <a href="#Links">Links</a>
 * <a href="#Accessibility">Accessibility</a>
 * <a href="#Cookies">Cookies</a>
 * <a href="#Technologies">Technologies</a>
 * <a href="#Images">Images</a>
+* <a href="#Domains">Subdomains</a>
+* <a href="#Lighthouse">Lighthouse</a>
+* <a href="#Links">Links</a>
 
 ## Live
 Params:
@@ -31,37 +32,6 @@ let spellCheckJSON = await $.post("https://127.0.0.1/InspectorWS/LanguageTool", 
     content: spellTagsElem,
     langCode: langCode,
     url: siteUrl
-}, function (result) {
-    return result;
-});
-```
-
-## Lighthouse
-Params:
-  * URL,
-  * Device
-    * desktop
-    * mobile
-```
-https://127.0.0.1/InspectorWS/Lighthouse?url=https://littleforest.co.uk&device=desktop
-```
-```
-let lighthouseJson = await $.post("https://127.0.0.1/InspectorWS/Lighthouse", {
-    url: siteUrl, device: device
-}, function (result) {
-    return result;
-});
-```
-
-## Links
-Params:
-  * URL
-```
-https://127.0.0.1/InspectorWS/Links?url=https://littleforest.co.uk
-```
-```
-let linkJSON = await $.post("https://127.0.0.1/InspectorWS/Links", {
-    url: siteUrl,
 }, function (result) {
     return result;
 });
@@ -121,6 +91,51 @@ https://127.0.0.1/InspectorWS/Images?url=https://littleforest.co.uk
 ```
 ```
 let imagesJSON = await $.post("https://127.0.0.1/InspectorWS/Images", {
+    url: siteUrl,
+}, function (result) {
+    return result;
+});
+```
+
+## Subdomains
+Params:
+  * URL
+```
+https://127.0.0.1/InspectorWS/DomainDiscovery?url=https://littleforest.co.uk
+```
+```
+let imagesJSON = await $.post("https://127.0.0.1/InspectorWS/DomainDiscovery", {
+    url: siteUrl,
+}, function (result) {
+    return result;
+});
+```
+
+## Lighthouse
+Params:
+  * URL,
+  * Device
+    * desktop
+    * mobile
+```
+https://127.0.0.1/InspectorWS/Lighthouse?url=https://littleforest.co.uk&device=desktop
+```
+```
+let lighthouseJson = await $.post("https://127.0.0.1/InspectorWS/Lighthouse", {
+    url: siteUrl, device: device
+}, function (result) {
+    return result;
+});
+```
+
+## Links
+Params:
+  * URL
+```
+https://127.0.0.1/InspectorWS/Links?url=https://littleforest.co.uk
+```
+```
+let linkJSON = await $.post("https://127.0.0.1/InspectorWS/Links", {
     url: siteUrl,
 }, function (result) {
     return result;
