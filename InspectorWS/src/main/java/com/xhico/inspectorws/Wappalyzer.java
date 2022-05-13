@@ -20,6 +20,7 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -37,8 +38,7 @@ public class Wappalyzer extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException      if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
 
@@ -80,24 +80,46 @@ public class Wappalyzer extends HttpServlet {
                 List<String> cmd = new ArrayList<>(base);
 
                 // Run Lighthouse Process
-                ProcessBuilder builder = new ProcessBuilder(cmd);
-                builder.redirectErrorStream(true);
-                final Process process = builder.start();
-                watch(process);
+                ProcessBuilder builder1 = new ProcessBuilder(cmd);
+                builder1.redirectErrorStream(true);
+                final Process process1 = builder1.start();
+                watch(process1);
 
                 // Wait until Process is finished
-                process.waitFor();
+                process1.waitFor();
 
-                // Reads json file && add htmlReport
+                // Reads json file && add jsonPath
                 String jsonContent = Files.readString(Paths.get(jsonFilePath));
                 Gson gson = new Gson();
                 Gson gsonPP = new GsonBuilder().setPrettyPrinting().create();
                 JsonObject jsonObject = gson.fromJson(jsonContent, JsonObject.class);
                 String jsonOutput = gsonPP.toJson(jsonObject);
 
+                // Run CMS Scanner
+                List<String> base2 = Arrays.asList("sh", "/opt/scripts/wappalyzer/cmseek.sh", url, baseFile);
+                List<String> cmd2 = new ArrayList<>(base2);
+
+                // Run CMS Scanner Process
+                ProcessBuilder builder2 = new ProcessBuilder(cmd2);
+                builder2.redirectErrorStream(true);
+                final Process process2 = builder2.start();
+                watch(process2);
+
+                // Wait until Process is finished
+                process2.waitFor();
+
+                // Reads json file
+                String CMSeekJsonPath = "/opt/scripts/wappalyzer/CMSeeK/Result/" + baseFile + "/cms.json";
+                System.out.println(CMSeekJsonPath);
+                String jsonContent2 = Files.readString(Paths.get(CMSeekJsonPath));
+                Gson gson2 = new Gson();
+                Gson gsonPP2 = new GsonBuilder().setPrettyPrinting().create();
+                JsonObject jsonObject2 = gson2.fromJson(jsonContent2, JsonObject.class);
+                String jsonOutput2 = gsonPP2.toJson(jsonObject2);
+
                 // Save json to file
                 BufferedWriter writer = new BufferedWriter(new FileWriter(jsonFilePath));
-                writer.write(jsonOutput);
+                writer.write("{'Wappalyzer':" + jsonOutput + ", 'CMSeeK':" + jsonOutput2 + "}");
                 writer.close();
             }
 
@@ -148,8 +170,7 @@ public class Wappalyzer extends HttpServlet {
      * @throws IOException      if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 
@@ -162,8 +183,7 @@ public class Wappalyzer extends HttpServlet {
      * @throws IOException      if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 
