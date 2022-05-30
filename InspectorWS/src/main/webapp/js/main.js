@@ -27,8 +27,7 @@ let device = "desktop";
 let checkLanguageTool, checkAccessibility, checkCookies, checkTechnologies, checkImages, checkDomains, checkLighthouse, checkLinks = false;
 let useCacheLanguageTool, useCacheAccessibility, useCacheCookies, useCacheTechnologies, useCacheImages, useCacheDomains, useCacheLighthouse, useCacheLinks = true;
 let ogEditable = [];
-const sleep = ms => new Promise(r => setTimeout(r, ms));
-
+let cmsName;
 
 // ------------------------------------- AUX FUNCTIONS ------------------------------------- //
 
@@ -38,6 +37,10 @@ $("#searchURL").on('keyup', function (e) {
         gotoNewPage();
     }
 });
+
+async function sleep(secs) {
+    await new Promise(resolve => setTimeout(resolve, secs * 1000));
+}
 
 async function getSiteUrl() {
     return document.getElementById("searchURL").value;
@@ -246,36 +249,29 @@ async function enableDisableActions(action) {
 async function checkCMS() {
     let pageIframe = document.getElementById('mainPage').contentWindow.document;
 
-    // Check if it is Opel
-    // Get siteUrl
+    // Check if it is Opel, Citroen or Peugeot
     let siteUrl = await getSiteUrl();
     siteUrl = siteUrl.toLowerCase();
     if (siteUrl.includes("www.opel") || siteUrl.includes("www.citroen") || siteUrl.includes("www.peugeot")) {
-
         try {
             // Get CMS path
             let metaTagContent = pageIframe.getElementsByName("path")[0].getAttribute('content').slice(0, -7);
 
-            // Decode b64
+            // Decode Base64
             metaTagContent = decodeURIComponent(escape(window.atob(metaTagContent)));
-            console.log(metaTagContent);
 
             // Build full edit URL
             let editUrl = "https://author-opel-automobile-65-prod.adobecqms.net/editor.html" + metaTagContent + ".html";
-            console.log(editUrl);
             document.getElementById("editPageCMSBtn").setAttribute('href', editUrl);
             document.getElementById("editPageCMSBtn").setAttribute("target", "_blank");
             document.getElementById("editPageCMSBtn").hidden = false;
         } catch (e) {
             console.log("No meta tag");
-            console.log(e);
-        } finally {
-            return;
         }
+        return;
     }
 
     // Check if WordPress | Drupal
-    let cmsName = "null";
     let metas = pageIframe.getElementsByTagName('meta');
     for (let i = 0; i < metas.length; i++) {
         if (metas[i].getAttribute("name") === "generator" || metas[i].getAttribute("name") === "Generator") {
@@ -285,12 +281,15 @@ async function checkCMS() {
             } else if (metas[i].getAttribute("content").includes("drupal")) {
                 cmsName = "Drupal";
                 break;
+            } else if (metas[i].getAttribute("content").includes("Leaf CMS")) {
+                cmsName = "Leaf CMS";
+                break;
             }
         }
     }
 
-    // Get shortling IF WordPress | Drupal
-    if (cmsName !== "null") {
+    // Get shortlink IF WordPress | Drupal
+    if (cmsName !== undefined) {
         let linkRel = pageIframe.getElementsByTagName('link');
         for (let i = 0; i < linkRel.length; i++) {
             if (linkRel[i].rel === "shortlink") {
@@ -316,19 +315,33 @@ async function checkCMS() {
 }
 
 async function editPage() {
-    // Get pageIframe, codeIframe
+    let siteUrl = await getSiteUrl();
+    siteUrl = siteUrl.toLowerCase();
     let pageIframe = document.getElementById('mainPage').contentWindow.document;
+    if (siteUrl.includes("www.southampton") || siteUrl.includes("https://inspector.littleforest.co.uk:7777")) {
+        // Get editable content divs
+        let editableElems = pageIframe.getElementsByClassName("uos-tier uos-tier-secondary");
 
-    // Get editable content divs
-    let editableElems = pageIframe.getElementsByClassName("uos-tier uos-tier-secondary");
+        // Iterate over every div
+        for (let i = 0; i < editableElems.length; i++) {
+            let elem = editableElems[i];
+            ogEditable.push([elem, elem.innerHTML, elem.innerText]);
+            elem.contentEditable = "true";
+        }
+    } else if (siteUrl.includes("eversheds-sutherland.com") || siteUrl.includes("https://inspector.littleforest.co.uk:5555")) {
+        // Get editable content divs
+        let editableElems = pageIframe.getElementsByClassName("mainbody");
 
-    // Iterate over every div
-    for (let i = 0; i < editableElems.length; i++) {
-        let elem = editableElems[i];
-        ogEditable.push([elem, elem.innerHTML, elem.innerText]);
-        elem.contentEditable = "true";
+        // Iterate over every div
+        for (let i = 0; i < editableElems.length; i++) {
+            let elem = editableElems[i];
+            ogEditable.push([elem, elem.innerHTML, elem.innerText]);
+            elem.contentEditable = "true";
+        }
+
+        let codeIframe = document.getElementById('mainCode');
+        codeIframe.contentWindow.document.getElementById("htmlCode").contentEditable = "true";
     }
-
     document.getElementById("editPageBtn").hidden = true;
     document.getElementById("savePageBtn").hidden = false;
 }
@@ -349,7 +362,9 @@ async function savePage() {
 
             let ogInnerHTML = ogEditable[i][1].replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
             let editedInnerHTML = elem.innerHTML.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-            editedChanges += '{"original":"' + ogInnerHTML + '","edited":"' + editedInnerHTML + '" },'
+            // let ogInnerHTML = ogEditable[i][1];
+            // let editedInnerHTML = elem.innerHTML;
+            editedChanges += '{"original":"' + ogInnerHTML + '", "edited":"' + editedInnerHTML + '" },'
         }
     }
 
@@ -359,48 +374,71 @@ async function savePage() {
         editedChanges = editedChanges.slice(0, -1);
         editedChanges += ']}';
 
-        // Download JSON File
-        let element = document.createElement('a');
-        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(editedChanges.replace(/(\r\n|\n|\r)/gm, " ")));
-        element.setAttribute('download', "changes.json");
-        document.body.appendChild(element);
-        element.click();
-        document.body.removeChild(element);
+        let page_id = (await getSiteUrl()).split("id=")[1];
+        let saveURL;
+        let siteUrl = await getSiteUrl();
+        if (siteUrl.includes("www.southampton") || siteUrl.includes("https://inspector.littleforest.co.uk:7777")) {
+            saveURL = "https://inspector.littleforest.co.uk:7777/save/site"
+        } else if (siteUrl.includes("eversheds-sutherland.com") || siteUrl.includes("https://inspector.littleforest.co.uk:5555")) {
+            saveURL = "https://inspector.littleforest.co.uk:5555/save/site"
+        }
+
+        $.ajax({
+            type: "POST",
+            url: saveURL,
+            data: {"changesJSON": editedChanges, "page_id": page_id},
+            success: function (entry) {
+                console.log("success");
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log("error");
+            }
+        });
+
+        $('#savedNotification').toast('show');
     }
 
     document.getElementById("savePageBtn").hidden = true;
-    document.getElementById("publishPageBtn").hidden = false;
-}
-
-async function publishPage() {
-    console.log("publishPage");
-    $('#publishModal').modal('show');
-}
-
-async function selectUserReviewer(user) {
-    if (user.style.backgroundColor === "rgb(222, 226, 230)") {
-        user.classList.add("bg-transparent");
-        user.style.backgroundColor = "";
-        document.getElementById("selectedUsers").value = document.getElementById("selectedUsers").value.replace(user.innerText + ", ", "");
-    } else {
-        document.getElementById("selectedUsers").value += user.innerText + ", ";
-        user.classList.remove("bg-transparent");
-        user.style.backgroundColor = "rgb(222, 226, 230)";
-    }
-}
-
-async function showPublishNotification() {
-    console.log("showPublishNotification");
-    $('#publishModal').modal('hide');
-    document.getElementById("publishPageBtn").hidden = true;
-    document.getElementById("publishPageBtn").innerText = "Published";
-    $('#publishedNotification').toast('show');
 }
 
 async function checkReports() {
     return (checkLanguageTool && checkAccessibility && checkCookies && checkTechnologies && checkImages && checkDomains);
 }
 
+async function removeCookies() {
+    // Get pageIframe
+    let pageIframe = document.getElementById('mainPage').contentWindow.document;
+    let siteUrl = await getSiteUrl();
+    await sleep(5);
+
+    if (siteUrl.includes("www.opel") || siteUrl.includes("www.citroen") || siteUrl.includes("www.peugeot")) {
+        pageIframe.getElementById("_psaihm_main_div").remove();
+        pageIframe.getElementById("_psaihm_overlay").remove();
+    } else if (siteUrl.includes("www.southampton") || siteUrl.includes("https://inspector.littleforest.co.uk:7777")) {
+        let body = pageIframe.getElementsByTagName("body")[0];
+        for (let i = 0; i < body.children.length; i++) {
+            let entry = body.children[i];
+            if (entry.id === "optanon") {
+                entry.remove();
+            }
+        }
+        body.style = "";
+    } else if (siteUrl.includes("eversheds-sutherland.com") || siteUrl.includes("https://inspector.littleforest.co.uk:5555")) {
+        let body = pageIframe.getElementsByTagName("body")[0];
+        for (let i = 0; i < body.children.length; i++) {
+            let entry = body.children[i];
+            if (entry.id === "CookieReportsPanel") {
+                entry.remove();
+            }
+        }
+        for (let i = 0; i < body.children.length; i++) {
+            let entry = body.children[i];
+            if (entry.id === "CookieReportsPanel") {
+                entry.remove();
+            }
+        }
+    }
+}
 
 // ------------------------------------- SPELLING REPORT ------------------------------------- //
 
@@ -833,6 +871,7 @@ async function rerunDomains() {
 
 
 // ------------------------------------- MAIN ------------------------------------- //
+
 
 async function runLanguageTool() {
     console.log("-------------------");
@@ -1473,7 +1512,7 @@ async function runTechnologies() {
 
         let dataset = [];
         let categoriesCounter = {};
-        wappalyzerJSON = wappalyzerJSON["Wappalyzer"]["technologies"];
+        wappalyzerJSON = wappalyzerJSON["Wappalyzer"]["Wappalyzer"]["technologies"];
         for (let i = 0; i < wappalyzerJSON.length; i++) {
             let entry = wappalyzerJSON[i];
             let confidence = entry["confidence"].toString();
@@ -1799,7 +1838,7 @@ async function runDomains() {
                     return "<span>" + data + "</span>";
                 },
             }, {
-                "width": "30%", "targets": 1, "render": function (data, type, row) {
+                "width": "30%", "className": "truncate", "targets": 1, "render": function (data, type, row) {
                     return "<span>" + data + "</span>";
                 },
             }, {
@@ -1971,13 +2010,12 @@ async function runLinks() {
                     dataset[dataset.length - 1].push("blink_" + brokenLinksCount);
                     brokenLinksCount += 1;
                 }
-
             });
         }
 
         // Initialize Errors Table
         $('#linksTable').DataTable({
-            dom: 'Blfrtip', buttons: [{text: 'Export', extend: 'csv', filename: 'Links Report'}], paginate: true, "oLanguage": {"sSearch": "Filter:"}, "language": {"emptyTable": "No data available in table"}, "order": [[0, "asc"]], data: dataset, "autoWidth": false, "columnDefs": [{
+            dom: 'Blfrtip', buttons: [{text: 'Export', extend: 'csv', filename: 'Links Report'}], paginate: false, "oLanguage": {"sSearch": "Filter:"}, "language": {"emptyTable": "No data available in table"}, "order": [[0, "asc"]], data: dataset, "autoWidth": false, "columnDefs": [{
                 "width": "40%", "className": "truncate", "targets": 0, "render": function (data, type, row) {
                     return "<a target='_blank' href='" + data + "'>" + data + "</a>";
                 },
@@ -2097,7 +2135,7 @@ async function runMain(url, mainURL, lang, token, edit, view) {
     let pageIframe = document.getElementById('mainPage');
 
     // Load iframe
-    let data = await $.get(downloaderPost + "?url=" + encodeURIComponent(mainURL) + "&token=" + token, function (htmlContent) {
+    let data = await $.get(downloaderPost + "?url=" + mainURL, function (htmlContent) {
         return htmlContent;
     });
     data = data.contents;
@@ -2136,23 +2174,25 @@ async function runMain(url, mainURL, lang, token, edit, view) {
             pageIframe.head.innerHTML = pageIframe.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
             codeIframe.head.innerHTML = codeIframe.head.innerHTML + "<link type='text/css' rel='Stylesheet' href='" + iframeCSS + "' />";
 
-            // Check Drupal || Wordpress || Adobe CMS -> Edit Btn
+            // Check Drupal || Wordpress || Adobe CMS || Leaf CMS -> Edit Btn
             await checkCMS();
+
+            if (edit === "true") {
+                if (cmsName === "Leaf CMS") {
+                    // Disable btns
+                    await enableDisableActions("disable");
+                    await removeCookies();
+                    await editPage();
+                }
+
+                await overlay("removeOverlay", "", "");
+                await enableDisableActions("disable");
+                document.getElementById("code-btn").disabled = false;
+                return;
+            }
 
             // Remove overlay
             await overlay("removeOverlay", "", "");
-
-            // if (edit === "true") {
-            //     // Disable goBtn
-            //     let elemId = ["spelling-btn", "lighthouse-btn", "links-btn", "accessibility-btn", "cookies-btn", "technologies-btn", "images-btn", "domains-btn"];
-            //
-            //     // Set disabled status
-            //     elemId.forEach(function (id) {
-            //         document.getElementById(id).disabled = true;
-            //     });
-            //     editPage();
-            //     return;
-            // }
 
             // Auto Run
             await overlay("addOverlay", "Running Reports", "");
@@ -2174,6 +2214,9 @@ async function runMain(url, mainURL, lang, token, edit, view) {
             if (["spelling", "accessibility", "cookies", "technologies", "images", "domains", "desktop", "mobile", "code"].includes(view)) {
                 await toggleView(view);
             }
+
+            // Remove Cookies
+            await removeCookies();
         });
     }
 }

@@ -204,10 +204,10 @@ Author : xhico
         </div>
     </div>
 
-    <%-- PUBLISHED NOTIFICATION --%>
-    <div id="publishedNotification" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+    <%-- SAVED NOTIFICATION --%>
+    <div id="savedNotification" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="toast-header">
-            <strong class="me-auto">Changes successively sent to review.</strong>
+            <strong class="me-auto">Changes successively saved.</strong>
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
     </div>
@@ -307,10 +307,6 @@ Author : xhico
                 <button hidden id="savePageBtn" class="btn active bg-warning text-dark" type="button"
                         onclick="savePage()">
                     <span class="me-2">Save Page</span><i class="fas fa-edit"></i></button>
-                <%-- Publish Page --%>
-                <button hidden id="publishPageBtn" class="btn active" type="button"
-                        onclick="publishPage()">
-                    <span class="me-2">Publish Page</span><i class="fas fa-edit"></i></button>
             </div>
         </div>
     </div>

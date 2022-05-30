@@ -99,7 +99,21 @@ public class DomainDiscovery extends HttpServlet {
             Gson gson = new Gson();
             Gson gsonPP = new GsonBuilder().setPrettyPrinting().create();
             String jsonContent = Files.readString(Paths.get(jsonFilePath));
-            jsonContent = "{'domains':" + jsonContent + "}";
+
+            // Remove Duplicated name values
+            JSONArray jsonContentsArray = new JSONArray(jsonContent);
+            Set<String> name_values = new HashSet<>();
+            JSONArray tempArray = new JSONArray();
+            for (int i = 0; i < jsonContentsArray.length(); i++) {
+                String name_value = jsonContentsArray.getJSONObject(i).getString("name_value");
+                if (!(name_values.contains(name_value))) {
+                    name_values.add(name_value);
+                    tempArray.put(jsonContentsArray.getJSONObject(i));
+                }
+            }
+            jsonContentsArray = tempArray;
+
+            jsonContent = "{'domains':" + jsonContentsArray + "}";
             JsonObject jsonObject = gson.fromJson(jsonContent, JsonObject.class);
             jsonObject.addProperty("useCache", useCache);
             jsonObject.addProperty("host", url);
