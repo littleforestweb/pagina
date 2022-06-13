@@ -2,7 +2,7 @@
 The amazing web page analyser and patcher, for free from Little Forest
 
 ## Sections
-* <a href="#LanguageTool">LanguageTool</a>
+* <a href="#Spelling">Spelling</a>
 * <a href="#Accessibility">Accessibility</a>
 * <a href="#Cookies">Cookies</a>
 * <a href="#Technologies">Technologies</a>
@@ -19,7 +19,7 @@ Params:
 https://127.0.0.1/InspectorWS/Inspector?url=https://example.com
 ```
 
-## LanguageTool
+## Spelling
 Params:
   * URL
   * Content
