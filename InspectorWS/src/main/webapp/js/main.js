@@ -330,7 +330,7 @@ async function editPage() {
         }
     } else if (siteUrl.includes("eversheds-sutherland.com") || siteUrl.includes("https://inspector.littleforest.co.uk:5555")) {
         // Get editable content divs
-        let editableElems = pageIframe.getElementsByClassName("mainbody");
+        let editableElems = pageIframe.getElementById("maincontent");
 
         // Iterate over every div
         for (let i = 0; i < editableElems.length; i++) {
