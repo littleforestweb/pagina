@@ -367,7 +367,7 @@ Author : xhico
             <%--                <span id="username">user</span>--%>
             <%--            </div>--%>
             <div class="lf-sidenav-footer" style="border-top: 1px solid rgba(0, 0, 0, 0.1)">
-                <span class="text-muted">Little Forest 2021</span></br><span
+                <span class="text-muted">Little Forest 2023</span></br><span
                     class="text-muted">All rights reserved</span></br>
                 <a style="color: #166713" href="https://littleforest.co.uk/privacy-policy/" target="_blank">Privacy
                     Policy</a>
