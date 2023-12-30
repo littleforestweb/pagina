@@ -4,3 +4,4 @@ InspectorWS/.idea/
 InspectorWS/.settinggs/
 
 *.properties
+.DS_Store
