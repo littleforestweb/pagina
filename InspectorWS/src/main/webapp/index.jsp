@@ -62,7 +62,7 @@ Author : xhico
                 <h5 class="modal-title" id="modalUserTitle">Hello!</h5>
             </div>
             <div class="modal-body" id="modalUserBody">
-                <p>Looks like it's your first time using the Little Forest Page Inspector.</br>Please insert your
+                <p>Looks like it's your first time using the Little Forest Page Inspector.<br/>Please insert your
                     username.</p>
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
@@ -88,8 +88,8 @@ Author : xhico
             </div>
             <div class="modal-body">
                 <p>Are you sure you want to run the Lighthouse report?
-                    </br>This could take a few moments.
-                    </br>Feel free to navigate the other reports.</p>
+                    <br/>This could take a few moments.
+                    <br/>Feel free to navigate the other reports.</p>
             </div>
             <div class="modal-footer">
                 <button type="button" onclick="runLighthouse()" class="btn active">Proceed</button>
@@ -107,8 +107,8 @@ Author : xhico
             </div>
             <div class="modal-body" id="modalLinksBody">
                 <p>Are you sure you want to run the Links report?
-                    </br>This could take a few moments.
-                    </br>Feel free to navigate the other reports.</p>
+                    <br/>This could take a few moments.
+                    <br/>Feel free to navigate the other reports.</p>
             </div>
             <div class="modal-footer">
                 <button type="button" onclick="runLinks()" class="btn active">Proceed</button>
@@ -362,13 +362,9 @@ Author : xhico
                     </button>
                 </div>
             </div>
-            <%--            <div class="lf-sidenav-footer">--%>
-            <%--                <div class="small">Welcome:</div>--%>
-            <%--                <span id="username">user</span>--%>
-            <%--            </div>--%>
             <div class="lf-sidenav-footer" style="border-top: 1px solid rgba(0, 0, 0, 0.1)">
-                <span class="text-muted">Little Forest 2023</span></br><span
-                    class="text-muted">All rights reserved</span></br>
+                <span class="text-muted" id="currentYear">Little Forest</span><br/><span
+                    class="text-muted">All rights reserved</span><br/>
                 <a style="color: #166713" href="https://littleforest.co.uk/privacy-policy/" target="_blank">Privacy
                     Policy</a>
             </div>
@@ -384,7 +380,7 @@ Author : xhico
                 <div id="overlay_text">
                     <span id="overlayMessage"></span>
                     <span id="overlaySndMessage"></span>
-                    Please Wait</br>
+                    Please Wait<br/>
                     <div class="spinner-border text-lfi-green"></div>
                 </div>
             </div>
@@ -1018,6 +1014,8 @@ Author : xhico
 %>
 
 <script>
+    document.getElementById("currentYear").innerHTML += " " + new Date().getFullYear();
+
     // Disable sidebar btns
     enableDisableActions("disable");
     document.getElementById("searchURL").disabled = false;
