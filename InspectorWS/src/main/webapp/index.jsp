@@ -341,7 +341,7 @@ Author : xhico
                         <span class="lf-nav-link-icon"><i class="fas fa-universal-access"></i></span>Accessibility
                     </button>
                     <button id="cookies-btn" onclick="toggleView('cookies')" class="nav-link bg-transparent border-0">
-                        <span class="lf-nav-link-icon"><i class="fas fa-cookie"></i></span>Cookies
+                        <span class="lf-nav-link-icon"><i class="fas fa-cookie-bite"></i></span>Cookies
                     </button>
                     <button id="technologies-btn" onclick="toggleView('technologies')"
                             class="nav-link bg-transparent border-0">
