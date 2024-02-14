@@ -56,14 +56,9 @@ async function gotoNewPage() {
     // Get siteUrl
     let siteUrl = await getSiteUrl();
 
-    // Check protocol
-    if (siteUrl.substring(0, 8) !== 'https://') {
-        siteUrl = 'https://' + siteUrl;
-    }
-
     // Check for a valid URL
     try {
-        url = new URL(siteUrl);
+        new URL(siteUrl);
     } catch (_) {
         // Set Error Message in MODAL
         await setErrorModal("", "Please insert a valid URL");
