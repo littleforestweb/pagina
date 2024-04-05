@@ -113,13 +113,20 @@ async function addLinksInfo() {
     let brokenLinksCount = 0;
 
     //  Get links information
-    let totalLinks = []; let extLinks = []; let intLinks = []; let allLinks = iframeElement.links;
+    let totalLinks = [];
+    let extLinks = [];
+    let intLinks = [];
+    let allLinks = iframeElement.links;
     for (let i = 0; i < allLinks.length; i++) {
         let linkElem = allLinks[i]
 
         // Total | Internal || External
         totalLinks.push(linkElem.href);
-        if (linkElem.href.includes(window.location.href)) { intLinks.push(linkElem.href); } else { extLinks.push(linkElem.href); }
+        if (linkElem.href.includes(window.location.href)) {
+            intLinks.push(linkElem.href);
+        } else {
+            extLinks.push(linkElem.href);
+        }
 
         // Check if broken link
         let brokenLinkServlet = "https://inspector.littleforest.co.uk/InspectorWS/BrokenLinksServlet?url=" + linkElem.href;
@@ -197,22 +204,33 @@ async function runLanguageTool() {
                 let message = entry.message;
                 let error = text.substring(entry.context.offset, entry.context.offset + entry.context.length);
                 let reps = entry.replacements;
-                var replacements = reps.map(function (reps) { return reps['value']; }).toString().replaceAll(",", ", ");
+                var replacements = reps.map(function (reps) {
+                    return reps['value'];
+                }).toString().replaceAll(",", ", ");
                 let color;
 
                 // Remove false-positive errors (three chars and whitespaces)
                 if (error.length >= 3 && !(/\s/g.test(error))) {
 
                     // Set color of error => red for mistake and yellow for others
-                    if (message == "Possible spelling mistake found.") { color = "red"; } else { color = "orange"; }
+                    if (message == "Possible spelling mistake found.") {
+                        color = "red";
+                    } else {
+                        color = "orange";
+                    }
 
                     // Update error color on html
                     tagText.innerHTML = tagText.innerHTML.replace(error,
                         "<span class='lfi_spellErrors' title='Message: " + message + "&#010;" + "Replacements: " + replacements + "' style='color: black; background-color:" + color + ";font-weight:bold;'>" + error + "</span>"
-                    );;
+                    );
+                    ;
 
                     // Add/update key error on errorsDict
-                    if (error in errorsDict) { errorsDict[error][0] = errorsDict[error][0] + 1; } else { errorsDict[error] = [1, message, replacements]; }
+                    if (error in errorsDict) {
+                        errorsDict[error][0] = errorsDict[error][0] + 1;
+                    } else {
+                        errorsDict[error] = [1, message, replacements];
+                    }
                 }
             });
 
@@ -234,7 +252,10 @@ async function runLanguageTool() {
     // Add errors to Sidebar
     let lfi_spelling_errors = document.getElementById("lfi_spelling_errors")
     items.forEach(function (entry) {
-        let error = entry[0]; let count = entry[1][0]; let message = entry[1][1]; let replacements = entry[1][2];
+        let error = entry[0];
+        let count = entry[1][0];
+        let message = entry[1][1];
+        let replacements = entry[1][2];
         lfi_spelling_errors.innerHTML += "<li><a href='#' title='Message: " + message + "&#010;" + "Replacements: " + replacements + "'>" + error + " (" + count + "x)" + "</a></li>";
     });
 
@@ -274,15 +295,30 @@ async function runLighthouse() {
     let cat_bp = document.getElementById("cat_bp").checked;
     let cat_accessibility = document.getElementById("cat_accessibility").checked;
     let cat_seo = document.getElementById("cat_seo").checked;
-    if (cat_performance) { categories += "performance,"; }
-    if (cat_pwa) { categories += "pwa,"; }
-    if (cat_bp) { categories += "best-practices,"; }
-    if (cat_accessibility) { categories += "accessibility,"; }
-    if (cat_seo) { categories += "seo,"; }
+    if (cat_performance) {
+        categories += "performance,";
+    }
+    if (cat_pwa) {
+        categories += "pwa,";
+    }
+    if (cat_bp) {
+        categories += "best-practices,";
+    }
+    if (cat_accessibility) {
+        categories += "accessibility,";
+    }
+    if (cat_seo) {
+        categories += "seo,";
+    }
 
     // Check if at least one categories is selected
     let lfi_lighthouse_info = document.getElementById("lfi_lighthouse_info");
-    if (categories == "") { lfi_lighthouse_info.innerHTML = "<li>Please select at least one categorie</li>"; return; } else { categories = categories.slice(0, -1); }
+    if (categories == "") {
+        lfi_lighthouse_info.innerHTML = "<li>Please select at least one categorie</li>";
+        return;
+    } else {
+        categories = categories.slice(0, -1);
+    }
 
     // Insert overlay
     await overlay("addOverlay", "Lighthouse");
@@ -291,7 +327,11 @@ async function runLighthouse() {
     let device;
     let device_mobile = document.getElementById("dev_mobile");
     let device_desktop = document.getElementById("dev_desktop");
-    if (device_mobile.checked) { device = device_mobile.value; } else if (device_desktop.checked) { device = device_desktop.value; }
+    if (device_mobile.checked) {
+        device = device_mobile.value;
+    } else if (device_desktop.checked) {
+        device = device_desktop.value;
+    }
 
     // Get siteUrl
     let siteUrl = window.location.href;
